@@ -1,6 +1,8 @@
 workspace "sandbox"
 	architecture "x64"
 
+	startproject "sandbox"
+
 	android_version = 21
 
 	configurations

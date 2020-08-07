@@ -91,14 +91,10 @@ namespace GEngine {
 	}
 
 	
-	std::function<void()> ThreadPool::GetEndThreadFunction()
+	std::queue<std::function<void()>>& ThreadPool::GetEndThreadFunction()
 	{
 		std::lock_guard<std::mutex> guard(m_EndthreadMutex);
-		if (ThreadPool::m_EndthreadQueue.size() == 0)
-			return nullptr;
-		std::function<void()> f = m_EndthreadQueue.front();
-		m_EndthreadQueue.pop();
-		return f;
+		return ThreadPool::m_EndthreadQueue;
 	}
 
 	std::queue<std::function<void()>>& ThreadPool::GetMainThreadFunctions()
@@ -110,6 +106,11 @@ namespace GEngine {
 	std::mutex& ThreadPool::GetMainFunctionsMutex()
 	{
 		return m_MainthreadMutex;
+	}
+
+	std::mutex& ThreadPool::GetEndThreadFunctionsMutex()
+	{
+		return m_EndthreadMutex;
 	}
 
 	std::vector < std::thread > ThreadPool::threads;

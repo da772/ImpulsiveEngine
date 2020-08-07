@@ -177,9 +177,11 @@ namespace GEngine {
 
 	void Application::Shutdown()
 	{
+        bIsEnding = true;
         SceneManager::End();
         ScriptManager::Shutdown();
         AdManager::Shutdown();
+        Application::s_Instance = nullptr;
 	}
 
 	void Application::Update(float ts) {
@@ -234,9 +236,15 @@ namespace GEngine {
                         }
                     }
                     {
-						std::function<void()> f = ThreadPool::GetEndThreadFunction();
-						if (f != nullptr)
-							f();
+						std::queue<std::function<void()>>& f = ThreadPool::GetEndThreadFunction();
+						if (!f.empty()) {
+							std::mutex& mut = ThreadPool::GetEndThreadFunctionsMutex();
+							std::lock_guard<std::mutex> guard(mut);
+							while (!f.empty()) {
+								f.front()();
+								f.pop();
+							}
+						}
                     }
 				}
                

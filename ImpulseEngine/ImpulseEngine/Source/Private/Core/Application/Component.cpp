@@ -14,7 +14,6 @@ namespace GEngine {
 			this->entity = e;
 			return;
 		}
-
 		//GE_CORE_ASSERT(false, "Entity already set");
 	}
 
@@ -29,7 +28,7 @@ namespace GEngine {
 	}
 
 
-
+	
 	void Component::Begin()
 	{
 		if (bInit)

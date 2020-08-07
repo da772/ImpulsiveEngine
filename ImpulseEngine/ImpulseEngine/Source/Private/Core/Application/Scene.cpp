@@ -17,6 +17,9 @@ namespace GEngine {
 	Scene::~Scene()
 	{
 		Unload();
+		for (std::pair < uint64_t, Ref<Entity> > e : entities) {
+			e.second->Destroy();
+		}
 	}
 
 	bool Scene::AddEntity(Ref<Entity> entity)

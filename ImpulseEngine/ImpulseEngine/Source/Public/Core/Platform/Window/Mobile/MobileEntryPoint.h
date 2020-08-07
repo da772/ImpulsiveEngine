@@ -27,6 +27,7 @@ static inline void App_Draw() {
 static inline void App_Create(int width, int height) {
     
     if (MobileEntry::App == nullptr) {
+       
         GEngine::Log::Init();
         GEngine::ThreadPool::Setup();
         GEngine::Networking::Init();
@@ -48,8 +49,10 @@ static inline void App_Resize(int width, int height) {
 
 static inline void App_Shutdown() {
     MobileEntry::App->Shutdown();
+    GE_CORE_DEBUG("APP DELETED");
     GEngine::Networking::Shutdown();
     GEngine::ThreadPool::Shutdown();
     delete MobileEntry::App;
-    MobileEntry::App = NULL;
+    MobileEntry::App = nullptr;
+    GE_CORE_DEBUG("APP DELETED2");
 }

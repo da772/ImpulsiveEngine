@@ -54,6 +54,7 @@ namespace GEngine {
 		inline Camera* GetTargetCamera() { return m_Camera; }
 		inline CameraController* GetTargetCameraController() { return m_CameraContoller; }
 
+
 		void Setup();
 		void Shutdown();
         void Update(float ts = 0);
@@ -84,6 +85,7 @@ namespace GEngine {
 		int m_frameCount = 0;
 		float m_totalTime = 0;
 		float m_fps = 0;
+		
 		
 		int m_width = 1280, m_height = 720;
 

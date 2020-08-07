@@ -35,6 +35,7 @@ namespace GEngine {
 
 		s_ClientLogger->set_level(spdlog::level::trace);
 		s_CoreLogger->set_level(spdlog::level::trace);
+		GE_CORE_DEBUG("CREATING APP");
 
 	}
 

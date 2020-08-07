@@ -18,10 +18,11 @@ namespace GEngine {
 		static void AddEndFrameFunction(std::function<void()> func);
 
 		static std::function<void()> GetMainThreadFunction();
-		static std::function<void()> GetEndThreadFunction();
+		static std::queue<std::function<void()>>&  GetEndThreadFunction();
 		static std::queue<std::function<void()>>& GetMainThreadFunctions();
 
 		static std::mutex& GetMainFunctionsMutex();
+		static std::mutex& GetEndThreadFunctionsMutex();
 
 		static std::vector < std::thread> threads;
 		static std::queue <std::function<void()>> jobQueue;

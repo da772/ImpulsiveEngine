@@ -64,10 +64,14 @@ namespace GEngine {
 		delete m_mathPtr;
 
 		duk_context* v = m_ctx;
-
-		ThreadPool::AddEndFrameFunction([v]() {
+		if (Application::GetApp() != nullptr && Application::GetApp()->IsRunning()) {
+			ThreadPool::AddEndFrameFunction([v]() {
+				duk_destroy_heap(v);
+				});
+		}
+		else {
 			duk_destroy_heap(v);
-			});
+		}
 		m_ctx = nullptr;
 	}
 
