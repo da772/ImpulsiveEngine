@@ -60,6 +60,12 @@ def createProj(name):
     file = open(path+"/"+name+"/AndroidStudio/settings.gradle", 'w')
     file.write(d)
     file.close    
+
+    with open(path+"/"+name+"/AndroidStudio/app/build.gradle") as file:
+        d = file.read().replace("sandbox", name)
+    file = open(path+"/"+name+"/AndroidStudio/app/build.gradle", 'w')
+    file.write(d)
+    file.close    
     
 
     with open (data+"/ReloadProject.py", "r") as file:

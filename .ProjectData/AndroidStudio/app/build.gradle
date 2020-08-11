@@ -2,25 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('C:\\Users\\Daniel\\Desktop\\prototypeKeyStore.jks')
-            storePassword 'abc123'
-            keyAlias 'key0'
-            keyPassword 'abc123'
-        }
-        debug {
-            storeFile file('C:\\Users\\Daniel\\Desktop\\prototypeKeyStore.jks')
-            storePassword 'abc123'
-            keyAlias 'key0'
-            keyPassword 'abc123'
-        }
-    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.ie.prototype"
+        applicationId "com.ie.sandbox"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -45,7 +31,6 @@ android {
             minifyEnabled false
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
     externalNativeBuild {
