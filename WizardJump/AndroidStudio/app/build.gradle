@@ -2,25 +2,20 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+
     signingConfigs {
         release {
-            storeFile file('C:\\Users\\Daniel\\Desktop\\prototypeKeyStore.jks')
-            storePassword 'abc123'
+            storeFile file('D:\\Documents\\Dev\\ImpulsiveEngine\\ImpulsiveEngine\\WizardJump\\AndroidStudio\\Keys\\WizardJump_Key.jks')
             keyAlias 'key0'
-            keyPassword 'abc123'
-        }
-        debug {
-            storeFile file('C:\\Users\\Daniel\\Desktop\\prototypeKeyStore.jks')
-            storePassword 'abc123'
-            keyAlias 'key0'
-            keyPassword 'abc123'
+            storePassword 'WizardJump112'
+            keyPassword 'WizardJump112'
         }
     }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.ie.prototype"
+        applicationId "com.ie.WizardJump"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1

@@ -45,6 +45,26 @@ public:
 	inline void OnBegin() override
 	{
 		Setup();
+
+		GEngine::AdManager::SetUserId("This Is My User ID!");
+#ifdef GE_PLATFORM_ANDROID
+
+		GEngine::AdManager::SetAdId("ca-app-pub-0400118858384122~7825957542");
+		// Prototype Ad
+		GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
+
+		// Google Test Id
+		//GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
+#endif
+#ifdef GE_PLATFORM_IOS
+		GEngine::AdManager::SetAdId("ca-app-pub-4619437690188394~6799169535");
+		GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/5486087868");
+
+#endif
+
+		GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); GEngine::AdManager::ShowRewardAd(); },
+			[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
+
 	}
 
 
