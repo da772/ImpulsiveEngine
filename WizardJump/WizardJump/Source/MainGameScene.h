@@ -61,9 +61,11 @@ public:
 		GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/5486087868");
 
 #endif
+#ifdef GE_MOBILE_APP
 
 		GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); GEngine::AdManager::ShowRewardAd(); },
 			[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
+#endif
 
 	}
 

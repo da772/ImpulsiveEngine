@@ -1,12 +1,12 @@
 
 #use_frameworks! :linkage => :static
-  target 'Prototype' do
+  target 'WizardJump' do
     # Comment the next line if you don't want to use dynamic frameworks
     platform :ios, '13.5'
     # Add the Firebase pod for Google Analytics
-    project 'Prototype/Prototype.xcodeproj'
-    workspace 'Prototype'
+    project 'WizardJump/WizardJump'
+    workspace 'WizardJump'
 
       pod 'Firebase/Analytics'
-    # Pods for Prototype
+    # Pods for WizardJump
   end
