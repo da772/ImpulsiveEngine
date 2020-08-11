@@ -28,6 +28,7 @@
 #include "Public/Core/Application/Components/Graphics/ParticleSystem2DComponent.h"
 #include "Public/Core/Controller/CameraController.h"
 #include "Public/Core/Application/Application.h"
+#include "Public/Core/Application/Components/ScriptComponent.h"
 
 
 namespace GEngine {
@@ -64,6 +65,7 @@ namespace GEngine {
 		delete m_mathPtr;
 
 		duk_context* v = m_ctx;
+
 		if (Application::GetApp() != nullptr && Application::GetApp()->IsRunning()) {
 			ThreadPool::AddEndFrameFunction([v]() {
 				duk_destroy_heap(v);
@@ -142,6 +144,20 @@ namespace GEngine {
 
 	void SetCameraPosition(Ref<ScriptVector3> position) {
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(position->GetGlm());
+	}
+
+	Ref<ScriptComponent> CreateScriptComponent(std::string name) {
+		return CreateGameObject<ScriptComponent>(name.c_str());
+	}
+
+	Ref<Entity> CreateEntity() {
+		Ref<Entity> e = CreateGameObject<Entity>();
+		Ref<Scene> s = SceneManager::GetCurrentScene();
+		if (s) {
+			s->AddEntity(e);
+			return e;
+		}
+		return nullptr;
 	}
 
 	void ScriptApi_DukTape::Setup()
@@ -233,6 +249,7 @@ namespace GEngine {
 		/*                              ECS                                     */
 		/************************************************************************/
 		//dukglue_register_constructor<Entity>(m_ctx, "Entity");
+		dukglue_register_function(m_ctx, &CreateEntity, "Entity");
 		dukglue_register_method(m_ctx, &Entity::AddComponent, "AddComponent");
 		dukglue_register_method(m_ctx, &Entity::RemoveComponent, "RemoveComponent");
 		dukglue_register_method(m_ctx, &Entity::RemoveComponent_ptr, "RemoveComponent");
@@ -242,6 +259,7 @@ namespace GEngine {
 		dukglue_register_method(m_ctx, &Entity::GetEntityRotationScript, "GetRotation");
 		dukglue_register_method(m_ctx, &Entity::SetEntityScaleScript, "SetScale");
 		dukglue_register_method(m_ctx, &Entity::GetEntityScaleScript, "GetScale");
+		dukglue_register_method(m_ctx, &Entity::Destroy, "Destroy");
 		dukglue_register_method(m_ctx, &Entity::GetComponentsByTag, "GetComponents");
 		dukglue_register_property(m_ctx, &Entity::GetShouldUpdate, &Entity::SetShouldUpdate, "doesUpdate");
 		
@@ -267,6 +285,8 @@ namespace GEngine {
 		dukglue_register_property(m_ctx, &ScriptableComponent::DoesUpdate, &ScriptableComponent::SetDoesUpdate, "doesUpdate");
 		dukglue_set_base_class<Component, ScriptableComponent >(m_ctx);
 
+		dukglue_register_function(m_ctx, CreateScriptComponent, "ScriptComponent");
+		dukglue_set_base_class<Component, ScriptComponent >(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateSpriteComponent, "SpriteComponent");
 		//dukglue_register_constructor<SpriteComponent>(m_ctx, "SpriteComponent");
