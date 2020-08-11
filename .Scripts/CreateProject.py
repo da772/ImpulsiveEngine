@@ -43,6 +43,12 @@ def createProj(name):
     file.write(d)
     file.close
 
+    with open (path+"/"+name+"/Podfile_ios") as file:
+        d = file.read().replace("sandbox", name)
+    file = open(path+"/"+name+"/Podfile_ios", 'w')
+    file.write(d)
+    file.close
+
     with open(path+"/"+name+"/AndroidStudio/app/src/main/res/values/strings.xml") as file:
         d = file.read().replace("sandbox", name)
     file = open(path+"/"+name+"/AndroidStudio/app/src/main/res/values/strings.xml", 'w')
