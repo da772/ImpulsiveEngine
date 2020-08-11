@@ -35,6 +35,8 @@ namespace GEngine {
 		Entity::refCount--;
 	}
 
+
+
 	bool Entity::AddComponent(Ref<Component> component) {
 		if (component) {
 			if (component->m_hasComponentParent) {
@@ -102,6 +104,18 @@ namespace GEngine {
 			return AddComponent(comp);
 		}
 		return AddComponent(static_pointer_cast<Component>(component->GetSelf()->self.lock()));
+	}
+
+	void Entity::UnloadGraphics() {
+		for (std::pair<uint64_t, Ref<Component>> c : components) {
+			c.second->UnloadGraphics();
+		}
+	}
+
+	void Entity::ReloadGraphics() {
+		for (std::pair<uint64_t, Ref<Component>> c : components) {
+			c.second->ReloadGraphics();
+		}
 	}
 
 	bool Entity::RemoveComponent_ptr(Component* component)

@@ -14,6 +14,9 @@ namespace GEngine {
 		virtual inline uint32_t GetHeight() const override { return m_Height; }
 		virtual inline const u32 GetRendererID() const override { return m_RendererID; }
 		virtual void SetData(void* data, uint32_t size, u32 flags = 0) override;
+		virtual inline void Unload() {};
+		virtual inline void Reload() {};
+
 
 	private:
 		uint32_t m_Width, m_Height, m_RendererID = 0;

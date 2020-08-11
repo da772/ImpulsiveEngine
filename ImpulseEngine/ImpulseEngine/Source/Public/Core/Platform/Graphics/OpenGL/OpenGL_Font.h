@@ -17,6 +17,8 @@ namespace GEngine {
 		virtual void LoadCharacters(const char*) override;
 		virtual Ref<SubTexture2D> GetCharacterCoords(uint64_t c) override;
 		std::vector<CharacterData> DrawString(std::string s, float maxWidth, int viewWidth, int viewHeight) override;
+		virtual void Unload() override;
+		virtual void Reload() override;
 
 
 	private:
@@ -28,6 +30,8 @@ namespace GEngine {
 		Ref<FileData> m_atlasData;
 		std::unordered_set<uint32_t> m_characters;
 		std::string m_path;
+		std::string m_loaded;
+
 	};
 
 

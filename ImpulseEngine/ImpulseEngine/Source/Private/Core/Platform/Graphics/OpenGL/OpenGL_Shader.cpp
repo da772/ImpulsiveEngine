@@ -38,6 +38,27 @@ namespace GEngine {
 		Compile({ {GL_VERTEX_SHADER, files ? ReadFile(vertexSrc) : vertexSrc}, {GL_FRAGMENT_SHADER, files ? ReadFile(fragmentSrc) : fragmentSrc } });
 	}
 
+	void OpenGL_Shader::Unload() {
+		glDeleteProgram(m_RendererID);
+		m_RendererID = 0;
+	}
+
+	void OpenGL_Shader::Reload() {
+		#ifdef GE_GRAPHICS_API_OPENGL_3_3
+		Compile(PreProcess(ReadFile(m_Name)));
+		#endif
+		#ifdef GE_GRAPHICS_API_OPENGL_ES
+        std::size_t pos = m_Name.find(".glsl");
+        if (pos != std::string::npos) {
+            std::string s = m_Name;
+            s.replace(pos, 5, "_Mobile.glsl");
+            Compile(PreProcess(ReadFile(s)));
+            return;
+        }
+        Compile(PreProcess(ReadFile(m_Name)));
+		#endif
+	}
+
 	OpenGL_Shader::OpenGL_Shader(const std::string& filePath)
 	{
 		m_Name = filePath;
@@ -59,6 +80,7 @@ namespace GEngine {
 
 	void OpenGL_Shader::Compile(std::unordered_map<uint32_t, std::string> shaderSources)
 	{
+		
 		m_RendererID = glCreateProgram();
 		GLuint program = m_RendererID;
 		GE_CORE_ASSERT(shaderSources.size() <= 2, "Only support 2 shaders per file");

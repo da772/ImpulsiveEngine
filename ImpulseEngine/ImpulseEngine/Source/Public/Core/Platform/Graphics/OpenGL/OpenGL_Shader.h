@@ -15,6 +15,9 @@ namespace GEngine {
 		virtual void Bind() const override;
 		virtual void UnBind() const override;
 
+		virtual void Reload() override;
+		virtual void Unload() override;
+
 		virtual void UploadUniformIntArray(const std::string& name, int* values, u32 count) override;
 		void UploadUniformMat4(const std::string& name,  const glm::mat4& matrix) override;
 		void UploadUniformMat3(const std::string& name,  const glm::mat3& matrix) override;
@@ -27,7 +30,7 @@ namespace GEngine {
 
 	private:
 		void Compile(std::unordered_map<uint32_t, std::string> shaderSources);
-		uint32_t m_RendererID = 0;
+		int m_RendererID = 0;
 
 	};
 

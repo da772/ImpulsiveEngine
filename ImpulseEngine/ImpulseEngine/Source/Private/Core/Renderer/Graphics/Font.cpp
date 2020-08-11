@@ -38,4 +38,18 @@ namespace GEngine {
 
 	}
 
+	void Font::UnloadGraphics()
+	{
+		for (std::pair<std::string, Weak<Font>> p : Font::m_FontList) {
+			p.second.lock()->Unload();
+		}
+	}
+
+	void Font::ReloadGraphics()
+	{
+		for (std::pair<std::string, Weak<Font>> p : Font::m_FontList) {
+			p.second.lock()->Reload();
+		}
+	}
+
 }

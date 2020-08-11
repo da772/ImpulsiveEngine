@@ -16,7 +16,7 @@ namespace GEngine {
 	struct Renderer2DStorage
 	{
 		Ref<VertexArray> QuadVertexArray;
-		Shader* TextureShader;
+		Ref<Shader> TextureShader;
 		Ref<Texture2D> WhiteTexture;
 	};
 
@@ -52,7 +52,7 @@ namespace GEngine {
 	void Renderer2D::Shutdown()
 	{
 		if (sData != nullptr) {
-			Shader::Destroy(sData->TextureShader);
+			//Shader::Destroy(sData->TextureShader);
 		}
 		sData.reset();
 	}

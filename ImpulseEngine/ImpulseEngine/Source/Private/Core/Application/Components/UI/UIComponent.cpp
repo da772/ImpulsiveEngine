@@ -104,6 +104,17 @@ namespace GEngine {
 		m_text.erase(id);
 	}
 
+	void UIComponent::UnloadGraphics() {
+		if (s_ShapeFactory) {
+			s_ShapeFactory->UnloadGraphics();
+		}
+	}
+	void UIComponent::ReloadGraphics() {
+		if (s_ShapeFactory) {
+			s_ShapeFactory->ReloadGraphics();
+		}
+	}
+
 	void UIComponent::SetPosition(long id, glm::vec2 position)
 	{
 		if (id >= 0) {

@@ -41,6 +41,9 @@ namespace GEngine {
 		virtual void OnAttached(Ref<Entity> entity) override;
 		virtual void DeAttached(Ref<Entity> entity) override;
 
+		virtual void UnloadGraphics() override;
+		virtual void ReloadGraphics() override;
+
 		void RemoveQuad(long id);
 		void ClearQuads();
 

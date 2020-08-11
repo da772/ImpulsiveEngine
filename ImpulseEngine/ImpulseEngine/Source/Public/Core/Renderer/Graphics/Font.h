@@ -22,6 +22,12 @@ namespace GEngine {
 		inline Ref<Texture2D> GetTexture() { return m_Texture; };
 		virtual Ref<SubTexture2D> GetCharacterCoords(uint64_t c) = 0;
 
+		static void UnloadGraphics();
+		static void ReloadGraphics();
+
+		virtual void Unload() = 0;
+		virtual void Reload() = 0;
+
 		virtual inline void LoadCharactersEN() { LoadCharacters("a quick brown fox jumps over the lazy dog 0123456789=-+_)(*&^%$#@!AQUICKBROWNFOXJUMPSOVERTHELAZYDOG[]{}\|/?.,<>\"\\`~"); }
 
 	protected:

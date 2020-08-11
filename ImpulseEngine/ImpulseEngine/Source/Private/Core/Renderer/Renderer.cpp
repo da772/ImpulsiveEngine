@@ -83,7 +83,7 @@ namespace GEngine {
 
 	void Renderer::Shutdown()
 	{
-		Shader::Destroy(s_ShapeData->shape_shader);
+
 		Renderer::queue.clear();
 		Renderer::queueId.clear();
 		RenderCommand::Destroy();
@@ -147,7 +147,7 @@ namespace GEngine {
 		RenderCommand::DrawIndexed(vertexArray);
 	}
 
-	void Renderer::SubmitArrays(Shader* shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform) {
+	void Renderer::SubmitArrays(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform) {
 		shader->Bind();
 		shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
 		shader->UploadUniformMat4("u_Transform", transform);
@@ -155,7 +155,7 @@ namespace GEngine {
 		RenderCommand::DrawArrays(vertexArray);
 	}
 
-	void Renderer::SubmitArraysLines(Shader* shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform /*= glm::mat4(1.f)*/)
+	void Renderer::SubmitArraysLines(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform /*= glm::mat4(1.f)*/)
 	{
 		shader->Bind();
 		shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);

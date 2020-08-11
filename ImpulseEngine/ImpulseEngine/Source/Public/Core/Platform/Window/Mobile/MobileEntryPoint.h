@@ -47,6 +47,16 @@ static inline void App_Resize(int width, int height) {
     MobileEntry::App->GetWindow()->SetSize(width, height);
 }
 
+static inline void App_UnloadGraphics() {
+    GE_CORE_DEBUG("UNLOADING GRAPHICS");
+    GEngine::Application::UnloadGraphics();
+}
+
+static inline void App_ReloadGraphics() {
+    GE_CORE_DEBUG("RELOADING GRAPHICS");
+    GEngine::Application::ReloadGraphics();
+}
+
 static inline void App_Shutdown() {
     MobileEntry::App->Shutdown();
     GE_CORE_DEBUG("APP DELETED");
@@ -54,5 +64,4 @@ static inline void App_Shutdown() {
     GEngine::ThreadPool::Shutdown();
     delete MobileEntry::App;
     MobileEntry::App = nullptr;
-    GE_CORE_DEBUG("APP DELETED2");
 }

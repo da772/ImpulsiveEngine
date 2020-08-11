@@ -30,6 +30,7 @@ namespace GEngine {
 
 		void Clear();
 
+
 		inline std::vector<float>& GetVertices() { return m_Vertices; };
 		inline std::vector<int>& GetTextures() { return m_TextureIds; };
 
@@ -82,6 +83,10 @@ namespace GEngine {
 		void SetRotation(long id, float rotation);
 		void SetScale(long id, glm::vec2 scale);
 
+
+		void UnloadGraphics();
+		void ReloadGraphics();
+
 		const Vector3 GetShapePosition(long id);
 
 		int UpdateCount(int i);
@@ -94,6 +99,7 @@ namespace GEngine {
 
 		void Setup();
 		void ReCreateShapeVertices(BatchObjectData* data);
+		bool bUnloaded = false;
 		std::vector<std::pair<uint32_t, BatchObjectData>> m_SortedObjects;
 		Ref<Shape> m_Shape = nullptr;
 		Ref<Shader> m_Shader = nullptr;

@@ -36,6 +36,9 @@ namespace GEngine {
 
 		std::vector<Ref<Component>> GetComponentsByTag(std::string tag);
 
+		void UnloadGraphics();
+		void ReloadGraphics();
+
 		bool AddComponent_ptr(Component* component);
 		bool RemoveComponent_ptr(Component* component);
 

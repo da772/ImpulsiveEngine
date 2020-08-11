@@ -71,6 +71,20 @@ namespace GEngine {
 		SceneManager::m_FlushFunctions.clear();
 	}
 
+	void SceneManager::ReloadGraphics(){
+		if (scene != nullptr) {
+			scene->ReloadGraphics();
+		}
+	}
+
+	void SceneManager::UnloadGraphics() {
+		if (scene != nullptr) {
+			scene->UnloadGraphics();
+		}
+	}
+	
+
+
 	GEngine::Ref<GEngine::Scene> SceneManager::GetScene(const char* name)
 	{
 		if (SceneManager::scenes.find(name) != SceneManager::scenes.end())

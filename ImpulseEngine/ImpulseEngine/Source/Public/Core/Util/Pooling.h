@@ -37,6 +37,14 @@ namespace GEngine {
 			return m_Objects.find(name) != m_Objects.end();
 		}
 
+		inline std::vector<T*> GetObjects() {
+			std::vector<T*> v;
+				for (auto a : m_Objects) {
+					v.push_back(a.second.obj);
+				}
+				return v;
+		}
+
 		inline T* Get(id name) {
 			GE_CORE_ASSERT(m_Objects.find(name) != m_Objects.end(), "Shader not found!");
 			m_Objects[name].count++;

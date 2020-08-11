@@ -48,6 +48,9 @@ namespace GEngine {
 		virtual void OnAttached(Ref<Entity> entity) override;
 		virtual void DeAttached(Ref<Entity> entity) override;
 
+		virtual void UnloadGraphics() override;
+		virtual void ReloadGraphics() override;
+
 	private:
 		static void RemoveQuads(u32 id);
 		static Ref<BatchRenderer> s_ShapeFactory;

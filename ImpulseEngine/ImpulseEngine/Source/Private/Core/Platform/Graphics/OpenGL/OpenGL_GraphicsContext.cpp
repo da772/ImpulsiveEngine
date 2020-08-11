@@ -31,7 +31,11 @@ namespace GEngine {
 	}
 
     OpenGL_GraphicsContext::~OpenGL_GraphicsContext() {
-        }
+#if defined(GE_GRAPHICS_API_OPENGL_3_3)
+		//glfwMakeContextCurrent(NULL);
+		
+#endif
+    }
     
 	void OpenGL_GraphicsContext::Init()
 	{

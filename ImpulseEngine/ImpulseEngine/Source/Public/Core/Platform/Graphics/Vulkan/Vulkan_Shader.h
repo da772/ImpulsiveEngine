@@ -27,6 +27,8 @@ namespace GEngine {
 		virtual void UploadUniformFloat(const std::string& name, const float values) override;
 		virtual void UploadUniformInt(const std::string& name, const int values) override;
 		virtual uint32_t ShaderTypeFromString(const std::string& type) override;
+		virtual inline void Unload() override {};
+		virtual inline void Reload() override {};
 		
 #ifdef GE_GRAPHICS_API_VULKAN
 		static VkPipelineShaderStageCreateInfo CreateShaderModuleFromFile(std::string fileName, uint32_t type);

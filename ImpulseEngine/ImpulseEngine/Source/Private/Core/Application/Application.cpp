@@ -14,6 +14,10 @@
 #include "Public/Core/Scripting/ScriptManager.h"
 #include "Public/Core/Collision/CollisionDetection.h"
 
+#include "Public/Core/Renderer/Graphics/Shader.h"
+#include "Public/Core/Renderer/Graphics/Texture.h"
+#include "Public/Core/Renderer/Graphics/Font.h"
+
 #include "Public/Core/Ads/AdManager.h"
 
 
@@ -44,6 +48,9 @@ namespace GEngine {
         
       
 	}
+
+
+
 
 	Application::~Application()
     {
@@ -82,6 +89,25 @@ namespace GEngine {
         if (bCleaned) {
             OnCleanDirtyApi();
         }
+    }
+
+    void Application::UnloadGraphics() {
+        Application::GetApp()->m_loaded = false;
+        SceneManager::UnloadGraphics();
+        Font::UnloadGraphics();
+        Texture2D::UnloadTextures();
+        Shader::UnloadShaders();
+        
+        
+    }
+
+    void Application::ReloadGraphics() {
+        Application::GetApp()->m_loaded = true;
+        RenderCommand::Init();
+        Texture2D::ReloadTextures();
+        Font::ReloadGraphics();
+        Shader::ReloadShaders();
+        SceneManager::ReloadGraphics();
     }
     
     void Application::QueueWindowApi(FWindowApi windowApi) {
@@ -177,7 +203,7 @@ namespace GEngine {
 
 	void Application::Shutdown()
 	{
-        bIsEnding = true;
+        m_Running = false;
         SceneManager::End();
         ScriptManager::Shutdown();
         AdManager::Shutdown();
@@ -186,6 +212,8 @@ namespace GEngine {
 
 	void Application::Update(float ts) {
         
+        if (!m_loaded) return;
+
 		GE_PROFILE_TIMER("Application:Run", &profile["Run"]);
 		double time = Time::GetEpochTimeMS();
 		double timestep = (time - m_LastFrameTime)/1e3f;
@@ -256,6 +284,7 @@ namespace GEngine {
     }
     
     void Application::Draw() {
+        if (!m_loaded) return;
         Renderer::BeginScene(m_Camera);
         Renderer::Render();
         if (b_EnableImGui) m_ImGuiLayer->Begin();

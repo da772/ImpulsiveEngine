@@ -46,9 +46,19 @@ namespace GEngine {
 			m_Shader = Ref<Shader>(Shader::Create(path));
 			SpriteComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer("2d", Ref<Quad>(new Quad()),
 				5000, m_Shader));
+		}	
+	}
+
+	void SpriteComponent::ReloadGraphics() {
+		if (s_ShapeFactory) {
+			s_ShapeFactory->ReloadGraphics();
 		}
-		
-		
+	}
+
+	void SpriteComponent::UnloadGraphics() {
+		if (s_ShapeFactory) {
+			s_ShapeFactory->UnloadGraphics();
+		}
 	}
 
 	SpriteComponent::~SpriteComponent()

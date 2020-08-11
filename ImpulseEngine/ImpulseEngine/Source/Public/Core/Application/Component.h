@@ -19,6 +19,9 @@ namespace GEngine {
 		void Update(Timestep timestep);
 		void End();
 
+		virtual void UnloadGraphics() {};
+		virtual void ReloadGraphics() {};
+
 		inline bool IsInitialized() {
 			return bInit;
 		}

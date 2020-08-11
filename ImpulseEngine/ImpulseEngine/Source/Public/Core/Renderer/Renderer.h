@@ -59,9 +59,9 @@ namespace GEngine {
 
 		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
 
-		static void SubmitArrays(Shader* shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
+		static void SubmitArrays(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
 
-		static void SubmitArraysLines(Shader* shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
+		static void SubmitArraysLines(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
 
 		static void DrawCube(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color);
 
@@ -143,7 +143,7 @@ namespace GEngine {
 
 			Ref<GEngine::VertexArray> box_vArray;
 			Ref<GEngine::VertexBuffer> box_vBuffer;
-			Shader* shape_shader;
+			Ref<Shader> shape_shader;
 			Ref<GEngine::Texture2D> empty_texture;
 			Ref<GEngine::VertexArray> line_vArray;
 			Ref<GEngine::VertexBuffer> line_vBuffer;

@@ -138,6 +138,20 @@ namespace GEngine {
 
 	}
 
+	void ParticleSystem2DComponent::ReloadGraphics() {
+		if (s_ShapeFactory) {
+			s_ShapeFactory->ReloadGraphics();
+			bUnloaded = false;
+		}
+	}
+
+	void ParticleSystem2DComponent::UnloadGraphics() {
+		if (s_ShapeFactory) {
+			s_ShapeFactory->UnloadGraphics();
+			bUnloaded = true;
+		}
+	}
+
 	void ParticleSystem2DComponent::OnBegin()
 	{
 		SetupBatch();
@@ -159,7 +173,7 @@ namespace GEngine {
 		long long time = Time::GetEpochTimeMS();
 		long long tPassed = time - m_LastUpdate;
 		double dt = tPassed / 1000.0;
-		if (particleCount > 0) {
+		if (particleCount > 0 && !bUnloaded) {
 			for (Particle& p : m_particles) {
 				if (p.Active)
 					ParticleUpdate(p, dt);

@@ -93,6 +93,21 @@ namespace GEngine {
 		return t;
 	}
 
+	void Texture2D::UnloadTextures() {
+		for (std::pair<std::string, Weak<Texture>> p : Texture2D::s_TexturePool ) {
+			Ref<Texture> t = p.second.lock();
+			if (t)
+				t->Unload();
+		}
+	}
+	void Texture2D::ReloadTextures() {
+		for (std::pair<std::string, Weak<Texture>> p : Texture2D::s_TexturePool ) {
+			Ref<Texture> t = p.second.lock();
+			if (t)
+				t->Reload();
+		}
+	}
+
 	void Texture2D::Destroy(Weak<Texture2D> texture)
 	{
 		if (texture.lock() == nullptr) return;

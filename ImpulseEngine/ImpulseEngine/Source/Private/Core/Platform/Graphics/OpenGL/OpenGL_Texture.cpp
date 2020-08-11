@@ -48,13 +48,15 @@ namespace GEngine {
 	OpenGL_Texture2D::OpenGL_Texture2D(uint32_t width, uint32_t height)
 		: m_Width(width), m_Height(height)
 	{
-		glGenTextures(1, &m_RendererID);
 	}
 
 	void OpenGL_Texture2D::SetData(void* data, uint32_t size, u32 flags)
 	{
 		m_flags = flags;
-		
+		m_data = data;
+		m_size = size;
+		glGenTextures(1, (unsigned int*)&m_RendererID);
+        
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
 		uint64_t channel = GL_RGBA;
@@ -146,7 +148,7 @@ namespace GEngine {
 			dataFormat = GL_RGB;
 		}
         
-		glGenTextures(1, &m_RendererID);
+		glGenTextures(1, (unsigned int*)&m_RendererID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		glTexImage2D(GL_TEXTURE_2D, 0, dataFormat, m_Width, m_Height, 0, internalFormat, GL_UNSIGNED_BYTE, data);
 
@@ -190,25 +192,40 @@ namespace GEngine {
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 
-
-
 		stbi_image_free(data);
 	}
 
 	OpenGL_Texture2D::~OpenGL_Texture2D()
 	{
-		glDeleteTextures(1, &m_RendererID);
-		GE_CORE_DEBUG("DESTORYING TEXTURE {0}", name);
+		glDeleteTextures(1, (unsigned int*)&m_RendererID);
+		
 	}
 
 	void OpenGL_Texture2D::Bind(uint32_t slot) const
 	{
+		
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+	}
+
+	void OpenGL_Texture2D::Unload(){
+		glDeleteTextures(1,(unsigned int*)&m_RendererID);
+		m_RendererID = 0;
+	}
+
+	void OpenGL_Texture2D::Reload() {
+		if (m_data != nullptr) {
+			SetData(m_data, m_size, m_flags);
+		} else {
+			Ref<FileData> _data = GEngine::FileSystem::FileDataFromPath(m_Path);
+			UploadDataSTBI(_data->GetData(), _data->GetDataSize());		
+		}
+		
 	}
 
 
 
 }
+
 
 #endif

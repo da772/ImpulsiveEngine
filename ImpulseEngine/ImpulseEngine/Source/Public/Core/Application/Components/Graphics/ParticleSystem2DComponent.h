@@ -66,6 +66,9 @@ namespace GEngine {
 		void Emit(glm::vec3 postition, int amt = 1);
 		void EmitScript(Ref<ScriptVector2> pos, int amt);
 
+		virtual void UnloadGraphics() override;
+		virtual void ReloadGraphics() override;
+
 		int ParticleCount();
 	protected:
 		void OnBegin() override;
@@ -80,6 +83,7 @@ namespace GEngine {
 	private:
 		ParticleProps m_particleProps;
 
+		bool bUnloaded = false;
 		int m_PoolIndex = 0;
 
 		struct Particle {

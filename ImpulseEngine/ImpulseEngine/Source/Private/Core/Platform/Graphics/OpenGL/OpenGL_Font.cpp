@@ -22,7 +22,6 @@ namespace GEngine {
 
 	OpenGL_Font::~OpenGL_Font()
 	{
-		GE_CORE_DEBUG("FONT DELETED {0}", m_path);
 		ftgl::texture_font_delete(m_textureFont);
 		ftgl::texture_atlas_delete(m_textureAtlas);
 		m_atlasData = nullptr;
@@ -34,6 +33,7 @@ namespace GEngine {
 		uint64_t size = ftgl::texture_font_load_glyphs(m_textureFont, string);
 		m_Texture->SetData(m_textureAtlas->data, 0, TEXTUREFLAGS_RED_CHANNEL | 
 			TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear | TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap);
+		m_loaded += std::string(string);
 	}
 
 	GEngine::Ref<GEngine::SubTexture2D> OpenGL_Font::GetCharacterCoords(uint64_t c)
@@ -139,6 +139,15 @@ namespace GEngine {
 		return charData;
 
 
+	}
+
+	void OpenGL_Font::Unload()
+	{
+	}
+
+	void OpenGL_Font::Reload()
+	{
+		m_textureAtlas->id = m_Texture->GetRendererID();
 	}
 
 }

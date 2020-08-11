@@ -361,7 +361,6 @@ namespace GEngine {
 			});
 
 		 m_SortedObjects.erase(it);
-
 		 ReCreateBatches();
 	 }
 
@@ -377,8 +376,29 @@ namespace GEngine {
 		 m_Sort = b;
 	 }
 
+	 void BatchRenderer::ReloadGraphics() {
+		if (bUnloaded) {
+			Setup();
+			ReCreateBatches();
+			bUnloaded = false;
+		}
+	 } 
+
+	 void BatchRenderer::UnloadGraphics() {
+		 if (!bUnloaded) {
+			 for (int i = 0; i < m_Batches.size(); i++) {
+				 m_Pipeline->Remove(m_Batches[i]);
+			 }
+			 m_Batches.clear();
+			 m_IndexBuffer = nullptr;
+			 m_BlankTexture = nullptr;
+			 bUnloaded = true;
+		 }
+	 }
+
 	 void BatchRenderer::ReCreateBatches()
 	 {
+
 		 if (m_SortedObjects.size() <= 0 && m_Batches.size() == 1) {
 			 std::vector<float> f;
 			 std::vector<int> i;

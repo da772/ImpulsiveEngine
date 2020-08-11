@@ -79,6 +79,18 @@ namespace GEngine {
 		}
 	}
 
+	void Scene::UnloadGraphics() {
+		for (std::pair<u64, Ref<Entity>> e : entities) {
+			e.second->UnloadGraphics();
+		}
+	}
+
+	void Scene::ReloadGraphics() {
+		for (std::pair<u64, Ref<Entity>> e : entities) {
+			e.second->ReloadGraphics();
+		}
+	}
+
 	void Scene::RemoveAllEntities() {
 		for (std::pair<u64, Ref<Entity>> e : entities) {
 			RemoveEntity(e.second);

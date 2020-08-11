@@ -41,7 +41,6 @@ namespace GEngine {
 		glCullFace(GL_BACK);
 
 #ifdef GE_GRAPHICS_API_OPENGL_3_3
-        
 		gltInit();
 #endif
 

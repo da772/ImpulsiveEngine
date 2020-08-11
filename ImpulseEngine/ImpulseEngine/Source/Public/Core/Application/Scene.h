@@ -43,6 +43,8 @@ namespace GEngine {
 		void Load();
 		void Unload();
 		void Pause(bool b);
+		void UnloadGraphics();
+		void ReloadGraphics();
 		
 		bool IsInitalized() { return b_init; }
 

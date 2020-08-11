@@ -22,6 +22,8 @@ namespace GEngine {
 		static void ImGuiRender();
 		static void Pause(bool b);
 		static void ResetScene();
+		static void ReloadGraphics();
+		static void UnloadGraphics();
 
 
 	private:

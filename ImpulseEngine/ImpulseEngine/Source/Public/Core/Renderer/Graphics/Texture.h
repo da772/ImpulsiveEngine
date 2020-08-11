@@ -40,6 +40,10 @@ namespace GEngine {
 		virtual const u32 GetRendererID() const = 0;
 		virtual void Bind(uint32_t slot = 0) const = 0;
 		virtual inline const std::string& GetName() { return name; }
+
+		virtual void Unload() = 0;
+		virtual void Reload() = 0;
+
 	protected:
 		static std::unordered_map<std::string, Weak<Texture>> s_TexturePool;
 		std::string name;
@@ -51,6 +55,8 @@ namespace GEngine {
 	public:
 		inline Texture2D() {};
 		virtual ~Texture2D();
+		static void UnloadTextures();
+		static void ReloadTextures();
 		static Ref<Texture2D> Create(const std::string& path, const u32 flags = 0);
 		static Ref<Texture2D> Create(const std::string& name,u32 width, uint32_t height);
 		virtual uint32_t GetHeight() const override { return 0; };

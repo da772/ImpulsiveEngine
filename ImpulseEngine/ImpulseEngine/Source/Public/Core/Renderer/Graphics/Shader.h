@@ -12,8 +12,10 @@ namespace GEngine {
 	class Shader {
 	public:
 	
-		static Shader* Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, const bool files = false);
-		static Shader* Create(const std::string& filePath);
+		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, const bool files = false);
+		static Ref<Shader> Create(const std::string& filePath);
+		static void UnloadShaders();
+		static void ReloadShaders();
 		static void Destroy(Shader* shader);
 		virtual ~Shader() {};
 
@@ -21,6 +23,9 @@ namespace GEngine {
 
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
+
+		virtual void Unload() = 0;
+		virtual void Reload() = 0;
 
 		virtual void UploadUniformIntArray(const std::string& name, int* values, u32 count) = 0;
 		virtual void UploadUniformMat4(const std::string& name, const glm::mat4& matrix) = 0;
@@ -43,7 +48,8 @@ namespace GEngine {
 		
 		std::string m_Name;
 	private:
-		static Scope<ObjectPool<Shader, std::string>> ShaderPool;
+		//static Scope<ObjectPool<Shader, std::string>> ShaderPool;
+		static std::unordered_map<std::string, Weak<Shader>> s_ShaderPool;
 
 
 	};

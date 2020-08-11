@@ -16,26 +16,30 @@
 namespace GEngine {
 
 
-	Scope<ObjectPool<Shader, std::string>> Shader::ShaderPool =
-		std::make_unique<ObjectPool<Shader, std::string>>();
+	std::unordered_map<std::string, Weak<Shader>> Shader::s_ShaderPool;
 
-	Shader* Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, const bool files) {
+	Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, const bool files) {
 
 
-		Shader* s = nullptr;
 
-		if (Shader::ShaderPool->Contains(name)) {
-			return Shader::ShaderPool->Get(name);
+		Ref<Shader> s = nullptr;
+
+		if (Shader::s_ShaderPool.find(name) != Shader::s_ShaderPool.end()) {
+			s = Shader::s_ShaderPool[name].lock();
+			if (s) {
+				return s;
+			}
+			s = nullptr;
 		}
 
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 		case GraphicsApi::OPENGL:
-			s = new OpenGL_Shader(name, vertexSrc, fragmentSrc, files);
+			s = make_unique<OpenGL_Shader>(name, vertexSrc, fragmentSrc, files);
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::VULKAN:
-			s = new Vulkan_Shader(name, vertexSrc, fragmentSrc, files);
+			s = make_unique<Vulkan_Shader>(name, vertexSrc, fragmentSrc, files);
 #endif
 
 		default:
@@ -45,29 +49,29 @@ namespace GEngine {
 		}
 
 		s->m_Name = name;
-		Shader::ShaderPool->Add(s, s->GetName());
+		Shader::s_ShaderPool[name] = s;
 		return s;
 
 	}
 
 
-	Shader* Shader::Create(const std::string& filePath)
+	Ref<Shader> Shader::Create(const std::string& filePath)
 	{
-		Shader* s = nullptr;
+		Ref<Shader> s = nullptr;
 
-		if (Shader::ShaderPool->Contains(filePath)) {
-			//return Shader::ShaderPool->Get(filePath);
+		if (Shader::s_ShaderPool.find(filePath) != Shader::s_ShaderPool.end()) {
+			return Shader::s_ShaderPool[filePath].lock();
 		}
 
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 		case GraphicsApi::OPENGL:
-			s = new OpenGL_Shader(filePath);
+			s = make_unique<OpenGL_Shader>(filePath);
 			break;
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::VULKAN:
-			s = new Vulkan_Shader(filePath);
+			s = make_unique<Vulkan_Shader>(filePath);
 			break;
 #endif
 		default:
@@ -76,16 +80,27 @@ namespace GEngine {
 		}
 
 		s->m_Name = filePath;
-		Shader::ShaderPool->Add(s, s->GetName());
+		Shader::s_ShaderPool[filePath] = s;
 		return s;
 
 	}
 
+	void Shader::UnloadShaders() {
+		
+		for (std::pair<std::string, Weak<Shader>> s : s_ShaderPool) {
+			s.second.lock()->Unload();
+		}
+	}
+
+	void Shader::ReloadShaders() {
+		for (std::pair<std::string, Weak<Shader>> s : s_ShaderPool) {
+			s.second.lock()->Reload();
+		}
+	}
+
 	void Shader::Destroy(Shader* shader)
 	{
-		if (Shader::ShaderPool->Remove(shader->GetName())) {
-			shader = nullptr;
-		}
+		
 	}
 
 	std::unordered_map<uint32_t, std::string> Shader::PreProcess(const std::string& source)
