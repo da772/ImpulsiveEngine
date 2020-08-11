@@ -31,6 +31,8 @@
         txt.resignFirstResponder;
     });
     
+    
+    
     GEngine::Mobile_Input_Callback::SetKeyboardTextFunc([txt](std::string text) {
         txt.text = [NSString stringWithUTF8String:text.c_str()];
     });
@@ -51,9 +53,11 @@
        
        GLKView *view = (GLKView *)self.view;
        view.context = self.context;
+    
+    GEngine::Mobile_Input_Callback::SetGetViewContext([view](){
+        return (UIView*)view;
+    });
        
-    
-    
     [self setupGL];
 }
 - (IBAction)textEntered:(UITextField *)sender forEvent:(UIEvent *)event {

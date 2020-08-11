@@ -184,6 +184,8 @@ struct android_app {
     ARect pendingContentRect;
 };
 
+
+
 enum {
     /**
      * Looper data ID of commands coming from the app's main thread, which
@@ -336,6 +338,7 @@ void android_app_post_exec_cmd(struct android_app* android_app, int8_t cmd);
  * the main entry to the app.
  */
 extern void android_main(struct android_app* app);
+
 
 #ifdef __cplusplus
 }
