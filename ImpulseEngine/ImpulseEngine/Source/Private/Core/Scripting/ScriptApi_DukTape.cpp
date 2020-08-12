@@ -29,6 +29,7 @@
 #include "Public/Core/Controller/CameraController.h"
 #include "Public/Core/Application/Application.h"
 #include "Public/Core/Application/Components/ScriptComponent.h"
+#include "Public/Core/Collision/CollisionDetection.h"
 
 
 namespace GEngine {
@@ -85,7 +86,7 @@ namespace GEngine {
 		return Texture2D::Create(path, flags);
 	}
 
-	Ref<SubTexture2D> CreateSubTexture2D(Ref<Texture2D> texture, ScriptVector2* coords, ScriptVector2* cellSize, ScriptVector2* spriteSize = nullptr) {
+	Ref<SubTexture2D> CreateSubTexture2D(Ref<Texture2D> texture, Ref<ScriptVector2> coords, Ref<ScriptVector2> cellSize, Ref<ScriptVector2> spriteSize = nullptr) {
 		return SubTexture2D::CreateFromCoords(texture, coords->GetGlm(), cellSize->GetGlm(), (spriteSize != nullptr ? spriteSize->GetGlm() : glm::vec2(1,1) ) );
 	}
 
@@ -146,6 +147,10 @@ namespace GEngine {
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(position->GetGlm());
 	}
 
+	void SetCameraZoom(float d) {
+		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(d);
+	}
+
 	Ref<ScriptComponent> CreateScriptComponent(std::string name) {
 		return CreateGameObject<ScriptComponent>(name.c_str());
 	}
@@ -157,8 +162,11 @@ namespace GEngine {
 			s->AddEntity(e);
 			return e;
 		}
+		GE_CORE_ERROR("FAILED TO ADD ENTITY TO SCENE");
 		return nullptr;
 	}
+
+	
 
 	void ScriptApi_DukTape::Setup()
 	{
@@ -173,6 +181,9 @@ namespace GEngine {
 		dukglue_register_function(m_ctx, CreateScriptObject, "toObject");
 		dukglue_set_base_class<ScriptObject, DukTapeObject>(m_ctx);
 		dukglue_register_function(m_ctx, SetCameraPosition, "SetCameraPosition");
+		dukglue_register_function(m_ctx, SetCameraZoom, "SetCameraZoom");
+		dukglue_register_function(m_ctx, &CollisionDetection::CheckPointComponent, "CheckPoint");
+		
 
 		/************************************************************************/
 		/*                              VECTOR                                  */
@@ -196,6 +207,7 @@ namespace GEngine {
 		dukglue_register_method(m_ctx, &ScriptVector3::Subtract, "Subtract");
 		dukglue_register_method(m_ctx, &ScriptVector3::Multiply, "Multiply");
 		dukglue_register_method(m_ctx, &ScriptVector3::Divide, "Divide");
+		dukglue_register_method(m_ctx, &ScriptVector3::Normalize, "Normalize");
 
 		dukglue_register_function(m_ctx, CreateVector2, "Vector2");
 		dukglue_register_property(m_ctx, &ScriptVector2::GetX, &ScriptVector2::SetX, "x");
@@ -204,6 +216,7 @@ namespace GEngine {
 		dukglue_register_method(m_ctx, &ScriptVector2::Subtract, "Subtract");
 		dukglue_register_method(m_ctx, &ScriptVector2::Multiply, "Multiply");
 		dukglue_register_method(m_ctx, &ScriptVector2::Divide, "Divide");
+		dukglue_register_method(m_ctx, &ScriptVector2::Normalize, "Normalize");
 
 		/************************************************************************/
 		/*                              Input                                  */
@@ -286,6 +299,7 @@ namespace GEngine {
 		dukglue_set_base_class<Component, ScriptableComponent >(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateScriptComponent, "ScriptComponent");
+		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptProperty, "SetProperty");
 		dukglue_set_base_class<Component, ScriptComponent >(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateSpriteComponent, "SpriteComponent");
@@ -321,9 +335,14 @@ namespace GEngine {
 		dukglue_set_base_class<Component, SpriteAnimationComponent >(m_ctx);
 
 
+
 		dukglue_register_function(m_ctx, CreateQuadColliderComponent, "QuadColliderComponent");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetEndCollideFunction_Script, "SetOnCollideEndFunction");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetOnCollideFunction_Script, "SetOnCollideStartFunction");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::SetScale, "SetScale");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::SetPosition, "SetPosition");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::GetPositionScript, "GetPosition");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::GetScaleScript, "GetScale");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::RemoveOnCollideFunction, "RemoveOnCollideFunction");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::RemoveEndCollideFunction, "RemoveEndCollideFunction");
 		dukglue_set_base_class<Component, QuadColliderComponent>(m_ctx);

@@ -4,11 +4,15 @@ namespace GEngine {
 
 	class Collider;
 
+	class QuadColliderComponent;
+
 	class CollisionDetection {
 
 	public:
 		static void CheckCollision();
-
+		static std::vector<Ref<Collider>> CheckPoint(float x, float y);
+		static std::vector<Ref<QuadColliderComponent>> CheckPointComponent(float x, float y);
+			
 		static void AddCollider(Ref<Collider> collider);
 		static void RemoveCollider(Ref<Collider> collider);
 

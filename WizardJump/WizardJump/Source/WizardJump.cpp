@@ -53,12 +53,14 @@ void ExampleLayer::OnEvent(GEngine::Event& event)
 
 WizardJump::WizardJump()
 {
-	this->m_width = 1280;
-	this->m_height = 720;
+#ifdef GE_CONSOLE_APP
+	this->m_width = 540;
+	this->m_height = 960;
 	this->title = "WizardJump";
 
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3)+"WizardJump/Content",
 		GEngine::FileSystem::FilePath("Data/Content.pak"), false);
+#endif
 	GEngine::FileSystem::LoadPak("Data/Content.pak");
 	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"), 
 		GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);

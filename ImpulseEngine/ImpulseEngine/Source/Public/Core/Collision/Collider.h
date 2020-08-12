@@ -27,6 +27,7 @@ namespace GEngine {
 	public:
 		Collider() {};
 		~Collider() {};
+		virtual bool CheckCollisionPoint(float x, float y) { return false; }
 		virtual bool CheckCollision(Ref<Collider> collider) { return false; };
 		
 		inline const EColliderShape GetColliderShape() const { return m_shape; }

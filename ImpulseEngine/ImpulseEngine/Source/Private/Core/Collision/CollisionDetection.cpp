@@ -2,6 +2,7 @@
 
 #include "Public/Core/Collision/CollisionDetection.h"
 #include "Public/Core/Collision/Collider.h"
+#include "Public/Core/Application/Components/QuadColliderComponent.h"
 
 namespace GEngine {
 
@@ -74,6 +75,28 @@ namespace GEngine {
 			}
 		}
 
+	}
+
+	std::vector<Ref<Collider>> CollisionDetection::CheckPoint(float x, float y)
+	{
+		std::vector<Ref<Collider>> cList;
+		for (Ref<Collider> c : s_GameColliders) {
+			if (c->CheckCollisionPoint(x, y)) {
+				cList.push_back(c);
+			}
+		}
+		return cList;
+	}
+
+	std::vector<GEngine::Ref<GEngine::QuadColliderComponent>> CollisionDetection::CheckPointComponent(float x, float y)
+	{
+		std::vector<Ref< QuadColliderComponent>> v;
+		for (Ref<Collider> c : s_GameColliders) {
+			if (c->CheckCollisionPoint(x, y)) {
+				v.push_back(static_pointer_cast<QuadColliderComponent>(c->GetComponent().lock()));
+			}
+		}		
+		return v;
 	}
 
 	void CollisionDetection::AddCollider(Ref<Collider> collider)

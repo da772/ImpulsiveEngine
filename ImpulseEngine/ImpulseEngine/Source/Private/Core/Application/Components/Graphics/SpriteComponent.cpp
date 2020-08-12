@@ -75,16 +75,14 @@ namespace GEngine {
 		return id;
 	}
 
-	long SpriteComponent::CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture)
+	long SpriteComponent::CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture, float tScale)
 	{
-		Ref<Entity> e = entity.lock();
-		return CreateQuad(_pos->GetGlm() + e->GetEntityPosition(), rot + e->GetEntityRotation().z, scale->GetGlm()*e->GetEntityScale(), _color->GetGlm(), texture, 1);
+		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, tScale);
 	}
 
 	long SpriteComponent::CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, float tscale)
 	{
-		Ref<Entity> e = entity.lock();
-		return CreateSubTexturedQuad(_pos->GetGlm() + e->GetEntityPosition(), rot + e->GetEntityRotation().z, scale->GetGlm() * e->GetEntityScale(), _color->GetGlm(), texture, tscale);
+		return CreateSubTexturedQuad(_pos->GetGlm(), rot , scale->GetGlm(), _color->GetGlm(), texture, tscale);
 	}
 
 	void SpriteComponent::SetSubTexture(long id, Ref<SubTexture2D> texture)
@@ -100,6 +98,11 @@ namespace GEngine {
 	void SpriteComponent::SetPositionScript(long id, Ref<ScriptVector2> position)
 	{
 		SetPosition(id, position->GetGlm());
+	}
+
+	void SpriteComponent::SetScaleScript(long id, Ref<ScriptVector2> scale)
+	{
+		s_ShapeFactory->SetScale(id, scale->GetGlm());
 	}
 
 	void SpriteComponent::SetZOrder(long id, float zOrder)
@@ -119,7 +122,8 @@ namespace GEngine {
 
 	long SpriteComponent::CreateSubTexturedQuad(Vector3 _pos, float rot /*= 0*/, Vector3 scale /*= { 1,1,1 }*/, Vector4 _color /*= { 1,1,1,1.f }*/, Ref<SubTexture2D> texture /*= nullptr*/, float textureScale /*= 1*/)
 	{
-		long id = s_ShapeFactory->AddShape(_pos, rot, scale, _color, texture, textureScale);
+		Ref<Entity> e = entity.lock();
+		long id = s_ShapeFactory->AddShape(_pos + e->GetEntityPosition(), rot + e->GetEntityRotation().z, scale * e->GetEntityScale(), _color, texture, textureScale);
 		m_ids.push_back(id);
 		return id;
 	}

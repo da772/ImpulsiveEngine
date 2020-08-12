@@ -1,6 +1,6 @@
 #include "DebugLayer.h"
 
-bool DebugLayer::showLog = true;
+bool DebugLayer::showLog = false;
 
 DebugLayer::DebugLayer() : Layer("DebugLayer")
 {
@@ -10,8 +10,8 @@ DebugLayer::DebugLayer() : Layer("DebugLayer")
 void DebugLayer::OnImGuiRender()
 {
 	//ImGui::PushFont(font2);
-	if (showDock)
-		ShowDock(&showDock);
+	if (showLog)
+		ShowDock(&showLog);
 	if (showLog)
 		GEngine::Log::GetImGuiLog()->Draw("Console Log", &showLog);
 
@@ -24,6 +24,17 @@ void DebugLayer::OnEvent(GEngine::Event& event)
 		GEngine::KeyPressedEvent& e = (GEngine::KeyPressedEvent&)event;
 		if (e.GetKeyCode() == GE_KEY_TILDE) {
 			showLog = !showLog;
+		}
+		if (e.GetKeyCode() == GE_KEY_R) {
+			if (GEngine::Input::IsKeyPressed(GE_KEY_LEFT_CONTROL)) {
+				GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Content",
+					GEngine::FileSystem::FilePath("Data/Content.pak"), false);
+				GEngine::FileSystem::LoadPak("Data/Content.pak");
+				GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"),
+					GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);
+				GE_LOG_DEBUG("Refreshing Pak File");
+				GEngine::SceneManager::SetCurrentScene("splashScreen");
+			}
 		}
 	}	
 }
@@ -77,7 +88,7 @@ void DebugLayer::ShowDock(bool p_open)
 		if (ImGui::BeginMenu("Editor"))
 		{
 
-			if (ImGui::MenuItem("Refresh Assets", "", false)) {
+			if (ImGui::MenuItem("Refresh Assets", "CTRL-R", false)) {
 				GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Content",
 					GEngine::FileSystem::FilePath("Data/Content.pak"), false);
 				GEngine::FileSystem::LoadPak("Data/Content.pak");

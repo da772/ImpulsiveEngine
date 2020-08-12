@@ -45,7 +45,7 @@ public:
 	inline void OnBegin() override
 	{
 		Setup();
-
+#ifdef GE_MOBILE_APP
 		GEngine::AdManager::SetUserId("This Is My User ID!");
 #ifdef GE_PLATFORM_ANDROID
 
@@ -63,7 +63,6 @@ public:
 		GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/5486087868");
 
 #endif
-#ifdef GE_MOBILE_APP
 
 		GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); GEngine::AdManager::ShowRewardAd(); },
 			[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
@@ -111,13 +110,14 @@ private:
 	inline void Setup() {
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
+		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
 		m_CameraController->SetPosition({ 0,0,0 });
 		m_CameraController->SetRotation({ 0,0,0 });
 
 		mainEntity = GEngine::CreateGameObject<GEngine::Entity>();
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 		GEngine::Ref<GEngine::Entity> e = GEngine::CreateGameObject<GEngine::Entity>();
-		e->AddComponent(GEngine::CreateGameObject<GEngine::ScriptComponent>("Content/Scripts/TestComponent.js"));
+		e->AddComponent(GEngine::CreateGameObject<GEngine::ScriptComponent>("Content/Scripts/GameManager.js"));
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
 		eFPS->AddComponent(FPSuiComponent);
 		AddEntity(e);

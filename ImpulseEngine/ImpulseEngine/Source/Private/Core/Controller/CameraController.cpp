@@ -35,7 +35,6 @@ namespace GEngine {
 	bool Orthographic_CameraController::OnCameraZoom(float x, float y, float amt)
 	{
 		m_ZoomLevel = glm::clamp(m_ZoomLevel - (y*amt), 0.1f, 100.f);
-		GE_CORE_DEBUG("ZOOM LEVEL: {0}", m_ZoomLevel);
 		m_Camera->SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}

@@ -72,10 +72,16 @@ namespace GEngine {
 
 	}
 
+	void ScriptComponent::SetScriptProperty(std::string name, Ref<ScriptObject> value)
+	{
+		//if (m_obj != nullptr)
+			//m_obj->SetScriptProperty(name.c_str(), value);
+	}
+
 	void ScriptComponent::OnBegin()
 	{
 		//if (m_begin != nullptr && m_begin->GetType() == FUNCTION) {
-			if (m_obj->CallMethod("OnBegin") == nullptr) {
+			if (m_obj != nullptr && m_obj->CallMethod("OnBegin") == nullptr) {
 				GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(m_filePath));
 			}
 		//}
@@ -84,7 +90,7 @@ namespace GEngine {
 	void ScriptComponent::OnEnd()
 	{
 		//if (m_end != nullptr && m_end->GetType() == FUNCTION) {
-			if (m_obj->CallMethod("OnEnd") == nullptr) {
+			if (m_obj != nullptr && m_obj->CallMethod("OnEnd") == nullptr) {
 				GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(m_filePath));
 			}
 		//}
@@ -93,7 +99,7 @@ namespace GEngine {
 
 	void ScriptComponent::OnUpdate(Timestep timestep)
 	{
-		if (m_scriptableComponent->DoesUpdate() && !m_invalidUpdate) {
+		if (m_obj != nullptr && m_scriptableComponent->DoesUpdate() && !m_invalidUpdate) {
 			if (m_obj->CallMethod<double>("OnUpdate", timestep.GetSeconds()) == nullptr) {
 				m_invalidUpdate = true;
 				GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(m_filePath));

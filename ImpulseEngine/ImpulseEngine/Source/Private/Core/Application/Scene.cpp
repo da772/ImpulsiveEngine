@@ -62,10 +62,10 @@ namespace GEngine {
 		if (!b_loaded)
 			Load();
 		OnBegin();
+		b_init = true;
 		for (std::pair<u64, Ref<Entity>> e : entities) {
 			e.second->Begin();
 		}
-		b_init = true;
 	}
 
 	void Scene::Update(Timestep timestep)
