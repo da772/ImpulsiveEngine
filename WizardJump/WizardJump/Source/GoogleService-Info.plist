@@ -32,5 +32,7 @@
 	<string>1:1082208605879:ios:3bc840c45bb7c31dc75f32</string>
 	<key>DATABASE_URL</key>
 	<string>https://wizardjump-59fca.firebaseio.com</string>
+	<key>ADMOB_APP_ID</key>
+	<string>ca-app-pub-4619437690188394~6799169535</string>
 </dict>
 </plist>

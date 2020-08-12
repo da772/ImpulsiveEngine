@@ -58,6 +58,8 @@ public:
 #endif
 #ifdef GE_PLATFORM_IOS
 		GEngine::AdManager::SetAdId("ca-app-pub-4619437690188394~6799169535");
+        // Google Test Id
+        //GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
 		GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/5486087868");
 
 #endif
