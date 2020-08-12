@@ -13,6 +13,7 @@ namespace GEngine {
 		ScriptComponent(const char* script);
 		virtual ~ScriptComponent();
 		virtual void SetEntity(Weak<Entity>  e) override;
+		void SetScriptProperty(std::string name, Ref<ScriptObject> value);
 		
 
 	protected:

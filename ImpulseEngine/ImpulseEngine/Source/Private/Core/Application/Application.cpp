@@ -231,6 +231,7 @@ namespace GEngine {
 			GE_PROFILE_TIMER("Application:OnRender", &profile["OnRender"]);
 			m_Window->OnUpdate(false);
 		}
+		
 		{
 			CollisionDetection::CheckCollision();
 		}
@@ -277,6 +278,7 @@ namespace GEngine {
 				}
                
 			}
+			
 			
 		}
 	

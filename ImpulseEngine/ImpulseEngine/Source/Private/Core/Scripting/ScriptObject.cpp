@@ -11,6 +11,7 @@
 namespace GEngine {
 
 
+
 	std::string ScriptObject::GetError()
 	{
 		std::string s = ScriptObject::s_ErrorStack.front();

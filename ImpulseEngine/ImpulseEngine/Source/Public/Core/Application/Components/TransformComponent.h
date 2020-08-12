@@ -25,8 +25,8 @@ namespace GEngine {
             void SetScale(const Vector3& scale);
 
         private:
-            Vector3 position = Vector3();
-            Vector3 rotation = Vector3();
+            Vector3 position = Vector3(0);
+            Vector3 rotation = Vector3(0);
             Vector3 scale = Vector3(1);
 
 

@@ -29,10 +29,8 @@ namespace GEngine {
 	void QuadColliderComponent::OnBegin()
 	{
 		Ref<Entity> e = entity.lock();
-		m_position = glm::vec2(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y);
-		m_scale = glm::vec2(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y);
-		m_rotation = m_rotation + e->GetEntityRotation().z;
-		m_collider = make_shared<Collider2D>(m_position, m_scale, m_rotation);
+		m_collider = make_shared<Collider2D>(glm::vec2(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y),
+			glm::vec2(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y), m_rotation + e->GetEntityRotation().z);
 		m_collider->SetColliderShape(Quad);
 		m_collider->SetColliderLayer(Game);
 		m_collider->SetColliderType(m_dynamic ? Dynamic : Static);
@@ -59,7 +57,41 @@ namespace GEngine {
 
 	void QuadColliderComponent::OnUpdate(Timestep ts)
 	{
-		Renderer::DrawCube(glm::vec3(m_position.x, m_position.y, 1e6), glm::vec3(.25, .25, 1), glm::vec4(1, 0, 1, 1));
+		//Renderer::DrawCube(glm::vec3(m_position.x, m_position.y, 1e6), glm::vec3(.25, .25, 1), glm::vec4(1, 0, 1, 1));
+	}
+
+	void QuadColliderComponent::SetPosition(float x, float y)
+	{
+		Ref<Entity> e = entity.lock();
+		m_position = glm::vec2(x + e->GetEntityPosition().x, y + e->GetEntityPosition().y);
+		m_collider->SetPosition(glm::vec3(m_position.x, m_position.y, 1));
+	}
+
+	void QuadColliderComponent::SetScale(float x, float y)
+	{
+		Ref<Entity> e = entity.lock();
+		m_scale = glm::vec2(x * e->GetEntityScale().x, y * e->GetEntityScale().y);
+		m_collider->SetScale(glm::vec3(m_scale.x, m_scale.y,1));
+	}
+
+	glm::vec2 QuadColliderComponent::GetPosition()
+	{
+		return m_position;
+	}
+
+	glm::vec2 QuadColliderComponent::GetScale()
+	{
+		return m_scale;
+	}
+
+	Ref<GEngine::ScriptVector2> QuadColliderComponent::GetPositionScript()
+	{
+		return make_unique<ScriptVector2>(GetPosition());
+	}
+
+	Ref<ScriptVector2> QuadColliderComponent::GetScaleScript()
+	{
+		return make_unique<ScriptVector2>(GetScale());
 	}
 
 	void QuadColliderComponent::SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc)
@@ -97,16 +129,16 @@ namespace GEngine {
 		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
 			if (IsInitialized()) {
 				glm::vec3 pos = glm::vec3(m_position.x, m_position.y, 1);
-				pos = pos - transData.position + transform->GetPosition();
-				m_position = glm::vec2(pos.x, pos.y);
+				pos = pos + transform->GetPosition();
 				m_collider->SetPosition(pos);
 			
 				glm::vec3 scale = glm::vec3(m_scale.x, m_scale.y, 1);
-				scale = scale - transData.scale + transform->GetScale();
+				scale = scale * transform->GetScale();
 				m_scale = glm::vec2(scale.x, scale.y);
+				m_collider->SetScale(scale);
 
 				glm::vec3 rotation = glm::vec3(0, 0, m_rotation);
-				rotation = rotation - transData.rotation + transData.rotation;
+				rotation = rotation + transData.rotation;
 				rotation.x = 0;
 				rotation.y = 0;
 				m_rotation = rotation.z;

@@ -22,7 +22,7 @@ namespace GEngine {
 		long CreateQuad(Vector3 _pos, float rot = 0, Vector3 scale = { 1,1,1 }, Vector4 _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, float textureScale = 1);
 
 
-		long CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture = nullptr);
+		long CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture = nullptr, float tScale = 1);
 
 
 		long CreateSubTexturedQuad(Vector3 _pos, float rot, Vector3 scale, Vector4 _color, Ref<SubTexture2D> texture, float textureScale = 1.f);
@@ -33,6 +33,7 @@ namespace GEngine {
 		void SetSubTexture(long id, Ref<SubTexture2D> texture);
 		void SetPosition(long id, glm::vec2 position);
 		void SetPositionScript(long id, Ref<ScriptVector2> position);
+		void SetScaleScript(long id, Ref<ScriptVector2> scale);
 		void SetZOrder(long id, float zOrder);
 		void SetQuadColor(long id, glm::vec4 color);
 		void SetQuadColorScript(long id, Ref<ScriptVector4> color);

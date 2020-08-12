@@ -67,17 +67,17 @@ namespace GEngine {
 		inline float GetZ() { return z; }
 		inline float GetW() { return w; }
 
-		inline ScriptVector4* Subtract(ScriptVector4* p) {
-			return new ScriptVector4(x - p->x, y - p->y, z - p->z, w-p->w);
+		inline Ref<ScriptVector4> Subtract(Ref<ScriptVector4> p) {
+			return make_shared<ScriptVector4>(x - p->x, y - p->y, z - p->z, w-p->w);
 		}
-		inline ScriptVector4* Add(ScriptVector4* p) {
-			return new ScriptVector4(x + p->x, y + p->y, z + p->z, w+p->w);
+		inline Ref<ScriptVector4> Add(Ref<ScriptVector4> p) {
+			return make_shared<ScriptVector4>(x + p->x, y + p->y, z + p->z, w+p->w);
 		}
-		inline ScriptVector4* Multiply(ScriptVector4* p) {
-			return new ScriptVector4(x * p->x, y * p->y, z * p->z, w*p->w);
+		inline Ref<ScriptVector4> Multiply(Ref<ScriptVector4> p) {
+			return make_shared<ScriptVector4>(x * p->x, y * p->y, z * p->z, w*p->w);
 		}
-		inline ScriptVector4* Divide(ScriptVector4* p) {
-			return new ScriptVector4(x / p->x, y / p->y, z / p->z, w/p->w);
+		inline Ref<ScriptVector4> Divide(Ref<ScriptVector4> p) {
+			return make_shared<ScriptVector4>(x / p->x, y / p->y, z / p->z, w/p->w);
 		}
 		
 		inline glm::vec4 GetGlm() {
@@ -102,17 +102,23 @@ namespace GEngine {
 		inline float GetY() { return y; }
 		inline float GetZ() { return z; }
 
-		inline ScriptVector3* Subtract(ScriptVector3* p) {
-			return new ScriptVector3(x - p->x, y - p->y, z - p->z);
+		inline Ref<ScriptVector3> Subtract(Ref<ScriptVector3> p) {
+			return make_shared<ScriptVector3>(x - p->x, y - p->y, z - p->z);
 		}
-		inline ScriptVector3* Add(ScriptVector3* p) {
-			return new ScriptVector3(x + p->x, y + p->y, z + p->z);
+		inline Ref<ScriptVector3> Add(Ref<ScriptVector3> p) {
+			return make_shared<ScriptVector3>(x + p->x, y + p->y, z + p->z);
 		}
-		inline ScriptVector3* Multiply(ScriptVector3* p) {
-			return new ScriptVector3(x * p->x, y * p->y, z * p->z);
+		inline Ref<ScriptVector3> Multiply(Ref<ScriptVector3> p) {
+			return make_shared<ScriptVector3>(x * p->x, y * p->y, z * p->z);
 		}
-		inline ScriptVector3* Divide(ScriptVector3* p) {
-			return new ScriptVector3(x / p->x, y / p->y, z / p->z);
+		inline Ref<ScriptVector3> Divide(Ref<ScriptVector3> p) {
+			return make_shared<ScriptVector3>(x / p->x, y / p->y, z / p->z);
+		}
+
+		inline Ref<ScriptVector3> Normalize() {
+			float v = sqrt((x * x + y * y + z*z));
+			return make_shared<ScriptVector3>(glm::vec3(x / v, y / v, z/v));
+			
 		}
 
 		inline glm::vec3 GetGlm() {
@@ -135,17 +141,22 @@ namespace GEngine {
 		inline float GetX() { return x; }
 		inline float GetY() { return y; }
 
-		inline ScriptVector2* Subtract(ScriptVector2* p) {
-			return new ScriptVector2(x - p->x, y - p->y);
+		inline Ref<ScriptVector2> Subtract(Ref<ScriptVector2> p) {
+			return make_shared<ScriptVector2>(x - p->x, y - p->y);
 		}
-		inline ScriptVector2* Add(ScriptVector2* p) {
-			return new ScriptVector2(x + p->x, y + p->y);
+		inline Ref<ScriptVector2> Add(Ref<ScriptVector2> p) {
+			return make_shared<ScriptVector2>(x + p->x, y + p->y);
 		}
-		inline ScriptVector2* Multiply(ScriptVector2* p) {
-			return new ScriptVector2(x * p->x, y * p->y);
+		inline Ref<ScriptVector2> Multiply(Ref<ScriptVector2> p) {
+			return make_shared<ScriptVector2>(x * p->x, y * p->y);
 		}
-		inline ScriptVector2* Divide(ScriptVector2* p) {
-			return new ScriptVector2(x / p->x, y / p->y);
+		inline Ref<ScriptVector2> Divide(Ref<ScriptVector2> p) {
+			return make_shared<ScriptVector2>(x / p->x, y / p->y);
+		}
+
+		inline Ref<ScriptVector2> Normalize() {
+			float v = sqrt((x * x + y * y));
+			return make_shared<ScriptVector2>(glm::vec2(x/v,y/v));
 		}
 
 		inline glm::vec2 GetGlm() {

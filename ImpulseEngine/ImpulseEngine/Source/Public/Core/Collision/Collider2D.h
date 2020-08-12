@@ -9,11 +9,13 @@ namespace GEngine {
 	public:
 		Collider2D(glm::vec2 position, glm::vec2 scale, float rotation);
 		~Collider2D() {};
+		virtual bool CheckCollisionPoint(float x, float y) override;
 		virtual bool CheckCollision(Ref<Collider> collider) override; 
 
 
 	protected:
 		bool AABBCheck(Ref<Collider2D> collider);
+		bool AABBPointCheck(float x, float y);
 
 
 

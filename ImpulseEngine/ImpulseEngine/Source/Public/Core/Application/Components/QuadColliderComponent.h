@@ -6,6 +6,7 @@ namespace GEngine {
 
 	class Collider2D;
 	class ScriptObject;
+	struct ScriptVector2;
 
 	class QuadColliderComponent : public Component {
 	public:
@@ -19,6 +20,15 @@ namespace GEngine {
 		virtual void OnEnd() override;
 
 		virtual void OnUpdate(Timestep ts) override;
+
+		void SetPosition(float x, float y);
+		void SetScale(float x, float y);
+
+		glm::vec2 GetPosition();
+		glm::vec2 GetScale();
+
+		Ref<ScriptVector2> GetPositionScript();
+		Ref<ScriptVector2> GetScaleScript();
 		
 		void SetDynamic(bool b);
 
