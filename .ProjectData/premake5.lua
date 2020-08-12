@@ -136,7 +136,7 @@ project "sandbox"
 			["ARCHS"] = "$(ARCHS_STANDARD)",
 			["TARGETED_DEVICE_FAMILY"] = "1,2",
 			["ASSETCATALOG_COMPILER_APPICON_NAME"] = "AppIcon",
-			["INFOPLIST_FILE"] = "%{prj.location}/%{prj.name}/Source/iOS/Info.plist"
+			["IPHONEOS_DEPLOYMENT_TARGET"] = "11.0"
 		}
 
 		files 
