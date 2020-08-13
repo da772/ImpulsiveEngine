@@ -3,7 +3,7 @@
 
 namespace GEngine {
 
-	enum EAdPlatforms {
+	enum class EAdPlatforms {
 		None = 0,
 		Firebase = 1
 	};

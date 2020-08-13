@@ -1,7 +1,7 @@
 #pragma once
 namespace GEngine {
 
-	enum ScriptApiType {
+	enum class ScriptApiType {
 		SCRIPT_NONE,
 		SCRIPT_DUKTAPE,
 	};

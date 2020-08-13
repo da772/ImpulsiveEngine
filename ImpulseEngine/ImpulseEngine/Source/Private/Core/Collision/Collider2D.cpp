@@ -24,22 +24,22 @@ namespace GEngine {
 		Ref<Collider2D> _collider = dynamic_pointer_cast<Collider2D>(collider);
 
 		switch (otherShape) {
-			case Quad: {
-				if (shape == Quad) return AABBCheck(_collider);
+			case EColliderShape::Quad: {
+				if (shape == EColliderShape::Quad) return AABBCheck(_collider);
 				break;
 			}
-			case Triangle: {
+			case EColliderShape::Triangle: {
 				GE_CORE_ASSERT(false, "TRIANGLE NOT IMPLEMENTED");
 				break;
 			}
 			
-			case Cirlce: {
+			case EColliderShape::Cirlce: {
 
 				GE_CORE_ASSERT(false, "CIRLCE NOT IMPLEMENTED");
 				break;
 			}
 			
-			case Convex: {
+			case EColliderShape::Convex: {
 				break;
 			}
 			default: {

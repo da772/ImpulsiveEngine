@@ -8,9 +8,9 @@ namespace GEngine {
 	{
 		switch (platform) {
 		
-		case Firebase:
+		case EAdPlatforms::Firebase:
 			return new Firebase_Ads();
-		case None:
+		case EAdPlatforms::None:
 		default:
 			GE_CORE_WARN("AD PLATFORM NOT SPECIFIED!");
 			return nullptr;

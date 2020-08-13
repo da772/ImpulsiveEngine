@@ -48,7 +48,7 @@ namespace GEngine {
             #endif
             case FWindowApi::NONE:
             default:
-                GE_CORE_ASSERT(false, "Window Api invalid on current platform : {0}", Window::s_WindowApi);
+                GE_CORE_ASSERT(false, "Window Api invalid on current platform : {0}",(int) Window::s_WindowApi);
 				return nullptr;
         }
 		

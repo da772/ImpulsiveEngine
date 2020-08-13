@@ -116,7 +116,7 @@ project "sandbox"
 			runtime "Release"
 			optimize "On"
 		filter "configurations:Dist"
-			defines "GE_Dist"
+			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
 
@@ -188,7 +188,7 @@ project "sandbox"
 			optimize "On"
 			
 		filter "configurations:Dist"
-			defines "GE_Dist"
+			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
 	
@@ -242,7 +242,7 @@ project "sandbox"
 			optimize "On"
 			
 		filter "configurations:Dist"
-			defines "GE_Dist"
+			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
 
@@ -364,7 +364,7 @@ project "sandbox"
 			optimize "On"
 			
 		filter "configurations:Dist"
-			defines "GE_Dist"
+			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
 				

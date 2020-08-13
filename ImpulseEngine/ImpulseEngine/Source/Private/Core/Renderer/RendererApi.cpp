@@ -18,12 +18,12 @@ namespace GEngine {
 
 		switch (api) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			return new OpenGL_RendererApi();
 #endif
 
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			return new Vulkan_RendererApi();
 #endif
 

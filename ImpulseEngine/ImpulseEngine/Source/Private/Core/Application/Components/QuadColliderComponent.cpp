@@ -10,6 +10,7 @@
 #include "Public/Core/Physics/PhysicsStructures.h"
 #include "Public/Core/Physics/PhysicsBody.h"
 
+#include "Public/Core/FileSystem/FileSystem.h"
 //Debug
 #include "Public/Core/Renderer/Renderer.h"
 
@@ -41,8 +42,8 @@ namespace GEngine {
 		m_worldRotation = m_rotation + e->GetEntityRotation().z;
 		m_collider = make_shared<Collider2D>(m_worldPosition,
 			m_worldScale, m_worldRotation);
-		m_collider->SetColliderShape(Quad);
-		m_collider->SetColliderLayer(Game);
+		m_collider->SetColliderShape(EColliderShape::Quad);
+		m_collider->SetColliderLayer(EColliderLayer::Game);
 		m_collider->SetColliderType(m_dynamic ? EColliderType::Dynamic : EColliderType::Static);
 		m_collider->SetComponent(static_pointer_cast<Component>(self.lock()));
 		m_collider->SetEntity(static_pointer_cast<Entity>(entity.lock()));
@@ -59,7 +60,7 @@ namespace GEngine {
 		CollisionDetection::AddCollider(m_collider);
 		if (m_physics) {
 			PhysicsInfo info;
-			info.type = m_dynamic ? PHYSICS_Dynamic : PHYSICS_Static;
+			info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Static;
 			info.position = glm::vec2(e->GetEntityPosition().x, e->GetEntityPosition().y);
 			info.rotation = m_worldRotation;
 			info.fixedRotation = true;
@@ -153,7 +154,7 @@ namespace GEngine {
 
 	void QuadColliderComponent::SetOnCollideFunction_Script(Ref<ScriptObject> onColliderFunc)
 	{
-		SetOnCollideFunction([onColliderFunc](Ref<QuadColliderComponent> collider) { onColliderFunc->CallSelf(collider);  });
+		SetOnCollideFunction([onColliderFunc](Ref<QuadColliderComponent> collider) { onColliderFunc->CallSelf(collider); if (ScriptObject::HasError()) { GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(onColliderFunc->GetPath())); }  });
 	}
 
 	void QuadColliderComponent::SetEndCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc)
@@ -163,7 +164,13 @@ namespace GEngine {
 
 	void QuadColliderComponent::SetEndCollideFunction_Script(Ref<ScriptObject> onCollideFunc)
 	{
-		SetEndCollideFunction([onCollideFunc](Ref<QuadColliderComponent> collider) { onCollideFunc->CallSelf(collider);  });
+		SetEndCollideFunction([onCollideFunc](Ref<QuadColliderComponent> collider) {
+			onCollideFunc->CallSelf(collider);
+			if (ScriptObject::HasError())
+			{
+				GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(onCollideFunc->GetPath()));
+			}
+			});
 	}
 
 	void QuadColliderComponent::RemoveOnCollideFunction()
