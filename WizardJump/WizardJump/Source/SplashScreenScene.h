@@ -57,7 +57,7 @@ public:
 		logoEntity->AddComponent(logoComponent);
 		logoEntity->AddComponent(logoAnimation);
 
-		long id = logoComponent->CreateQuad({ 0,0,0 }, { 0 }, { 1.f,1.f,1 }, { 1,1,1,0.f }, texture);
+		long id = logoComponent->CreateQuad({ 0,0,0 }, { 0 }, { .5f,.5f,1 }, { 1,1,1,0.f }, texture);
 		logoComponent->CreateQuad({ 0,0,-1 }, { 0 }, { 2,2,1 }, { .05f,.05f,.05f,1 });
 		
 		logoAnimation->SetFrameAnimation(30, 150, false, [this, id](int frame) {
