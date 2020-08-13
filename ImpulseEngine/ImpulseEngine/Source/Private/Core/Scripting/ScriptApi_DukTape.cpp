@@ -115,7 +115,7 @@ namespace GEngine {
 	}
 
 	Ref<QuadColliderComponent> CreateQuadColliderComponent(bool dyamic, bool physics, Ref<ScriptVector2> position, Ref<ScriptVector2> scale, float rotation) {
-		return GEngine::CreateGameObject<GEngine::QuadColliderComponent>(dyamic, physics, position->GetGlm(), scale->GetGlm(), rotation, dyamic ? 1 : 0);
+		return GEngine::CreateGameObject<GEngine::QuadColliderComponent>(dyamic, physics, position->GetGlm(), scale->GetGlm(), rotation, dyamic ? 1.f : 0.f);
 	}
 
 	Ref<SpriteAnimationComponent> CreateSpriteAnimationComponent() {
@@ -503,19 +503,25 @@ namespace GEngine {
 		}
 #endif
 
-		if (error_name == "Trace") {
-			GE_LOG_TRACE("{0}", duk_to_string(ctx, -1));
-		} else if (error_name == "warn") {
-			GE_LOG_WARN("{0}", duk_to_string(ctx, -1));
-		}
-		else if (error_name == "Error") {
-			GE_LOG_ERROR("{0}", duk_to_string(ctx, -1));
-		}
-		else if (error_name == "debug") {
-			GE_LOG_DEBUG("{0}", duk_to_string(ctx, -1));
-		}
-		else if (error_name == "assert") {
-			GE_CORE_ASSERT(false, duk_to_string(ctx, -1));
+		if (error_name != NULL) {
+			if (!strcmp(error_name, "Trace")) {
+				GE_LOG_TRACE("{0}", duk_to_string(ctx, -1));
+			}
+			else if (!strcmp(error_name, "warn")) {
+				GE_LOG_WARN("{0}", duk_to_string(ctx, -1));
+			}
+			else if (!strcmp(error_name, "Error")) {
+				GE_LOG_ERROR("{0}", duk_to_string(ctx, -1));
+			}
+			else if (!strcmp(error_name, "debug")) {
+				GE_LOG_DEBUG("{0}", duk_to_string(ctx, -1));
+			}
+			else if (!strcmp(error_name, "assert")) {
+				GE_CORE_ASSERT(false, duk_to_string(ctx, -1));
+			}
+			else {
+				GE_LOG_INFO("{0}", duk_to_string(ctx, -1));
+			}
 		}
 		else {
 			GE_LOG_INFO("{0}", duk_to_string(ctx, -1));

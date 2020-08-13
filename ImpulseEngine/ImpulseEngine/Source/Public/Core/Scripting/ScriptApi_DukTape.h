@@ -45,14 +45,14 @@ namespace GEngine {
 			DukValue val = *(DukValue*)obj;
 			DukValue ret = dukglue_pcall_method<DukValue>(m_ctx, val, method_name, std::forward<ArgTs>(args)...);
 
-			return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(ret));
+			return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path.c_str(), ret));
 		}
 
 		template <typename... ArgTs>
 		Ref<ScriptObject> ObjectCallSelf(void* obj, ArgTs... args) {
 			DukValue val = *(DukValue*)obj;
 			DukValue ret = dukglue_pcall<DukValue>(m_ctx, val, std::forward<ArgTs>(args)...);
-			return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(ret));
+			return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path.c_str(),ret));
 		}
 
 		
