@@ -101,15 +101,15 @@ namespace GEngine {
 
 	void CollisionDetection::AddCollider(Ref<Collider> collider)
 	{
-		if (collider->GetColliderLayer() == UI) {
+		if (collider->GetColliderLayer() == EColliderLayer::UI) {
 			s_uiColliders.insert(collider);
-			if (collider->GetColliderType() == Dynamic) {
+			if (collider->GetColliderType() == EColliderType::Dynamic) {
 				s_uiColliders_dynamic.insert(collider);
 			}
 		}
-		else if (collider->GetColliderLayer() == Game) {
+		else if (collider->GetColliderLayer() == EColliderLayer::Game) {
 			s_GameColliders.insert(collider);
-			if (collider->GetColliderType() == Dynamic) {
+			if (collider->GetColliderType() == EColliderType::Dynamic) {
 				s_GameColliders_dynamic.insert(collider);
 			}
 		}
@@ -117,13 +117,13 @@ namespace GEngine {
 
 	void CollisionDetection::RemoveCollider(Ref<Collider> collider)
 	{
-		std::unordered_set<Ref<Collider>>::iterator it = collider->GetColliderLayer() == UI ? s_uiColliders.find(collider)  : s_GameColliders.find(collider);
+		std::unordered_set<Ref<Collider>>::iterator it = collider->GetColliderLayer() == EColliderLayer::UI ? s_uiColliders.find(collider)  : s_GameColliders.find(collider);
 
-		if (it != ( collider->GetColliderLayer() == UI ? s_uiColliders.end() : s_GameColliders.end())) {
-			collider->GetColliderLayer() == UI ? s_uiColliders.erase(it) : s_GameColliders.erase(it);
-			if (collider->GetColliderType() == Dynamic) {
-				std::unordered_set<Ref<Collider>>::iterator it2 = collider->GetColliderLayer() == UI ? s_uiColliders_dynamic.find(collider) : s_GameColliders_dynamic.find(collider);
-				collider->GetColliderLayer() == UI ? s_uiColliders_dynamic.erase(it2) : s_GameColliders_dynamic.erase(it2);
+		if (it != ( collider->GetColliderLayer() == EColliderLayer::UI ? s_uiColliders.end() : s_GameColliders.end())) {
+			collider->GetColliderLayer() == EColliderLayer::UI ? s_uiColliders.erase(it) : s_GameColliders.erase(it);
+			if (collider->GetColliderType() == EColliderType::Dynamic) {
+				std::unordered_set<Ref<Collider>>::iterator it2 = collider->GetColliderLayer() == EColliderLayer::UI ? s_uiColliders_dynamic.find(collider) : s_GameColliders_dynamic.find(collider);
+				collider->GetColliderLayer() == EColliderLayer::UI ? s_uiColliders_dynamic.erase(it2) : s_GameColliders_dynamic.erase(it2);
 			}
 		}
 

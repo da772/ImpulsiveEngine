@@ -22,7 +22,7 @@ namespace GEngine {
 
 		switch (GraphicsContext::GetGraphicsApi()) {
 
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 			f = Ref<Font>(new OpenGL_Font(path, size));
 			f->self = f;

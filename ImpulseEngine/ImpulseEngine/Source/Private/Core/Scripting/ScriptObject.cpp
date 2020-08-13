@@ -24,9 +24,14 @@ namespace GEngine {
 		ScriptObject::s_ErrorStack.push(s);
 	}
 
+	bool ScriptObject::HasError()
+	{
+		return ScriptObject::s_ErrorStack.size() > 0;
+	}
+
 	std::queue<std::string> ScriptObject::s_ErrorStack;
 
-	DukTapeObject::DukTapeObject(DukValue val) : m_value(val)
+	DukTapeObject::DukTapeObject(const char* path, DukValue val) : ScriptObject(path), m_value(val)
 	{
 		m_nativeObj = (void*)&m_value;
 	}

@@ -7,14 +7,14 @@
 #include <box2d/b2_body.h>
 #include <box2d/b2_world.h>
 #include <box2d/b2_polygon_shape.h>
+#include <box2d/b2_fixture.h>
 
 
 
 namespace GEngine {
 
-	PhysicsBody_box2d::PhysicsBody_box2d(void* nativeBody)
+	PhysicsBody_box2d::PhysicsBody_box2d(void* nativeBody) : m_fixture(nullptr), m_body((b2Body*)nativeBody)
 	{
-		m_body = (b2Body*)nativeBody;
 		const b2Vec2& pos = m_body->GetPosition();
 		m_position = { pos.x* GE_PHYSICS_SCALAR, pos.y* GE_PHYSICS_SCALAR };
 		m_rotation = m_body->GetAngle();
@@ -24,9 +24,9 @@ namespace GEngine {
 	{
 		GE_CORE_DEBUG("DESTROYING PHYSICS BOX2D");
 		b2World* world = (b2World*)Physics::GetWorld();
-		if (world != nullptr) {
+		if (world != nullptr) {\
+			m_body->DestroyFixture(m_fixture);
 			world->DestroyBody(m_body);
-			m_body = nullptr;
 		}
 	}
 
@@ -104,9 +104,11 @@ namespace GEngine {
 
 	void PhysicsBody_box2d::SetQuad(const glm::vec2& size, const glm::vec2& offset, float mass)
 	{
+		GE_CORE_ASSERT(!m_fixture, "FIXTURE ALREADY CREATED");
 		b2PolygonShape shape;
 		shape.SetAsBox(size.x * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, size.y * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, b2Vec2(offset.x, offset.y), GetRotation());
-		m_body->CreateFixture(&shape, mass);
+		m_fixture = m_body->CreateFixture(&shape, mass);
+		m_fixture->SetRestitution(.5f);
 	}
 
 

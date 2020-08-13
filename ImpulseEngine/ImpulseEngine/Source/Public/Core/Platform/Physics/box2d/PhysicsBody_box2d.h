@@ -6,6 +6,7 @@
 #include "Public/Core/Physics/PhysicsStructures.h"
 
 class b2Body;
+class b2Fixture;
 
 namespace GEngine {
 
@@ -35,7 +36,8 @@ namespace GEngine {
 		virtual void SetQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0) override;
 
 	protected:
-		b2Body* m_body;
+		b2Body* m_body = nullptr;
+		b2Fixture* m_fixture = nullptr;
 
 
 

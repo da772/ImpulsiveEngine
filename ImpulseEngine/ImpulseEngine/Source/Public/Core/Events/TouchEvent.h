@@ -34,7 +34,7 @@ namespace GEngine {
 		}
 
 		EVENT_CLASS_TYPE(TouchPressed)
-			EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+			EVENT_CLASS_CATEGORY(EventCategory::EventCategoryMouse | EventCategory::EventCategoryInput)
 	
 	};
 
@@ -54,7 +54,7 @@ namespace GEngine {
 		}
 
 		EVENT_CLASS_TYPE(TouchPressed)
-			EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+		EVENT_CLASS_CATEGORY(EventCategory::EventCategoryMouse | EventCategory::EventCategoryInput)
 	};
 
 	class GE_API TouchReleasedEvent : public TouchEvent
@@ -73,7 +73,7 @@ namespace GEngine {
 		}
 
 		EVENT_CLASS_TYPE(TouchReleased)
-			EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+		EVENT_CLASS_CATEGORY(EventCategory::EventCategoryMouse | EventCategory::EventCategoryInput)
 
 	};
 

@@ -36,16 +36,19 @@ namespace GEngine {
 
 	Ref<ScriptObject> ScriptApi_DukTape::_copyObj;
 
+	unordered_map<duk_context*, ScriptApi_DukTape*> ScriptApi_DukTape::s_contextMap;
+
 	ScriptApi_DukTape::ScriptApi_DukTape()
 	{
 		CreateContext();
+		s_contextMap[m_ctx] = this;
 		Setup();
 	}
 
 	ScriptApi_DukTape::~ScriptApi_DukTape()
 	{
+		s_contextMap.erase(m_ctx);
 		DestroyContext();
-		
 	}
 
 	void ScriptApi_DukTape::CreateContext()
@@ -70,7 +73,7 @@ namespace GEngine {
 		if (Application::GetApp() != nullptr && Application::GetApp()->IsRunning()) {
 			ThreadPool::AddEndFrameFunction([v]() {
 				duk_destroy_heap(v);
-				});
+			});
 		}
 		else {
 			duk_destroy_heap(v);
@@ -132,7 +135,8 @@ namespace GEngine {
 	}
 
 	Ref<ScriptObject> CreateScriptObject(DukValue d) {
-		return make_shared<DukTapeObject>(d);
+		
+		return make_shared<DukTapeObject>(ScriptApi_DukTape::s_contextMap[d.context()]->GetPath() ,d);
 	}
 
 	Ref<ParticleSystem2DComponent> CreateParticleComponent(Ref<ParticleProps> props) {
@@ -380,9 +384,10 @@ namespace GEngine {
 	Ref<ScriptObject> ScriptApi_DukTape::CreateObject(std::string script, std::string name)
 	{
 		try {
+			m_path = name;
 			uint32_t hash = std::hash<std::string>{}(script);
 			DukValue obj = dukglue_peval<DukValue>(m_ctx, script.c_str());
-			Ref<ScriptObject> scr = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(obj));
+			Ref<ScriptObject> scr = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(name.c_str(), obj));
 			return scr;
 		}
 		catch (std::exception& e) {

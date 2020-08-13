@@ -47,7 +47,7 @@ namespace GEngine {
 
 
 	protected:
-		PhysicsInfoType m_type = PHYSICS_Static;
+		PhysicsInfoType m_type = PhysicsInfoType::PHYSICS_Static;
 		glm::vec2 m_position = glm::vec2(0);;
 		float m_rotation = 0.f;
 		glm::vec2 m_linearVelocity = glm::vec2(0, 0);

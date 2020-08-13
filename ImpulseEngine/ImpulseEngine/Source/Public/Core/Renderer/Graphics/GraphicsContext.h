@@ -18,7 +18,7 @@
 namespace GEngine {
 
 
-	namespace GraphicsApi { enum FGraphicsApi : uint8_t { NONE = 0, OPENGL, DIRECTX12, DIRECTX11, VULKAN }; }
+	namespace GraphicsApi { enum class FGraphicsApi : uint8_t { NONE = 0, OPENGL, DIRECTX12, DIRECTX11, VULKAN }; }
 
 	using namespace GraphicsApi;
 

@@ -3,13 +3,13 @@
 namespace GEngine {
 
 
-	enum PhysicsInfoType {
+	enum class PhysicsInfoType {
 		PHYSICS_Static = 0,
 		PHYSICS_Kinematic,
 		PHYSICS_Dynamic
 	};
 
-	enum PhysicsShapes {
+	enum class PhysicsShapes {
 		PHYSICS_Box = 0,
 		PHYSICS_Cirlce
 	};
@@ -17,7 +17,7 @@ namespace GEngine {
 
 	struct PhysicsInfo {
 
-		PhysicsInfoType type = PHYSICS_Static;
+		PhysicsInfoType type = PhysicsInfoType::PHYSICS_Static;
 		glm::vec2 position = glm::vec2(0,0);
 		float rotation = 0;
 		glm::vec2 linearVelocity = glm::vec2(0,0);

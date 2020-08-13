@@ -38,19 +38,19 @@ namespace GEngine {
 
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			t = Ref<Texture2D>(new OpenGL_Texture2D(path, flags));
 			break;
 #endif
 
 
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			t = Ref<Texture2D>(new Vulkan_Texture2D(path, flags));
 			break;
 #endif
 		default:
-			GE_CORE_ASSERT(false, "Invalid Texture 2D for current graphics api: {0}", GraphicsContext::GetGraphicsApi());
+			GE_CORE_ASSERT(false, "Invalid Texture 2D for current graphics api: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
 		}
 		t->name = path;
@@ -73,17 +73,17 @@ namespace GEngine {
 
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			t = Ref<OpenGL_Texture2D>(new OpenGL_Texture2D(width, height));
 			break;
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			t = Ref<Vulkan_Texture2D>(new Vulkan_Texture2D(width, height));
 			break;
 #endif
 		default:
-			GE_CORE_ASSERT(false, "Invalid Texture 2D for current graphics api: {0}", GraphicsContext::GetGraphicsApi());
+			GE_CORE_ASSERT(false, "Invalid Texture 2D for current graphics api: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
 		}
 

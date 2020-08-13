@@ -34,16 +34,16 @@ namespace GEngine {
 
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			s = make_unique<OpenGL_Shader>(name, vertexSrc, fragmentSrc, files);
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			s = make_unique<Vulkan_Shader>(name, vertexSrc, fragmentSrc, files);
 #endif
 
 		default:
-			GE_CORE_ASSERT(false, "Undefined Shader for current Graphics API: {0}", GraphicsContext::GetGraphicsApi());
+			GE_CORE_ASSERT(false, "Undefined Shader for current Graphics API: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
 
 		}
@@ -65,17 +65,17 @@ namespace GEngine {
 
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			s = make_unique<OpenGL_Shader>(filePath);
 			break;
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			s = make_unique<Vulkan_Shader>(filePath);
 			break;
 #endif
 		default:
-			GE_CORE_ASSERT(false, "Undefined Shader for current Graphics API: {0}", GraphicsContext::GetGraphicsApi());
+			GE_CORE_ASSERT(false, "Undefined Shader for current Graphics API: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
 		}
 

@@ -25,7 +25,7 @@
 namespace GEngine {
 
 
-	namespace WindowApi { enum FWindowApi : uint8_t { NONE = 0, GLFW, WIN32API, MOBILE }; }
+	namespace WindowApi { enum class FWindowApi : uint8_t { NONE = 0, GLFW, WIN32API, MOBILE }; }
 
 	using namespace WindowApi;
 

@@ -23,15 +23,15 @@ namespace GEngine {
 	{
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			return new OpenGL_VertexBuffer(vertices, size);
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			return new Vulkan_VertexBuffer(vertices, size);
 #endif
 			default:
-				GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", GraphicsContext::GetGraphicsApi());
+				GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
 				return nullptr;
 		}
 	}
@@ -40,15 +40,15 @@ namespace GEngine {
 	{
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			return new OpenGL_VertexBuffer(size);
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			//return new Vulkan_VertexBuffer(vertices, size);
 #endif
 		default:
-			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", GraphicsContext::GetGraphicsApi());
+			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
 		}
 	}
@@ -62,16 +62,16 @@ namespace GEngine {
 	{
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL:
 			return new OpenGL_IndexBuffer(indices, count);
 #endif
 
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN:
+		case GraphicsApi::FGraphicsApi::VULKAN:
 			return new Vulkan_IndexBuffer(indices, count);
 #endif
 		default:
-			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", GraphicsContext::GetGraphicsApi());
+			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
 		}
 	}

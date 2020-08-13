@@ -13,7 +13,7 @@ namespace GEngine {
 		: m_ZoomLevel(1.f), m_AspectRatio(aspectRatio)
 	{
 		m_Camera = std::unique_ptr<Orthographic_Camera>(new Orthographic_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel,
-			GraphicsContext::GetGraphicsApi() == GraphicsApi::VULKAN));
+			GraphicsContext::GetGraphicsApi() == GraphicsApi::FGraphicsApi::VULKAN));
 	}
 
 	void Orthographic_CameraController::OnUpdate(Timestep timeStep)

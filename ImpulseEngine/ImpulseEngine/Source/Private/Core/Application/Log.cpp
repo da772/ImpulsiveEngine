@@ -18,6 +18,7 @@ namespace GEngine {
 
 	void Log::Init()
 	{
+#ifndef GE_DIST
 #ifdef GE_PLATFORM_ANDROID
 		sinks.push_back(std::make_shared<spdlog::sinks::android_sink_st>());
 #else
@@ -35,7 +36,7 @@ namespace GEngine {
 
 		s_ClientLogger->set_level(spdlog::level::trace);
 		s_CoreLogger->set_level(spdlog::level::trace);
-		GE_CORE_DEBUG("CREATING APP");
+#endif
 
 	}
 

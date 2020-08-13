@@ -25,17 +25,17 @@ namespace GEngine {
 
 		switch (Window::GetWindowApi()) {
 #ifdef GE_WINDOW_API_GLFW
-		case WindowApi::GLFW:
+		case WindowApi::FWindowApi::GLFW:
 			s_Instance = new GLFW_Input();
 			break;
 #endif
 #ifdef GE_WINDOW_API_MOBILE
-		case WindowApi::MOBILE:
+		case WindowApi::FWindowApi::MOBILE:
 			s_Instance = new Mobile_Input();
 			break;
 #endif
 		default:
-			GE_CORE_ERROR( "Invalid Input for current Window Api: {0}", Window::GetWindowApi());
+			GE_CORE_ERROR( "Invalid Input for current Window Api: {0}", (int)Window::GetWindowApi());
 			break;
 		}
 

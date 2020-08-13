@@ -61,11 +61,32 @@ namespace GEngine {
 			s_GLFWInitialized = true;
 		}
 
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		m_Context = Scope<GraphicsContext>(GraphicsContext::Create((const void*)m_Window));
 
+		
+
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		if (!mode)
+			return;
+
+		int monitorX, monitorY;
+		glfwGetMonitorPos(monitor, &monitorX, &monitorY);
+
+		int windowWidth, windowHeight;
+		glfwGetWindowSize(m_Window, &windowWidth, &windowHeight);
+
+		glfwSetWindowPos(m_Window,
+			monitorX + (mode->width - windowWidth) / 2,
+			monitorY + (mode->height - windowHeight) / 2);
+
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		//SetVSync(true);
+		
+
+
+		
 
 		// Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
@@ -199,7 +220,7 @@ namespace GEngine {
 
 	void GLFW_Window::SetVSync(bool enabled)
 	{
-		if (GraphicsContext::GetGraphicsApi() == GraphicsApi::OPENGL) glfwSwapInterval(enabled);
+		if (GraphicsContext::GetGraphicsApi() == GraphicsApi::FGraphicsApi::OPENGL) glfwSwapInterval(enabled);
 		m_Context->SetVSync(enabled);
 		m_Data.VSync = enabled;
 	}

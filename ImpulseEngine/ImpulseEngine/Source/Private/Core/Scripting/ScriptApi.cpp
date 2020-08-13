@@ -14,12 +14,12 @@ namespace GEngine {
 		Ref<ScriptApi> api;
 		switch (ScriptManager::GetType()) {
 	
-		case SCRIPT_DUKTAPE: {
+		case ScriptApiType::SCRIPT_DUKTAPE: {
 			api = Ref<ScriptApi>(new ScriptApi_DukTape());
 			break;
 		}
 		default:
-		case SCRIPT_NONE:
+		case ScriptApiType::SCRIPT_NONE:
 			GE_CORE_ASSERT(false, "INVALID SCRIPTING API");
 			return nullptr;
 		}

@@ -40,18 +40,18 @@ namespace GEngine {
 		GraphicsContext::s_GraphicsApi = Application::GetApp()->GetGraphicsApi();
 		switch (GraphicsContext::s_GraphicsApi) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::OPENGL: {
+		case GraphicsApi::FGraphicsApi::OPENGL: {
 			return GraphicsContext::_CreateContext<OpenGL_GraphicsContext>(window);
 		}
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
-		case GraphicsApi::VULKAN: {
+		case GraphicsApi::FGraphicsApi::VULKAN: {
 			return GraphicsContext::_CreateContext<Vulkan_GraphicsContext>(window);
 		}
 #endif
 
 		default:
-			GE_CORE_ASSERT("Invalid graphics api for current platform. {0}", GraphicsContext::s_GraphicsApi);
+			GE_CORE_ASSERT("Invalid graphics api for current platform. {0}",(int) GraphicsContext::s_GraphicsApi);
 			return nullptr;
 		}
 

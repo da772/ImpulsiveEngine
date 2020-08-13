@@ -50,7 +50,7 @@ namespace GEngine {
 		if (m_scriptableComponent != nullptr) {
 			std::unordered_map<std::string, Ref<ScriptObject>> m = m_obj->asMap();
 			for (std::pair<std::string, Ref<ScriptObject>> key : m) {
-				if (key.second->GetType() == Script::BUFFER)
+				if (key.second->GetType() == Script::ObjectTypes::BUFFER)
 					m_obj->RemoveProperty(key.first.c_str());
 			}
 			delete m_scriptableComponent;

@@ -9,7 +9,7 @@ namespace GEngine {
 	struct FTouchInfo;
 	struct ScriptVector2;
 	namespace Script {
-		enum ObjectTypes {
+		enum class ObjectTypes {
 			UNDEFINED = 0,
 			NULLREF,
 			BOOLEAN,
@@ -169,7 +169,7 @@ namespace GEngine {
 	class ScriptObject {
 
 	public:
-		ScriptObject() {};
+		ScriptObject(const char* path) : m_path(path) {};
 		virtual ~ScriptObject() {};
 
 		template <typename... ArgTs>
@@ -188,13 +188,14 @@ namespace GEngine {
 		virtual std::unordered_map<std::string, Ref<ScriptObject>> asMap() { return std::unordered_map < std::string,  Ref<ScriptObject >> (); }
 		virtual Ref<ScriptObject> GetProp(const char* name) { return nullptr; };
 		void* GetNativeObject() { return m_nativeObj;  }
-		virtual Script::ObjectTypes GetType() { return Script::UNDEFINED; };
-		inline virtual Script::ObjectTypes GetTypeRaw() { return Script::UNDEFINED; }
-
+		virtual Script::ObjectTypes GetType() { return Script::ObjectTypes::UNDEFINED; };
+		inline virtual Script::ObjectTypes GetTypeRaw() { return Script::ObjectTypes::UNDEFINED; }
+		inline virtual void SetPath(const char* path) { m_path = path; }
+		inline virtual const char* GetPath() { return m_path; }
 		template <class T>
 		bool isClass() {
 			switch (ScriptManager::GetType()) {
-			case SCRIPT_DUKTAPE: {
+			case ScriptApiType::SCRIPT_DUKTAPE: {
 				return (*(DukValue*)m_nativeObj).is_class<T>();
 				break;
 			}
@@ -206,7 +207,7 @@ namespace GEngine {
 		template <class T>
 		inline void SetProperty(const char* name, T val) {
 			switch (ScriptManager::GetType()) {
-			case SCRIPT_DUKTAPE: {
+			case ScriptApiType::SCRIPT_DUKTAPE: {
 				duk_context* c = (*(DukValue*)m_nativeObj).context();
 				(*(DukValue*)m_nativeObj).push();
 				(*(DukValue*)m_nativeObj).prop(name).push();
@@ -221,7 +222,7 @@ namespace GEngine {
 
 		inline void RemoveProperty(const char* name) {
 			switch (ScriptManager::GetType()) {
-			case SCRIPT_DUKTAPE: {
+			case ScriptApiType::SCRIPT_DUKTAPE: {
 				duk_context* c = (*(DukValue*)m_nativeObj).context();
 				(*(DukValue*)m_nativeObj).push();
 				duk_del_prop_string(c, -1, name);
@@ -235,7 +236,7 @@ namespace GEngine {
 
 		inline void RemoveFunction(const char* name) {
 			switch (ScriptManager::GetType()) {
-			case SCRIPT_DUKTAPE: {
+			case ScriptApiType::SCRIPT_DUKTAPE: {
 				duk_context* c = (*(DukValue*)m_nativeObj).context();
 				int prev_top = duk_get_top(c);
 				(*(DukValue*)m_nativeObj).prop(name).push();
@@ -251,7 +252,7 @@ namespace GEngine {
 		template <class T>
 		inline void InvalidateProperty(const char* name) {
 			switch (ScriptManager::GetType()) {
-			case SCRIPT_DUKTAPE: {
+			case ScriptApiType::SCRIPT_DUKTAPE: {
 				duk_context* c = (*(DukValue*)m_nativeObj).context();
 				dukglue_invalidate_object(c, GetProp(name)->asClass<T>());
 				break;
@@ -264,7 +265,7 @@ namespace GEngine {
 		template <class T>
 		T* asClass() {
 			switch (ScriptManager::GetType()) {
-			case SCRIPT_DUKTAPE: {
+			case ScriptApiType::SCRIPT_DUKTAPE: {
 				DukValue val = *(DukValue*)m_nativeObj;
 				bool isClass = val.is_class<T>();
 
@@ -283,6 +284,7 @@ namespace GEngine {
 
 		static std::string GetError();
 		static void AddError(std::string s);
+		static bool HasError();
 
 		//virtual ArgumentType GetType() { return ArgumentType::ARG_FLOAT; };
 		//virtual std::map<std::string, ArgumentType> GetVars() { return std::map<std::string, ArgumentType>(); };
@@ -292,6 +294,7 @@ namespace GEngine {
 	protected:
 		void* m_nativeObj;
 		static std::queue<std::string> s_ErrorStack;
+		const char* m_path;
 
 
 	};
@@ -300,7 +303,7 @@ namespace GEngine {
 	class DukTapeObject : public ScriptObject {
 
 	public:
-		DukTapeObject(DukValue val);
+		DukTapeObject(const char* path, DukValue val);
 		virtual ~DukTapeObject();
 
 		inline virtual std::map<std::string, Script::ObjectTypes> GetVars() { return std::map<std::string, Script::ObjectTypes>(); };
@@ -311,14 +314,14 @@ namespace GEngine {
 		inline virtual bool asBool() override { return m_value.as_bool(); };
 		inline virtual std::string asString() override { return m_value.as_string(); };
 		inline virtual std::string asJSONString() override { return m_value.as_json_string(); };
-		inline virtual Ref<ScriptObject> GetProp(const char* name) { return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_value.prop(name)));  };
+		inline virtual Ref<ScriptObject> GetProp(const char* name) { return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, m_value.prop(name)));  };
 		inline virtual Script::ObjectTypes GetType() override { return m_value.is_function() ? Script::ObjectTypes::FUNCTION : m_value.is_vector() ? Script::ObjectTypes::ARRAY : (Script::ObjectTypes)m_value.type(); }
 		inline virtual Script::ObjectTypes GetTypeRaw() override { return (Script::ObjectTypes)m_value.type(); }
 		inline virtual std::unordered_map<std::string, Ref<ScriptObject>> asMap() override {
 			std::map<std::string, DukValue> m = m_value.as_map();
 			std::unordered_map<std::string, Ref<ScriptObject>> map;
 			for (std::pair<std::string, DukValue> pair : m) {
-				map[pair.first] = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(pair.second));
+				map[pair.first] = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, pair.second));
 			}
 			return map;
 		};
@@ -336,11 +339,11 @@ namespace GEngine {
 	{
 
 		switch (ScriptManager::GetType()) {
-		case SCRIPT_DUKTAPE: {
+		case ScriptApiType::SCRIPT_DUKTAPE: {
 			DukValue val = *(DukValue*)m_nativeObj;
 			try {
 				DukValue ret = dukglue_pcall<DukValue>(val.context(), val, std::forward<ArgTs>(args)...);
-				return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(ret));
+				return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, ret));
 			}
 			catch (std::exception& e) {
 				ScriptObject::AddError(e.what());
@@ -358,17 +361,16 @@ namespace GEngine {
 		GEngine::ScriptObject::CallMethod(const char* method_name, ArgTs... args)
 	{
 		switch (ScriptManager::GetType()) {
-		case SCRIPT_DUKTAPE: {
+		case ScriptApiType::SCRIPT_DUKTAPE: {
 			try {
 				DukValue val = *(DukValue*)m_nativeObj;
 				DukValue ret = dukglue_pcall_method<DukValue>(val.context(), val, method_name, std::forward<ArgTs>(args)...);
-				Ref<ScriptObject> o = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(ret));
-				ret.~DukValue();
+				Ref<ScriptObject> o = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, ret));
 				return o;
-
 			}
 			catch (std::exception& e) {
 				ScriptObject::AddError(e.what());
+				return nullptr;
 			}
 			break;
 		}

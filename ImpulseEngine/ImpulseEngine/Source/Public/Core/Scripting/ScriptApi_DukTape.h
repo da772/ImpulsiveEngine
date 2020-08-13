@@ -16,12 +16,15 @@ namespace GEngine {
 		virtual ~ScriptApi_DukTape();
 
 
+		
+
 		virtual void CreateContext() override;
 		virtual void DestroyContext() override;
 		virtual Ref<ScriptObject> CreateObject(std::string script, std::string name = "") override;
 		virtual const char* CheckScript(std::string script) override;
 		virtual void* GetNativePointer()  override { return (void*)m_ctx; };
 
+		inline const char* GetPath() { return m_path.c_str(); }
 
 		template <class T>
 		T* ObjectToClass(void* obj) {
@@ -52,14 +55,13 @@ namespace GEngine {
 			return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(ret));
 		}
 
-	
-
 		
 		static Ref<ScriptObject> _copyObj;
+		static unordered_map<duk_context*, ScriptApi_DukTape*> s_contextMap;
 	private:
 		duk_context* m_ctx = nullptr;
 		void Setup();
-
+		std::string m_path;
 		
 		void SetupObject();
 		void SetupRequire();

@@ -2,7 +2,7 @@
 
 namespace GEngine {
 
-	enum EColliderShape {
+	enum class EColliderShape {
 		Quad = 0,
 		Triangle,
 		Cirlce,
@@ -10,12 +10,12 @@ namespace GEngine {
 
 	};
 
-	enum EColliderLayer {
+	enum class EColliderLayer {
 		UI = 0,
 		Game
 	};
 
-	enum EColliderType {
+	enum class EColliderType{
 		Static = 0,
 		Dynamic
 	};
