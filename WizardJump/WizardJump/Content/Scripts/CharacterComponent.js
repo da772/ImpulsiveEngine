@@ -43,6 +43,7 @@ self.OnBegin = function () {
                 self.spriteComponent.SetPosition(self.characterSprite, Vector2(.00,0));
                 self.spriteComponent.SetAtlasTexture(self.characterSprite, CreateTexture2DSub(CreateTexture2D("Content/Textures/wizard.png",0), Vector2(frame-1, 0), Vector2(64,74), Vector2(1,1)));  
             } 
+
         }
     ));
 

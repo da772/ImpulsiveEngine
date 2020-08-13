@@ -18,8 +18,7 @@ self.OnBegin = function () {
     }
 
     self.quadCollider.SetOnCollideStartFunction(toObject(function (c) { 
-        console.debug("Collision Start");
-    
+        console.debug("Collision Start");    
     }));
 
     self.quadCollider.SetOnCollideEndFunction(toObject(function (c) { 
