@@ -68,7 +68,7 @@ WizardJump::WizardJump()
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
 
-#if defined(GE_CONSOLE_APP) && !defined(GE_Dist)
+#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
 	EnableImGui(true);
 #else
 	EnableImGui(false);
