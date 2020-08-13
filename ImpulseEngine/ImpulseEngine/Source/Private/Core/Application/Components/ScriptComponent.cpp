@@ -72,11 +72,30 @@ namespace GEngine {
 
 	}
 
-	void ScriptComponent::SetScriptProperty(std::string name, Ref<ScriptObject> value)
+	void ScriptComponent::SetScriptInt(std::string name, int v)
 	{
-		//if (m_obj != nullptr)
-			//m_obj->SetScriptProperty(name.c_str(), value);
+		if (m_obj)
+			m_obj->SetProperty<int>(name.c_str(), v);
 	}
+
+	void ScriptComponent::SetScriptFloat(std::string name, int v)
+	{
+		if (m_obj)
+			m_obj->SetProperty<float>(name.c_str(), v);
+	}
+
+	void ScriptComponent::SetScriptString(std::string name, std::string v)
+	{
+		if (m_obj)
+			m_obj->SetProperty<std::string>(name.c_str(), v);
+	}
+
+	void ScriptComponent::SetScriptBool(std::string name, bool v)
+	{
+		if (m_obj)
+			m_obj->SetProperty<bool>(name.c_str(), v);
+	}
+
 
 	void ScriptComponent::OnBegin()
 	{

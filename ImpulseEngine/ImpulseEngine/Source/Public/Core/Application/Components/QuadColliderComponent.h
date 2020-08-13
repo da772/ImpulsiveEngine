@@ -27,6 +27,8 @@ namespace GEngine {
 		glm::vec2 GetPosition();
 		glm::vec2 GetScale();
 
+
+
 		Ref<ScriptVector2> GetPositionScript();
 		Ref<ScriptVector2> GetScaleScript();
 		
@@ -42,6 +44,9 @@ namespace GEngine {
 	private:
 		glm::vec2 m_position;
 		glm::vec2 m_scale;
+		glm::vec2 m_worldPosition;
+		glm::vec2 m_worldScale;
+		float m_worldRotation;
 		float m_rotation;
 		bool m_dynamic = false;
 		Ref<Collider2D> m_collider;

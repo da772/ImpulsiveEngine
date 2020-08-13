@@ -29,8 +29,11 @@ namespace GEngine {
 	void QuadColliderComponent::OnBegin()
 	{
 		Ref<Entity> e = entity.lock();
-		m_collider = make_shared<Collider2D>(glm::vec2(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y),
-			glm::vec2(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y), m_rotation + e->GetEntityRotation().z);
+		m_worldPosition = glm::vec2(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y);
+		m_worldScale = glm::vec2(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y);
+		m_worldRotation = m_rotation + e->GetEntityRotation().z;
+		m_collider = make_shared<Collider2D>(m_worldPosition,
+			m_worldScale, m_worldRotation);
 		m_collider->SetColliderShape(Quad);
 		m_collider->SetColliderLayer(Game);
 		m_collider->SetColliderType(m_dynamic ? Dynamic : Static);
@@ -76,12 +79,12 @@ namespace GEngine {
 
 	glm::vec2 QuadColliderComponent::GetPosition()
 	{
-		return m_position;
+		return m_worldPosition;
 	}
 
 	glm::vec2 QuadColliderComponent::GetScale()
 	{
-		return m_scale;
+		return m_worldScale;
 	}
 
 	Ref<GEngine::ScriptVector2> QuadColliderComponent::GetPositionScript()
@@ -130,18 +133,21 @@ namespace GEngine {
 			if (IsInitialized()) {
 				glm::vec3 pos = glm::vec3(m_position.x, m_position.y, 1);
 				pos = pos + transform->GetPosition();
+				m_worldPosition = pos;
 				m_collider->SetPosition(pos);
+
+
 			
 				glm::vec3 scale = glm::vec3(m_scale.x, m_scale.y, 1);
 				scale = scale * transform->GetScale();
-				m_scale = glm::vec2(scale.x, scale.y);
+				m_worldScale = glm::vec2(scale.x, scale.y);
 				m_collider->SetScale(scale);
 
 				glm::vec3 rotation = glm::vec3(0, 0, m_rotation);
 				rotation = rotation + transData.rotation;
 				rotation.x = 0;
 				rotation.y = 0;
-				m_rotation = rotation.z;
+				m_worldRotation = rotation.z;
 			}
 			});
 	}

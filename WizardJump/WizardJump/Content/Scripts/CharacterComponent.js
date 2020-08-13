@@ -15,6 +15,8 @@ component.OnBegin = function () {
     component.spriteCollider.tag = "characterCollider";
     component.rigidBody = ScriptComponent("Content/Scripts/RigidBody.js");
 
+    component.rigidBody.SetString("testString", "Hello World!");
+
     component.entity.AddComponent(component.spriteCollider);
     component.entity.AddComponent(component.spriteComponent);
     component.entity.AddComponent(component.rigidBody);
@@ -45,7 +47,7 @@ component.OnBegin = function () {
 }
 
 component.OnUpdate = function(deltaTime) {
-    
+    SetCameraPosition(Vector3(component.entity.GetPosition().x, component.entity.GetPosition().y + .5, 0 ) );
 }
 
 component.OnEnd = function () {

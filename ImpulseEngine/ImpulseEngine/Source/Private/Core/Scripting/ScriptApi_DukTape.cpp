@@ -299,7 +299,10 @@ namespace GEngine {
 		dukglue_set_base_class<Component, ScriptableComponent >(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateScriptComponent, "ScriptComponent");
-		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptProperty, "SetProperty");
+		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptFloat, "SetFloat");
+		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptInt, "SetInt");
+		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptBool, "SetBool");
+		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptString, "SetString");
 		dukglue_set_base_class<Component, ScriptComponent >(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateSpriteComponent, "SpriteComponent");
