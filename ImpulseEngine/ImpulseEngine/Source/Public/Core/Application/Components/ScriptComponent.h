@@ -13,14 +13,15 @@ namespace GEngine {
 		ScriptComponent(const char* script);
 		virtual ~ScriptComponent();
 		virtual void SetEntity(Weak<Entity>  e) override;
-		void SetScriptProperty(std::string name, Ref<ScriptObject> value);
 		
+		void SetScriptInt(std::string name, int v);
+		void SetScriptFloat(std::string name, int v);
+		void SetScriptString(std::string name, std::string v);
+		void SetScriptBool(std::string name, bool v);
 
 	protected:
 		void OnBegin() override;
-
 		void OnEnd() override;
-
 		void OnUpdate(Timestep timestep) override;
 
 
