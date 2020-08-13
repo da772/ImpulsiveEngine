@@ -14,8 +14,8 @@ component.OnBegin = function () {
     component.entities[3].SetPosition(Vector3(1,1,1));
     component.entities[3].AddComponent(ScriptComponent("Content/Scripts/GroundComponent.js"))
 
-    component.entities[4].SetPosition(Vector3(-2.5,1,1));
-    component.entities[4].SetScale(Vector3(4,1,1));
+    component.entities[4].SetPosition(Vector3(-10.5,1,1));
+    component.entities[4].SetScale(Vector3(20,1,1));
     component.entities[4].AddComponent(ScriptComponent("Content/Scripts/GroundComponent.js"))
 
    

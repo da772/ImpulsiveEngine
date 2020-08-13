@@ -20,6 +20,8 @@
 
 #include "Public/Core/Ads/AdManager.h"
 
+#include "Public/Core/Physics/Physics.h"
+
 
 
 namespace GEngine {
@@ -196,14 +198,16 @@ namespace GEngine {
     
 	void Application::Setup()
 	{
+        Physics::Initalize();
         AdManager::Initialize();
+        SceneManager::Begin();
         ScriptManager::Init(ScriptApiType::SCRIPT_DUKTAPE);
-        SceneManager::Begin();   
 	}
 
 	void Application::Shutdown()
 	{
         m_Running = false;
+        Physics::Shutdown();
         SceneManager::End();
         ScriptManager::Shutdown();
         AdManager::Shutdown();
@@ -276,8 +280,11 @@ namespace GEngine {
 						}
                     }
 				}
-               
 			}
+
+            {
+                Physics::Update(timestep);
+            }
 			
 			
 		}

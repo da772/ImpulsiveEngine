@@ -1,34 +1,34 @@
-var component = new Component();
+var self = new Component();
 
-component.doesUpdate = false;
+self.doesUpdate = false;
 
-component.pos = {x:0, y:0};
-component.scale = {x:1, y:1};
-component.zOrder = 0;
+self.pos = {x:0, y:0};
+self.scale = {x:1, y:1};
+self.zOrder = 0;
 
-component.OnBegin = function () {
+self.OnBegin = function () {
 
-    component.quadCollider = QuadColliderComponent(false, Vector2(component.pos.x,component.pos.y), Vector2(component.scale.x,component.scale.y), 0);
-    component.spriteComponent = SpriteComponent();
-    component.entity.AddComponent(component.quadCollider);
-    component.entity.AddComponent(component.spriteComponent);
+    self.quadCollider = QuadColliderComponent(false, true, Vector2(self.pos.x,self.pos.y), Vector2(self.scale.x,self.scale.y), 0);
+    self.spriteComponent = SpriteComponent();
+    self.entity.AddComponent(self.quadCollider);
+    self.entity.AddComponent(self.spriteComponent);
     
-    component.collisionSprite = component.spriteComponent.CreateQuad(Vector3(component.pos.x,component.pos.y,component.zOrder), 0,
-        Vector3(component.scale.x,component.scale.y,1), Vector4(0,0,0,1), null, 1);
+    self.collisionSprite = self.spriteComponent.CreateQuad(Vector3(self.pos.x,self.pos.y,self.zOrder), 0,
+        Vector3(self.scale.x,self.scale.y,1), Vector4(0,0,0,1), null, 1);
 
-    component.quadCollider.SetOnCollideStartFunction(toObject(function (c) { } ));
-    component.quadCollider.SetOnCollideEndFunction(toObject(function (c) {  } ));
-
-}
-
-component.OnUpdate = function(deltaTime) {
+    self.quadCollider.SetOnCollideStartFunction(toObject(function (c) { } ));
+    self.quadCollider.SetOnCollideEndFunction(toObject(function (c) {  } ));
 
 }
 
-component.OnEnd = function () {
-   console.log("Destroying Ground Component")
-   component.quadCollider.RemoveOnCollideFunction();
-   component.quadCollider.RemoveEndCollideFunction();
+self.OnUpdate = function(deltaTime) {
+
 }
 
-component;
+self.OnEnd = function () {
+   console.log("Destroying Ground self")
+   self.quadCollider.RemoveOnCollideFunction();
+   self.quadCollider.RemoveEndCollideFunction();
+}
+
+self;

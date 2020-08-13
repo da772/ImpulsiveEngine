@@ -111,8 +111,8 @@ namespace GEngine {
 		return CreateGameObject<UIComponent>();
 	}
 
-	Ref<QuadColliderComponent> CreateQuadColliderComponent(bool dyamic, Ref<ScriptVector2> position, Ref<ScriptVector2> scale, float rotation) {
-		return GEngine::CreateGameObject<GEngine::QuadColliderComponent>(dyamic, position->GetGlm(), scale->GetGlm(), rotation);
+	Ref<QuadColliderComponent> CreateQuadColliderComponent(bool dyamic, bool physics, Ref<ScriptVector2> position, Ref<ScriptVector2> scale, float rotation) {
+		return GEngine::CreateGameObject<GEngine::QuadColliderComponent>(dyamic, physics, position->GetGlm(), scale->GetGlm(), rotation, dyamic ? 1 : 0);
 	}
 
 	Ref<SpriteAnimationComponent> CreateSpriteAnimationComponent() {
@@ -342,6 +342,11 @@ namespace GEngine {
 		dukglue_register_function(m_ctx, CreateQuadColliderComponent, "QuadColliderComponent");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetEndCollideFunction_Script, "SetOnCollideEndFunction");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetOnCollideFunction_Script, "SetOnCollideStartFunction");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::IncreaseLinearVelocity, "IncreaseLinearVelocity");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::IncreaseAngularVelocity, "IncreaseAngularVelocity");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::GetLinearVelocityScript, "GetLinearVelocity");
+		
+
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetScale, "SetScale");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetPosition, "SetPosition");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::GetPositionScript, "GetPosition");

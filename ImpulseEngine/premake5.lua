@@ -19,6 +19,7 @@ IncludeDir["freetype"] = "ImpulseEngine/vendor/freetype-2.10.0/include"
 IncludeDir["duktape"] = "ImpulseEngine/vendor/duktape"
 IncludeDir["entt"] = "ImpulseEngine/vendor/entt/include"
 IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
+IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
 
 group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/GLFW"
@@ -28,6 +29,7 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/miniupnpc"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
+	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
 
 group ""
 
@@ -77,7 +79,9 @@ project "ImpulseEngine"
 		"%{IncludeDir.freetypegl}",
 		"%{IncludeDir.duktape}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.firebase}/include"
+		"%{IncludeDir.firebase}/include",
+		"%{IncludeDir.box2d}",
+
 
 
 	}
@@ -92,7 +96,8 @@ project "ImpulseEngine"
 		"ImGui",
 		"Enet",
 		"miniupnpc",
-		"freetype-gl"
+		"freetype-gl",
+		"box2d"
 	}
 
 	filter "system:macosx"
