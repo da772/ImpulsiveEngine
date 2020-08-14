@@ -33,7 +33,7 @@ namespace GEngine {
 		GE_CORE_ASSERT(m_obj->isClass<ScriptableComponent>(), "JAVASCRIPT COMPONENT IS NOT SCRIPT COMPONENT CLASS");
 		m_scriptableComponent = m_obj->asClass<ScriptableComponent>();
 		//m_update = m_obj->GetProp("OnUpdate");
-		m_obj->SetProperty<bool>("shouldDestroy", true);
+		//m_obj->SetProperty<bool>("shouldDestroy", true);
 		
 		//if (m_update == nullptr || m_update->GetType() != FUNCTION) {
 		//	m_scriptableComponent->SetDoesUpdate(false);

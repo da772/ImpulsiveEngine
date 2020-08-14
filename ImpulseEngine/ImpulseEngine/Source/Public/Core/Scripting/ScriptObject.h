@@ -213,6 +213,8 @@ namespace GEngine {
 				(*(DukValue*)m_nativeObj).prop(name).push();
 				dukglue_push((*(DukValue*)m_nativeObj).context(), val);
 				duk_put_prop_string(c, 0, name);
+				duk_remove(c, -1);
+				duk_remove(c, -1);
 				break;
 			}
 			default:

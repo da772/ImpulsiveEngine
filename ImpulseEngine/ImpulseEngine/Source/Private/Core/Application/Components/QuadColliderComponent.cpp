@@ -62,10 +62,10 @@ namespace GEngine {
 			PhysicsInfo info;
 			info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Static;
 			info.position = glm::vec2(e->GetEntityPosition().x, e->GetEntityPosition().y);
-			info.rotation = m_worldRotation;
+			info.rotation = glm::radians(e->GetEntityRotation().z);
 			info.fixedRotation = true;
 			m_body = Physics::CreateBody(info);
-			m_body->SetQuad(m_worldScale, m_position, m_mass);
+			m_body->SetQuad(m_worldScale, m_position, m_mass, m_rotation);
 		}
 	}
 
@@ -78,9 +78,11 @@ namespace GEngine {
 
 	void QuadColliderComponent::OnUpdate(Timestep ts)
 	{
-		if (m_physics) {
+		if (m_physics && m_dynamic) {
 			const glm::vec2& pos = m_body->GetPosition();
+			const float rot = m_body->GetRotation();
 			entity.lock()->SetEntityPosition(glm::vec3(pos.x, pos.y, 1));
+			entity.lock()->SetEntityRotation(glm::vec3(0, 0, glm::degrees(rot)));
 		}
 	}
 
@@ -132,6 +134,19 @@ namespace GEngine {
 	Ref<ScriptVector2> QuadColliderComponent::GetScaleScript()
 	{
 		return make_unique<ScriptVector2>(GetScale());
+	}
+
+	void QuadColliderComponent::SetBounce(float bounce)
+	{
+		if (m_physics)
+			m_body->SetBounce(bounce);
+	}
+
+	float QuadColliderComponent::GetBounce()
+	{
+		if (m_physics)
+			return m_body->GetBounce();
+		return 0;
 	}
 
 	void QuadColliderComponent::IncreaseLinearVelocity(float x, float y)

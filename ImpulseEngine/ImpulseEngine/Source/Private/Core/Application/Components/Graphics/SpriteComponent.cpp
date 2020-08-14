@@ -27,7 +27,18 @@ namespace GEngine {
 			if (IsInitialized()) {
 				for (long id : m_ids) {
 					Vector3 pos = s_ShapeFactory->GetShapePosition(id);
-					s_ShapeFactory->SetPosition(id, pos - transData.position + transform->GetPosition());
+					Vector3 nPos = pos - transData.position + transform->GetPosition();
+					if (pos != nPos)
+						s_ShapeFactory->SetPosition(id, nPos);
+					float rot = s_ShapeFactory->GetShapeRotation(id);
+					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
+					if (rot != nRot)
+						s_ShapeFactory->SetRotation(id, nRot);
+					Vector2 _scale = s_ShapeFactory->GetShapeScale(id);
+					Vector3 scale(_scale.x, _scale.y, 1);
+					Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
+					if (scale != nScale)
+						s_ShapeFactory->SetScale(id, {nScale.x, nScale.y});
 				}
 			}
 			});

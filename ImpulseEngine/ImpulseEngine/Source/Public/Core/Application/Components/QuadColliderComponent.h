@@ -34,6 +34,9 @@ namespace GEngine {
 		Ref<ScriptVector2> GetLinearVelocityScript();
 		Ref<ScriptVector2> GetPositionScript();
 		Ref<ScriptVector2> GetScaleScript();
+
+		void SetBounce(float bounce);
+		float GetBounce();
 		
 		void SetDynamic(bool b);
 

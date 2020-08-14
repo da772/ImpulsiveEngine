@@ -63,15 +63,15 @@ namespace GEngine {
 		bool m_hasComponentParent = false;
 		static int refCount;
 		
-		inline const char* GetTag() { return m_tag; }
-		inline void SetTag(const char* tag) { m_tag = tag; }
+		inline virtual std::string GetTag() { return m_tag; }
+		inline virtual void SetTag(std::string tag) { m_tag = tag; }
 
 	protected:
 		virtual void OnBegin() {};
 		virtual void OnEnd() {};
 		virtual void OnUpdate(Timestep timestep) {};
 		
-		const char* m_tag = "Default";
+		std::string m_tag = "Default";
 	
 		Weak<Entity> entity;
 		bool bInit = false;

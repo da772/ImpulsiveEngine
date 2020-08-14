@@ -13,20 +13,21 @@ namespace GEngine {
 		inline PhysicsBody() {};
 		inline virtual ~PhysicsBody() {};
 
-		virtual void SetQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0) = 0;
-
-		virtual void SetPosition(const glm::vec2& position) { m_position = position; }
-		virtual void SetRotation(const float rot) { m_rotation = rot; }
+		inline virtual void SetQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0) = 0;
 		
-		virtual void SetLinearVelocity(const glm::vec2& velocity) { m_linearVelocity = velocity; }
-		virtual void SetLinearDamping(const float linearDamping) { m_linearDamping = linearDamping; }
-		virtual void SetAngularDamping(const float angularDamping) { m_angularDamping = angularDamping; }
-		virtual void SetEnabled(const bool b) { m_enabled = b; }
-		virtual void SetFixedRotation(const bool b) { m_fixedRotation = b; }
-		virtual void SetGravityScale(const float f) { m_gravityScale = f; }
-		virtual void SetAngularVelocity(const float f) { m_angluarVelocity = f; }
-
-		virtual void SetScale(const glm::vec2& scale) { m_scale = scale; }
+		inline virtual void SetPosition(const glm::vec2& position) { m_position = position; }
+		inline virtual void SetRotation(const float rot) { m_rotation = rot; }
+		
+		inline virtual void SetLinearVelocity(const glm::vec2& velocity) { m_linearVelocity = velocity; }
+		inline virtual void SetLinearDamping(const float linearDamping) { m_linearDamping = linearDamping; }
+		inline virtual void SetAngularDamping(const float angularDamping) { m_angularDamping = angularDamping; }
+		inline virtual void SetEnabled(const bool b) { m_enabled = b; }
+		inline virtual void SetFixedRotation(const bool b) { m_fixedRotation = b; }
+		inline virtual void SetGravityScale(const float f) { m_gravityScale = f; }
+		inline virtual void SetAngularVelocity(const float f) { m_angluarVelocity = f; }
+		
+		inline virtual void SetBounce(const float f) { m_bounce = f; };
+		inline virtual void SetScale(const glm::vec2& scale) { m_scale = scale; }
 
 		inline virtual const glm::vec2& GetPosition() { return m_position; }
 		inline virtual const float GetRotation() { return m_rotation; }
@@ -43,6 +44,7 @@ namespace GEngine {
 		inline virtual const float GetGravityScale() { return m_gravityScale; }
 		inline virtual const PhysicsInfoType& GetPhysicsType() { return m_type; }
 		inline virtual const float GetAngularVelocity() { return m_angluarVelocity; };
+		inline virtual const float GetBounce() { return m_bounce; }
 
 
 
@@ -61,6 +63,7 @@ namespace GEngine {
 		bool m_enabled = true;
 		void* m_userData = nullptr;
 		float m_gravityScale = 1.f;
+		float m_bounce = 0.f;
 
 
 
