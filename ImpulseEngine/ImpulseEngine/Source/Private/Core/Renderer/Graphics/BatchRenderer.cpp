@@ -354,6 +354,24 @@ namespace GEngine {
 		 return it->second.position;
 	 }
 
+	 const float BatchRenderer::GetShapeRotation(long id)
+	 {
+		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 return it->second.rotation;
+	 }
+
+	 const GEngine::Vector2 BatchRenderer::GetShapeScale(long id)
+	 {
+		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 return it->second.scale;
+	 }
+
 	 void BatchRenderer::RemoveShape(long id)
 	 {
 		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {

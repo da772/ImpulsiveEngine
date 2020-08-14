@@ -291,7 +291,7 @@ namespace GEngine {
 		/*                            COMPONENTS                                */
 		/************************************************************************/
 
-		dukglue_register_constructor<Component>(m_ctx, "Component");
+		//dukglue_register_constructor<Component>(m_ctx, "Component");
 		dukglue_register_property(m_ctx, &Component::GetSelf, &Component::SetSelf, "self");
 		dukglue_register_property(m_ctx, &Component::GetEntityPtr, &Component::SetEntityPtr, "entity");
 		dukglue_register_property(m_ctx, &Component::GetShouldUpdate, &Component::SetShouldUpdate, "doesUpdate");
@@ -300,6 +300,7 @@ namespace GEngine {
 		dukglue_register_constructor<ScriptableComponent>(m_ctx, "Component");
 		dukglue_register_property(m_ctx, &ScriptableComponent::GetParent, &ScriptableComponent::SetParent, "entity");
 		dukglue_register_property(m_ctx, &ScriptableComponent::DoesUpdate, &ScriptableComponent::SetDoesUpdate, "doesUpdate");
+		dukglue_register_property(m_ctx, &ScriptableComponent::GetTag, &Component::SetTag, "tag");
 		dukglue_set_base_class<Component, ScriptableComponent >(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateScriptComponent, "ScriptComponent");
@@ -349,8 +350,9 @@ namespace GEngine {
 		dukglue_register_method(m_ctx, &QuadColliderComponent::IncreaseLinearVelocity, "IncreaseLinearVelocity");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::IncreaseAngularVelocity, "IncreaseAngularVelocity");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::GetLinearVelocityScript, "GetLinearVelocity");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::SetBounce, "SetBounce");
+		dukglue_register_method(m_ctx, &QuadColliderComponent::GetBounce, "GetBounce");
 		
-
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetScale, "SetScale");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetPosition, "SetPosition");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::GetPositionScript, "GetPosition");

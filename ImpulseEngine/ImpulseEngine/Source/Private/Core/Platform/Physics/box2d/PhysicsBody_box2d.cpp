@@ -18,13 +18,14 @@ namespace GEngine {
 		const b2Vec2& pos = m_body->GetPosition();
 		m_position = { pos.x* GE_PHYSICS_SCALAR, pos.y* GE_PHYSICS_SCALAR };
 		m_rotation = m_body->GetAngle();
+		
 	}
 
 	PhysicsBody_box2d::~PhysicsBody_box2d()
 	{
 		GE_CORE_DEBUG("DESTROYING PHYSICS BOX2D");
 		b2World* world = (b2World*)Physics::GetWorld();
-		if (world != nullptr) {\
+		if (world != nullptr) {
 			m_body->DestroyFixture(m_fixture);
 			world->DestroyBody(m_body);
 		}
@@ -102,13 +103,20 @@ namespace GEngine {
 		return m_linearVelocity;
 	}
 
-	void PhysicsBody_box2d::SetQuad(const glm::vec2& size, const glm::vec2& offset, float mass)
+	const float PhysicsBody_box2d::GetBounce()
+	{
+		return m_fixture->GetRestitution();
+	}
+
+#define PI 3.14159265358979323846
+
+	void PhysicsBody_box2d::SetQuad(const glm::vec2& size, const glm::vec2& offset, float mass, float rotation)
 	{
 		GE_CORE_ASSERT(!m_fixture, "FIXTURE ALREADY CREATED");
 		b2PolygonShape shape;
-		shape.SetAsBox(size.x * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, size.y * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, b2Vec2(offset.x, offset.y), GetRotation());
+		shape.SetAsBox(size.x * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, size.y * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, 
+			b2Vec2(offset.x, offset.y), (float) ((PI / 180.f) * rotation) );
 		m_fixture = m_body->CreateFixture(&shape, mass);
-		m_fixture->SetRestitution(.5f);
 	}
 
 
@@ -116,6 +124,12 @@ namespace GEngine {
 	{
 		PhysicsBody::SetAngularVelocity(f);
 		m_body->SetAngularVelocity(f);
+	}
+
+	void PhysicsBody_box2d::SetBounce(const float f)
+	{
+		PhysicsBody::SetBounce(f);
+		m_fixture->SetRestitution(f);
 	}
 
 	const float PhysicsBody_box2d::GetAngularVelocity()

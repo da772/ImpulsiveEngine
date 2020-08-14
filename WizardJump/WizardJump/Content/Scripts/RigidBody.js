@@ -3,27 +3,36 @@ var self = new Component();
 self.doesUpdate = true;
 
 
-self.testString = "No";
-
-
 
 self.OnBegin = function () {
 
+    self.grounded = false;
+    self.characterComponent = self.entity.GetComponents("characterComponent")[0];
     self.quadCollider = self.entity.GetComponents("characterCollider")[0];
-    
-    console.log(self.testString);
+    self.groundCollider = self.entity.GetComponents("groundCollider")[0];
 
-    if (self.quadCollider) {
-        console.log("Sprite Collider Found - " + self.entity.GetComponents("characterCollider"));
-    }
+    self.groundCollider.SetOnCollideStartFunction(toObject(function (c) { 
+        if (c.tag === "ground") {
+            self.characterComponent.SetBool("grounded", true);
+            self.grounded = true;
+            console.log("On Ground - ");
+        }
+    }));
+
+    self.groundCollider.SetOnCollideEndFunction(toObject(function (c) { 
+        if (c.tag === "ground") {
+            self.characterComponent.SetBool("grounded", false);
+            self.grounded = false;
+            console.log("Off Ground - ");
+        }
+    } ));
 
     self.quadCollider.SetOnCollideStartFunction(toObject(function (c) { 
-        console.debug("Collision Start");    
+       // console.debug("Collision Start");    
     }));
 
     self.quadCollider.SetOnCollideEndFunction(toObject(function (c) { 
-        console.debug("Collision End");
-
+       // console.debug("Collision End");
     } ));
 }
 
@@ -32,24 +41,19 @@ self.OnUpdate = function(deltaTime) {
     var velocity = self.quadCollider.GetLinearVelocity();
     var maxSpeed = 2;
     var acceleration = 5;
-    var jumpForce = 50;
+    var jumpForce = 100;
 
-
-    if (Input.IsKeyPressed("space")) {
+    if (self.grounded && Input.IsKeyPressed("space")) {
         
         self.quadCollider.IncreaseLinearVelocity(0, jumpForce*deltaTime);
     } 
-    if (Input.IsKeyPressed("left") ) {
+    if (self.grounded && Input.IsKeyPressed("left") ) {
         if (velocity.x + -acceleration*deltaTime >= -maxSpeed)
             self.quadCollider.IncreaseLinearVelocity(-acceleration*deltaTime, 0);
-        else
-            console.log("Max Speed")
     }
-     if (Input.IsKeyPressed("right")) {
+     if (self.grounded && Input.IsKeyPressed("right")) {
         if (velocity.x + acceleration*deltaTime <= maxSpeed)
             self.quadCollider.IncreaseLinearVelocity(acceleration*deltaTime, 0);
-        else
-            console.log("Max Speed")
     }
 }
 

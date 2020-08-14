@@ -17,18 +17,26 @@ namespace GEngine {
 
 	void ScriptableComponent::SetParent(Entity* e)
 	{	
-		//m_parentEntity->RemoveComponent(m_parentComponent.lock());
 		m_parentEntity = e;
 	}
 
 	void ScriptableComponent::SetParentComponent(Ref<Component> c)
 	{
+		c->SetTag(GetTag());
 		m_parentComponent = c;
 	}
 
 	GEngine::Ref<GEngine::Component> ScriptableComponent::GetParentComponent()
 	{
 		return m_parentComponent.lock();
+	}
+
+	void ScriptableComponent::SetTag(std::string tag)
+	{
+		m_tag = tag;
+		Ref<Component> c = m_parentComponent.lock();
+		if (c != nullptr)
+			c->SetTag(tag);
 	}
 
 }

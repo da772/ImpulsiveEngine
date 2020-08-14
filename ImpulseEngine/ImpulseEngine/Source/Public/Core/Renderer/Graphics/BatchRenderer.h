@@ -88,6 +88,8 @@ namespace GEngine {
 		void ReloadGraphics();
 
 		const Vector3 GetShapePosition(long id);
+		const float GetShapeRotation(long id);
+		const Vector2 GetShapeScale(long id);
 
 		int UpdateCount(int i);
 

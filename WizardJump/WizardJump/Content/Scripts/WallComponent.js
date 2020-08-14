@@ -8,10 +8,11 @@ self.zOrder = 0;
 
 self.OnBegin = function () {
     self.quadCollider = QuadColliderComponent(false, true, Vector2(self.pos.x,self.pos.y), Vector2(self.scale.x,self.scale.y), 0 );
-    self.quadCollider.tag = "ground"
+    self.quadCollider.tag = "wall"
     self.spriteComponent = SpriteComponent();
     self.entity.AddComponent(self.quadCollider);
     self.entity.AddComponent(self.spriteComponent);
+    self.quadCollider.SetBounce(.5);
     
     self.collisionSprite = self.spriteComponent.CreateQuad(Vector3(self.pos.x,self.pos.y,self.zOrder), 0,
         Vector3(self.scale.x,self.scale.y,1), Vector4(0,0,0,1), null, 1);

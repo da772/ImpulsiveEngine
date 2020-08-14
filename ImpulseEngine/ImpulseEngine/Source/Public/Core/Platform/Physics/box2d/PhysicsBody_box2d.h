@@ -28,12 +28,15 @@ namespace GEngine {
 		virtual void SetScale(const glm::vec2& scale) override;
 		virtual void SetAngularVelocity(const float f) override;
 
+		virtual void SetBounce(const float f) override;
+
 		const float GetAngularVelocity() override;
 		const glm::vec2& GetPosition() override;
 		const float GetRotation() override;
 		const glm::vec2& GetLinearVelocity() override;
+		const float virtual GetBounce() override;
 
-		virtual void SetQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0) override;
+		virtual void SetQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0) override;
 
 	protected:
 		b2Body* m_body = nullptr;
