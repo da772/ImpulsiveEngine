@@ -3,6 +3,9 @@
 
 namespace GEngine {
 
+	class Collider;
+	class Event;
+
 	class GE_API Input 
 	{
 	public:
@@ -11,7 +14,7 @@ namespace GEngine {
 		inline static float GetMouseX() { return s_Instance->GetMouseXImpl(); };
 		inline static float GetMouseY() { return s_Instance->GetMouseYImpl(); };
 		inline static std::pair<float, float>  GetMousePosition() { return s_Instance->GetMousePositionImpl(); };
-
+		static void ProcessEvents(const Event& e);
 		static void Create();
 
 	protected:
@@ -20,6 +23,8 @@ namespace GEngine {
 		virtual float GetMouseXImpl(uint64_t id = 0) = 0;
 		virtual float GetMouseYImpl(uint64_t id = 0) = 0;
 		virtual std::pair<float,float> GetMousePositionImpl(uint64_t id = 0) = 0;
+		virtual void ProcessEvent(const Event& e) = 0;
+		Weak<Collider> m_lastCollider;
 	private:
 		static Input* s_Instance;
 

@@ -1,5 +1,5 @@
 #pragma once
-
+#ifdef GE_WINDOW_API_GLFW
 #include "Public/Core/Application/Input.h"
 
 namespace GEngine {
@@ -12,9 +12,12 @@ namespace GEngine {
 		virtual float GetMouseXImpl(uint64_t id = 0) override;
 		virtual float GetMouseYImpl(uint64_t id = 0) override;
 		virtual std::pair<float, float> GetMousePositionImpl(uint64_t id = 0) override;
+		virtual void ProcessEvent(const Event& e) override;
 
 	};
 
 
 
 }
+
+#endif

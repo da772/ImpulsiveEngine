@@ -11,7 +11,7 @@ namespace GEngine {
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled, TouchPressed, TouchReleased
+		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled, TouchPressed, TouchHeld, TouchReleased
 	};
 
 	enum EventCategory

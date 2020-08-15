@@ -1,9 +1,16 @@
 #include "gepch.h"
+#ifdef GE_WINDOW_API_GLFW
 #include "Public/Core/Platform/Window/GLFW/GLFW_Input.h"
 
-#ifdef GE_WINDOW_API_GLFW
+
+#include "Public/COre/Collision/CollisionDetection.h"
 #include "Public/Core/Application/Application.h"
 #include <GLFW/glfw3.h>
+#include "Public/Core/Events/MouseEvent.h"
+#include "Public/Core/Events/Event.h"
+#include "Public/Core/Util/GEMath.h"
+#include "Public/Core/Util/ThreadPool.h"
+
 
 namespace GEngine {
 
@@ -42,6 +49,19 @@ namespace GEngine {
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		return {(float) xpos,(float) ypos };
+	}
+
+	void GLFW_Input::ProcessEvent(const Event& e)
+	{
+		if (e.GetEventType() == EventType::MouseMoved) {
+			
+			const MouseMovedEvent& mouse = (MouseMovedEvent&)e;
+			int width, height;
+			Application::GetApp()->GetWindow()->GetFrameBufferSize(&width, &height);
+				CollisionDetection::InteractionUI(
+					GEMath::MapRange(mouse.GetX() / (float)width, 0, 1, -1, 1),
+					-GEMath::MapRange(mouse.GetY() / (float)height, 0, 1, -1, 1));
+		}
 	}
 
 }

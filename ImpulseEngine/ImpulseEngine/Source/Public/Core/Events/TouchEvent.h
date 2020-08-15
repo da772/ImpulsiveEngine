@@ -53,7 +53,7 @@ namespace GEngine {
 			return s;
 		}
 
-		EVENT_CLASS_TYPE(TouchPressed)
+		EVENT_CLASS_TYPE(TouchHeld)
 		EVENT_CLASS_CATEGORY(EventCategory::EventCategoryMouse | EventCategory::EventCategoryInput)
 	};
 

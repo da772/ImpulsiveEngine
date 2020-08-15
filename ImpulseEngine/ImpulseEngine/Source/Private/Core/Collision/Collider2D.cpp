@@ -79,13 +79,8 @@ namespace GEngine {
 
 	bool Collider2D::AABBPointCheck(float x, float y)
 	{
-		glm::vec3 _position(x,y,1);
-		glm::vec3 _scale(0,0,0);
-		bool b = position.x < _position.x + _scale.x &&
-			position.x + scale.x > _position.x &&
-			position.y < _position.y + _scale.y &&
-			position.y + scale.y > _position.y;
-
+		bool b = x <= position.x + scale.x / 2.f && x >= position.x - scale.x / 2.f
+			&& y <= position.y + scale.y/2.f && y >= position.y - scale.y/2.f;
 		return b;
 	}
 
