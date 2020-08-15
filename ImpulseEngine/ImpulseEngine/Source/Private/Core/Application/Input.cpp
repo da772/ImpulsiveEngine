@@ -16,6 +16,12 @@ namespace GEngine {
 
 	Input* Input::s_Instance = nullptr;
 
+	void Input::ProcessEvents(const Event& e)
+	{
+		if (s_Instance != nullptr)
+			s_Instance->ProcessEvent(e);
+	}
+
 	void Input::Create()
 	{
 		if (s_Instance != nullptr) {

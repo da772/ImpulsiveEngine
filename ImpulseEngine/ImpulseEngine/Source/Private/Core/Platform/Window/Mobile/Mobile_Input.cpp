@@ -4,6 +4,9 @@
 #include "Public/Core/Platform/Window/Mobile/MobileWindow.h"
 #endif
 #include "Public/Core/Application/Application.h"
+#include "Public/Core/Events/TouchEvent.h"
+#include "Public/Core/Collision/CollisionDetection.h"
+#include "Public/Core/Util/GEMath.h"
 
 namespace GEngine {
 
@@ -61,13 +64,40 @@ namespace GEngine {
 
 
 
+	void Mobile_Input::ProcessEvent(const Event& e)
+	{
+		int width, height;
+		Application::GetApp()->GetWindow()->GetFrameBufferSize(&width, &height);
+		if (e.GetEventType() == EventType::TouchPressed) {
+			const TouchPressedEvent& event = (TouchPressedEvent&)e;
+			
+			if (GetTouchCount() <= 1) {
+				CollisionDetection::InteractionUI(
+					GEMath::MapRange(event.GetX() / (float)width, 0, 1, -1, 1),
+					-GEMath::MapRange(event.GetY() / (float)height, 0, 1, -1, 1));
+			}
+		}
+
+		if (e.GetEventType() == EventType::TouchReleased) {
+			const TouchReleasedEvent& event = (TouchReleasedEvent&)e;
+			if (GetTouchCount() <= 0) {
+				CollisionDetection::InteractionEndUI(
+					GEMath::MapRange(event.GetX() / (float)width, 0, 1, -1, 1),
+					-GEMath::MapRange(event.GetY() / (float)height, 0, 1, -1, 1));
+			}
+		}
+
+
+	}
+
 void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, float force)
 {
 	if (GEngine::Application::GetApp()->GetWindow() != nullptr) {
-		/*@TODO ABSTRACT OUT A MOBILE WINDOW CLASS*/
+		
 #ifdef GE_MOBILE_APP
 		GEngine::MobileWindow* mb = static_cast<GEngine::MobileWindow*>(GEngine::Application::GetApp()->GetWindow());
         if (mb) {
+			//GE_CORE_DEBUG("TOUCH: {0} - {1}", id, state);
 			switch (state) {
 				// Touch begin
 				case 0: {

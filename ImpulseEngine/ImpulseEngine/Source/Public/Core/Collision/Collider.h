@@ -40,9 +40,15 @@ namespace GEngine {
 		inline void SetCollisionStartFunction(std::function<void(Ref<Collider>)> func) { m_collisionFunctionStart = func; }
 		inline void SetCollisionEndFunction(std::function<void(Ref<Collider>)> func) { m_collisionFunctionEnd = func; }
 
+		inline void SetUICollisionStartFunction(std::function<void(float, float)> func) { m_uiCollisionFunctionStart = func; }
+		inline void SetUICollisionEndFunction(std::function<void(float, float)> func) { m_uiCollisionFunctionEnd = func; }
+
 
 		void CollideStart(Ref<Collider> collider);
 		void CollideEnd(Ref<Collider> collider);
+
+		void UIMouseCollideStart(float x, float y);
+		void UIMouseCollideEnd(float x, float y);
 
 		const glm::vec3 GetPosition() const { return position; };
 		const glm::vec3 GetScale() const { return scale;}
@@ -63,8 +69,10 @@ namespace GEngine {
 		void RemoveLastCollide(Weak<Collider> c);
 		
 	protected:
-		virtual void OnCollision(Ref<Collider> collider) {};
-		virtual void OnCollisionEnd(Ref<Collider> collider) {};
+		inline virtual void OnCollision(Ref<Collider> collider) {};
+		inline virtual void OnCollisionEnd(Ref<Collider> collider) {};
+		inline virtual void OnUIMouseCollision(float x, float y) {};
+		inline virtual void OnUIMouseCollisionEnd(float x, float y) {};
 		EColliderShape m_shape;
 		EColliderType m_type;
 		EColliderLayer m_layer;
@@ -73,6 +81,9 @@ namespace GEngine {
 		glm::vec3 rotation;
 		std::function<void(Ref<Collider>)> m_collisionFunctionStart;
 		std::function<void(Ref<Collider>)> m_collisionFunctionEnd;
+
+		std::function<void(float, float)> m_uiCollisionFunctionStart;
+		std::function<void(float, float)> m_uiCollisionFunctionEnd;
 
 		std::vector<Weak<Collider>> m_lastCollide;
 

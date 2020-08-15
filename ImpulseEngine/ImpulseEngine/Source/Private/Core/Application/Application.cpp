@@ -193,6 +193,7 @@ namespace GEngine {
             if (e.Handled)
             break;
         }
+        Input::ProcessEvents(e);
         SceneManager::OnEvent(e);
     }
     

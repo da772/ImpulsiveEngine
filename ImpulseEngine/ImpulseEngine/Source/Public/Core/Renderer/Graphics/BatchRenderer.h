@@ -94,7 +94,6 @@ namespace GEngine {
 		int UpdateCount(int i);
 
 		void SetSort(bool b);
-
 		void ReCreateBatches();
 
 	private:

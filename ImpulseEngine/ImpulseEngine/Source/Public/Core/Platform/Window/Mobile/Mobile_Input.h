@@ -166,6 +166,7 @@ private:
 		virtual float GetMouseXImpl(uint64_t id) override;
 		virtual float GetMouseYImpl(uint64_t id) override;
 		virtual std::pair<float, float> GetMousePositionImpl(uint64_t id) override;
+		virtual void ProcessEvent(const Event& e) override;
 
 	};
 
