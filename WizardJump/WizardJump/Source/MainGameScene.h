@@ -104,6 +104,7 @@ private:
 	GEngine::Ref<GEngine::UIComponent> FPSuiComponent;
 	GEngine::Ref<GEngine::Entity> mainEntity;
 	GEngine::Ref<GEngine::Font> font;
+
 	bool bImGui = true;
 	long textId = -1;
 
@@ -116,10 +117,12 @@ private:
 
 		mainEntity = GEngine::CreateGameObject<GEngine::Entity>();
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
+		GEngine::Ref<GEngine::ButtonComponent> button1 = GEngine::CreateGameObject<GEngine::ButtonComponent>(glm::vec3(0,0,0 ), 0, glm::vec2( .25,.25 ), glm::vec4(1,1,1,1 ));
 		GEngine::Ref<GEngine::Entity> e = GEngine::CreateGameObject<GEngine::Entity>();
 		e->AddComponent(GEngine::CreateGameObject<GEngine::ScriptComponent>("Content/Scripts/GameManager.js"));
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
 		eFPS->AddComponent(FPSuiComponent);
+		eFPS->AddComponent(button1);
 		AddEntity(e);
 		AddEntity(eFPS);
 

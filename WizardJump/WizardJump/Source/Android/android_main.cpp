@@ -144,21 +144,6 @@ static int engine_init_display(struct engine* engine) {
 	engine->width = w;
 	engine->height = h;
 	engine->state.angle = 0;
-	
-
-	// Initialize GL state.
-	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-	//glEnable(GL_CULL_FACE);
-
-	//glShadeModel(GL_SMOOTH);
-	
-	//LOGW("%s - %s", engine->app->activity->externalDataPath, engine->app->activity->internalDataPath);
-
-	//const char* fpath = ;
-
-	//GEngine::Ref<GEngine::FileData> data = GEngine::FileSystem::FileDataFromPath(GEngine::Utility::FilePathFromRoot("Content/shaders/TextureShader.glsl"));
-
-	//LOGW("data %s", data->GetDataAsString());
 
 	if (!appCreated) {
 		LOGW("CREATING APP");
@@ -182,10 +167,6 @@ static void engine_draw_frame(struct engine* engine) {
 		return;
 	}
 
-	// Just fill the screen with a color.
-	//glClearColor(((float)engine->state.x) / engine->width, engine->state.angle,
-	//	((float)engine->state.y) / engine->height, 1);
-	//glClear(GL_COLOR_BUFFER_BIT);
 	eglSwapBuffers(engine->display, engine->surface);
 	App_Draw();
 	
