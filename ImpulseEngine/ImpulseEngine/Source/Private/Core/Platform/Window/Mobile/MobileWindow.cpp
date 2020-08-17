@@ -95,10 +95,7 @@ namespace GEngine {
 #endif
 #ifdef GE_PLATFORM_IOS
             /** ADD IOS SUPPORT **/
-            *top = 0;
-            *bottom = 0;
-            *left = 0;
-            *right = 0;
+            Mobile_Input_Callback::GetSafeArea(top, bottom, left, right);
 #endif
 		}
 
@@ -134,6 +131,10 @@ namespace GEngine {
             m_Data.Height = height;
 #ifdef GE_PLATFORM_ANDROID
 			AndroidUtil::GetSafeArea(&m_Data.safe_top, &m_Data.safe_bottom, &m_Data.safe_left, &m_Data.safe_right);
+#endif
+#ifdef GE_PLATFORM_IOS
+            Mobile_Input_Callback::GetSafeArea(&m_Data.safe_top, &m_Data.safe_bottom, &m_Data.safe_left, &m_Data.safe_right);
+            GE_CORE_DEBUG("SAFE AREA {0}, {1}, {2}, {3}", m_Data.safe_top, m_Data.safe_bottom, m_Data.safe_left, m_Data.safe_right);
 #endif
 			WindowResizeEvent event(width, height);
             m_Data.EventCallback(event);

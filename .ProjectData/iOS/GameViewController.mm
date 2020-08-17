@@ -51,15 +51,35 @@
            NSLog(@"Failed to create ES context");
        }
        
-       GLKView *view = (GLKView *)self.view;
-       view.context = self.context;
+    GLKView *view = (GLKView *)self.view;
+    view.context = self.context;
     
+   
     GEngine::Mobile_Input_Callback::SetGetViewContext([view](){
         return (UIView*)view;
     });
-       
+    
+    GEngine::Mobile_Input_Callback::SetGetSafeArea([self](int* top, int* bottom, int* left, int* right) {
+        *top = self.view.safeAreaInsets.top*self.view.contentScaleFactor;
+        *bottom = self.view.safeAreaInsets.bottom*self.view.contentScaleFactor;
+        *left =  self.view.safeAreaInsets.left*self.view.contentScaleFactor;
+        *right = self.view.safeAreaInsets.right*self.view.contentScaleFactor;
+    } );
+
+          
     [self setupGL];
+    
+   
+    
+   
 }
+
+- (void) viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange ];
+    printf("SAFE VIEW: %f, %f, %f, %f", self.view.safeAreaInsets.top, self.view.safeAreaInsets.bottom, self.view.safeAreaInsets.left, self.view.safeAreaInsets.right);
+    App_Resize(self.view.bounds.size.width*self.view.contentScaleFactor, self.view.bounds.size.height*self.view.contentScaleFactor);
+}
+
 - (IBAction)textEntered:(UITextField *)sender forEvent:(UIEvent *)event {
     NSLog(@"TEXT CHANGED");
 }

@@ -42,6 +42,10 @@ public:
 	static inline void SetKeyboardTextFunc(const std::function<void(std::string)>& f) {
 		Mobile_Input_Callback::setKeyboardTextFunc = f;
 	}
+    
+    static inline void SetGetSafeArea(const std::function<void(int*,int*,int*,int*)>& f) {
+        Mobile_Input_Callback::getSafeView = f;
+    }
 
 	static inline void SetGetKeyboardTextFunc(const std::function<std::string()>& f) {
 		Mobile_Input_Callback::getKeyboardTextFunc = f;
@@ -132,6 +136,12 @@ public:
 		return size;
     }
     
+    static inline void GetSafeArea(int* top, int* bottom, int* left, int* right) {
+        if (getSafeView) {
+            getSafeView(top, bottom, left, right);
+        }
+    }
+    
 
 
 private:
@@ -145,6 +155,7 @@ private:
 	static std::function<double()> getTimeFunc;
     static std::mutex touchMutex;
     static std::unordered_map<uint64_t, FTouchInfo> touches;
+    static std::function<void(int*,int*,int*,int*)> getSafeView;
 
 
 };
