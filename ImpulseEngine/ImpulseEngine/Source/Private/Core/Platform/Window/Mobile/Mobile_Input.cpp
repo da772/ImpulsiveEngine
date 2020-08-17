@@ -11,6 +11,7 @@
 namespace GEngine {
 
 	std::function<void()> Mobile_Input_Callback::showKeyboardFunc;
+    std::function<void(int*,int*,int*,int*)> Mobile_Input_Callback::getSafeView;
 	std::function<void()> Mobile_Input_Callback::hideKeyboardFunc;
 	std::function<void(std::string)> Mobile_Input_Callback::setKeyboardTextFunc;
 	std::function<std::string()> Mobile_Input_Callback::getKeyboardTextFunc;

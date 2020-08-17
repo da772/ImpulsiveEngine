@@ -114,12 +114,12 @@ namespace GEngine {
     
 	int Application::GetWidth()
 	{
-        return s_Instance->m_width;
+        return  s_Instance->GetWindow()->GetWindowData().Width;
 	}
 
 	int Application::GetHeight()
 	{
-        return  s_Instance->m_height;
+        return  s_Instance->GetWindow()->GetWindowData().Height;
 	}
 
 	int Application::GetSafeTop()
