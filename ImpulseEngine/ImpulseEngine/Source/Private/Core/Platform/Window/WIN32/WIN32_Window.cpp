@@ -59,6 +59,11 @@ namespace GEngine {
 
 	}
 
+	void WIN32_Window::GetSafeArea(int* top, int* bottom, int* left, int* right)
+	{
+		
+	}
+
 	void WIN32_Window::Init(const WindowData& props)
 	{
 

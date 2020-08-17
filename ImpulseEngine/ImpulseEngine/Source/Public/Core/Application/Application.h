@@ -49,6 +49,7 @@ namespace GEngine {
 		inline FWindowApi GetWindowApi() {return Application::s_windowApi;};
 		inline FGraphicsApi GetGraphicsApi() { return Application::s_graphicsApi; }
 
+
 		inline void SetTargetCamera(Camera* camera) { m_Camera = camera;  }
 		inline void SetTargetCameraController(CameraController* camera) { m_CameraContoller = camera; }
 		inline Camera* GetTargetCamera() { return m_Camera; }
@@ -56,6 +57,18 @@ namespace GEngine {
 
 		static void UnloadGraphics();
 		static void ReloadGraphics();
+
+		static int GetWidth();
+		static int GetHeight();
+		static int GetSafeTop();
+		static int GetSafeBottom();
+		static int GetSafeLeft();
+		static int GetSafeRight();
+		static float GetSafeTopUI();
+		static float GetSafeBottomUI();
+		static float GetSafeLeftUI();
+		static float GetSafeRightUI();
+
 
 		void Setup();
 		void Shutdown();

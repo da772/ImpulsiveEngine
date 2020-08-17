@@ -94,7 +94,10 @@ namespace GEngine {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			data.Width = width;
 			data.Height = height;
-
+			data.safe_top = 0;
+			data.safe_bottom = 0;
+			data.safe_left = 0;
+			data.safe_right = 0;
 			WindowResizeEvent event(width, height);
 			data.EventCallback(event);
 		});
@@ -183,6 +186,13 @@ namespace GEngine {
 		});
 
 
+	}
+
+	void GLFW_Window::GetSafeArea(int* top, int* bottom, int* left, int* right)
+	{
+		glfwGetFramebufferSize(m_Window, right, top);
+		*bottom = 0;
+		*left = 0;
 	}
 
 	void GLFW_Window::Shutdown()

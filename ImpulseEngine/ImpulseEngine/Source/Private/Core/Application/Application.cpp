@@ -112,7 +112,57 @@ namespace GEngine {
         SceneManager::ReloadGraphics();
     }
     
-    void Application::QueueWindowApi(FWindowApi windowApi) {
+	int Application::GetWidth()
+	{
+        return s_Instance->m_width;
+	}
+
+	int Application::GetHeight()
+	{
+        return  s_Instance->m_height;
+	}
+
+	int Application::GetSafeTop()
+	{
+        return  s_Instance->GetWindow()->GetWindowData().safe_top;
+	}
+
+	int Application::GetSafeBottom()
+	{
+        return s_Instance->GetWindow()->GetWindowData().safe_bottom;
+	}
+
+	int Application::GetSafeLeft()
+	{
+        return s_Instance->GetWindow()->GetWindowData().safe_left;
+	}
+
+	int Application::GetSafeRight()
+	{
+        return s_Instance->GetWindow()->GetWindowData().safe_right;
+	}
+
+	float Application::GetSafeTopUI()
+	{
+        return  s_Instance->GetWindow()->GetWindowData().GetSafeTopUI();
+	}
+
+	float Application::GetSafeBottomUI()
+	{
+        return  s_Instance->GetWindow()->GetWindowData().GetSafeBottomUI();
+	}
+
+	float Application::GetSafeLeftUI()
+	{
+        return s_Instance->GetWindow()->GetWindowData().GetSafeLeftUI();
+	}
+
+	float Application::GetSafeRightUI()
+	{
+        return  s_Instance->GetWindow()->GetWindowData().GetSafeRightUI();
+	}
+
+	void Application::QueueWindowApi(FWindowApi windowApi) {
         tempWindowApi = windowApi;
         b_NewWindowApi = true;
     }
@@ -137,7 +187,6 @@ namespace GEngine {
         m_Window = Scope<Window>(Window::Create(WindowData(std::string(title), m_width, m_height)));
         m_Window->SetEventCallback(BIND_EVENT_FN(Application, OnEvent));
         LayerSetup();
-        
     }
     
     void Application::SetGraphicsApi(FGraphicsApi graphicsApi)
@@ -344,8 +393,6 @@ namespace GEngine {
         Renderer::OnWindowResize(width, height);
         
         m_Minimized = false;
-        
-        
         return false;
     }
     

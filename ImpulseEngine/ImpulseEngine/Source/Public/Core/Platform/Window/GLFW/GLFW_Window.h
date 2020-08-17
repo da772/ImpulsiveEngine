@@ -30,7 +30,11 @@ namespace GEngine {
 		virtual void Shutdown() override;
 		virtual float const GetTime() const override;
 
+
 		virtual void Init(const WindowData& props) override;
+
+
+		void GetSafeArea(int* top, int* bottom, int* left, int* right) override;
 
 	private:
 		
@@ -38,7 +42,7 @@ namespace GEngine {
 		//HANDLE myHandle;
 	private:
 		GLFWwindow* m_Window;
-		WindowData m_Data;
+		
 
 
 	};

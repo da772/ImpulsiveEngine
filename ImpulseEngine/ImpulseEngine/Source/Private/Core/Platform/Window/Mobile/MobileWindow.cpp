@@ -5,6 +5,11 @@
 #include "Public/Core/Events/ApplicationEvent.h"
 #include "Public/Core/Events/TouchEvent.h"
 #include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Core/Util/GEMath.h"
+
+#ifdef GE_PLATFORM_ANDROID
+#include "Public/Core/Platform/Window/Android/android_util.h"
+#endif
 
 namespace GEngine {
     
@@ -83,6 +88,20 @@ namespace GEngine {
             Mobile_Input_Callback::HideKeyboard();
 		}
 
+		void MobileWindow::GetSafeArea(int* top, int* bottom, int* left, int* right)
+		{
+#ifdef GE_PLATFORM_ANDROID
+            AndroidUtil::GetSafeArea(top, bottom, left, right);
+#endif
+#ifdef GE_PLATFORM_IOS
+            /** ADD IOS SUPPORT **/
+            *top = 0;
+            *bottom = 0;
+            *left = 0;
+            *right = 0;
+#endif
+		}
+
 		void MobileWindow::Shutdown()
         {
         }
@@ -113,7 +132,9 @@ namespace GEngine {
         {
             m_Data.Width = width;
             m_Data.Height = height;
-
+#ifdef GE_PLATFORM_ANDROID
+			AndroidUtil::GetSafeArea(&m_Data.safe_top, &m_Data.safe_bottom, &m_Data.safe_left, &m_Data.safe_right);
+#endif
 			WindowResizeEvent event(width, height);
             m_Data.EventCallback(event);
         }

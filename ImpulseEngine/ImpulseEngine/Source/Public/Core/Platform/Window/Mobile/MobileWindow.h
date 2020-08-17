@@ -40,9 +40,9 @@ namespace GEngine {
 
         virtual void HideKeyboard();
 
+        virtual void GetSafeArea(int* top, int* bottom, int* left, int* right) override;
 
     private:
-        WindowData m_Data;
         
         
     };

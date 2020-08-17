@@ -31,6 +31,8 @@ namespace GEngine {
 
 
 
+		void GetSafeArea(int* top, int* bottom, int* left, int* right) override;
+
 	private:
 		HANDLE m_Window;
 		WindowData m_Data;
