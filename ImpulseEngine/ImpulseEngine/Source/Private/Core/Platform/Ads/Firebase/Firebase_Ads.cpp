@@ -60,31 +60,36 @@ namespace GEngine {
 
 	Firebase_Ads::~Firebase_Ads()
 	{
-
+#ifdef GE_PLATFORM_ANDROID
+		if (m_rewardAdInit) {
+			AndroidUtil::CleanJNIEnv();
+		}
+#endif
 	}
 
 	void Firebase_Ads::Initialize()
 	{
 #ifdef GE_ADS_FIREBASE
 		if (m_adId != "") {
+			if (m_app) {
+				GE_CORE_ASSERT(!m_app, "FIREBASE APP ALREADY CREATED!");
+				return;
+			}
+#ifdef GE_PLATFORM_ANDROID
+			m_app =
+				firebase::App::Create(firebase::AppOptions(),
+					AndroidUtil::GetJNIEnv(),
+					Mobile_Input_Callback::GetViewContext());
+#endif
+#ifdef GE_PLATFORM_IOS
+			m_app = firebase::App::Create(firebase::AppOptions());
+#endif
 			ThreadPool::AddJob([this]() {
 				{
 					std::lock_guard<std::mutex> guard(m_initMutex);
 					m_initalizing = true;
 				}
-				if (m_app) {
-					GE_CORE_ASSERT(!m_app, "FIREBASE APP ALREADY CREATED!");
-					return;
-				}
-#ifdef GE_PLATFORM_ANDROID
-				m_app =
-					firebase::App::Create(firebase::AppOptions(),
-						AndroidUtil::GetJNIEnv(),
-						Mobile_Input_Callback::GetViewContext());
-#endif
-#ifdef GE_PLATFORM_IOS
-				m_app = firebase::App::Create(firebase::AppOptions());
-#endif
+				
 				firebase::admob::Initialize(*m_app, m_adId.c_str());
 				double ct = Time::GetEpochTimeSec();
 				{

@@ -1,6 +1,8 @@
 #include "gepch.h"
 #include "Public/Core/Application/Window.h"
 #include "Public/Core/Application/Application.h"
+#include "Public/Core/Util/GEMath.h"
+
 #ifdef GE_WINDOW_API_GLFW
 #include "Public/Core/Platform/Window/GLFW/GLFW_Window.h"
 #endif
@@ -26,8 +28,29 @@ namespace GEngine {
 	}
 
 
+	void Window::GetSafeAreaUI(float* top, float* bottom, float* left, float* right)
+	{
+		*top = ((float)m_Data.safe_top / (float)m_Data.Height);
+		*bottom = ((float)m_Data.safe_bottom/ (float)m_Data.Height);
+		*left = ((float)m_Data.safe_left/ (float)m_Data.Width);
+		*right = ((float)m_Data.safe_right / (float)m_Data.Width);
+	}
+
 	Window::~Window()
 	{
+	}
+
+	void Window::OnUpdate(bool m_Minimized)
+	{
+
+	}
+
+	void Window::GetSafeArea(int* top, int* bottom, int* left, int* right)
+	{
+		*top = 0;
+		*bottom = 0;
+		*left = 0;
+		*right = 0;
 	}
 
 	Window* Window::Create(const WindowData& props)
@@ -52,6 +75,26 @@ namespace GEngine {
 				return nullptr;
         }
 		
+	}
+
+	const float WindowData::GetSafeTopUI() const
+	{
+		return (float)((float)safe_top / (float)Height);
+	}
+
+	const float WindowData::GetSafeBottomUI() const
+	{
+		return (float)((float)safe_bottom / (float)Height);
+	}
+
+	const float WindowData::GetSafeLeftUI() const
+	{
+		return (float)((float)safe_left / (float)Width);
+	}
+
+	const float WindowData::GetSafeRightUI() const
+	{
+		return (float)((float)safe_right / (float)Width);
 	}
 
 }

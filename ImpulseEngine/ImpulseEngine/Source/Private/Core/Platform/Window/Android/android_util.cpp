@@ -28,6 +28,7 @@ namespace AndroidUtil {
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "Android3.NativeActivity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "Android3.NativeActivity", __VA_ARGS__))
 
+
 	struct saved_state {
 		float angle;
 		int32_t x;
@@ -123,14 +124,63 @@ namespace AndroidUtil {
 		jobject cls = jni_env->CallObjectMethod(nativeActivity, getClassLoader);
 		jclass classLoader = jni_env->FindClass("java/lang/ClassLoader");
 		jmethodID findClass = jni_env->GetMethodID(classLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
-		jstring strClassName = jni_env->NewStringUTF("com.helper.GoogleAd");
-		jclass googleAdClass = (jclass)(jni_env->CallObjectMethod(cls, findClass, strClassName));
+		jstring strClassName = jni_env->NewStringUTF("com.helper.JavaInterface");
+		jclass androidInterface = (jclass)(jni_env->CallObjectMethod(cls, findClass, strClassName));
 		jni_env->DeleteLocalRef(strClassName);
 		
 		jstring jstr1 = jni_env->NewStringUTF(id.c_str());
-		jmethodID mid = jni_env->GetStaticMethodID(googleAdClass, "SetID", "(Landroid/app/Activity;Ljava/lang/String;)V");
-		jni_env->CallStaticVoidMethod(googleAdClass, mid, nativeActivity,jstr1);
+		jmethodID mid = jni_env->GetStaticMethodID(androidInterface, "SetRewardAdID", "(Landroid/app/Activity;Ljava/lang/String;)V");
+		jni_env->CallStaticVoidMethod(androidInterface, mid, nativeActivity,jstr1);
 		jni_env->DeleteLocalRef(jstr1);
+		CleanJNIEnv();
+	}
+
+	struct safeArea {
+		int* top, bottom, left, right;
+	};
+
+	void GetSafeArea(int* top, int* bottom, int* left, int* right)
+	{
+		jni_env = GetJNIEnv();
+		jobject nativeActivity = m_engine->app->activity->clazz;
+		jclass acl = jni_env->GetObjectClass(nativeActivity);
+		jmethodID getClassLoader = jni_env->GetMethodID(acl, "getClassLoader", "()Ljava/lang/ClassLoader;");
+		jobject cls = jni_env->CallObjectMethod(nativeActivity, getClassLoader);
+		jclass classLoader = jni_env->FindClass("java/lang/ClassLoader");
+		jmethodID findClass = jni_env->GetMethodID(classLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+		jstring strClassName = jni_env->NewStringUTF("com.helper.JavaInterface");
+		jclass androidInterface = (jclass)(jni_env->CallObjectMethod(cls, findClass, strClassName));
+		jni_env->DeleteLocalRef(strClassName);
+
+		jmethodID mid = jni_env->GetStaticMethodID(androidInterface, "GetSafeArea", "(Landroid/app/Activity;)Ljava/lang/String;");
+		jstring val = (jstring)jni_env->CallStaticObjectMethod(androidInterface, mid, nativeActivity);
+
+		const char* _cStr = jni_env->GetStringUTFChars(val, 0);
+		uint32_t cSize = (uint32_t)jni_env->GetStringLength(val);
+		std::string s(_cStr);
+		jni_env->ReleaseStringUTFChars(val, _cStr);
+		jni_env->DeleteLocalRef(val);
+		CleanJNIEnv();
+		int counter = 0;
+		int* arr[4] = { top, bottom, left, right };
+		std::string _s;
+		for (char c : s) {
+			if (c == ':') {
+				*arr[counter] = std::stoi(_s);
+				_s = "";
+				if (++counter >= 4) break;
+				continue;
+			}
+			else {
+				_s += c;
+			}
+		}
+
+		*top = *arr[0];
+		*bottom = *arr[1];
+		*left = *arr[2];
+		*right = *arr[3];
+		GE_CORE_DEBUG("TOP:{0} BOTTOM:{1} LEFT:{2} RIGHT:{3}", *top, *bottom, *left, *right);
 	}
 
 	class LoggingRewardedVideoListener
@@ -156,8 +206,13 @@ namespace AndroidUtil {
 		if (result != 0) {
 			GE_CORE_ERROR("COULD NOT CREATE JNIENV");
 			return nullptr;
-			}
+		}
 		return env;
+	}
+
+	void CleanJNIEnv()
+	{
+		m_engine->app->activity->vm->DetachCurrentThread();
 	}
 
 	jobject GetAndroidActivity()

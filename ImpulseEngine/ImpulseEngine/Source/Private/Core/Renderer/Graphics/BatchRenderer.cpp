@@ -12,6 +12,8 @@
 #include "Public/Core/Application/SceneManager.h"
 #include "Public/Core/Renderer/Pipeline/RenderPipeline.h"
 #include "Public/Core/Util/Time.h"
+#include "Public/Core/Application/Application.h"
+#include "Public/Core/Util/GEMath.h"
 
 namespace GEngine {
      Batch::Batch(Ref<Shape> shape, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, int maxShapes, int maxTextures) : 
@@ -75,8 +77,8 @@ namespace GEngine {
 
 	 }
 
-	 BatchRenderer::BatchRenderer(const char* pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
-		 m_PipelineId(pipeline)
+	 BatchRenderer::BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
+		 m_PipelineId(pipeline == ERenderType::GAME ? "2d" : "ui"), m_renderType(pipeline)
 	 {
 		m_MaxVertices = m_MaxShapes * m_Shape->GetVerticesSize();
 		m_MaxIndices = m_MaxShapes * m_Shape->GetIndicesSize();
@@ -134,6 +136,12 @@ namespace GEngine {
 	 {
 		 Setup();
 
+		 if (m_renderType == ERenderType::UI) {
+			 position.y = GEMath::MapRange(position.y, -1.f, 1.f, Application::GetSafeBottomUI()-1.f, 1.f - Application::GetSafeTopUI());
+			 position.x = GEMath::MapRange(position.x, -1.f, 1.f, Application::GetSafeLeftUI()-1.f, 1.f - Application::GetSafeRightUI());
+			// GE_CORE_DEBUG("UI: {0},{1},{2},{3}", Application::GetSafeTopUI(), Application::GetSafeBottom(), Application::GetSafeLeftUI(), Application::GetSafeRight());
+		 }
+
 		 BatchObjectData data = { position, rotation, scale, color, texture == nullptr ? m_BlankTexture : texture, textureScale, alphaChannel,
 			 m_Shape->GetVertices(position, rotation, { scale.x, scale.y, 1 }, color, 0, textureScale, nullptr, alphaChannel) };
 		
@@ -143,6 +151,11 @@ namespace GEngine {
 
 	 long BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, float textureScale, float alphaChannel /*= 4*/)
 	 {
+		 if (m_renderType == ERenderType::UI) {
+			 position.y = GEMath::MapRange(position.y, -1.f, 1.f, Application::GetSafeBottomUI() - 1.f, 1.f - Application::GetSafeTopUI());
+			 position.x = GEMath::MapRange(position.x, -1.f, 1.f, Application::GetSafeLeftUI() - 1.f, 1.f - Application::GetSafeRightUI());
+			// GE_CORE_DEBUG("UI: {0},{1},{2},{3}", Application::GetSafeTopUI(), Application::GetSafeBottom(), Application::GetSafeLeftUI(), Application::GetSafeRight());
+		 }
 		 Setup();
 
 		 BatchObjectData data = { position, rotation, scale, color, texture->GetTexture(), textureScale, alphaChannel,

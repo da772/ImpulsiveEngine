@@ -27,10 +27,13 @@ namespace AndroidUtil {
 
 	void SetRewardUserId_Google(std::string id);
 
+	void GetSafeArea(int* top, int* bottom, int* left, int* right);
+
 
 	_JNIEnv* GetJNIEnv();
+	void CleanJNIEnv();
 	_jobject* GetAndroidActivity();
-
+	
 
 
 }

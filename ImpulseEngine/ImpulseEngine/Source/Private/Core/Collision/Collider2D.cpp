@@ -68,7 +68,7 @@ namespace GEngine {
 		float B2 = _position.y - _scale.y/2.f;
 
 
-		bool b = L1 <= R2 && R1 >= L2 && T1 >= B2 && B1 <= T2;
+		bool b = L1 < R2 && R1 > L2 && T1 > B2 && B1 < T2;
 
 
 		//GE_CORE_DEBUG("AABB POS CHECK {0} : ({1},{2},{3}) - ({4}, {5}, {6})", b, position.x, position.y, position.z, _position.x, _position.y, _position.z);

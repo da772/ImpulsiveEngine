@@ -33,6 +33,7 @@ namespace GEngine {
 
 	struct WindowData
 	{
+	public:
 		WindowData() {};
 		WindowData(std::string title, unsigned int width = 1280, unsigned int height = 720) 
 		:Title(title), Width(width),Height(height)	{
@@ -41,6 +42,11 @@ namespace GEngine {
 		std::string Title = "GEngine";
 		unsigned int Width = 1280, Height = 720;
 		bool VSync;
+		int safe_top =0 , safe_bottom = 0, safe_left = 0, safe_right = 0;
+		const float GetSafeTopUI() const;
+		const float GetSafeBottomUI() const;
+		const float GetSafeLeftUI() const;
+		const float GetSafeRightUI() const;
 
 		EventCallbackFn EventCallback;
 	};
@@ -53,6 +59,8 @@ namespace GEngine {
 		virtual ~Window();
 
 		virtual void OnUpdate(bool m_Minimized) = 0;
+
+		inline const WindowData& GetWindowData() { return m_Data; };
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
@@ -78,6 +86,8 @@ namespace GEngine {
         
         virtual void GetFrameBufferSize(int* width, int* height) = 0;
 
+		virtual void GetSafeArea(int* top, int* bottom, int* left, int* right) = 0;
+
 		virtual void Init(const WindowData& props) = 0;
 
 		static Window* Create(const WindowData& props = WindowData());
@@ -87,8 +97,11 @@ namespace GEngine {
 
 		Scope<GraphicsContext> m_Context;
 
-		inline static const FWindowApi GetWindowApi() { return Window::s_WindowApi; }
+		virtual void GetSafeAreaUI(float* top, float* bottom, float* left, float* right);
 
+		inline static const FWindowApi GetWindowApi() { return Window::s_WindowApi; }
+	protected:
+		WindowData m_Data;
 	private:
 		static FWindowApi s_WindowApi;
 	};

@@ -148,7 +148,7 @@ namespace GEngine {
 
 		Ref<Collider> lastC = s_lastUICollision.lock();
 		if (s_lastCollider) {
-			lastC->CollideEnd(nullptr);
+			lastC->UIMouseCollideEnd(x,y);
 			s_lastCollider = false;
 		}
 		return nullptr;

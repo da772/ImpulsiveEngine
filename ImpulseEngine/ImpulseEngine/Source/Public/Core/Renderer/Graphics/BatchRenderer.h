@@ -64,9 +64,14 @@ namespace GEngine {
 		int textureId = 0;
 	};
 
+	enum class ERenderType {
+		GAME = 0,
+		UI
+	};
+
 	class BatchRenderer {
 	public:
-		BatchRenderer(const char* pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr);
+		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr);
 		~BatchRenderer();
 
 		long AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture = nullptr, float textureScale = 1.f, float alphaChannel = 4);
@@ -96,8 +101,10 @@ namespace GEngine {
 		void SetSort(bool b);
 		void ReCreateBatches();
 
-	private:
+		inline void SetRenderType(ERenderType type) { m_renderType = type; }
 
+	private:
+		ERenderType m_renderType = ERenderType::GAME;
 		void Setup();
 		void ReCreateShapeVertices(BatchObjectData* data);
 		bool bUnloaded = false;

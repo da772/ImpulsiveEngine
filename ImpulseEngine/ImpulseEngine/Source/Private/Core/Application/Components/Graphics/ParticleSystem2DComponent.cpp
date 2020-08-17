@@ -188,7 +188,7 @@ namespace GEngine {
 		if (s_ShapeFactory == nullptr) {
 			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
 			Ref<Shader> m_Shader = Ref<Shader>(Shader::Create(path));
-			ParticleSystem2DComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer("2d", Ref<Quad>(new Quad()),
+			ParticleSystem2DComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
 				50000, m_Shader));
 			s_ShapeFactory->SetSort(false);
 		}
