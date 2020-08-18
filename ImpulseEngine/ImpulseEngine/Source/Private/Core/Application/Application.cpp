@@ -286,9 +286,6 @@ namespace GEngine {
 			m_Window->OnUpdate(false);
 		}
 		
-		{
-			CollisionDetection::CheckCollision();
-		}
 
 		{
 			GE_PROFILE_TIMER("Application:Layers", &profile["Layers"]);
@@ -334,6 +331,7 @@ namespace GEngine {
 
             {
                 Physics::Update(timestep);
+                CollisionDetection::CheckCollision();
             }
 			
 			

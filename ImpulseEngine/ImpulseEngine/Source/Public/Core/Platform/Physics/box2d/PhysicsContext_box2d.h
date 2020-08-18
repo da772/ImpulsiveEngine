@@ -4,6 +4,7 @@
 #include "Public/Core/Physics/PhysicsContext.h"
 
 class b2World;
+class ContactListener;
 
 namespace GEngine {
 
@@ -23,6 +24,7 @@ namespace GEngine {
 
 	private:
 		b2World* m_world;
+		ContactListener m_listener;
 
 	};
 
