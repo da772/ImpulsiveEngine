@@ -9,6 +9,7 @@ namespace GEngine {
 	class SubTexture2D;
 	class Collider2D;
 	class Shader;
+	class ScriptObject;
 
 	class ButtonComponent : public Component {
 	public:
@@ -29,7 +30,14 @@ namespace GEngine {
 		void UnloadGraphics() override;
 		void ReloadGraphics() override;
 
-		
+		void SetOnMouseEndCollideScript(Ref<ScriptObject> obj);
+		void SetOnMouseStartCollideScript(Ref<ScriptObject> obj);
+
+		inline void SetOnMouseStartCollide(std::function<void(float, float)> f) { m_onCollide = f; };
+		inline void SetOnMouseEndCollide(std::function<void(float, float)> f) { m_endCollide = f; };
+
+		inline void RemoveOnMouseCollideFunction() { m_onCollide = nullptr; }
+		inline void RemoveEndMouseCollideFunction() { m_endCollide = nullptr; }
 
 
 		void OnAttached(Ref<Entity> entity) override;

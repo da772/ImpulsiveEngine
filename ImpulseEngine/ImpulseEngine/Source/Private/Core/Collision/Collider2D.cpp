@@ -4,6 +4,7 @@
 
 namespace GEngine {
 
+
 	Collider2D::Collider2D(glm::vec2 position, glm::vec2 scale, float rotation)
 	{
 		SetPosition(glm::vec3(position.x, position.y, 1));

@@ -61,7 +61,7 @@ namespace GEngine {
 		bool m_dynamic = false;
 		float m_mass = 0;
 		Ref<PhysicsBody> m_body;
-		Ref<Collider2D> m_collider;
+
 		std::function<void(Ref<QuadColliderComponent>)> m_onCollide;
 		std::function<void(Ref<QuadColliderComponent>)> m_endCollide;
 

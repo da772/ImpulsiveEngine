@@ -204,6 +204,23 @@ namespace GEngine {
 			}
 		};
 
+		inline void SetPropertyNative(const char* name, Ref<ScriptObject> val) {
+			switch (ScriptManager::GetType()) {
+			case ScriptApiType::SCRIPT_DUKTAPE: {
+				duk_context* c = (*(DukValue*)m_nativeObj).context();
+				(*(DukValue*)m_nativeObj).push();
+				(*(DukValue*)m_nativeObj).prop(name).push();
+				//dukglue_push((*(DukValue*)m_nativeObj).context(), (*(DukValue*)val->GetNativeObject()).copy_from_stack);
+				duk_put_prop_string(c, 0, name);
+				duk_remove(c, -1);
+				duk_remove(c, -1);
+				break;
+			}
+			default:
+				return;
+			}
+		}
+
 		template <class T>
 		inline void SetProperty(const char* name, T val) {
 			switch (ScriptManager::GetType()) {

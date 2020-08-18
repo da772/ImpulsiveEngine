@@ -97,6 +97,12 @@ namespace GEngine {
 	}
 
 
+	void ScriptComponent::SetScriptValue(std::string name, Ref<ScriptObject> obj)
+	{
+		if (m_obj)
+			m_obj->SetPropertyNative(name.c_str(), obj);
+	}
+
 	void ScriptComponent::OnBegin()
 	{
 		//if (m_begin != nullptr && m_begin->GetType() == FUNCTION) {

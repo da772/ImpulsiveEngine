@@ -30,6 +30,7 @@
 #include "Public/Core/Application/Application.h"
 #include "Public/Core/Application/Components/ScriptComponent.h"
 #include "Public/Core/Collision/CollisionDetection.h"
+#include "Public/Core/Application/Components/UI/ButtonComponent.h"
 
 
 namespace GEngine {
@@ -170,6 +171,10 @@ namespace GEngine {
 		return nullptr;
 	}
 
+	Ref<ButtonComponent> CreateButtonComponent(Ref<ScriptVector3> pos, float rot, Ref<ScriptVector2> scale, Ref<ScriptVector4> color, float tScale= 1.f ) {
+		return CreateGameObject<ButtonComponent>(pos->GetGlm(), rot, scale->GetGlm(), color->GetGlm(), tScale);
+	}
+
 	
 
 	void ScriptApi_DukTape::Setup()
@@ -308,6 +313,8 @@ namespace GEngine {
 		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptInt, "SetInt");
 		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptBool, "SetBool");
 		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptString, "SetString");
+		dukglue_register_method(m_ctx, &ScriptComponent::SetScriptValue, "SetValue");
+		
 		dukglue_set_base_class<Component, ScriptComponent >(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateSpriteComponent, "SpriteComponent");
@@ -342,7 +349,14 @@ namespace GEngine {
 		dukglue_register_method(m_ctx, &SpriteAnimationComponent::Start, "Start");
 		dukglue_set_base_class<Component, SpriteAnimationComponent >(m_ctx);
 
+		dukglue_register_function(m_ctx, CreateButtonComponent, "ButtonComponent");
 
+		dukglue_register_method(m_ctx, &ButtonComponent::SetOnMouseStartCollideScript, "SetMouseEnterFunction");
+		dukglue_register_method(m_ctx, &ButtonComponent::SetOnMouseEndCollideScript, "SetMouseExitFunction");
+		dukglue_register_method(m_ctx, &ButtonComponent::RemoveEndMouseCollideFunction, "RemoveMouseExitFunction");
+		dukglue_register_method(m_ctx, &ButtonComponent::RemoveOnMouseCollideFunction, "RemoveMouseEnterFunction");
+
+		dukglue_set_base_class<Component, ButtonComponent>(m_ctx);
 
 		dukglue_register_function(m_ctx, CreateQuadColliderComponent, "QuadColliderComponent");
 		dukglue_register_method(m_ctx, &QuadColliderComponent::SetEndCollideFunction_Script, "SetOnCollideEndFunction");

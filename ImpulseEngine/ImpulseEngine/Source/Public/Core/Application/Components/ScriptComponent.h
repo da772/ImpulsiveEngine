@@ -18,6 +18,7 @@ namespace GEngine {
 		void SetScriptFloat(std::string name, int v);
 		void SetScriptString(std::string name, std::string v);
 		void SetScriptBool(std::string name, bool v);
+		void SetScriptValue(std::string name, Ref<ScriptObject> obj);
 
 	protected:
 		void OnBegin() override;
