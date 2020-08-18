@@ -7,7 +7,8 @@ namespace GEngine {
 
 	class Collider2D : public Collider {
 	public:
-		Ref<Collider2D> Create();
+		
+		Collider2D(glm::vec2 position, glm::vec2 scale, float rotation);
 		~Collider2D() {};
 		virtual bool CheckCollisionPoint(float x, float y) override;
 		virtual bool CheckCollision(Ref<Collider> collider) override; 

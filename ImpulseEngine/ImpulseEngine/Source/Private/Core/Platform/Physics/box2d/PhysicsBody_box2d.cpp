@@ -117,6 +117,8 @@ namespace GEngine {
 		shape.SetAsBox(size.x * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, size.y * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, 
 			b2Vec2(offset.x, offset.y), (float) ((PI / 180.f) * rotation) );
 		m_fixture = m_body->CreateFixture(&shape, mass);
+		m_fixture->SetUserData((void*)&m_self);
+		m_fixture->SetSensor(m_sensor);
 	}
 
 
@@ -124,6 +126,13 @@ namespace GEngine {
 	{
 		PhysicsBody::SetAngularVelocity(f);
 		m_body->SetAngularVelocity(f);
+	}
+
+	void PhysicsBody_box2d::SetSensor(const bool b)
+	{
+		PhysicsBody::SetSensor(b);
+		if (m_fixture)
+			m_fixture->SetSensor(m_sensor);
 	}
 
 	void PhysicsBody_box2d::SetBounce(const float f)

@@ -24,7 +24,7 @@ namespace GEngine {
 
 	private:
 		b2World* m_world;
-		ContactListener m_listener;
+		
 
 	};
 

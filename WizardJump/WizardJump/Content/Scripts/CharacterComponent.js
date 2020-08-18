@@ -4,10 +4,10 @@ self.doesUpdate = true;
 self.spriteDir = 0;
 
 self.colliderPos = {x:.00, y:.00}
-self.colliderScale = {x:.4, y:1}
+self.colliderScale = {x:.25, y:1}
 
 self.groundPos = {x:.00, y:-.45}
-self.groundScale = {x:.4, y:.3}
+self.groundScale = {x:.25, y:.15}
 
 self.dir = 1;
 self.lastWalkFame = 0;
@@ -27,18 +27,17 @@ self.OnBegin = function () {
     self.spriteCollider.tag = "characterCollider";
     
     self.rigidBody = ScriptComponent("Content/Scripts/RigidBody.js");
-    //self.rigidBody.SetString("testString", "Hello World!");
 
     self.entity.AddComponent(self.spriteCollider);
     self.entity.AddComponent(self.groundCollider);
     self.entity.AddComponent(self.spriteComponent);
     self.entity.AddComponent(self.rigidBody);
 
-    self.collisionSprite = self.spriteComponent.CreateQuad(Vector3(self.groundPos.x,self.groundPos.y,2), 0,
-         Vector3(self.groundScale.x,self.groundScale.y,1), Vector4(1,0,1,.25), null, 1);
+    self.collisionSprite = self.spriteComponent.CreateQuad(Vector3(self.colliderPos.x,self.colliderPos.y,2), 0,
+         Vector3(self.colliderScale.x,self.colliderScale.y,1), Vector4(1,0,0,.25), null, 1);
 
-    self.groundSprite = self.spriteComponent.CreateQuad(Vector3(self.colliderPos.x,self.colliderPos.y,2), 0,
-         Vector3(self.colliderScale.x,self.colliderScale.y,2), Vector4(1,0,0,.25), null, 1);
+    self.groundSprite = self.spriteComponent.CreateQuad(Vector3(self.groundPos.x,self.groundPos.y,2), 0,
+         Vector3(self.groundScale.x,self.groundScale.y,2), Vector4(0,1,0,.25), null, 1);
    
     self.characterSprite = self.spriteComponent.CreateQuadAtlas(
         Vector3(0,0,1), 

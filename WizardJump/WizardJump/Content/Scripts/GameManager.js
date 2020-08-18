@@ -4,9 +4,10 @@ component.doesUpdate = true;
 
 component.OnBegin = function () {
     SetCameraPosition(Vector3(0,2.25,0));
-    SetCameraZoom(3);
+    SetCameraZoom(5);
 
-    component.entities = [ Entity(), Entity(), Entity(), Entity(), Entity(), Entity() ];
+    component.entities = [ Entity(), Entity(), Entity(), Entity(), Entity(), Entity(), Entity() ];
+    component.entities[0].SetPosition(Vector3(0,2,1));
     component.entities[0].AddComponent(ScriptComponent("Content/Scripts/BackgroundComponent.js"))
     
     component.entities[1].SetPosition(Vector3(0,1.5,1));
@@ -24,10 +25,13 @@ component.OnBegin = function () {
     component.entities[4].SetScale(Vector3(1,10,1));
     component.entities[4].AddComponent(ScriptComponent("Content/Scripts/WallComponent.js"))
 
-    component.entities[5].SetPosition(Vector3(0,2.5,1));
-    component.entities[5].SetScale(Vector3(1,.5,1));
+    component.entities[5].SetPosition(Vector3(1,2,1));
+    component.entities[5].SetScale(Vector3(1,2,1));
     component.entities[5].AddComponent(ScriptComponent("Content/Scripts/GroundComponent.js"))
-
+    
+    component.entities[6].pee = "HEEE";
+    component.entities[6].AddComponent(ScriptComponent("Content/Scripts/UIComponent.js"))
+   
    
 }
 

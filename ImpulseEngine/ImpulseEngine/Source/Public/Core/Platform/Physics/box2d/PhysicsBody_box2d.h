@@ -28,6 +28,8 @@ namespace GEngine {
 		virtual void SetScale(const glm::vec2& scale) override;
 		virtual void SetAngularVelocity(const float f) override;
 
+		virtual void SetSensor(const bool b) override;
+
 		virtual void SetBounce(const float f) override;
 
 		const float GetAngularVelocity() override;

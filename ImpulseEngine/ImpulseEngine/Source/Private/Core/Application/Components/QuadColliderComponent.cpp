@@ -26,9 +26,6 @@ namespace GEngine {
 
 	QuadColliderComponent::~QuadColliderComponent()
 	{
-		if (m_collider) {
-			CollisionDetection::RemoveCollider(m_collider);
-		}
 		m_endCollide = nullptr;
 		m_onCollide = nullptr;
 		m_body = nullptr;
@@ -40,39 +37,32 @@ namespace GEngine {
 		m_worldPosition = glm::vec2(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y);
 		m_worldScale = glm::vec2(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y);
 		m_worldRotation = m_rotation + e->GetEntityRotation().z;
-		m_collider = make_shared<Collider2D>(m_worldPosition,
-			m_worldScale, m_worldRotation);
-		m_collider->SetColliderShape(EColliderShape::Quad);
-		m_collider->SetColliderLayer(EColliderLayer::Game);
-		m_collider->SetColliderType(m_dynamic ? EColliderType::Dynamic : EColliderType::Static);
-		m_collider->SetComponent(static_pointer_cast<Component>(self.lock()));
-		m_collider->SetEntity(static_pointer_cast<Entity>(entity.lock()));
-		m_collider->SetCollisionStartFunction([this](Ref < Collider> c) {
+
+		PhysicsInfo info;
+		info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Static;
+		info.position = glm::vec2(e->GetEntityPosition().x, e->GetEntityPosition().y);
+		info.rotation = glm::radians(e->GetEntityRotation().z);
+		info.fixedRotation = true;
+		m_body = Physics::CreateBody(info);
+		m_body->SetComponent(std::static_pointer_cast<Component>(self.lock()));
+		m_body->SetSensor(!m_physics);
+		m_body->SetQuad(m_worldScale, m_position, m_mass, m_rotation);
+
+		
+		m_body->SetOnCollideStartFunction([this](Ref < PhysicsBody> c) {
 			if (m_onCollide != nullptr) {
-				m_onCollide(static_pointer_cast<QuadColliderComponent>(c->GetComponent().lock()));
+				m_onCollide(static_pointer_cast<QuadColliderComponent>(c->GetComponent()));
 			}
 		});
-		m_collider->SetCollisionEndFunction([this](Ref < Collider> c) {
+		m_body->SetOnCollideEndFunction([this](Ref < PhysicsBody> c) {
 			if (m_endCollide != nullptr) {
-				m_endCollide(static_pointer_cast<QuadColliderComponent>(c->GetComponent().lock()));
+				m_endCollide(static_pointer_cast<QuadColliderComponent>(c->GetComponent()));
 			}
 			});
-		CollisionDetection::AddCollider(m_collider);
-		if (m_physics) {
-			PhysicsInfo info;
-			info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Static;
-			info.position = glm::vec2(e->GetEntityPosition().x, e->GetEntityPosition().y);
-			info.rotation = glm::radians(e->GetEntityRotation().z);
-			info.fixedRotation = true;
-			m_body = Physics::CreateBody(info);
-			m_body->SetQuad(m_worldScale, m_position, m_mass, m_rotation);
-		}
 	}
 
 	void QuadColliderComponent::OnEnd()
 	{
-		CollisionDetection::RemoveCollider(m_collider);
-		m_collider = nullptr;
 		m_body = nullptr;
 	}
 
@@ -90,17 +80,16 @@ namespace GEngine {
 	{
 		Ref<Entity> e = entity.lock();
 		m_position = glm::vec2(x + e->GetEntityPosition().x, y + e->GetEntityPosition().y);
-		m_collider->SetPosition(glm::vec3(m_position.x, m_position.y, 1));
-		if (m_physics) {
-			m_body->SetPosition(glm::vec2(x, y));
-		}
+		//m_collider->SetPosition(glm::vec3(m_position.x, m_position.y, 1));
+		//m_body->SetPosition(glm::vec2(x, y));
 	}
 
 	void QuadColliderComponent::SetScale(float x, float y)
 	{
 		Ref<Entity> e = entity.lock();
 		m_scale = glm::vec2(x * e->GetEntityScale().x, y * e->GetEntityScale().y);
-		m_collider->SetScale(glm::vec3(m_scale.x, m_scale.y,1));
+		
+		//m_collider->SetScale(glm::vec3(m_scale.x, m_scale.y,1));
 	}
 
 	glm::vec2 QuadColliderComponent::GetPosition()
@@ -147,6 +136,11 @@ namespace GEngine {
 		if (m_physics)
 			return m_body->GetBounce();
 		return 0;
+	}
+
+	void QuadColliderComponent::SetDynamic(bool b)
+	{
+		m_dynamic = b;
 	}
 
 	void QuadColliderComponent::IncreaseLinearVelocity(float x, float y)
@@ -205,14 +199,16 @@ namespace GEngine {
 				glm::vec3 pos = glm::vec3(m_position.x, m_position.y, 1);
 				pos = pos + transform->GetPosition();
 				m_worldPosition = pos;
-				m_collider->SetPosition(pos);
+				if (!m_physics)
+					m_body->SetPosition(transform->GetPosition());
 
 
 			
 				glm::vec3 scale = glm::vec3(m_scale.x, m_scale.y, 1);
 				scale = scale * transform->GetScale();
 				m_worldScale = glm::vec2(scale.x, scale.y);
-				m_collider->SetScale(scale);
+				if (!m_physics)
+					m_body->SetScale(m_worldScale);
 
 				glm::vec3 rotation = glm::vec3(0, 0, m_rotation);
 				rotation = rotation + transData.rotation;

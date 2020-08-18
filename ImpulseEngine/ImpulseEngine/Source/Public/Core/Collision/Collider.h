@@ -65,10 +65,9 @@ namespace GEngine {
 		void SetComponent(Weak<Component> c);
 
 		inline std::vector<Weak<Collider>>& GetLastCollide() { return m_lastCollide; }
-		inline void SetSelf(Weak<Collider> c) { m_self = c;};
+		
 		void AddLastCollide(Weak<Collider> c);
 		void RemoveLastCollide(Weak<Collider> c);
-		inline Weak<Collider> GetSelf() {return m_self;}
 
 	protected:
 		inline virtual void OnCollision(Ref<Collider> collider) {};
@@ -80,7 +79,7 @@ namespace GEngine {
 		EColliderLayer m_layer;
 		glm::vec3 position;
 		glm::vec3 scale;
-		Weak<Collider> m_self;
+		
 		glm::vec3 rotation;
 		std::function<void(Ref<Collider>)> m_collisionFunctionStart;
 		std::function<void(Ref<Collider>)> m_collisionFunctionEnd;

@@ -2,6 +2,7 @@
 
 namespace GEngine {
 
+	class PhysicsBody;
 
 	enum class PhysicsInfoType {
 		PHYSICS_Static = 0,
@@ -12,6 +13,11 @@ namespace GEngine {
 	enum class PhysicsShapes {
 		PHYSICS_Box = 0,
 		PHYSICS_Cirlce
+	};
+
+
+	struct PhysicsParent {
+		Weak<PhysicsBody> parent;
 	};
 
 

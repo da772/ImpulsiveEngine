@@ -4,16 +4,12 @@
 
 namespace GEngine {
 
-	Ref<Collider2D> Collider2D::Create() {
-		Ref<Collider2D> c = make_shared<Collider2D>();
-		c->SetSelf(c);
-		return c;
 
-	}
-
-	Collider2D::Collider2D()
+	Collider2D::Collider2D(glm::vec2 position, glm::vec2 scale, float rotation)
 	{
-
+		SetPosition(glm::vec3(position.x, position.y, 1));
+		SetRotation(glm::vec3(0, 0, rotation));
+		SetScale(glm::vec3(scale.x, scale.y, 1));
 	}
 
 	bool Collider2D::CheckCollisionPoint(float x, float y)
