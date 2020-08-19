@@ -1,9 +1,24 @@
 workspace "sandbox"
 	architecture "x64"
 
-	startproject "sandbox"
-
 	android_version = 21
+	binType = "exe"
+
+	newoption {
+		trigger = "with-hot-reload",
+		description = "enables hot reloading"
+	}
+
+	if _OPTIONS['with-hot-reload'] then
+		startproject "crMain"
+		binType = "dll"
+		defines
+		{
+			GE_HOT_RELOAD
+		}
+	else
+		startproject "sandbox"
+	end
 
 	configurations
 	{
@@ -24,7 +39,11 @@ workspace "sandbox"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+appName = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/%{wks.name}."..binType)
+appLocation = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/")
+
 include "ImpulseEngine"
+
 
 project "sandbox"
 	location "sandbox"
@@ -45,7 +64,8 @@ project "sandbox"
 	{
 		"%{prj.location}/%{prj.name}/Source/**.h",
 		"%{prj.location}/%{prj.name}/Source/**.c",
-		"%{prj.location}/%{prj.name}/Source/**.cpp"
+		"%{prj.location}/%{prj.name}/Source/**.cpp",
+		"%{prj.location}/%{prj.name}/Source/**.hpp"
 	}
 
 	removefiles
@@ -65,6 +85,9 @@ project "sandbox"
 		"ImpulseEngine/ImpulseEngine/vendor",
 		"ImpulseEngine/%{IncludeDir.glm}",
 		"ImpulseEngine/%{IncludeDir.entt}",	
+		"ImpulseEngine/%{IncludeDir.cr}",
+		"%{prj.location}/%{prj.name}/Source/"
+
 	}
 
 	libdirs 
@@ -105,20 +128,39 @@ project "sandbox"
 			"GE_PLATFORM_WINDOWS"
 		}
 
-		filter "configurations:Debug"
-			defines "GE_DEBUG"
-			runtime "Debug"
-			symbols "On"
-			kind "ConsoleApp"
-			
-		filter "configurations:Release"
-			defines "GE_RELEASE"
-			runtime "Release"
-			optimize "On"
-		filter "configurations:Dist"
-			defines "GE_DIST"
-			runtime "Release"
-			optimize "On"
+		
+
+		if _OPTIONS['with-hot-reload'] then
+			filter "configurations:Debug"
+				defines "GE_DEBUG"
+				runtime "Debug"
+				symbols "On"
+				kind "SharedLib"
+			filter "configurations:Release"
+				defines "GE_RELEASE"
+				runtime "Release"
+				optimize "On"
+				kind "SharedLib"
+			filter "configurations:Dist"
+				defines "GE_DIST"
+				runtime "Release"
+				optimize "On"
+				kind "WindowedApp"
+		else 
+			filter "configurations:Debug"
+				defines "GE_DEBUG"
+				runtime "Debug"
+				symbols "On"
+				kind "ConsoleApp"
+			filter "configurations:Release"
+				defines "GE_RELEASE"
+				runtime "Release"
+				optimize "On"
+			filter "configurations:Dist"
+				defines "GE_DIST"
+				runtime "Release"
+				optimize "On"
+		end
 
 	filter "system:ios"
 		architecture "ARM"
@@ -135,8 +177,8 @@ project "sandbox"
 			["ALWAYS_SEARCH_USER_PATHS"] = "YES",
 			["ARCHS"] = "$(ARCHS_STANDARD)",
 			["TARGETED_DEVICE_FAMILY"] = "1,2",
-			["ASSETCATALOG_COMPILER_APPICON_NAME"] = "AppIcon",
-			["IPHONEOS_DEPLOYMENT_TARGET"] = "11.0"
+			["IPHONEOS_DEPLOYMENT_TARGET"] = "11.0",
+			["ASSETCATALOG_COMPILER_APPICON_NAME"] = "AppIcon"
 		}
 
 		files 
@@ -246,7 +288,7 @@ project "sandbox"
 			runtime "Release"
 			optimize "On"
 
-			filter "platforms:x86"
+		filter "platforms:x86"
 			architecture "x86"
 			libdirs
 			{
