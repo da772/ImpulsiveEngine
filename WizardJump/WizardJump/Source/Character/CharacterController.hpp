@@ -44,6 +44,7 @@ protected:
 				}
 				else {
 					float xPos = key.second.x / (float)Application::GetWidth();
+					GE_CORE_DEBUG("TOUCH: {0}, {1}", key.second.x, key.second.y);
 					if (xPos >= 0) {
 						bodyComp->AddVelocity({ 5 * timestep, 0 });
 					}

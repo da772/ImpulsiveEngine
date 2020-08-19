@@ -7,6 +7,7 @@
 #include "Public/Core/Events/TouchEvent.h"
 #include "Public/Core/Collision/CollisionDetection.h"
 #include "Public/Core/Util/GEMath.h"
+#include "Public/Core/Util/Time.h"
 
 namespace GEngine {
 
