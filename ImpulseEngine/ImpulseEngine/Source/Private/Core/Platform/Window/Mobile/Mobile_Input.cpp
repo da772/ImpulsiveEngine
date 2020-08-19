@@ -104,8 +104,12 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 				// Touch begin
 				case 0: {
                     std::lock_guard<std::mutex> lock(touchMutex);
-                    FTouchInfo info(id, state, x, y,force, Time::GetEpochTimeMS());
-                    Mobile_Input_Callback::touches[id] = std::move(info);
+					if (Mobile_Input_Callback::touches.find(id) == Mobile_Input_Callback::touches.end()) {
+                        FTouchInfo info(id, state, x, y,force, Time::GetEpochTimeMS());
+                        Mobile_Input_Callback::touches[id] = std::move(info);
+					} else {
+                        Mobile_Input_Callback::touches[id].state = 1;
+					}
 					break;
 				}
 				// Touch move
@@ -125,6 +129,7 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 				// Touch Cancel
 				case 3: {
 					std::lock_guard<std::mutex> lock(touchMutex);
+                    GE_CORE_DEBUG("DESTROYING TOUCH");
 					Mobile_Input_Callback::touches.erase(id);
 					break;
 				}

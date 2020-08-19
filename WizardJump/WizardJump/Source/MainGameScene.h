@@ -24,7 +24,10 @@ public:
 	{
 		long long time = GEngine::Time::GetEpochTimeMS();
 
+		m_CameraController->SetPosition(e->GetEntityPosition());
 		m_CameraController->OnUpdate(timestep);
+
+		
 
 		if (FPSuiComponent) {
 
@@ -45,6 +48,8 @@ public:
 
 	}
 
+	Ref<Entity> e;
+
 	inline void OnBegin() override
 	{
 		camera = m_CameraController->GetCamera().get();
@@ -60,7 +65,8 @@ public:
 		eFPS->AddComponent(FPSuiComponent);
 		AddEntity(GEngine::CreateGameObject<BackgroundEntity>());
 		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
-		AddEntity(GEngine::CreateGameObject<CharacterEntity>());
+		e = GEngine::CreateGameObject<CharacterEntity>();
+		AddEntity(e);
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		AddEntity(eFPS);
 
@@ -151,7 +157,7 @@ private:
 					m_Rotation.z += m_CameraRotSpeed * m_CameraController->GetFOV() * timeStep.GetSeconds();
 				if (GEngine::Input::IsKeyPressed(GE_KEY_E))
 					m_Rotation.z -= m_CameraRotSpeed * m_CameraController->GetFOV() * timeStep.GetSeconds();
-
+                /*
 				if (GEngine::Mobile_Input::GetTouchCount() == 1) {
 					std::unordered_map<uint64_t, GEngine::FTouchInfo> touches = GEngine::Mobile_Input::GetTouches();
 					if (touches.begin()->first == m_lastTouchId) {
@@ -166,6 +172,7 @@ private:
 
 					}
 				}
+                 */
 
 				if (GEngine::Mobile_Input::GetTouchCount() == 2) {
 					std::unordered_map<uint64_t, GEngine::FTouchInfo> touches = GEngine::Mobile_Input::GetTouches();

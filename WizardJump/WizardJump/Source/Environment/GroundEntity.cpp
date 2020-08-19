@@ -3,7 +3,7 @@
 void GroundEntity::OnBegin()
 {
 	SetEntityPosition({ 0,-4,0 });
-	SetEntityScale({ 4,1,1 });
+	SetEntityScale({ 20,1,1 });
 
 	if (debug) {
 		m_debugSprite = CreateGameObject<SpriteComponent>();

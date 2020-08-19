@@ -30,6 +30,7 @@ protected:
 			GetEntity()->AddComponent(m_debugSprite);
 			m_debugSprite->CreateQuad({ pos.x,pos.y,1 }, 0, { scale.x,scale.y,1 }, { 1,0,0,.25f });
 		}
+
 	}
 
 
