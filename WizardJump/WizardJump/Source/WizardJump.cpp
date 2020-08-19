@@ -38,7 +38,6 @@ void ExampleLayer::OnDetach()
 
 void ExampleLayer::OnUpdate(GEngine::Timestep timeStep)
 {
-
 }
 
 void ExampleLayer::OnDraw()
@@ -57,9 +56,10 @@ WizardJump::WizardJump()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
-
+#if !defined GE_DIST
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3)+"WizardJump/Content",
 		GEngine::FileSystem::FilePath("Data/Content.pak"), false);
+#endif
 #endif
 	GEngine::FileSystem::LoadPak("Data/Content.pak");
 	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"), 

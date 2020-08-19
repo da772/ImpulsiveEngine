@@ -103,7 +103,6 @@ void DebugLayer::ShowDock(bool p_open)
 			ImGui::EndMenu();
 		}
 
-
 		ImGui::EndMenuBar();
 	}
 

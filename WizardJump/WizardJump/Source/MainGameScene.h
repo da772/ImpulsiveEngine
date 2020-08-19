@@ -1,6 +1,12 @@
 #pragma once
 #include <GEngine.h>
 #include "DebugLayer.h"
+#include "Game/GameManager.hpp"
+#include "Character/CharacterEntity.h"
+#include "Environment/BackgroundEntity.hpp"
+#include "Environment/GroundEntity.hpp"
+
+
 
 class MainGameScene : public GEngine::Scene {
 
@@ -39,12 +45,26 @@ public:
 
 	}
 
-
-
-
 	inline void OnBegin() override
 	{
-		Setup();
+		camera = m_CameraController->GetCamera().get();
+		GEngine::Application::GetApp()->SetTargetCamera(camera);
+		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
+		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(5.f);
+		m_CameraController->SetPosition({ 0,0,0 });
+		m_CameraController->SetRotation({ 0,0,0 });
+
+		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
+
+		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
+		eFPS->AddComponent(FPSuiComponent);
+		AddEntity(GEngine::CreateGameObject<BackgroundEntity>());
+		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
+		AddEntity(GEngine::CreateGameObject<CharacterEntity>());
+		AddEntity(GEngine::CreateGameObject<GroundEntity>());
+		AddEntity(eFPS);
+
+
 #ifdef GE_MOBILE_APP
 		GEngine::AdManager::SetUserId("This Is My User ID!");
 #ifdef GE_PLATFORM_ANDROID
@@ -93,40 +113,17 @@ public:
 	inline void OnUnload() override
 	{
 		font = nullptr;
-		if (mainEntity != nullptr)
-			mainEntity->Destroy();
-		mainEntity = nullptr;
 	}
 
 private:
 
 	GEngine::Ref<GEngine::Orthographic_CameraController> m_CameraController;
 	GEngine::Ref<GEngine::UIComponent> FPSuiComponent;
-	GEngine::Ref<GEngine::Entity> mainEntity;
 	GEngine::Ref<GEngine::Font> font;
 
 	bool bImGui = true;
 	long textId = -1;
 
-	inline void Setup() {
-		camera = m_CameraController->GetCamera().get();
-		GEngine::Application::GetApp()->SetTargetCamera(camera);
-		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
-		m_CameraController->SetPosition({ 0,0,0 });
-		m_CameraController->SetRotation({ 0,0,0 });
-
-		mainEntity = GEngine::CreateGameObject<GEngine::Entity>();
-		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
-		GEngine::Ref<GEngine::ButtonComponent> button1 = GEngine::CreateGameObject<GEngine::ButtonComponent>(glm::vec3(0, .875f, 0), 0.f, glm::vec2(.25, .25), glm::vec4(1, 1, 1, 1), 1.f);
-		GEngine::Ref<GEngine::Entity> e = GEngine::CreateGameObject<GEngine::Entity>();
-		e->AddComponent(GEngine::CreateGameObject<GEngine::ScriptComponent>("Content/Scripts/GameManager.js"));
-		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
-		eFPS->AddComponent(FPSuiComponent);
-		eFPS->AddComponent(button1);
-		AddEntity(e);
-		AddEntity(eFPS);
-
-	}
 
 
 	inline void SetupCamera() {

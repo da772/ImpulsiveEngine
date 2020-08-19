@@ -251,7 +251,7 @@ namespace GEngine {
         Physics::Initalize();
         AdManager::Initialize();
         SceneManager::Begin();
-        ScriptManager::Init(ScriptApiType::SCRIPT_DUKTAPE);
+        //ScriptManager::Init(ScriptApiType::SCRIPT_DUKTAPE);
 	}
 
 	void Application::Shutdown()
@@ -259,7 +259,7 @@ namespace GEngine {
         m_Running = false;
         Physics::Shutdown();
         SceneManager::End();
-        ScriptManager::Shutdown();
+        //ScriptManager::Shutdown();
         AdManager::Shutdown();
         Application::s_Instance = nullptr;
 	}

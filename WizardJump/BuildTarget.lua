@@ -2,7 +2,24 @@ workspace "WizardJump"
 	architecture "x64"
 
 	android_version = 21
-	startproject "WizardJump"
+	binType = "exe"
+
+	newoption {
+		trigger = "with-hot-reload",
+		description = "enables hot reloading"
+	}
+
+	if _OPTIONS['with-hot-reload'] then
+		startproject "crMain"
+		binType = "dll"
+		defines
+		{
+			GE_HOT_RELOAD
+		}
+	else
+		startproject "WizardJump"
+	end
+
 	configurations
 	{
 		"Debug",
@@ -22,7 +39,11 @@ workspace "WizardJump"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+appName = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/%{wks.name}."..binType)
+appLocation = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/")
+
 include "ImpulseEngine"
+
 
 project "WizardJump"
 	location "WizardJump"
@@ -43,7 +64,8 @@ project "WizardJump"
 	{
 		"%{prj.location}/%{prj.name}/Source/**.h",
 		"%{prj.location}/%{prj.name}/Source/**.c",
-		"%{prj.location}/%{prj.name}/Source/**.cpp"
+		"%{prj.location}/%{prj.name}/Source/**.cpp",
+		"%{prj.location}/%{prj.name}/Source/**.hpp"
 	}
 
 	removefiles
@@ -63,6 +85,9 @@ project "WizardJump"
 		"ImpulseEngine/ImpulseEngine/vendor",
 		"ImpulseEngine/%{IncludeDir.glm}",
 		"ImpulseEngine/%{IncludeDir.entt}",	
+		"ImpulseEngine/%{IncludeDir.cr}",
+		"%{prj.location}/%{prj.name}/Source/"
+
 	}
 
 	libdirs 
@@ -103,20 +128,39 @@ project "WizardJump"
 			"GE_PLATFORM_WINDOWS"
 		}
 
-		filter "configurations:Debug"
-			defines "GE_DEBUG"
-			runtime "Debug"
-			symbols "On"
-			kind "ConsoleApp"
-			
-		filter "configurations:Release"
-			defines "GE_RELEASE"
-			runtime "Release"
-			optimize "On"
-		filter "configurations:Dist"
-			defines "GE_DIST"
-			runtime "Release"
-			optimize "On"
+		
+
+		if _OPTIONS['with-hot-reload'] then
+			filter "configurations:Debug"
+				defines "GE_DEBUG"
+				runtime "Debug"
+				symbols "On"
+				kind "SharedLib"
+			filter "configurations:Release"
+				defines "GE_RELEASE"
+				runtime "Release"
+				optimize "On"
+				kind "SharedLib"
+			filter "configurations:Dist"
+				defines "GE_DIST"
+				runtime "Release"
+				optimize "On"
+				kind "WindowedApp"
+		else 
+			filter "configurations:Debug"
+				defines "GE_DEBUG"
+				runtime "Debug"
+				symbols "On"
+				kind "ConsoleApp"
+			filter "configurations:Release"
+				defines "GE_RELEASE"
+				runtime "Release"
+				optimize "On"
+			filter "configurations:Dist"
+				defines "GE_DIST"
+				runtime "Release"
+				optimize "On"
+		end
 
 	filter "system:ios"
 		architecture "ARM"

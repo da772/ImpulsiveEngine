@@ -103,7 +103,7 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 				// Touch begin
 				case 0: {
                     std::lock_guard<std::mutex> lock(touchMutex);
-                    FTouchInfo info = {id, state, x, y,force};
+                    FTouchInfo info(id, state, x, y,force, Time::GetEpochTimeMS());
                     Mobile_Input_Callback::touches[id] = std::move(info);
 					break;
 				}

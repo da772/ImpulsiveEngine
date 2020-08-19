@@ -22,6 +22,8 @@
 #include "Public/Core/Application/Components/Graphics/ParticleSystem2DComponent.h"
 #include "Public/Core/Application/Components/QuadColliderComponent.h"
 #include "Public/Core/Application/Components/UI/ButtonComponent.h"
+#include "Public/Core/Application/Components/NativeScriptComponent.h"
+
 
 #include "Public/Core/Events/ApplicationEvent.h"
 #include "Public/Core/Events/KeyEvent.h"

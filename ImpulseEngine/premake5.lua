@@ -1,8 +1,4 @@
 
---include "Sandbox"
--- Include directories relative to root folder (solution dir)
-
-
 IncludeDir = {}
 IncludeDir["GLFW"] = "ImpulseEngine/vendor/GLFW/include"
 IncludeDir["ENET"] = "ImpulseEngine/vendor/Enet/include"
@@ -20,6 +16,7 @@ IncludeDir["duktape"] = "ImpulseEngine/vendor/duktape"
 IncludeDir["entt"] = "ImpulseEngine/vendor/entt/include"
 IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
 IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
+IncludeDir["cr"] = "ImpulseEngine/vendor/cr/include"
 
 group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/GLFW"
@@ -32,6 +29,9 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
 
 group ""
+if _OPTIONS['with-hot-reload'] then
+	include "ImpulseEngine/ImpulseEngine/vendor/cr"
+end
 
 project "ImpulseEngine"
 	location "ImpulseEngine"
@@ -39,6 +39,13 @@ project "ImpulseEngine"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
+
+if _OPTIONS['with-hot-reload'] then
+	defines
+	{
+		"GE_HOT_RELOAD"
+	}
+end
 
 	targetdir ("%{prj.name}/Bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{prj.name}/Bin-Obj/" .. outputdir .. "/%{prj.name}")
@@ -81,6 +88,7 @@ project "ImpulseEngine"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.firebase}/include",
 		"%{IncludeDir.box2d}",
+		"%{IncludeDir.cr}",
 
 
 

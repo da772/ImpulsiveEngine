@@ -18,13 +18,14 @@ namespace GEngine {
 struct FTouchInfo {
 public:
     FTouchInfo() {};
-    FTouchInfo(uint64_t id, int state, float x, float y, float force) :
-    id(id), state(state), x(x), y(y), force(force) {
+    FTouchInfo(uint64_t id, int state, float x, float y, float force, long long time) :
+    id(id), state(state), x(x), y(y), force(force), time(time) {
         
     }
     
     uint64_t id;
     int state;
+	long long time;
     float x,y, force;
     
 
@@ -33,6 +34,7 @@ public:
 	inline float GetY() { return y; }
 	inline float GetForce() { return force; }
 	inline int GetState() { return state; }
+	inline long long GetTime() { return time; }
 
 };
 

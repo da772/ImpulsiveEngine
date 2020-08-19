@@ -31,6 +31,13 @@ namespace GEngine {
 							std::unique_lock<std::mutex> lock(ThreadPool::queueMutex);
 							condition.wait(lock, [] {return !ThreadPool::jobQueue.empty() || ThreadPool::terminateThreads; });
 							if (ThreadPool::jobQueue.empty()) break;
+							{
+								std::lock_guard<std::mutex> g(ThreadPool::threadMutex);
+								if (ThreadPool::terminateThreads) {
+									return;
+								}
+									
+							}
 							job = ThreadPool::jobQueue.front();
 							ThreadPool::jobQueue.pop();
 						}
@@ -43,13 +50,15 @@ namespace GEngine {
 
 	void ThreadPool::Shutdown()
 	{
-		
-		std::lock_guard<std::mutex> g(ThreadPool::threadMutex);
-		for (std::thread& t : ThreadPool::threads) {
-			t.detach();
+		{
+			std::lock_guard<std::mutex> g(ThreadPool::threadMutex);
+			ThreadPool::terminateThreads = true;
 		}
-		ThreadPool::terminateThreads = true;
 		ThreadPool::condition.notify_all();
+		for (std::thread& t : ThreadPool::threads) {
+			t.join();
+		}
+		
 		ThreadPool::threads.clear();
 
 	}
