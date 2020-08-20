@@ -18,6 +18,7 @@ namespace GEngine {
 		m_framePerMs = 1000.0 / fps;
 		b_animateFrame = true;
 		b_loop = loop;
+		m_startTime = -1;
 		if (animateFrameFunction != nullptr) {
 			m_animateFrameFunction = animateFrameFunction;
 		}
@@ -54,8 +55,23 @@ namespace GEngine {
 	void SpriteAnimationComponent::AnimateFrame(long long time)
 	{
 		long timePassed = time - m_startTime;
+
+		if (m_startTime == -1) {
+			m_startTime = time;
+			int frameInc = 1;
+			if (frameInc >= m_MaxFrames) {
+				m_animateFrameFunction(m_MaxFrames);
+				m_startTime = time;
+				if (!b_loop)
+					b_animateFrame = false;
+				return;
+			}
+			m_animateFrameFunction(frameInc);
+			return;
+		}
+
 		if (timePassed > m_framePerMs) {
-			int frameInc = floor(timePassed / m_framePerMs);
+			int frameInc = floor(timePassed / m_framePerMs)+1;
 			frameInc = m_MaxFrames > frameInc ? frameInc : m_MaxFrames;
 			if (frameInc >= m_MaxFrames) {
 				m_animateFrameFunction(m_MaxFrames);
@@ -65,7 +81,10 @@ namespace GEngine {
 				return;
 			}
 			m_animateFrameFunction(frameInc);
+			return;
 		}
+
+		
 	}
 
 	void SpriteAnimationComponent::OnBegin()
@@ -82,8 +101,8 @@ namespace GEngine {
 	{
 		long long time = Time::GetEpochTimeMS();
 
-		if (m_startTime == -1)
-			m_startTime = time;
+		//if (m_startTime == -1)
+		//	m_startTime = time;
 
 		if (b_animateFrame)
 			AnimateFrame(time);

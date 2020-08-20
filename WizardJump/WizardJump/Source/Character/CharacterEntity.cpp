@@ -9,7 +9,6 @@
 		m_spriteComponent = CreateGameObject<CharacterGraphics>();
 
 
-
 		AddComponent(m_characterComponent);
 		AddComponent(m_spriteComponent);
 	}

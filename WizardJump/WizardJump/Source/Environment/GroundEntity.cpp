@@ -12,6 +12,7 @@ void GroundEntity::OnBegin()
 	}
 
 	m_collider = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(0, 0), glm::vec2(1, 1), 0.f, 0.f);
+	m_collider->SetTag("ground");
 	AddComponent(m_collider);
 
 
