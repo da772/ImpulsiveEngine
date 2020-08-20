@@ -28,6 +28,7 @@ public:
 	MovementAnim animState = MovementAnim::Idle;
 	int dir = 1;
 	bool bIsWalking = false;
+    bool bAnimating = false;
 
 	void Walk(std::function<void()> f = nullptr) {
 
@@ -58,6 +59,27 @@ public:
 			
 		});
 	}
+    
+    void Crouch(std::function<void()> f= nullptr ) {
+        if (animState == MovementAnim::Crouch) return;
+        bAnimating = true;
+        animState = MovementAnim::Crouch;
+        m_animationComp->SetFrameAnimation(8, 2, false, [this, f](int frame) {
+            if (frame == 2) {
+                bAnimating = false;
+                if (f) {
+                    ThreadPool::AddMainThreadFunction([f]() {
+                        f();
+                        });
+                }
+                return;
+            }
+            bIsWalking = false;
+            m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame-1+1 : frame+1, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+            SetSubTexture(quad, m_characterSpriteSheet);
+            
+            });
+    }
 
 	void JumpCrouch(std::function<void()> f = nullptr) {
 		if (animState == MovementAnim::Crouch) return;
@@ -80,7 +102,7 @@ public:
 			});
 	}
 
-	void Land(std::function<void()> f = nullptr) {
+	void LandWalk(std::function<void()> f = nullptr) {
 		if (animState == MovementAnim::Landing) return;
 		bAnimating = true;
 		animState = MovementAnim::Landing;
@@ -100,6 +122,27 @@ public:
 			SetSubTexture(quad, m_characterSpriteSheet);
 			});
 	}
+    
+    void LandIdle(std::function<void()> f = nullptr) {
+        if (animState == MovementAnim::Landing) return;
+        bAnimating = true;
+        animState = MovementAnim::Landing;
+        m_animationComp->SetFrameAnimation(8, 3, false, [this, f](int frame) {
+            if (frame == 3) {
+                if (f) {
+                    bAnimating = false;
+                    ThreadPool::AddMainThreadFunction([f]() {
+                        f();
+                        });
+                    return;
+                }
+                return;
+            }
+            bIsWalking = false;
+            m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame+5 - 1 : frame+5, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+            SetSubTexture(quad, m_characterSpriteSheet);
+            });
+    }
 
 	void JumpStart(std::function<void()> f = nullptr) {
 		if (animState == MovementAnim::Jump) return;
@@ -191,5 +234,5 @@ protected:
 	Ref<SpriteAnimationComponent> m_animationComp;
 	Ref<SubTexture2D> m_characterSpriteSheet;
 	long quad = -1;
-	bool bAnimating = false;
+	
 };

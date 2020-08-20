@@ -31,7 +31,7 @@ protected:
 		glm::vec2 pos = glm::vec2(0, -.05);
 		glm::vec2 scale = glm::vec2(.4f, 1.65f);
 
-		glm::vec2 groundPos = glm::vec2(0, -1.f);
+		glm::vec2 groundPos = glm::vec2(0, -.75f);
 		glm::vec2 groundScale = glm::vec2(.4f, .3f);
 		m_quadCollider = CreateGameObject<QuadColliderComponent>(true, true, pos, scale, 0.f, 1.f);
 		m_groundCollider = CreateGameObject<QuadColliderComponent>(true, false, groundPos, groundScale, 0.f, 1.f);

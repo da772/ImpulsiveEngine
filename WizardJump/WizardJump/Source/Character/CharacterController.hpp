@@ -85,8 +85,20 @@ protected:
 							bodyComp->AddVelocity({ -5 * timestep, 0 });
 						}
 					} else {
+                        
 						lastxpos = key.second.x;
 						lastypos = key.second.y;
+                        if (bJumping) {
+                            float xDistance = -(lastxpos - startxPos +  Application::GetWidth()*.01f)/Application::GetWidth();
+                            int nDir = xDistance > 0 ? 1 : -1;
+                            if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
+                                graphicsComp->dir = nDir;
+                                graphicsComp->animState = MovementAnim::None;
+                                graphicsComp->Crouch();
+                            }
+                            
+                            
+                        }
 					}
 				}
 				else {
@@ -98,9 +110,12 @@ protected:
 						bJumping = false;
 
 
-					} else if (!bFalling && !bJumping && key.second.y > startyPos +  Application::GetHeight()*.01f) {
-                        bJumping = true;
-						graphicsComp->JumpCrouch();
+					} else if (key.second.y > startyPos +  Application::GetHeight()*.01f) {
+                        if (!bFalling && !bJumping) {
+                            bJumping = true;
+                            graphicsComp->JumpCrouch();
+                        }
+                        
                     }
 
 					if (key.second.GetState() == 0 && touchId == 0 && touchTime == 0) {
@@ -142,7 +157,8 @@ protected:
 				graphicsComp->dir = vel.x > .01f ? 1 : -1;
 				if (ground) {
 					if (bFalling) {
-						graphicsComp->Land([this]() { bFalling = false;  graphicsComp->Walk(); });
+                        //GE_LOG_DEBUG("LAND WALK");
+						graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
 					}
 					else {
 						if (graphicsComp->animState != MovementAnim::Walk) {
@@ -154,7 +170,8 @@ protected:
 			else if (vel.x <= walkAnimThreshold && vel.x >= -walkAnimThreshold) {
 				if (ground) {
 					if (bFalling) {
-						graphicsComp->Land([this]() { bFalling = false;  graphicsComp->Idle(); });
+                    //GE_LOG_DEBUG("LAND IDLE");
+						graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
 					}
 					else {
 						graphicsComp->Idle();
