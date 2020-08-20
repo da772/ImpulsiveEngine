@@ -131,7 +131,7 @@ protected:
 			}
 		} else if (Mobile_Input::GetTouchCount() == 0 && touchId != 0) {
 					
-			if (bJumping && lastypos != -1) 
+			if (bJumping && ground && lastypos != -1)
 			{
 				float yDistance = (lastypos - startyPos +  Application::GetHeight()*.01f)/Application::GetHeight();
 				float xDistance = -(lastxpos - startxPos +  Application::GetWidth()*.01f)/Application::GetWidth();
@@ -142,8 +142,9 @@ protected:
 					bodyComp->AddVelocity({ 10 * (xDistance > .2f ? .2f : xDistance), 40.f * (yDistance > .2f ? .2f : yDistance) });
 					});
 			}
-			else {
+			else if (ground) {
 				bJumping = false;
+                bFalling = false;
 				graphicsComp->Idle();
 			}
 			touchId = 0;
