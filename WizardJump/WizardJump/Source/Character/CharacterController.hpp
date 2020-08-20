@@ -102,15 +102,23 @@ protected:
 					}
 				}
 				else {
-					if (touchId != key.second.id && touchTime != key.second.time) {
+                    GE_LOG_DEBUG("ID: {0}:{1} {2} > {3}", touchId, key.second.id, key.second.y, startyPos +  Application::GetHeight()*.01f);
+					if (touchId != key.second.id) {
+                        if (touchTime != key.second.time) {
 						touchId = 0;
 						touchTime = 0;
 						lastxpos = -1;
 						lastypos = -1;
+                        startxPos = -1;
+                        startyPos = -1;
 						bJumping = false;
+                        } else {
+                            touchId = key.second.id;
+                        }
 
 
-					} else if (key.second.y > startyPos +  Application::GetHeight()*.01f) {
+					}
+                    if (touchId != 0 && key.second.y > startyPos +  Application::GetHeight()*.01f) {
                         if (!bFalling && !bJumping) {
                             bJumping = true;
                             graphicsComp->JumpCrouch();
