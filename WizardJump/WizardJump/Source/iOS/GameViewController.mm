@@ -204,7 +204,7 @@
         CGPoint touchPoint = [touch locationInView:touch.view];
         UITouchPhase phase = touch.phase;
 
-        GEngine::Mobile_Input_Callback::Touched(touch.hash, phase == UITouchPhaseStationary ? 1 : 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+        GEngine::Mobile_Input_Callback::Touched(touch.hash, 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
 
