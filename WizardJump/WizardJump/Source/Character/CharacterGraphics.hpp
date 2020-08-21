@@ -167,7 +167,7 @@ public:
 	void Idle(std::function<void()> f = nullptr) {
 		if (animState == MovementAnim::Idle) return;
 		animState = MovementAnim::Idle;
-		m_animationComp->SetFrameAnimation(1e3, 1, false, [this, f](int frame) {
+		m_animationComp->SetFrameAnimation(255, 1, false, [this, f](int frame) {
 			bIsWalking = false;
 			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? 0 : 1, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
@@ -183,7 +183,7 @@ public:
 	void Falling(std::function<void()> f = nullptr) {
 		if (animState == MovementAnim::Falling) return;
 		animState = MovementAnim::Falling;
-		m_animationComp->SetFrameAnimation(1e3, 8, false, [this,f](int frame) {
+		m_animationComp->SetFrameAnimation(255, 8, false, [this,f](int frame) {
 			bIsWalking = false;
 			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? 4 : 5, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);

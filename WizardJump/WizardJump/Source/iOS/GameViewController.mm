@@ -1,6 +1,5 @@
 #import "GameViewController.h"
 #import <OpenGLES/ES2/glext.h>
-#import "Cube.h"
 #include <GEngine.h>
 #include <EntryPoint.h>
 #include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
@@ -131,25 +130,8 @@
 - (void)tearDownGL
 {
     [EAGLContext setCurrentContext:self.context];
-    //App_Shutdown();
-    //Cube_tearDownGL();
-}
-/*
-- (IBAction)onTouch:(UILongPressGestureRecognizer *)sender {
-    CGPoint touchPoint = [sender locationInView: self.view];
-    
-    
-    
-    if (sender.state == UIGestureRecognizerStateBegan) {
-        Mobile_Input_Callback::Touched(0, touchPoint.x*self.view.contentScaleFactor,touchPoint.y*self.view.contentScaleFactor);
-    } else if (sender.state == UIGestureRecognizerStateEnded) {
-        Mobile_Input_Callback::Touched(2, touchPoint.x*self.view.contentScaleFactor,touchPoint.y*self.view.contentScaleFactor);
-    } else if (sender.state == UIGestureRecognizerStateChanged) {
-        Mobile_Input_Callback::Touched(1, touchPoint.x*self.view.contentScaleFactor,touchPoint.y*self.view.contentScaleFactor);
-    }
 }
 
- */
 - (IBAction)onTextValueChange:(UITextField *)sender {
     std::string txt = std::string([sender.text UTF8String]);
 }
@@ -175,19 +157,12 @@
 
 - (void)update
 {
-   // Cube_update(self.timeSinceLastUpdate, self.view.bounds.size.width, self.view.bounds.size.height);
-    //Cube_update();
-    //App_Update();
     App_Update();
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-    //Cube_prepare();
-    //Cube_draw();
     App_Draw();
-    
-    
 }
 
 @end

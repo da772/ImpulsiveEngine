@@ -46,6 +46,10 @@ namespace GEngine {
         return -1;
 	}
 
+    void Mobile_Input::ClearTouches() {
+        Mobile_Input_Callback::ClearTouches();
+    }
+
 	float Mobile_Input::GetMouseYImpl(uint64_t id)
 	{
         std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Input_Callback::GetTouches();

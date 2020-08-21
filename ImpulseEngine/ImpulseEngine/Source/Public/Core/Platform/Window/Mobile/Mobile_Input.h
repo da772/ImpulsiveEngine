@@ -129,6 +129,11 @@ public:
 		}
     }
     
+    static inline void ClearTouches() {
+        std::lock_guard<std::mutex> lock(Mobile_Input_Callback::touchMutex);
+        Mobile_Input_Callback::touches.clear();
+    }
+    
     static inline int GetTouchCount() {
 		int size = 0;
 		{
@@ -172,6 +177,8 @@ private:
     static inline int GetTouchCount() {
 		return Mobile_Input_Callback::GetTouchCount();
     }
+        
+    static void ClearTouches();
 
 	protected:
 		virtual bool IsKeyPressedImpl(int keycode) override;

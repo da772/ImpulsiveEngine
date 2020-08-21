@@ -74,6 +74,8 @@ namespace GEngine {
 		void Shutdown();
         void Update(float ts = 0);
         void Draw();
+        void Pause();
+        void Resume();
 
 		std::unordered_map<std::string, float> profile = {
 		{"Layers", 0.f},
@@ -101,6 +103,7 @@ namespace GEngine {
 		float m_totalTime = 0;
 		float m_fps = 0;
 		bool m_loaded = true;
+        
 		
 		
 		int m_width = 1280, m_height = 720;

@@ -21,7 +21,7 @@
 #include "Public/Core/Ads/AdManager.h"
 
 #include "Public/Core/Physics/Physics.h"
-
+#include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
 
 
 namespace GEngine {
@@ -94,7 +94,8 @@ namespace GEngine {
     }
 
     void Application::UnloadGraphics() {
-        Application::GetApp()->m_loaded = false;
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || !Application::GetApp()->m_loaded) return;
+        Application::GetApp()->Pause();
         SceneManager::UnloadGraphics();
         Font::UnloadGraphics();
         Texture2D::UnloadTextures();
@@ -104,7 +105,8 @@ namespace GEngine {
     }
 
     void Application::ReloadGraphics() {
-        Application::GetApp()->m_loaded = true;
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || Application::GetApp()->m_loaded) return;
+        Application::GetApp()->Resume();
         RenderCommand::Init();
         Texture2D::ReloadTextures();
         Font::ReloadGraphics();
@@ -263,6 +265,16 @@ namespace GEngine {
         AdManager::Shutdown();
         Application::s_Instance = nullptr;
 	}
+
+    void Application::Pause() {
+            m_loaded = false;
+    }
+
+    void Application::Resume() {
+        Mobile_Input::ClearTouches();
+        m_loaded = true;
+        m_LastFrameTime = Time::GetEpochTimeMS();
+    }
 
 	void Application::Update(float ts) {
         

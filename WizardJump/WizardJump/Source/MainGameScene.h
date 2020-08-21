@@ -69,6 +69,9 @@ public:
 		AddEntity(e);
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		AddEntity(eFPS);
+        
+       // GEngine::Application::UnloadGraphics();
+        // GEngine::Application::ReloadGraphics();
 
 
 #ifdef GE_MOBILE_APP
