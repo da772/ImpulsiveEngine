@@ -23,7 +23,7 @@ protected:
 	{
 		bodyComp = CreateGameObject<CharacterBody>();
 		GetEntity()->AddComponent(bodyComp);
-		graphicsComp = dynamic_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
+		graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
 		
 	}
 
@@ -70,10 +70,25 @@ protected:
 
 		if (Mobile_Input::GetTouchCount() == 1) {
 			for (std::pair<uint64_t, FTouchInfo> key : Mobile_Input::GetTouches()) {
+                GE_LOG_DEBUG("TOUCH: {0} {1}", key.second.id, key.second.state);
+                if ( key.second.state == 0 && touchId == 0) {
+                    startxPos = key.second.x;
+                    startyPos = key.second.y;
+                    lastxpos = key.second.x;
+                    lastypos = key.second.y;
+                    touchId = key.second.id;
+                    GE_CORE_ASSERT(touchId, "invalid touch id");
+                    touchTime = key.second.time/1e6;
+                    GE_CORE_ASSERT(touchTime != 0, "TIME IS ZERO");
+                    if (bJumping) {
+                        bJumping = false;
+                    }
+                    continue;
+                } else if (key.second.state == 1 && touchId == key.second.id){
 				//GE_LOG_DEBUG("STATE: {0} {1}", key.second.GetID(), key.second.GetState());
+                    lastxpos = key.second.x;
+                    lastypos = key.second.y;
 				if (Time::GetEpochTimeMS() - (key.second.GetTime()/1e6) > 150) {
-					lastxpos = key.second.x;
-					lastypos = key.second.y;
 					if (!bJumping && !bFalling) {
 						float xPos = key.second.x;
 						float width = (float)Application::GetWidth();
@@ -97,21 +112,12 @@ protected:
 					}
 				}
 				else {
-                    if ( key.second.state == 0) {
-                        startxPos = key.second.x;
-                        startyPos = key.second.y;
-                        touchId = key.second.id;
-                        touchTime = key.second.time/1e6;
-                        GE_CORE_ASSERT(touchTime != 0, "TIME IS ZERO");
-                        if (bJumping) {
-                            bJumping = false;
-                        }
-                        continue;
-                    }
                     
                     GE_LOG_DEBUG("ID: {0}:{1} {2} > {3} Time: {4}", touchId, key.second.id, key.second.y, startyPos +  Application::GetHeight()*.01f, key.second.time);
                     if (key.second.y > startyPos +  Application::GetHeight()*.01f) {
                         if (!bFalling && !bJumping && ground) {
+                            lastxpos = key.second.x;
+                            lastypos = key.second.y;
                             bJumping = true;
                             jumpTime = touchTime;
                             graphicsComp->JumpCrouch();
@@ -120,35 +126,27 @@ protected:
                     
 					
 				}
-			}
-		} else if (Mobile_Input::GetTouchCount() == 0 && touchId != 0) {
-            //GE_LOG_INFO("bJumping: {0} ground: {1}, touchTime: {2}", bJumping, ground, touchTime);
-			if (bJumping && jumpTime != 0)
-			{
-				float yDistance = (lastypos - startyPos +  Application::GetHeight()*.01f)/Application::GetHeight();
-				float xDistance = -(lastxpos - startxPos +  Application::GetWidth()*.01f)/Application::GetWidth();
-				GE_LOG_INFO("TIMES: {0}, {1}, DISTANCE: {1},{2}",touchTime, jumpTime, xDistance, yDistance);
-                jumpTime = 0;
-                if (yDistance < .001f) {
-                    bJumping = false;
-                    graphicsComp->Idle();
-                } else {
-                    jumpTime = 0;
-                    graphicsComp->JumpStart([this, timestep, xDistance, yDistance]() {
-                        bJumping = false;
-                        bodyComp->AddVelocity({ 10 * (xDistance > .2f ? .2f : xDistance), 40.f * (yDistance > .2f ? .2f : yDistance) });
-                        });
+                } else if ( (key.second.state == 2 || key.second.state == 3) && touchId == key.second.id) {
+                    GE_LOG_INFO("ID: {0}, {1}, DISTANCE: {2},{3}",touchId, key.second.id, key.second.y, startyPos);
+                    if (bJumping) {
+                        float yDistance = (key.second.y - startyPos+  Application::GetHeight()*.01f)/Application::GetHeight();
+                        float xDistance = -(lastxpos - startxPos+  Application::GetWidth()*.01f)/Application::GetWidth();
+                      
+                      jumpTime = 0;
+                      if (yDistance < .001f) {
+                          bJumping = false;
+                          graphicsComp->Idle();
+                      } else {
+                          graphicsComp->JumpStart([this, timestep, xDistance, yDistance]() {
+                              bJumping = false;
+                              bodyComp->AddVelocity({ 10 * (xDistance > .2f ? .2f : xDistance), 40.f * (yDistance > .2f ? .2f : yDistance) });
+                              });
+                      }
+                        
+                   }
+                    touchId = 0;
                 }
-                
-            } else if (bJumping && !ground) {
-                jumpTime = 0;
-                bJumping = false;
-                graphicsComp->Falling();
-            }
-            touchId = 0;
-            touchTime = 0;
-            lastxpos = -1;
-            lastypos = -1;
+			}
 		}
 
 		if (!bJumping) {

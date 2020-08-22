@@ -271,7 +271,7 @@ namespace GEngine {
     }
 
     void Application::Resume() {
-        Mobile_Input::ClearTouches();
+        //Mobile_Input::ClearTouches();
         m_loaded = true;
         m_LastFrameTime = Time::GetEpochTimeMS();
     }

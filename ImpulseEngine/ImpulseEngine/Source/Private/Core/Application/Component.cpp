@@ -34,8 +34,8 @@ namespace GEngine {
 		if (bInit)
 			return;
 		GE_CORE_ASSERT(!bInit, "Component already initialized");
-		OnBegin();
 		bInit = true;
+        OnBegin();
 
 	}
 

@@ -8,6 +8,7 @@
 #include "Public/Core/Collision/CollisionDetection.h"
 #include "Public/Core/Util/GEMath.h"
 #include "Public/Core/Util/Time.h"
+#include "Public/Core/Util/ThreadPool.h"
 
 namespace GEngine {
 
@@ -126,16 +127,27 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 				}
 				// Touch end
 				case 2: {
+                    Mobile_Input_Callback::touches[id].state = state;
+                    Mobile_Input_Callback::touches[id].x = x;
+                    Mobile_Input_Callback::touches[id].y = y;
                     std::lock_guard<std::mutex> lock(touchMutex);
-					Mobile_Input_Callback::touches[id].CallTouchEndFunctions();
-                    Mobile_Input_Callback::touches.erase(id);
+                    ThreadPool::AddMainThreadFunction([id](){
+                        std::lock_guard<std::mutex> lock(touchMutex);
+                        Mobile_Input_Callback::touches.erase(id);
+                    });
                     break;
 				}
 				// Touch Cancel
 				case 3: {
-					std::lock_guard<std::mutex> lock(touchMutex);
-					Mobile_Input_Callback::touches[id].CallTouchEndFunctions();
-					Mobile_Input_Callback::touches.erase(id);
+                    Mobile_Input_Callback::touches[id].state = state;
+                                       Mobile_Input_Callback::touches[id].x = x;
+                                       Mobile_Input_Callback::touches[id].y = y;
+                    ThreadPool::AddMainThreadFunction([id](){
+                        std::lock_guard<std::mutex> lock(touchMutex);
+                        Mobile_Input_Callback::touches.erase(id);
+                    });
+					//Mobile_Input_Callback::touches[id].CallTouchEndFunctions(&Mobile_Input_Callback::touches[id]);
+					
 					break;
 				}
             }

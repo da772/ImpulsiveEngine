@@ -125,8 +125,8 @@ namespace GEngine {
 
 
 	void Entity::Begin() {
+        bInit = true;
 		OnBegin();
-		bInit = true;
 		for (std::pair<uint64_t, Ref<Component>> c : components) {
 			c.second->Begin();
 		}

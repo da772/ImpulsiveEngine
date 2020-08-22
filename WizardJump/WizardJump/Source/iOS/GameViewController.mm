@@ -188,7 +188,8 @@
     for (NSObject* obj : touches) {
         UITouch* touch = (UITouch*)obj;
         CGPoint touchPoint = [touch locationInView:touch.view];
-        GEngine::Mobile_Input_Callback::Touched(touch.hash, 1, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+        uint64_t addr = reinterpret_cast<uint64_t>(obj);
+        GEngine::Mobile_Input_Callback::Touched(addr, 1, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
         }
     }
 
@@ -196,7 +197,8 @@
 for (NSObject* obj : touches) {
     UITouch* touch = (UITouch*)obj;
     CGPoint touchPoint = [touch locationInView:touch.view];
-    GEngine::Mobile_Input_Callback::Touched(touch.hash, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+    uint64_t addr = reinterpret_cast<uint64_t>(obj);
+    GEngine::Mobile_Input_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
    
@@ -204,7 +206,8 @@ for (NSObject* obj : touches) {
 for (NSObject* obj : touches) {
     UITouch* touch = (UITouch*)obj;
     CGPoint touchPoint = [touch locationInView:touch.view];
-    GEngine::Mobile_Input_Callback::Touched(touch.hash, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+    uint64_t addr = reinterpret_cast<uint64_t>(obj);
+    GEngine::Mobile_Input_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
 

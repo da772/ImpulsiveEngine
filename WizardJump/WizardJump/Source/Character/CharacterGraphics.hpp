@@ -199,6 +199,7 @@ public:
 protected:
 	void OnBegin() override
 	{
+        GE_CORE_ERROR("GRAPHICS BEGIN!");
 		SpriteComponent::OnBegin();
 		m_characterSpriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/wizard.png"),
 			{ 0,1 }, { 74,74 }, { 1,1 });
@@ -214,6 +215,7 @@ protected:
 
 	void OnEnd() override
 	{
+        GE_CORE_ERROR("GRAPHICS ENDING!");
 		SpriteComponent::OnEnd();
 		m_characterSpriteSheet = nullptr;
 		m_animationComp = nullptr;

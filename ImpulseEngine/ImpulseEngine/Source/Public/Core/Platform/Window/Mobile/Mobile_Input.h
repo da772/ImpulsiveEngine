@@ -29,10 +29,12 @@ namespace GEngine {
 		float x, y, force;
 
 		inline void AddTouchEndFunction(std::function<void(const FTouchInfo&)> f) { touchEndFunctions.push_back(f); }
-		inline void CallTouchEndFunctions() {
+		inline void CallTouchEndFunctions(FTouchInfo* _f) {
 			for (const std::function<void(const FTouchInfo&)>& f : touchEndFunctions) {
 				if (f)
-					f(*this);
+					f(*_f);
+                else
+                    GE_CORE_ASSERT(f, "INVALID FUNCTION");
 			}
 			touchEndFunctions.clear();
 		};
@@ -195,6 +197,10 @@ private:
     static inline int GetTouchCount() {
 		return Mobile_Input_Callback::GetTouchCount();
     }
+        
+        static inline void SetTouchEndFunction(uint64_t id, std::function<void(const FTouchInfo&)> f) {
+            Mobile_Input_Callback::SetTouchEndFunction(id, f);
+        }
         
     static void ClearTouches();
 

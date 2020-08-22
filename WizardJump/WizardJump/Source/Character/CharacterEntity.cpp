@@ -9,8 +9,8 @@
 		m_spriteComponent = CreateGameObject<CharacterGraphics>();
 
 
+        AddComponent(m_spriteComponent);
 		AddComponent(m_characterComponent);
-		AddComponent(m_spriteComponent);
 	}
 
 	void CharacterEntity::OnEnd()
