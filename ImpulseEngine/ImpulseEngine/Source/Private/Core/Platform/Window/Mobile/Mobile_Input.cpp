@@ -112,8 +112,6 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 					if (Mobile_Input_Callback::touches.find(id) == Mobile_Input_Callback::touches.end()) {
                         FTouchInfo info(id, state, x, y,force, Time::GetEpochTimeNS());
                         Mobile_Input_Callback::touches[id] = std::move(info);
-					} else {
-                        Mobile_Input_Callback::touches[id].state = 1;
 					}
 					break;
 				}
