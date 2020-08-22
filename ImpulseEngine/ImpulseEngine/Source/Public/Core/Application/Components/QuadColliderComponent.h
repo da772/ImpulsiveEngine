@@ -43,6 +43,10 @@ namespace GEngine {
 		void IncreaseLinearVelocity(float x, float y);
 		void IncreaseAngularVelocity(float v);
 
+		void SetVelocityX(float x);
+		void SetVelocityY(float y);
+		void SetVelocity(float x, float y);
+
 		void SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc);
 		void SetOnCollideFunction_Script(Ref<ScriptObject> onColliderFunc);
 		void SetEndCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc);

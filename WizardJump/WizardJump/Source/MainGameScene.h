@@ -5,7 +5,8 @@
 #include "Character/CharacterEntity.h"
 #include "Environment/BackgroundEntity.hpp"
 #include "Environment/GroundEntity.hpp"
-
+#include "Environment/WallEntity.hpp"
+#include "Environment/PlatformEntity.hpp"
 
 
 class MainGameScene : public GEngine::Scene {
@@ -55,7 +56,7 @@ public:
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
-		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(5.f);
+		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(7.5f);
 		m_CameraController->SetPosition({ 0,0,0 });
 		m_CameraController->SetRotation({ 0,0,0 });
 
@@ -67,6 +68,24 @@ public:
 		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
 		e = GEngine::CreateGameObject<CharacterEntity>();
 		AddEntity(e);
+
+		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -20,0), glm::vec2(20,20 ), 90.f);
+		AddEntity(wall);
+		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(20, 0), glm::vec2(20, 20), 90.f);
+		AddEntity(wall);
+
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 2.f), glm::vec2(2.f, 1.f)) );
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(8.f, 4.f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 6.f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 8.f), glm::vec2(2.f, 1.f)));
+
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.f, 10.f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-6.f, 8.f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-9.5f, 6.f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-8.f, 4.f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-6.f, 2.f), glm::vec2(2.f, 1.f)));
+
+
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		AddEntity(eFPS);
         

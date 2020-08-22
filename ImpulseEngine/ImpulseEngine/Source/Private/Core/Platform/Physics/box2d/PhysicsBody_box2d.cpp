@@ -23,7 +23,6 @@ namespace GEngine {
 
 	PhysicsBody_box2d::~PhysicsBody_box2d()
 	{
-		GE_CORE_DEBUG("DESTROYING PHYSICS BOX2D");
 		b2World* world = (b2World*)Physics::GetWorld();
 		if (world != nullptr) {
 			m_body->DestroyFixture(m_fixture);

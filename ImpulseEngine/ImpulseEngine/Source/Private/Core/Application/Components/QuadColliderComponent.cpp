@@ -156,6 +156,23 @@ namespace GEngine {
 		m_body->SetAngularVelocity(m_body->GetAngularVelocity() + v);
 	}
 
+	void QuadColliderComponent::SetVelocityX(float x)
+	{
+		glm::vec2 v = m_body->GetLinearVelocity();
+		m_body->SetLinearVelocity({ x, v.y });
+	}
+
+	void QuadColliderComponent::SetVelocityY(float y)
+	{
+		glm::vec2 v = m_body->GetLinearVelocity();
+		m_body->SetLinearVelocity({ v.x, y });
+	}
+
+	void QuadColliderComponent::SetVelocity(float x, float y)
+	{
+		m_body->SetLinearVelocity({ x, y });
+	}
+
 	void QuadColliderComponent::SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc)
 	{
 		m_onCollide = onCollideFunc;

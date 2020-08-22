@@ -1,14 +1,20 @@
 #pragma once
+
+
+
+#pragma once
 #include "GEngine.h"
 
 using namespace GEngine;
 
 
-class GroundEntity : public Entity {
+class WallEntity : public Entity {
 public:
 
-	GroundEntity() {};
-	~GroundEntity() {};
+	inline WallEntity(const glm::vec2 pos, const glm::vec2 scale, const float rot = 90) : pos(pos), scale(scale), rot(rot) {
+
+	};
+	~WallEntity() {};
 
 	bool debug = true;
 
@@ -17,7 +23,6 @@ protected:
 
 
 	void OnEnd() override;
-
 
 	glm::vec2 scale;
 	glm::vec2 pos;

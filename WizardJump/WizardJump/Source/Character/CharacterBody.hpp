@@ -15,6 +15,18 @@ public:
 		m_quadCollider->IncreaseLinearVelocity(v.x, v.y);
 	}
 
+	void SetVelocityX(float x) {
+		m_quadCollider->SetVelocityX(x);
+	}
+	
+	void SetVelocityY(float y) {
+		m_quadCollider->SetVelocityY(y);
+	}
+
+	void SetVelocity(glm::vec2 v) {
+		m_quadCollider->SetVelocity(v.x, v.y);
+	}
+
 	glm::vec2 GetVelocity() {
 		return m_quadCollider->GetLinearVelocity();
 	}
