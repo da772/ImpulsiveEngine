@@ -127,12 +127,14 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 				// Touch end
 				case 2: {
                     std::lock_guard<std::mutex> lock(touchMutex);
+					Mobile_Input_Callback::touches[id].CallTouchEndFunctions();
                     Mobile_Input_Callback::touches.erase(id);
                     break;
 				}
 				// Touch Cancel
 				case 3: {
 					std::lock_guard<std::mutex> lock(touchMutex);
+					Mobile_Input_Callback::touches[id].CallTouchEndFunctions();
 					Mobile_Input_Callback::touches.erase(id);
 					break;
 				}

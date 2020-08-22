@@ -178,8 +178,9 @@
         UITouch* touch = (UITouch*)obj;
         CGPoint touchPoint = [touch locationInView:touch.view];
         UITouchPhase phase = touch.phase;
+        uint64_t addr = reinterpret_cast<uint64_t>(obj);
 
-        GEngine::Mobile_Input_Callback::Touched(touch.hash, 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+        GEngine::Mobile_Input_Callback::Touched(addr, 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
 
@@ -205,6 +206,11 @@ for (NSObject* obj : touches) {
     CGPoint touchPoint = [touch locationInView:touch.view];
     GEngine::Mobile_Input_Callback::Touched(touch.hash, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
+}
+
+-(void)touchesEstimatedPropertiesUpdated:(NSSet<UITouch *> *)touches {
+
+    
 }
 
 

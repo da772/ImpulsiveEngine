@@ -15,26 +15,36 @@ typedef int ViewContext;
 
 namespace GEngine {
 
-struct FTouchInfo {
-public:
-    FTouchInfo() {};
-    FTouchInfo(uint64_t id, int state, float x, float y, float force, long long time) :
-    id(id), state(state), x(x), y(y), force(force), time(time) {
-        
-    }
-    
-    uint64_t id;
-    int state;
-	long long time;
-    float x,y, force;
-    
+	struct FTouchInfo {
+	public:
+		FTouchInfo() {};
+		FTouchInfo(uint64_t id, int state, float x, float y, float force, long long time) :
+			id(id), state(state), x(x), y(y), force(force), time(time) {
 
-	inline uint64_t GetID() { return id; }
-	inline float GetX() { return x; }
-	inline float GetY() { return y; }
-	inline float GetForce() { return force; }
-	inline int GetState() { return state; }
-	inline long long GetTime() { return time; }
+		}
+
+		uint64_t id;
+		int state;
+		long long time;
+		float x, y, force;
+
+		inline void AddTouchEndFunction(std::function<void(const FTouchInfo&)> f) { touchEndFunctions.push_back(f); }
+		inline void CallTouchEndFunctions() {
+			for (const std::function<void(const FTouchInfo&)>& f : touchEndFunctions) {
+				if (f)
+					f(*this);
+			}
+			touchEndFunctions.clear();
+		};
+		inline uint64_t GetID() { return id; }
+		inline float GetX() { return x; }
+		inline float GetY() { return y; }
+		inline float GetForce() { return force; }
+		inline int GetState() { return state; }
+		inline long long GetTime() { return time; }
+
+private:
+	std::vector<std::function<void(const FTouchInfo&)>> touchEndFunctions;
 
 };
 
@@ -120,6 +130,14 @@ public:
 	}
 
 	static void Touched(uint64_t id, int state, float x, float y, float force);
+
+	static inline void SetTouchEndFunction(uint64_t id, std::function<void(const FTouchInfo&)> f) {
+		std::lock_guard<std::mutex> lock(Mobile_Input_Callback::touchMutex);
+		std::unordered_map<uint64_t, FTouchInfo>::iterator it = Mobile_Input_Callback::touches.find(id);
+		if (it != Mobile_Input_Callback::touches.end()) {
+			it->second.AddTouchEndFunction(f);
+		}
+	}
 	
     static inline std::unordered_map<uint64_t, FTouchInfo> GetTouches() {
 		{
