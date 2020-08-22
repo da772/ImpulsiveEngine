@@ -52,12 +52,12 @@ public class JavaInterface {
                 windowInsets = a.getWindow().getDecorView().getRootWindowInsets();
             }
             if (windowInsets == null) {
-                return "NULL INSET";
+                return "0:0:0:0:";
             }
             Method method = WindowInsets.class.getMethod(METHOD_GET_DISPLAY_CUTOUT);
             Object displayCutout = method.invoke(windowInsets);
             if (displayCutout == null) {
-                return "NULL CUTOUT";
+                return "0:0:0:0:";
             }
             Class clz = Class.forName(CLASS_DISPLAY_CUTOUT);
             int top = (int) clz.getMethod(FIELD_GET_SAFE_INSET_TOP).invoke(displayCutout);

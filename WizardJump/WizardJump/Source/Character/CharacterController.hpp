@@ -70,7 +70,7 @@ protected:
 
 		if (Mobile_Input::GetTouchCount() == 1) {
 			for (std::pair<uint64_t, FTouchInfo> key : Mobile_Input::GetTouches()) {
-                GE_LOG_DEBUG("TOUCH: {0} {1}", key.second.id, key.second.state);
+                //GE_LOG_DEBUG("TOUCH: {0} {1}", key.second.id, key.second.state);
                 if ( key.second.state == 0 && touchId == 0) {
                     startxPos = key.second.x;
                     startyPos = key.second.y;
@@ -113,7 +113,7 @@ protected:
 				}
 				else {
                     
-                    GE_LOG_DEBUG("ID: {0}:{1} {2} > {3} Time: {4}", touchId, key.second.id, key.second.y, startyPos +  Application::GetHeight()*.01f, key.second.time);
+                    //GE_LOG_DEBUG("ID: {0}:{1} {2} > {3} Time: {4}", touchId, key.second.id, key.second.y, startyPos +  Application::GetHeight()*.01f, key.second.time);
                     if (key.second.y > startyPos +  Application::GetHeight()*.01f) {
                         if (!bFalling && !bJumping && ground) {
                             lastxpos = key.second.x;
@@ -127,7 +127,7 @@ protected:
 					
 				}
                 } else if ( (key.second.state == 2 || key.second.state == 3) && touchId == key.second.id) {
-                    GE_LOG_INFO("ID: {0}, {1}, DISTANCE: {2},{3}",touchId, key.second.id, key.second.y, startyPos);
+                   // GE_LOG_INFO("ID: {0}, {1}, DISTANCE: {2},{3}",touchId, key.second.id, key.second.y, startyPos);
                     if (bJumping) {
                         float yDistance = (key.second.y - startyPos+  Application::GetHeight()*.01f)/Application::GetHeight();
                         float xDistance = -(lastxpos - startxPos+  Application::GetWidth()*.01f)/Application::GetWidth();
