@@ -1,6 +1,5 @@
 #import "GameViewController.h"
 #import <OpenGLES/ES2/glext.h>
-#import "Cube.h"
 #include <GEngine.h>
 #include <EntryPoint.h>
 #include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
@@ -131,25 +130,8 @@
 - (void)tearDownGL
 {
     [EAGLContext setCurrentContext:self.context];
-    //App_Shutdown();
-    //Cube_tearDownGL();
-}
-/*
-- (IBAction)onTouch:(UILongPressGestureRecognizer *)sender {
-    CGPoint touchPoint = [sender locationInView: self.view];
-    
-    
-    
-    if (sender.state == UIGestureRecognizerStateBegan) {
-        Mobile_Input_Callback::Touched(0, touchPoint.x*self.view.contentScaleFactor,touchPoint.y*self.view.contentScaleFactor);
-    } else if (sender.state == UIGestureRecognizerStateEnded) {
-        Mobile_Input_Callback::Touched(2, touchPoint.x*self.view.contentScaleFactor,touchPoint.y*self.view.contentScaleFactor);
-    } else if (sender.state == UIGestureRecognizerStateChanged) {
-        Mobile_Input_Callback::Touched(1, touchPoint.x*self.view.contentScaleFactor,touchPoint.y*self.view.contentScaleFactor);
-    }
 }
 
- */
 - (IBAction)onTextValueChange:(UITextField *)sender {
     std::string txt = std::string([sender.text UTF8String]);
 }
@@ -175,19 +157,12 @@
 
 - (void)update
 {
-   // Cube_update(self.timeSinceLastUpdate, self.view.bounds.size.width, self.view.bounds.size.height);
-    //Cube_update();
-    //App_Update();
     App_Update();
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-    //Cube_prepare();
-    //Cube_draw();
     App_Draw();
-    
-    
 }
 
 @end
@@ -202,7 +177,8 @@
     for (NSObject* obj : touches) {
         UITouch* touch = (UITouch*)obj;
         CGPoint touchPoint = [touch locationInView:touch.view];
-        GEngine::Mobile_Input_Callback::Touched(touch.hash, 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+        uint64_t addr = reinterpret_cast<uint64_t>(obj);
+        GEngine::Mobile_Input_Callback::Touched(addr, 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
 
@@ -210,7 +186,13 @@
     for (NSObject* obj : touches) {
         UITouch* touch = (UITouch*)obj;
         CGPoint touchPoint = [touch locationInView:touch.view];
-        GEngine::Mobile_Input_Callback::Touched(touch.hash, 1, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+        CGPoint lastPoint = [touch previousLocationInView:touch.view];
+        
+        if (CGPointEqualToPoint(touchPoint,lastPoint))
+            continue;
+        
+        uint64_t addr = reinterpret_cast<uint64_t>(obj);
+        GEngine::Mobile_Input_Callback::Touched(addr, 1, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
         }
     }
 
@@ -218,7 +200,8 @@
 for (NSObject* obj : touches) {
     UITouch* touch = (UITouch*)obj;
     CGPoint touchPoint = [touch locationInView:touch.view];
-    GEngine::Mobile_Input_Callback::Touched(touch.hash, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+    uint64_t addr = reinterpret_cast<uint64_t>(obj);
+    GEngine::Mobile_Input_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
    
@@ -226,8 +209,14 @@ for (NSObject* obj : touches) {
 for (NSObject* obj : touches) {
     UITouch* touch = (UITouch*)obj;
     CGPoint touchPoint = [touch locationInView:touch.view];
-    GEngine::Mobile_Input_Callback::Touched(touch.hash, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+    uint64_t addr = reinterpret_cast<uint64_t>(obj);
+    GEngine::Mobile_Input_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
+}
+
+-(void)touchesEstimatedPropertiesUpdated:(NSSet<UITouch *> *)touches {
+
+    
 }
 
 
