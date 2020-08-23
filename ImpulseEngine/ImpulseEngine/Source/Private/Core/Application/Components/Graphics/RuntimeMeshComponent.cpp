@@ -45,7 +45,7 @@ namespace GEngine {
 		CreateMesh();
 	}
 
-	void RuntimeMeshComponent::SetMeshData(const std::vector<float>& vertices, const std::vector<u32>& indices, Ref<BufferLayout> layout, Ref<Material> material)
+	void RuntimeMeshComponent::SetMeshData(const std::vector<float>& vertices, const std::vector<u32>& indices, const Ref<BufferLayout>& layout, const Ref<Material>& material)
 	{
 		this->m_Vertices = vertices;
 		this->m_Indices = indices;

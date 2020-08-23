@@ -19,25 +19,28 @@ namespace GEngine {
 		SpriteComponent();
 		virtual ~SpriteComponent();
 
-		long CreateQuad(Vector3 _pos, float rot = 0, Vector3 scale = { 1,1,1 }, Vector4 _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, float textureScale = 1);
+		long CreateQuad(const Vector3& _pos, const const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f },
+			const Ref<Texture2D> texture = nullptr, const const float textureScale = 1);
 
 
-		long CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture = nullptr, float tScale = 1);
+		long CreateQuadScript(const Ref<ScriptVector3>& _pos, const const float rot, const Ref<ScriptVector3>& scale, const Ref<ScriptVector4>& _color, const Ref<Texture2D>& texture = nullptr, 
+			const const float tScale = 1);
 
 
-		long CreateSubTexturedQuad(Vector3 _pos, float rot, Vector3 scale, Vector4 _color, Ref<SubTexture2D> texture, float textureScale = 1.f);
+		long CreateSubTexturedQuad(const Vector3& _pos,const const float rot,const Vector3& scale, const Vector4& _color, const Ref<SubTexture2D>& texture, const const float textureScale = 1.f);
 
-		long CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, float tscale);
+		long CreateSubTexturedQuadScript(const Ref<ScriptVector3>& _pos, const const float rot, const Ref<ScriptVector3>& scale, const Ref<ScriptVector4>& _color,
+			const Ref<SubTexture2D>& texture, const const float tscale);
 
 
-		void SetSubTexture(long id, Ref<SubTexture2D> texture);
-		void SetPosition(long id, glm::vec2 position);
-		void SetPositionScript(long id, Ref<ScriptVector2> position);
-		void SetScaleScript(long id, Ref<ScriptVector2> scale);
-		void SetZOrder(long id, float zOrder);
-		void SetQuadColor(long id, glm::vec4 color);
-		void SetQuadColorScript(long id, Ref<ScriptVector4> color);
-		void SetRotation(long id, float rotation);
+		void SetSubTexture(const const long id,const Ref<SubTexture2D>& texture);
+		void SetPosition(const long id, const glm::vec2& position);
+		void SetPositionScript(const long id, const Ref<ScriptVector2>& position);
+		void SetScaleScript(const long id, const Ref<ScriptVector2>& scale);
+		void SetZOrder(const long id, const float zOrder);
+		void SetQuadColor(const long id, const glm::vec4& color);
+		void SetQuadColorScript(const long id, const Ref<ScriptVector4>& color);
+		void SetRotation(const long id, const float rotation);
 
 		virtual void OnAttached(Ref<Entity> entity) override;
 		virtual void DeAttached(Ref<Entity> entity) override;
@@ -45,14 +48,13 @@ namespace GEngine {
 		virtual void UnloadGraphics() override;
 		virtual void ReloadGraphics() override;
 
-		void RemoveQuad(long id);
+		void RemoveQuad(const long id);
 		void ClearQuads();
 
 		virtual void OnBegin() override;
 		virtual void OnEnd() override;
 
 	private:
-		static void RemoveQuads(u32 id);
 		static Ref<BatchRenderer> s_ShapeFactory;
 		Ref<Shader> m_Shader;
 		std::vector<int> m_ids;

@@ -7,6 +7,8 @@
 #include "Public/Core/Events/TouchEvent.h"
 #include "Public/Core/Collision/CollisionDetection.h"
 #include "Public/Core/Util/GEMath.h"
+#include "Public/Core/Util/Time.h"
+#include "Public/Core/Util/ThreadPool.h"
 
 namespace GEngine {
 
@@ -44,6 +46,10 @@ namespace GEngine {
         }
         return -1;
 	}
+
+    void Mobile_Input::ClearTouches() {
+        Mobile_Input_Callback::ClearTouches();
+    }
 
 	float Mobile_Input::GetMouseYImpl(uint64_t id)
 	{
@@ -98,13 +104,15 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 #ifdef GE_MOBILE_APP
 		GEngine::MobileWindow* mb = static_cast<GEngine::MobileWindow*>(GEngine::Application::GetApp()->GetWindow());
         if (mb) {
-			//GE_CORE_DEBUG("TOUCH: {0} - {1}", id, state);
+			GE_CORE_DEBUG("TOUCH: {0} - {1}", id, state);
 			switch (state) {
 				// Touch begin
 				case 0: {
                     std::lock_guard<std::mutex> lock(touchMutex);
-                    FTouchInfo info(id, state, x, y,force, Time::GetEpochTimeMS());
-                    Mobile_Input_Callback::touches[id] = std::move(info);
+					if (Mobile_Input_Callback::touches.find(id) == Mobile_Input_Callback::touches.end()) {
+                        FTouchInfo info(id, state, x, y,force, Time::GetEpochTimeNS());
+                        Mobile_Input_Callback::touches[id] = std::move(info);
+					}
 					break;
 				}
 				// Touch move
@@ -117,14 +125,27 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 				}
 				// Touch end
 				case 2: {
+                    Mobile_Input_Callback::touches[id].state = state;
+                    Mobile_Input_Callback::touches[id].x = x;
+                    Mobile_Input_Callback::touches[id].y = y;
                     std::lock_guard<std::mutex> lock(touchMutex);
-                    Mobile_Input_Callback::touches.erase(id);
+                    ThreadPool::AddMainThreadFunction([id](){
+                        std::lock_guard<std::mutex> lock(touchMutex);
+                        Mobile_Input_Callback::touches.erase(id);
+                    });
                     break;
 				}
 				// Touch Cancel
 				case 3: {
-					std::lock_guard<std::mutex> lock(touchMutex);
-					Mobile_Input_Callback::touches.erase(id);
+                    Mobile_Input_Callback::touches[id].state = state;
+                                       Mobile_Input_Callback::touches[id].x = x;
+                                       Mobile_Input_Callback::touches[id].y = y;
+                    ThreadPool::AddMainThreadFunction([id](){
+                        std::lock_guard<std::mutex> lock(touchMutex);
+                        Mobile_Input_Callback::touches.erase(id);
+                    });
+					//Mobile_Input_Callback::touches[id].CallTouchEndFunctions(&Mobile_Input_Callback::touches[id]);
+					
 					break;
 				}
             }

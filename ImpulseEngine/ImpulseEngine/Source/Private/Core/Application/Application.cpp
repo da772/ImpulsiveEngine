@@ -21,7 +21,7 @@
 #include "Public/Core/Ads/AdManager.h"
 
 #include "Public/Core/Physics/Physics.h"
-
+#include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
 
 
 namespace GEngine {
@@ -94,7 +94,8 @@ namespace GEngine {
     }
 
     void Application::UnloadGraphics() {
-        Application::GetApp()->m_loaded = false;
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || !Application::GetApp()->m_loaded) return;
+        Application::GetApp()->Pause();
         SceneManager::UnloadGraphics();
         Font::UnloadGraphics();
         Texture2D::UnloadTextures();
@@ -104,7 +105,8 @@ namespace GEngine {
     }
 
     void Application::ReloadGraphics() {
-        Application::GetApp()->m_loaded = true;
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || Application::GetApp()->m_loaded) return;
+        Application::GetApp()->Resume();
         RenderCommand::Init();
         Texture2D::ReloadTextures();
         Font::ReloadGraphics();
@@ -162,18 +164,18 @@ namespace GEngine {
         return  s_Instance->GetWindow()->GetWindowData().GetSafeRightUI();
 	}
 
-	void Application::QueueWindowApi(FWindowApi windowApi) {
+	void Application::QueueWindowApi(const FWindowApi& windowApi) {
         tempWindowApi = windowApi;
         b_NewWindowApi = true;
     }
     
-    void Application::QueueGraphicsApi(FGraphicsApi graphicsApi)
+    void Application::QueueGraphicsApi(const FGraphicsApi& graphicsApi)
     {
         tempGraphicsApi = graphicsApi;
         b_NewGraphicsApi = true;
     }
     
-    void Application::SetWindowApi(FWindowApi windowApi) {
+    void Application::SetWindowApi(const FWindowApi& windowApi) {
         Application::s_windowApi = windowApi;
         LayerReset();
         
@@ -189,7 +191,7 @@ namespace GEngine {
         LayerSetup();
     }
     
-    void Application::SetGraphicsApi(FGraphicsApi graphicsApi)
+    void Application::SetGraphicsApi(const FGraphicsApi& graphicsApi)
     {
         Application::s_graphicsApi = graphicsApi;
         GraphicsContext::SetGraphicsApi(graphicsApi);
@@ -263,6 +265,16 @@ namespace GEngine {
         AdManager::Shutdown();
         Application::s_Instance = nullptr;
 	}
+
+    void Application::Pause() {
+            m_loaded = false;
+    }
+
+    void Application::Resume() {
+        //Mobile_Input::ClearTouches();
+        m_loaded = true;
+        m_LastFrameTime = Time::GetEpochTimeMS();
+    }
 
 	void Application::Update(float ts) {
         

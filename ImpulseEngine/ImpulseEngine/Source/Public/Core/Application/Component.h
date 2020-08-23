@@ -62,8 +62,8 @@ namespace GEngine {
 		bool m_hasComponentParent = false;
 		static int refCount;
 		
-		inline virtual std::string GetTag() { return m_tag; }
-		inline virtual void SetTag(std::string tag) { m_tag = tag; }
+		inline virtual const std::string& GetTag() { return m_tag; }
+		inline virtual void SetTag(const std::string& tag) { m_tag = tag; }
 
 	protected:
 		virtual void OnBegin() {};

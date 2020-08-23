@@ -409,9 +409,9 @@ namespace GEngine {
 
 	 void BatchRenderer::ReloadGraphics() {
 		if (bUnloaded) {
+            bUnloaded = false;
 			Setup();
 			ReCreateBatches();
-			bUnloaded = false;
 		}
 	 } 
 
@@ -430,6 +430,8 @@ namespace GEngine {
 	 void BatchRenderer::ReCreateBatches()
 	 {
 
+         if (bUnloaded) return;
+         
 		 if (m_SortedObjects.size() <= 0 && m_Batches.size() == 1) {
 			 std::vector<float> f;
 			 std::vector<int> i;

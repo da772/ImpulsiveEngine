@@ -44,8 +44,8 @@ namespace GEngine {
 		inline static Application* GetApp() { return Application::s_Instance; };
 		inline Window* GetWindow() { return m_Window.get(); }
 
-		void QueueWindowApi(FWindowApi windowApi);
-		void QueueGraphicsApi(FGraphicsApi graphicsApi);
+		void QueueWindowApi(const FWindowApi& windowApi);
+		void QueueGraphicsApi(const FGraphicsApi& graphicsApi);
 		inline FWindowApi GetWindowApi() {return Application::s_windowApi;};
 		inline FGraphicsApi GetGraphicsApi() { return Application::s_graphicsApi; }
 
@@ -74,6 +74,8 @@ namespace GEngine {
 		void Shutdown();
         void Update(float ts = 0);
         void Draw();
+        void Pause();
+        void Resume();
 
 		std::unordered_map<std::string, float> profile = {
 		{"Layers", 0.f},
@@ -86,8 +88,8 @@ namespace GEngine {
 		inline bool IsRunning() { return m_Running; }
 		void EnableImGui(bool b);
 	protected:
-		void SetWindowApi(FWindowApi windowApi);
-		void SetGraphicsApi(FGraphicsApi graphicsApi);
+		void SetWindowApi(const FWindowApi& windowApi);
+		void SetGraphicsApi(const FGraphicsApi& graphicsApi);
 		Scope<Window> m_Window;
 		inline virtual void OnCleanDirtyApi() {};
 		inline virtual void OnUpdate(Timestep timeStep) {};
@@ -101,6 +103,7 @@ namespace GEngine {
 		float m_totalTime = 0;
 		float m_fps = 0;
 		bool m_loaded = true;
+        
 		
 		
 		int m_width = 1280, m_height = 720;

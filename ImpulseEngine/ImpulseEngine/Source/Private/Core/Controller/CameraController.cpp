@@ -9,7 +9,7 @@
 
 namespace GEngine {
 
-	Orthographic_CameraController::Orthographic_CameraController(float aspectRatio)
+	Orthographic_CameraController::Orthographic_CameraController(const float aspectRatio)
 		: m_ZoomLevel(1.f), m_AspectRatio(aspectRatio)
 	{
 		m_Camera = std::unique_ptr<Orthographic_Camera>(new Orthographic_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel,
@@ -32,7 +32,7 @@ namespace GEngine {
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Orthographic_CameraController, OnWindowResized));
 	}
 
-	bool Orthographic_CameraController::OnCameraZoom(float x, float y, float amt)
+	bool Orthographic_CameraController::OnCameraZoom(const float x, const float y, const float amt)
 	{
 		m_ZoomLevel = glm::clamp(m_ZoomLevel - (y*amt), 0.1f, 100.f);
 		m_Camera->SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
@@ -47,13 +47,13 @@ namespace GEngine {
 		return false;
 	}
 
-	void Orthographic_CameraController::SetCameraZoom(float zoomLevel)
+	void Orthographic_CameraController::SetCameraZoom(const float zoomLevel)
 	{
 		m_ZoomLevel = zoomLevel;
 		m_Camera->SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 	}
 
-	Perspective_CameraController::Perspective_CameraController(float aspectRatio)
+	Perspective_CameraController::Perspective_CameraController(const float aspectRatio)
 		: m_ZoomLevel(1.f), m_AspectRatio(aspectRatio)
 	{
 		m_Camera = std::unique_ptr<Perspective_Camera>(new Perspective_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel));
@@ -80,7 +80,7 @@ namespace GEngine {
 		return false;
 	}
 
-	bool Perspective_CameraController::OnCameraZoom(float x, float y, float amt)
+	bool Perspective_CameraController::OnCameraZoom(const float x, const float y, const float amt)
 	{
 		return false;
 	}

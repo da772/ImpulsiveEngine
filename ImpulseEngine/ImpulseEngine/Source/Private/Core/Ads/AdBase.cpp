@@ -4,7 +4,7 @@
 
 namespace GEngine {
 
-	GEngine::Ad* Ad::Create(EAdPlatforms platform)
+	GEngine::Ad* Ad::Create(const EAdPlatforms platform)
 	{
 		switch (platform) {
 		

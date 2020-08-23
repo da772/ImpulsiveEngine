@@ -31,7 +31,7 @@ namespace GEngine {
 		return m_parentComponent.lock();
 	}
 
-	void ScriptableComponent::SetTag(std::string tag)
+	void ScriptableComponent::SetTag(const std::string& tag)
 	{
 		m_tag = tag;
 		Ref<Component> c = m_parentComponent.lock();

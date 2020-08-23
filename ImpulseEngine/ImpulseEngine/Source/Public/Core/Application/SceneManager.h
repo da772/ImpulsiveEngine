@@ -10,9 +10,9 @@ namespace GEngine {
 	class SceneManager {
 	
 	public:
-		static void AddScene(std::string name, Ref<Scene> scene);
+		static void AddScene(const std::string& name, Ref<Scene> scene);
 		static Ref<Scene> GetCurrentScene();
-		static void SetCurrentScene(std::string name, bool unload = true);
+		static void SetCurrentScene(const std::string& name, bool unload = true);
 		static void Update(Timestep ts);
 		static void Begin();
 		static void End();

@@ -29,7 +29,7 @@ namespace GEngine {
 		m_particles = std::vector<Particle>(250);
 	}
 
-	ParticleSystem2DComponent::ParticleSystem2DComponent(Ref<ParticleProps> props) : Component()
+	ParticleSystem2DComponent::ParticleSystem2DComponent(const Ref<ParticleProps>& props) : Component()
 	{
 		m_particleProps = *props.get();
 		this->bUpdates = true;
@@ -41,7 +41,7 @@ namespace GEngine {
 	{
 	}
 
-	void ParticleSystem2DComponent::Emit(glm::vec3 pos, int amt)
+	void ParticleSystem2DComponent::Emit(const glm::vec3& pos, int amt)
 	{
 		for (int i = 0; i < amt; i++) {
 			Particle particle;
@@ -79,7 +79,7 @@ namespace GEngine {
 
 	}
 
-	void ParticleSystem2DComponent::EmitScript(Ref<ScriptVector2> pos, int amt)
+	void ParticleSystem2DComponent::EmitScript(const Ref<ScriptVector2>& pos, const int amt)
 	{
 		glm::vec2 p = pos->GetGlm();
 		Emit(glm::vec3(p.x,p.y,1e6), amt);
@@ -220,22 +220,22 @@ namespace GEngine {
 		return make_shared<ScriptVector4>(ColorEnd);
 	}
 
-	void ParticleProps::SetVelocity(Ref<ScriptVector2> vel)
+	void ParticleProps::SetVelocity(const Ref<ScriptVector2>& vel)
 	{
 		Velocity = vel->GetGlm();
 	}
 
-	void ParticleProps::SetVelocityVariation(Ref<ScriptVector2> vel)
+	void ParticleProps::SetVelocityVariation(const Ref<ScriptVector2>& vel)
 	{
 		VelocityVariation = vel->GetGlm();
 	}
 
-	void ParticleProps::SetColorBegin(Ref<ScriptVector4> col)
+	void ParticleProps::SetColorBegin(const Ref<ScriptVector4>& col)
 	{
 		ColorBegin = col->GetGlm();
 	}
 
-	void ParticleProps::SetColorEnd(Ref<ScriptVector4> col)
+	void ParticleProps::SetColorEnd(const Ref<ScriptVector4>& col)
 	{
 		ColorEnd = col->GetGlm();
 	}

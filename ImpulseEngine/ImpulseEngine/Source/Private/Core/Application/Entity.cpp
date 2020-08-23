@@ -125,8 +125,8 @@ namespace GEngine {
 
 
 	void Entity::Begin() {
+        bInit = true;
 		OnBegin();
-		bInit = true;
 		for (std::pair<uint64_t, Ref<Component>> c : components) {
 			c.second->Begin();
 		}
@@ -183,7 +183,7 @@ namespace GEngine {
 		return transform->GetScale();
 	}
 
-	void Entity::SetEntityPosition(Vector3 position)
+	void Entity::SetEntityPosition(const Vector3& position)
 	{
 		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
 		transform->SetPosition(position);
@@ -192,7 +192,7 @@ namespace GEngine {
 		}
 	}
 
-	void Entity::SetEntityScale(Vector3 scale)
+	void Entity::SetEntityScale(const Vector3& scale)
 	{
 		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
 		transform->SetScale(scale);
@@ -201,7 +201,7 @@ namespace GEngine {
 		}
 	}
 
-	void Entity::SetEntityRotation(Vector3 rot)
+	void Entity::SetEntityRotation(const Vector3& rot)
 	{
 		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
 		transform->SetRotation(rot);

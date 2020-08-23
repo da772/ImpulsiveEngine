@@ -28,9 +28,9 @@ namespace GEngine {
 
 		inline const std::unique_ptr<Camera>& GetCamera() { return m_Camera; }
 
-		virtual bool OnCameraZoom(float x, float y, float amt) = 0;
+		virtual bool OnCameraZoom(const float x, const float y, const float amt) = 0;
 		virtual bool OnWindowResized(WindowResizeEvent& e) = 0;
-		virtual void SetCameraZoom(float zoomLevel) {};
+		virtual void SetCameraZoom(const float zoomLevel) {};
 
 		inline void SetPosition(const glm::vec3& position) { m_Position = position; }
 		inline void SetRotation(const glm::vec3& rotation) { m_Rotation = rotation; }
@@ -63,7 +63,7 @@ namespace GEngine {
 
 	class Orthographic_CameraController : public CameraController {
 	public:
-		Orthographic_CameraController(float aspectRatio);
+		Orthographic_CameraController(const float aspectRatio);
 
 		virtual void OnUpdate(Timestep timeStep) override;
 		virtual void OnEvent(Event& e) override;
@@ -71,9 +71,9 @@ namespace GEngine {
 
 		virtual const float GetFOV() const override { return m_ZoomLevel; };
 
-		virtual bool OnCameraZoom(float x, float y, float amt) override;
+		virtual bool OnCameraZoom(const float x, const float y, const float amt) override;
 		virtual bool OnWindowResized(WindowResizeEvent& e) override;
-		virtual void SetCameraZoom(float zoomLevel) override;
+		virtual void SetCameraZoom(const float zoomLevel) override;
 
 
 	protected:
@@ -89,7 +89,7 @@ namespace GEngine {
 
 	class Perspective_CameraController : public CameraController {
 	public:
-		Perspective_CameraController(float aspectRatio);
+		Perspective_CameraController(const float aspectRatio);
 
 		virtual void OnUpdate(Timestep timeStep) override;
 		virtual void OnEvent(Event& e) override;

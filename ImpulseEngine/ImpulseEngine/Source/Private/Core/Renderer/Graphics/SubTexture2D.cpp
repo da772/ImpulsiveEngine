@@ -20,6 +20,23 @@ namespace GEngine {
 		//GE_CORE_DEBUG("SUB TEXTURE DESTROYERD");
 	}
 
+	void SubTexture2D::SetCoords(const Vector2& coords, const Vector2& cellSize, const Vector2& spriteSize /*= { 1,1 }*/)
+	{
+		float width = m_Texture->GetWidth(), height = m_Texture->GetHeight();
+		const Vector2 textureCords[] = {
+			{ (coords.x * cellSize.x) / width,  (coords.y * cellSize.y) / height },
+			{ ((coords.x + spriteSize.x) * cellSize.x) / width, ((coords.y + spriteSize.y) * cellSize.y) / height}
+		};
+
+		Vector2 min = textureCords[0];
+		Vector2 max = textureCords[1];
+
+		m_TexCoords[0] = { min.x, min.y };
+		m_TexCoords[1] = { max.x, min.y };
+		m_TexCoords[2] = { max.x, max.y };
+		m_TexCoords[3] = { min.x, max.y };
+	}
+
 	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2D>& texture, const Vector2& coords, const Vector2& cellSize, const Vector2& spriteSize)
 	{
 

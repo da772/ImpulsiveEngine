@@ -52,7 +52,7 @@ namespace GEngine {
 
 	}
 
-	std::vector<Ref<Collider>> CollisionDetection::CheckPoint(float x, float y)
+	std::vector<Ref<Collider>> CollisionDetection::CheckPoint(const float x, const float y)
 	{
 		std::vector<Ref<Collider>> cList;
 		for (Ref<Collider> c : s_GameColliders) {
@@ -63,7 +63,7 @@ namespace GEngine {
 		return cList;
 	}
 
-	std::vector<GEngine::Ref<GEngine::QuadColliderComponent>> CollisionDetection::CheckPointComponent(float x, float y)
+	std::vector<GEngine::Ref<GEngine::QuadColliderComponent>> CollisionDetection::CheckPointComponent(const float x, const float y)
 	{
 		std::vector<Ref< QuadColliderComponent>> v;
 		for (Ref<Collider> c : s_GameColliders) {
@@ -74,7 +74,7 @@ namespace GEngine {
 		return v;
 	}
 
-	bool CollisionDetection::CheckPointUI(float x, float y)
+	bool CollisionDetection::CheckPointUI(const float x, const float y)
 	{
 		bool b = false;
 		std::lock_guard<std::mutex> guard(s_uiMutex);
@@ -121,7 +121,7 @@ namespace GEngine {
 
 	}
 
-	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionUI(float x, float y)
+	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionUI(const float x, const float y)
 	{
 		{
 			std::lock_guard<std::mutex> guard(s_uiMutex);
@@ -154,7 +154,7 @@ namespace GEngine {
 		return nullptr;
 	}
 
-	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionEndUI(float x, float y)
+	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionEndUI(const float x, const float y)
 	{
 		ThreadPool::AddJob([x, y]()
 			{

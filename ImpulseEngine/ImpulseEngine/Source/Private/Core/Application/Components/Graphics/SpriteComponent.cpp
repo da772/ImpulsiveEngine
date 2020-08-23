@@ -14,12 +14,7 @@
 namespace GEngine {
 
 	Ref < BatchRenderer >SpriteComponent::s_ShapeFactory = nullptr;
-		
-
-	void SpriteComponent::RemoveQuads(u32 id)
-	{
-
-	}
+	
 
 	void SpriteComponent::OnAttached(Ref<Entity> entity)
 	{
@@ -78,7 +73,8 @@ namespace GEngine {
 		
 	}
 
-	long SpriteComponent::CreateQuad(Vector3 _pos, float rotation, Vector3 scale, Vector4 _color,  Ref<Texture2D> texture, float textureScale)
+	long SpriteComponent::CreateQuad(const Vector3& _pos, const float rotation, const Vector3& scale, const Vector4& _color,
+		const Ref<Texture2D> texture, const float textureScale)
 	{
 		Ref<Entity> e = entity.lock();
 		long id = s_ShapeFactory->AddShape(_pos+e->GetEntityPosition(), rotation+e->GetEntityRotation().z, scale* e->GetEntityScale(), _color, texture, textureScale);
@@ -86,52 +82,55 @@ namespace GEngine {
 		return id;
 	}
 
-	long SpriteComponent::CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture, float tScale)
+	long SpriteComponent::CreateQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale, const Ref<ScriptVector4>& _color,
+		const Ref<Texture2D>& texture, const float tScale)
 	{
 		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, tScale);
 	}
 
-	long SpriteComponent::CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, float tscale)
+	long SpriteComponent::CreateSubTexturedQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale,
+		const Ref<ScriptVector4>& _color,const Ref<SubTexture2D>& texture,const float tscale)
 	{
 		return CreateSubTexturedQuad(_pos->GetGlm(), rot , scale->GetGlm(), _color->GetGlm(), texture, tscale);
 	}
 
-	void SpriteComponent::SetSubTexture(long id, Ref<SubTexture2D> texture)
+	void SpriteComponent::SetSubTexture(const long id, const Ref<SubTexture2D>& texture)
 	{
 		s_ShapeFactory->SetSubTexture(id, texture);
 	}
 
-	void SpriteComponent::SetPosition(long id, glm::vec2 position)
+	void SpriteComponent::SetPosition(const long id, const glm::vec2& position)
 	{
 		s_ShapeFactory->SetPosition(id, position + glm::vec2( entity.lock()->GetEntityPosition().x, entity.lock()->GetEntityPosition().y ) );
 	}
 
-	void SpriteComponent::SetPositionScript(long id, Ref<ScriptVector2> position)
+	void SpriteComponent::SetPositionScript(const long id, const Ref<ScriptVector2>& position)
 	{
 		SetPosition(id, position->GetGlm());
 	}
 
-	void SpriteComponent::SetScaleScript(long id, Ref<ScriptVector2> scale)
+	void SpriteComponent::SetScaleScript(const long id,const Ref<ScriptVector2>& scale)
 	{
 		s_ShapeFactory->SetScale(id, scale->GetGlm());
 	}
 
-	void SpriteComponent::SetZOrder(long id, float zOrder)
+	void SpriteComponent::SetZOrder(const long id, const float zOrder)
 	{
 		s_ShapeFactory->SetZOrder(id, zOrder+entity.lock()->GetEntityPosition().z);
 	}
 
-	void SpriteComponent::SetQuadColor(long id, glm::vec4 color)
+	void SpriteComponent::SetQuadColor(const long id, const glm::vec4& color)
 	{
 		s_ShapeFactory->SetColor(id, color);
 	}
 
-	void SpriteComponent::SetQuadColorScript(long id, Ref<ScriptVector4> color)
+	void SpriteComponent::SetQuadColorScript(const long id, const Ref<ScriptVector4>& color)
 	{
 		SetQuadColor(id, color->GetGlm());
 	}
 
-	long SpriteComponent::CreateSubTexturedQuad(Vector3 _pos, float rot /*= 0*/, Vector3 scale /*= { 1,1,1 }*/, Vector4 _color /*= { 1,1,1,1.f }*/, Ref<SubTexture2D> texture /*= nullptr*/, float textureScale /*= 1*/)
+	long SpriteComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, 
+		const Vector4& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const float textureScale /*= 1*/)
 	{
 		Ref<Entity> e = entity.lock();
 		long id = s_ShapeFactory->AddShape(_pos + e->GetEntityPosition(), rot + e->GetEntityRotation().z, scale * e->GetEntityScale(), _color, texture, textureScale);
@@ -139,7 +138,7 @@ namespace GEngine {
 		return id;
 	}
 
-	void SpriteComponent::RemoveQuad(long id)
+	void SpriteComponent::RemoveQuad(const long id)
 	{
 		s_ShapeFactory->RemoveShape(id);
 		m_ids.erase(std::find(m_ids.begin(), m_ids.end(), id));

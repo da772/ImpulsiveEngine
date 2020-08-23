@@ -12,7 +12,7 @@ namespace GEngine {
 		~SubTexture2D();
 		inline Ref<Texture2D> GetTexture() const { return m_Texture; }
 		inline const Vector2* GetTexCoords() const { return m_TexCoords; }
-
+		void SetCoords(const Vector2& coords, const Vector2& cellSize, const Vector2& spriteSize = { 1,1 });
 		static Ref<SubTexture2D> CreateFromCoords(const Ref<Texture2D>& texure, const Vector2& coords, const Vector2& cellSize, const Vector2& spriteSize = { 1,1 });
 
 		Vector2 m_TexCoords[4];

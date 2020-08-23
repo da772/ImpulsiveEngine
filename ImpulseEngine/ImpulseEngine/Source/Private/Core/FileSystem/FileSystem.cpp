@@ -297,8 +297,6 @@ namespace GEngine {
 #endif
 
 #if defined(GE_PLATFORM_IOS)
-		char* home = getenv("HOME");
-		char* subdir = "/Library/Caches/subdir";
 		//Get a reference to the main bundle
 		CFBundleRef mainBundle = CFBundleGetMainBundle();
 
@@ -313,7 +311,9 @@ namespace GEngine {
 		// Convert the string reference into a C string
 		const char* path = CFStringGetCStringPtr(dirSTR, encodingMethod);
 		// GE_CORE_DEBUG("{0}", path);
-		return std::string(path) + std::string("/");
+        std::string rPath =std::string(path) + std::string("/");
+        free((void*)dirSTR);
+        return rPath;
 #endif
 		return std::string();
 	}
