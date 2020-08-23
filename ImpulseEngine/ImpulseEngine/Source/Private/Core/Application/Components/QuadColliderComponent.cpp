@@ -16,7 +16,7 @@
 
 namespace GEngine {
 
-	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, glm::vec2 position, glm::vec2 scale, float rotation, float mass) : Component(),
+	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const glm::vec2& position, const glm::vec2& scale, const float rotation, const float mass) : Component(),
 		m_position(position), m_scale(scale), m_rotation(rotation),
 		m_dynamic(dynamic), m_mass(mass), m_physics(physics)
 	{
@@ -76,7 +76,7 @@ namespace GEngine {
 		}
 	}
 
-	void QuadColliderComponent::SetPosition(float x, float y)
+	void QuadColliderComponent::SetPosition(const float x, const float y)
 	{
 		Ref<Entity> e = entity.lock();
 		m_position = glm::vec2(x + e->GetEntityPosition().x, y + e->GetEntityPosition().y);
@@ -84,7 +84,7 @@ namespace GEngine {
 		//m_body->SetPosition(glm::vec2(x, y));
 	}
 
-	void QuadColliderComponent::SetScale(float x, float y)
+	void QuadColliderComponent::SetScale(const float x, const float y)
 	{
 		Ref<Entity> e = entity.lock();
 		m_scale = glm::vec2(x * e->GetEntityScale().x, y * e->GetEntityScale().y);
@@ -92,12 +92,12 @@ namespace GEngine {
 		//m_collider->SetScale(glm::vec3(m_scale.x, m_scale.y,1));
 	}
 
-	glm::vec2 QuadColliderComponent::GetPosition()
+	const glm::vec2 QuadColliderComponent::GetPosition()
 	{
 		return m_worldPosition;
 	}
 
-	glm::vec2 QuadColliderComponent::GetScale()
+	const glm::vec2 QuadColliderComponent::GetScale()
 	{
 		return m_worldScale;
 	}
@@ -125,13 +125,13 @@ namespace GEngine {
 		return make_unique<ScriptVector2>(GetScale());
 	}
 
-	void QuadColliderComponent::SetBounce(float bounce)
+	void QuadColliderComponent::SetBounce(const float bounce)
 	{
 		if (m_physics)
 			m_body->SetBounce(bounce);
 	}
 
-	float QuadColliderComponent::GetBounce()
+	const float QuadColliderComponent::GetBounce()
 	{
 		if (m_physics)
 			return m_body->GetBounce();
@@ -151,24 +151,24 @@ namespace GEngine {
 		m_body->SetLinearVelocity(v);
 	}
 
-	void QuadColliderComponent::IncreaseAngularVelocity(float v)
+	void QuadColliderComponent::IncreaseAngularVelocity(const float v)
 	{
 		m_body->SetAngularVelocity(m_body->GetAngularVelocity() + v);
 	}
 
-	void QuadColliderComponent::SetVelocityX(float x)
+	void QuadColliderComponent::SetVelocityX(const float x)
 	{
 		glm::vec2 v = m_body->GetLinearVelocity();
 		m_body->SetLinearVelocity({ x, v.y });
 	}
 
-	void QuadColliderComponent::SetVelocityY(float y)
+	void QuadColliderComponent::SetVelocityY(const float y)
 	{
 		glm::vec2 v = m_body->GetLinearVelocity();
 		m_body->SetLinearVelocity({ v.x, y });
 	}
 
-	void QuadColliderComponent::SetVelocity(float x, float y)
+	void QuadColliderComponent::SetVelocity(const float x, const float y)
 	{
 		m_body->SetLinearVelocity({ x, y });
 	}

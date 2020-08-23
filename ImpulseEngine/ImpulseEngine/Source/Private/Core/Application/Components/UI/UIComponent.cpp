@@ -46,31 +46,31 @@ namespace GEngine {
 		
 	}
 
-	long UIComponent::CreateQuad(Vector3 _pos, float rot /*= 0*/, Vector3 scale /*= { 1,1,1 }*/, Vector4 _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, float textureScale /*= 1*/, float alphaChannel)
+	const long UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, const float textureScale /*= 1*/, const float alphaChannel)
 	{
-		long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
+		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
 
-	long UIComponent::CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture)
+	const long UIComponent::CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture)
 	{
 		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture);
 	}
 
-	long UIComponent::CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, float textureScale)
+	const long UIComponent::CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, const float textureScale)
 	{
 		return CreateSubTexturedQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, textureScale);
 	}
 
-	long UIComponent::CreateSubTexturedQuad(Vector3 _pos, float rot, Vector3 scale, Vector4 _color, Ref<SubTexture2D> texture, float textureScale /*= 1.f*/, float alphaChannel)
+	const long UIComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const float textureScale /*= 1.f*/, const float alphaChannel)
 	{
-		long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
+		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
 
-	long UIComponent::CreateText(std::string string, Ref<Font> font, Vector3 pos, Vector3 scale, Vector4 color)
+	const long UIComponent::CreateText(const std::string& string, Ref<Font> font, const Vector3& pos, const Vector3& scale, const Vector4& color)
 	{
 
 		/* Should use Framebuffer size of pipeline */
@@ -91,7 +91,7 @@ namespace GEngine {
 		return id;
 	}
 
-	long UIComponent::CreateTextScript(std::string string, Ref<Font> font, Ref<ScriptVector3> pos, Ref<ScriptVector3> scale, Ref<ScriptVector4> color)
+	const long UIComponent::CreateTextScript(const std::string& string, Ref<Font> font, Ref<ScriptVector3> pos, Ref<ScriptVector3> scale, Ref<ScriptVector4> color)
 	{
 		return CreateText(string, font, pos->GetGlm(), scale->GetGlm(), color->GetGlm());
 	}
@@ -117,7 +117,7 @@ namespace GEngine {
 		}
 	}
 
-	void UIComponent::SetPosition(long id, glm::vec2 position)
+	void UIComponent::SetPosition(const long id, const glm::vec2& position)
 	{
 		if (id >= 0) {
 			s_ShapeFactory->SetPosition(id, position);
@@ -145,7 +145,7 @@ namespace GEngine {
 		}
 	}
 
-	void UIComponent::SetColor(long id, glm::vec4 color)
+	void UIComponent::SetColor(const long id, const glm::vec4& color)
 	{
 		s_ShapeFactory->SetColor(id, color);
 	}
@@ -219,11 +219,6 @@ namespace GEngine {
 	void UIComponent::DeAttached(Ref<Entity> entity)
 	{
 		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
-	}
-
-	void UIComponent::RemoveQuads(u32 id)
-	{
-
 	}
 
 }

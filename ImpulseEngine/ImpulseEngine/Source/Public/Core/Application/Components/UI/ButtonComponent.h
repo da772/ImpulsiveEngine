@@ -14,17 +14,17 @@ namespace GEngine {
 	class ButtonComponent : public Component {
 	public:
 
-		ButtonComponent(glm::vec3 pos, float rot, glm::vec2 scale, glm::vec4 color,float textureScale = 1 );
+		ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, const float textureScale = 1 );
 		virtual ~ButtonComponent();
 
 		void SetImageSubTexture(Ref<SubTexture2D> texture);
 		void SetImageTexture(Ref<Texture2D> texture);
 		void SetImageColor(const glm::vec4& color);
-		void SetImageRotation(float rot);
-		void SetImagePosition(glm::vec2 pos);
-		void SetImageScale(glm::vec2 scale);
-		void SetColliderScale(glm::vec2 scale);
-		void SetColliderPosition(glm::vec2 pos);
+		void SetImageRotation(const float rot);
+		void SetImagePosition(const glm::vec2& pos);
+		void SetImageScale(const glm::vec2& scale);
+		void SetColliderScale(const glm::vec2& scale);
+		void SetColliderPosition(const glm::vec2& pos);
 		void SetZOrder(float pos);
 
 		void UnloadGraphics() override;
@@ -33,8 +33,8 @@ namespace GEngine {
 		void SetOnMouseEndCollideScript(Ref<ScriptObject> obj);
 		void SetOnMouseStartCollideScript(Ref<ScriptObject> obj);
 
-		inline void SetOnMouseStartCollide(std::function<void(float, float)> f) { m_onCollide = f; };
-		inline void SetOnMouseEndCollide(std::function<void(float, float)> f) { m_endCollide = f; };
+		inline void SetOnMouseStartCollide(const std::function<void(float, float)> f) { m_onCollide = f; };
+		inline void SetOnMouseEndCollide(const std::function<void(float, float)> f) { m_endCollide = f; };
 
 		inline void RemoveOnMouseCollideFunction() { m_onCollide = nullptr; }
 		inline void RemoveEndMouseCollideFunction() { m_endCollide = nullptr; }

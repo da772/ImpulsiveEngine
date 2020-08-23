@@ -29,7 +29,7 @@ namespace GEngine {
 		}
 
 
-		virtual void SetTag(std::string tag) override;
+		virtual void SetTag(const std::string& tag) override;
 
 		virtual Component* GetSelf() override { return static_pointer_cast<Component>(m_parentComponent.lock()).get(); }
 		virtual void SetSelf(Ref<Component> r) { }

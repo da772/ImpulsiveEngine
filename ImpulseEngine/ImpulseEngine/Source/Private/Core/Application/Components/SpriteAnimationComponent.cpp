@@ -11,7 +11,7 @@ namespace GEngine {
 		m_animateFrameFunction = nullptr;
 	}
 
-	void SpriteAnimationComponent::SetFrameAnimation(uint8_t fps, uint8_t maxFrames, bool loop, std::function<void(int)> animateFrameFunction)
+	void SpriteAnimationComponent::SetFrameAnimation(const uint8_t fps, const uint8_t maxFrames, bool loop, const std::function<void(int)> animateFrameFunction)
 	{
 		m_MaxFrames = maxFrames;
 		m_FPS = fps;

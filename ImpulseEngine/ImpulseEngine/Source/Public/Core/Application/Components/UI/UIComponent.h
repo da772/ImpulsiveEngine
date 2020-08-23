@@ -20,25 +20,25 @@ namespace GEngine {
 		UIComponent();
 		UIComponent(Ref<Shader> shader);
 		virtual ~UIComponent();
-		long CreateQuad(Vector3 _pos, float rot = 0, Vector3 scale = { 1,1,1 }, Vector4 _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, float textureScale = 1, float alphaChannel = 4);
+		const long CreateQuad(const  Vector3& _pos, const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, const float textureScale = 1, const float alphaChannel = 4);
 
-		long CreateQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture );
-		long CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, float textureScale);
+		const long CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture );
+		const long CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, const float textureScale);
 
-		long CreateSubTexturedQuad(Vector3 _pos, float rot, Vector3 scale, Vector4 _color, Ref<SubTexture2D> texture, float textureScale = 1.f, float alphaChannel = 4);
+		const long CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const float textureScale = 1.f, const float alphaChannel = 4);
+;
+		const long CreateText(const std::string& string, Ref<Font> font, const Vector3& pos, const Vector3& scale, const Vector4& color);
+		const long CreateTextScript(const std::string& string, Ref<Font> font, Ref<ScriptVector3> pos, Ref<ScriptVector3> scale, Ref<ScriptVector4> color);
+		void RemoveText(const long id);
 
-		long CreateText(std::string string, Ref<Font> font, Vector3 pos, Vector3 scale, Vector4 color);
-		long CreateTextScript(std::string string, Ref<Font> font, Ref<ScriptVector3> pos, Ref<ScriptVector3> scale, Ref<ScriptVector4> color);
-		void RemoveText(long id);
-
-		void SetPosition(long id, glm::vec2 position);
-		void SetPositionScript(long id, Ref<ScriptVector2> position);
-		void SetZOrder(long id, float zOrder);
+		void SetPosition(const long id, const glm::vec2& position);
+		void SetPositionScript(const long id, Ref<ScriptVector2> position);
+		void SetZOrder(const long id, const float zOrder);
 
 
-		void SetColor(long id, glm::vec4 color);
+		void SetColor(const long id, const glm::vec4& color);
 
-		void Remove(long id);
+		void Remove(const long id);
 		void ClearQuads();
 
 		virtual void OnUpdate(Timestep ts) override;

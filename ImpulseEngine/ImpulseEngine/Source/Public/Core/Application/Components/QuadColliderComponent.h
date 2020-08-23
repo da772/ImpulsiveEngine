@@ -11,7 +11,7 @@ namespace GEngine {
 
 	class QuadColliderComponent : public Component {
 	public:
-		QuadColliderComponent(bool dyamic = false, bool physics = false, glm::vec2 position = glm::vec2(0,0) , glm::vec2 scale = glm::vec2(1,1), float rotation = 0, float mass = 0);
+		QuadColliderComponent(bool dyamic = false, bool physics = false, const glm::vec2& position = glm::vec2(0,0) , const glm::vec2& scale = glm::vec2(1,1), const float rotation = 0, const float mass = 0);
 		~QuadColliderComponent();
 
 		virtual void OnAttached(Ref<Entity> entity) override;
@@ -22,11 +22,11 @@ namespace GEngine {
 
 		virtual void OnUpdate(Timestep ts) override;
 
-		void SetPosition(float x, float y);
-		void SetScale(float x, float y);
+		void SetPosition(const float x, const float y);
+		void SetScale(const float x, const float y);
 
-		glm::vec2 GetPosition();
-		glm::vec2 GetScale();
+		const glm::vec2 GetPosition();
+		const glm::vec2 GetScale();
 
 
 		const glm::vec2 GetLinearVelocity();
@@ -35,17 +35,17 @@ namespace GEngine {
 		Ref<ScriptVector2> GetPositionScript();
 		Ref<ScriptVector2> GetScaleScript();
 
-		void SetBounce(float bounce);
-		float GetBounce();
+		void SetBounce(const float bounce);
+		const float GetBounce();
 		
 		void SetDynamic(bool b);
 
-		void IncreaseLinearVelocity(float x, float y);
-		void IncreaseAngularVelocity(float v);
+		void IncreaseLinearVelocity(const float x, const float y);
+		void IncreaseAngularVelocity(const float v);
 
-		void SetVelocityX(float x);
-		void SetVelocityY(float y);
-		void SetVelocity(float x, float y);
+		void SetVelocityX(const float x);
+		void SetVelocityY(const float y);
+		void SetVelocity(const float x, const float y);
 
 		void SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc);
 		void SetOnCollideFunction_Script(Ref<ScriptObject> onColliderFunc);

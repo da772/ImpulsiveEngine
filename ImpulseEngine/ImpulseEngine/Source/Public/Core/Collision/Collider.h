@@ -27,14 +27,14 @@ namespace GEngine {
 	public:
 		Collider() {};
 		~Collider() {};
-		virtual bool CheckCollisionPoint(float x, float y) { return false; }
+		virtual bool CheckCollisionPoint(const float x,const float y) { return false; }
 		virtual bool CheckCollision(Ref<Collider> collider) { return false; };
 		
 		inline const EColliderShape GetColliderShape() const { return m_shape; }
 		inline void SetColliderShape(EColliderShape shape) { m_shape = shape; }
 		inline const EColliderLayer GetColliderLayer() const { return m_layer; }
 		inline void SetColliderLayer(EColliderLayer shape) { m_layer = shape; }
-		inline EColliderType  GetColliderType() const { return m_type; }
+		inline const EColliderType  GetColliderType() const { return m_type; }
 		inline void SetColliderType(EColliderType shape) { m_type = shape; }
 
 		inline void SetCollisionStartFunction(std::function<void(Ref<Collider>)> func) { m_collisionFunctionStart = func; }
@@ -47,16 +47,16 @@ namespace GEngine {
 		void CollideStart(Ref<Collider> collider);
 		void CollideEnd(Ref<Collider> collider);
 
-		void UIMouseCollideStart(float x, float y);
-		void UIMouseCollideEnd(float x, float y);
+		void UIMouseCollideStart(const float x,const float y);
+		void UIMouseCollideEnd(const float x,const float y);
 
 		const glm::vec3 GetPosition() const { return position; };
 		const glm::vec3 GetScale() const { return scale;}
 		const glm::vec3 GetRotation() const { return rotation; }
 
-		void SetPosition(glm::vec3 pos) { position = pos; };
-		void SetScale(glm::vec3 scale) { this->scale = scale; }
-		void SetRotation(glm::vec3 rot) { rotation = rot; }
+		void SetPosition(const glm::vec3& pos) { position = pos; };
+		void SetScale(const glm::vec3& scale) { this->scale = scale; }
+		void SetRotation(const glm::vec3& rot) { rotation = rot; }
 
 		Weak<Entity> GetEntity();
 		Weak<Component> GetComponent();
@@ -72,8 +72,8 @@ namespace GEngine {
 	protected:
 		inline virtual void OnCollision(Ref<Collider> collider) {};
 		inline virtual void OnCollisionEnd(Ref<Collider> collider) {};
-		inline virtual void OnUIMouseCollision(float x, float y) {};
-		inline virtual void OnUIMouseCollisionEnd(float x, float y) {};
+		inline virtual void OnUIMouseCollision(const float x,const float y) {};
+		inline virtual void OnUIMouseCollisionEnd(const float x,const float y) {};
 		EColliderShape m_shape;
 		EColliderType m_type;
 		EColliderLayer m_layer;

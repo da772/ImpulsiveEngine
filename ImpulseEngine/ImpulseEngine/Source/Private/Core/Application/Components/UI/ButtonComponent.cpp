@@ -19,7 +19,7 @@ namespace GEngine {
 
 	Ref<BatchRenderer> ButtonComponent::s_ShapeFactory = nullptr;
 
-	ButtonComponent::ButtonComponent(glm::vec3 pos, float rot, glm::vec2 scale, glm::vec4 color, float textureScale /*= 1*/) :
+	ButtonComponent::ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, const float textureScale /*= 1*/) :
 		m_colliderPosition(pos), m_colliderRotation(rot), m_colliderScale(scale), m_imagePosition(pos), m_imageRotation(rot), m_imageScale(scale), m_color(color), m_textureScale(textureScale)
 	{
 		if (b_debug)
@@ -59,24 +59,24 @@ namespace GEngine {
 			s_ShapeFactory->SetRotation(m_ids[0], rot);
 	}
 
-	void ButtonComponent::SetImagePosition(glm::vec2 pos)
+	void ButtonComponent::SetImagePosition(const glm::vec2& pos)
 	{
 		s_ShapeFactory->SetPosition(m_ids[0], pos);
 	}
 
-	void ButtonComponent::SetImageScale(glm::vec2 scale)
+	void ButtonComponent::SetImageScale(const glm::vec2& scale)
 	{
 		s_ShapeFactory->SetScale(m_ids[0], scale);
 	}
 
-	void ButtonComponent::SetColliderScale(glm::vec2 scale)
+	void ButtonComponent::SetColliderScale(const glm::vec2& scale)
 	{
 		if (b_debug && s_ShapeFactory)
 			s_ShapeFactory->SetScale(m_ids[1], scale);
 		m_collider->SetScale({ scale.x, scale.y, 1 });
 	}
 
-	void ButtonComponent::SetColliderPosition(glm::vec2 pos)
+	void ButtonComponent::SetColliderPosition(const glm::vec2& pos)
 	{
 		if (b_debug && s_ShapeFactory)
 			s_ShapeFactory->SetPosition(m_ids[1], pos);

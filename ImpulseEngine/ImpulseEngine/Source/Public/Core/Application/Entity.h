@@ -78,9 +78,9 @@ namespace GEngine {
         const Vector3 GetEntityPosition();
         const Vector3 GetEntityRotation();
         const Vector3 GetEntityScale();
-		void SetEntityPosition(Vector3 position);
-		void SetEntityScale(Vector3 scale);
-		void SetEntityRotation(Vector3 rot);
+		void SetEntityPosition(const Vector3& position);
+		void SetEntityScale(const Vector3& scale);
+		void SetEntityRotation(const Vector3& rot);
 
 		Ref<ScriptVector3> GetEntityPositionScript();
 		Ref<ScriptVector3> GetEntityRotationScript();

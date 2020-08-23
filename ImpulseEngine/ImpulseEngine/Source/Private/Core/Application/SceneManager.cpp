@@ -17,7 +17,7 @@ namespace GEngine {
 	bool SceneManager::b_paused = false;
 
 
-	void SceneManager::AddScene(std::string name, Ref<Scene> scene)
+	void SceneManager::AddScene(const std::string& name, Ref<Scene> scene)
 	{
 		SceneManager::scenes[name] = scene;
 	}
@@ -27,7 +27,7 @@ namespace GEngine {
 		return SceneManager::scene;
 	}
 
-	void SceneManager::SetCurrentScene(std::string name, bool unload)
+	void SceneManager::SetCurrentScene(const std::string& name, bool unload)
 	{
 		ThreadPool::AddMainThreadFunction([name, unload]() {
 			if (SceneManager::scene != nullptr) {

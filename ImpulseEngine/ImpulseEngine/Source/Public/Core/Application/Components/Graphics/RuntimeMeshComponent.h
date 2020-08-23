@@ -20,7 +20,7 @@ namespace GEngine {
 
 		virtual void OnBegin() override;
 
-		void SetMeshData(const std::vector<float>& vertices, const std::vector<u32>& indices, Ref<BufferLayout> layout, Ref<Material> material);
+		void SetMeshData(const std::vector<float>& vertices, const std::vector<u32>& indices, const Ref<BufferLayout>& layout, const Ref<Material>& material);
 		void CreateMesh();
 		void DestroyMesh();
 

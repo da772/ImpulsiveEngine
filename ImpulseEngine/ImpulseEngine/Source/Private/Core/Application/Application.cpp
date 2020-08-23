@@ -164,18 +164,18 @@ namespace GEngine {
         return  s_Instance->GetWindow()->GetWindowData().GetSafeRightUI();
 	}
 
-	void Application::QueueWindowApi(FWindowApi windowApi) {
+	void Application::QueueWindowApi(const FWindowApi& windowApi) {
         tempWindowApi = windowApi;
         b_NewWindowApi = true;
     }
     
-    void Application::QueueGraphicsApi(FGraphicsApi graphicsApi)
+    void Application::QueueGraphicsApi(const FGraphicsApi& graphicsApi)
     {
         tempGraphicsApi = graphicsApi;
         b_NewGraphicsApi = true;
     }
     
-    void Application::SetWindowApi(FWindowApi windowApi) {
+    void Application::SetWindowApi(const FWindowApi& windowApi) {
         Application::s_windowApi = windowApi;
         LayerReset();
         
@@ -191,7 +191,7 @@ namespace GEngine {
         LayerSetup();
     }
     
-    void Application::SetGraphicsApi(FGraphicsApi graphicsApi)
+    void Application::SetGraphicsApi(const FGraphicsApi& graphicsApi)
     {
         Application::s_graphicsApi = graphicsApi;
         GraphicsContext::SetGraphicsApi(graphicsApi);

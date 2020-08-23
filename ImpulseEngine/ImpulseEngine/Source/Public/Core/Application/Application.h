@@ -44,8 +44,8 @@ namespace GEngine {
 		inline static Application* GetApp() { return Application::s_Instance; };
 		inline Window* GetWindow() { return m_Window.get(); }
 
-		void QueueWindowApi(FWindowApi windowApi);
-		void QueueGraphicsApi(FGraphicsApi graphicsApi);
+		void QueueWindowApi(const FWindowApi& windowApi);
+		void QueueGraphicsApi(const FGraphicsApi& graphicsApi);
 		inline FWindowApi GetWindowApi() {return Application::s_windowApi;};
 		inline FGraphicsApi GetGraphicsApi() { return Application::s_graphicsApi; }
 
@@ -88,8 +88,8 @@ namespace GEngine {
 		inline bool IsRunning() { return m_Running; }
 		void EnableImGui(bool b);
 	protected:
-		void SetWindowApi(FWindowApi windowApi);
-		void SetGraphicsApi(FGraphicsApi graphicsApi);
+		void SetWindowApi(const FWindowApi& windowApi);
+		void SetGraphicsApi(const FGraphicsApi& graphicsApi);
 		Scope<Window> m_Window;
 		inline virtual void OnCleanDirtyApi() {};
 		inline virtual void OnUpdate(Timestep timeStep) {};

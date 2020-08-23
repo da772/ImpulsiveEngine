@@ -38,10 +38,10 @@ namespace GEngine {
 		Ref<ScriptVector4> GetColorBegin();
 		Ref<ScriptVector4> GetColorEnd();
 
-		void SetVelocity(Ref<ScriptVector2> vel);
-		void SetVelocityVariation(Ref<ScriptVector2> vel);
-		void SetColorBegin(Ref<ScriptVector4> col);
-		void SetColorEnd(Ref<ScriptVector4> col);
+		void SetVelocity(const Ref<ScriptVector2>& vel);
+		void SetVelocityVariation(const Ref<ScriptVector2>& vel);
+		void SetColorBegin(const Ref<ScriptVector4>& col);
+		void SetColorEnd(const Ref<ScriptVector4>& col);
 
 		inline float GetSizeBegin() { return SizeBegin; }
 		inline float GetSizeEnd() { return SizeEnd; }
@@ -59,12 +59,12 @@ namespace GEngine {
 
 	public:
 		ParticleSystem2DComponent(const ParticleProps& props);
-		ParticleSystem2DComponent(Ref<ParticleProps> props);
+		ParticleSystem2DComponent(const Ref<ParticleProps>& props);
 		~ParticleSystem2DComponent();
 
 
-		void Emit(glm::vec3 postition, int amt = 1);
-		void EmitScript(Ref<ScriptVector2> pos, int amt);
+		void Emit(const glm::vec3& postition, const int amt = 1);
+		void EmitScript(const Ref<ScriptVector2>& pos, const int amt);
 
 		virtual void UnloadGraphics() override;
 		virtual void ReloadGraphics() override;

@@ -11,7 +11,7 @@ namespace GEngine {
 	public:
 		inline SpriteAnimationComponent() { bUpdates = true; };
 		virtual ~SpriteAnimationComponent();
-		void SetFrameAnimation(uint8_t fps, uint8_t maxFrames, bool loop = true, std::function<void(int)> animateFrameFunction = nullptr);
+		void SetFrameAnimation(const uint8_t fps, const uint8_t maxFrames, bool loop = true, const std::function<void(int)> animateFrameFunction = nullptr);
 		void SetFrameAnimation_Script(uint8_t fps, uint8_t maxFrames, bool loop = true, Ref<ScriptObject> scriptFunction = nullptr);
 		void SetFrameAnimationFPS(uint8_t fps);
 		void RemoveFrameAnimation();
