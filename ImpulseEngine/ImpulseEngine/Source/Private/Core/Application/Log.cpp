@@ -13,7 +13,11 @@
 namespace GEngine {
 	std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
 	std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
+#ifndef GE_DIST
 	ImGuiAppLog* Log::s_ImGuiLog = new ImGuiAppLog();
+#else 
+	ImGuiAppLog* Log::s_ImGuiLog = nullptr;
+#endif
 	std::vector<spdlog::sink_ptr> Log::sinks;
 
 	void Log::Init()
