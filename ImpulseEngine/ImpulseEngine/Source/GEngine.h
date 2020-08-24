@@ -55,6 +55,10 @@
 
 #include "Public/Core/Controller/CameraController.h"
 
+#include "Public/Core/Collision/CollisionDetection.h"
+
+#include "Public/Core/Util/GEMath.h"
+
 #include "Public/Core/Ads/AdManager.h"
 
 

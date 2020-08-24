@@ -38,9 +38,10 @@ protected:
 	bool bFalling = false;
 	bool bJumping = false;
 	bool bWalking = false;
-	float walkAnimThreshold = .03f;
-	float maxWalkSpeed = 2.5f;
-	float walkAcceleration = 5.f;
+	const float walkAnimThreshold = .03f;
+	const float maxWalkSpeed = 2.5f;
+    const int walkDelay = 100;
+	const float walkAcceleration = 5.f;
 
 	void OnUpdate(Timestep timestep) override
 	{
@@ -88,119 +89,53 @@ protected:
 				  - if the touch is over and we never triggered the jumping state then we need to reset our touch variables
 		*/
 
-		if (Mobile_Input::GetTouchCount() == 1) {
-			for (std::pair<uint64_t, FTouchInfo> key : Mobile_Input::GetTouches()) {
-				/*
-					State 0:
-							- Check if we have already been processed
-							- if we haven't been processed then process
-				*/
-
-				if (!ground) {
-					touchId = 0;
-					bJumping = false;
-				}
-
-                if ( key.second.state == 0 && ground) {
-					if (touchId == 0) {
-						startxPos = key.second.x;
-						startyPos = key.second.y;
-						bJumping = false;
-						touchId = key.second.id;
-						GE_CORE_ASSERT(touchId, "invalid touch id");
-						touchTime = key.second.time / 1e6;
-						GE_CORE_ASSERT(touchTime != 0, "TIME IS ZERO");
-					}
-                } else if (key.second.state == 1 && touchId == key.second.id && ground) {
-					lastxpos = key.second.x;
-					lastypos = key.second.y;
-                } else if ( (key.second.state == 2 || key.second.state == 3) && touchId == key.second.id && ground) {
-                    if (bJumping) {
-						touchId = 0;
-						float yDistance = (key.second.y - startyPos+  Application::GetHeight()*.01f)/Application::GetHeight();
-						
-                        float xDistance = 2.f*-(lastxpos-(float)Application::GetWidth()/2.f)/(float)Application::GetWidth();
-						GE_CORE_DEBUG("Last Pos: {0}, Current Pos: {1}, Width: {2}, xDistance: {3}", lastxpos, key.second.x, Application::GetWidth(), xDistance);
-						if (yDistance < .001f) {
-							bJumping = false;
-							graphicsComp->Idle();
-						} else {
-							graphicsComp->JumpStart([this, timestep, xDistance, yDistance]() {
-								bJumping = false;
-								bodyComp->AddVelocity({ 10 * (abs(xDistance) > .2f ? (xDistance >= 0 ? 1.f : -1.f) *.2f : xDistance), 40.f * (yDistance > .2f ? .2f : yDistance) });
-							});
-						}
-					}
-					else {
-						touchId = 0;
-					}
-					if (bWalking) {
-						bWalking = false;
-						bodyComp->AddVelocity({ -bodyComp->GetVelocity().x, 0 });
-					}
+		if (Mobile_Input::GetTouchCount() <= 2 && Mobile_Input::GetTouchCount() > 0) {
+            std::unordered_map<uint64_t, FTouchInfo> m = Mobile_Input::GetTouches();
+            std::vector<FTouchInfo> touches;
+            if (m.size() == 2) {
+                bool hasEnd = false;
+                for (std::pair<uint64_t, FTouchInfo> key : m) {
+                    const FTouchInfo& touch = key.second;
+                    touches.push_back(touch);
+                    if (!CollisionDetection::CheckPointUI(touch.x, touch.y)) {
+                        if (touch.state == 2 ) {
+                            if (hasEnd) {
+                                hasEnd = false;
+                                break;
+                            }
+                            hasEnd = true;
+                            if (bWalking && ground) {
+                                   bodyComp->SetVelocityX(0.f);
+                                   bWalking = false;
+                               }
+                        }
+                    } else {
+                        hasEnd = false;
+                    }
                 }
+                if (hasEnd) {
+                    std::sort(touches.begin(), touches.end(), [] (const FTouchInfo& obj1, const FTouchInfo& obj2 ) {
+                        return obj1.state > obj2.state;
+                    });
+                    HandleMobileInput(touches, timestep);
+                } else {
+                    bJumping = false;
+                    if (bWalking && ground) {
+                        bodyComp->SetVelocityX(0.f);
+                    }
+                    bWalking = false;
+                    touchId = 0;
+                }
+            } else {
+                HandleMobileInput({m.begin()->second}, timestep);
+            }
+		
 
-				if (touchId != 0 && Time::GetEpochTimeMS() - (key.second.GetTime() / 1e6) > 150) {
-					lastxpos = key.second.x;
-					lastypos = key.second.y;
-					if (!bJumping && !bFalling && ground) {
-						float xPos = key.second.x;
-						float width = (float)Application::GetWidth();
-						
-						float xVel = bodyComp->GetVelocity().x;
-						GE_CORE_DEBUG("Velocity: {0}", xVel);
-						if (xPos >= width / 2.f) {
-							bWalking = true;
-							float nXVel = xVel + walkAcceleration * timestep;
-							if (nXVel <= maxWalkSpeed) {
-								bodyComp->AddVelocity({ walkAcceleration * timestep, 0 });
-							} else if ( (nXVel - maxWalkSpeed) >= 0.01f) {
-								bodyComp->SetVelocityX(maxWalkSpeed);
-							}
-						}
-						else {
-							bWalking = true;
-							float nXVel = xVel - walkAcceleration * timestep;
-							if (nXVel >= -maxWalkSpeed) {
-								bodyComp->AddVelocity({ -walkAcceleration * timestep, 0 });
-							}
-							else if ( (nXVel + maxWalkSpeed <= -0.01f) ) {
-								bodyComp->SetVelocityX(-maxWalkSpeed);
-							}
-							
-						}
-					
-					}
-					else {
-						if (!ground) {
-							bWalking = false;
-							bJumping = false;
-						}
-						else if (bJumping) {
-							int nDir = (key.second.x >= (float)Application::GetWidth() / 2.f) ? -1 : 1;
-							if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
-								graphicsComp->dir = nDir;
-								graphicsComp->animState = MovementAnim::None;
-								graphicsComp->Crouch();
-							}
-						}
-					}
-				}
-				else  if (touchId != 0 && key.second.y > startyPos + Application::GetHeight() * .01f) {
-						if (!bFalling && !bJumping && ground) {
-							bJumping = true;
-							lastxpos = key.second.x;
-							lastypos = key.second.y;
-							graphicsComp->JumpCrouch();
-						}
-				}
-			}
-
-		}
+        }
 
 		if (!ground) {
 			if (bFalling) {
-				float nDir = vel.x >= .001f ? 1.f : -1.f;
+				float nDir = vel.x > .01f ? 1 : vel.x < -.01f ?  -1 : graphicsComp->dir;
 				if (graphicsComp->dir != nDir) {
 					graphicsComp->dir = nDir;
 					graphicsComp->animState = MovementAnim::None;
@@ -213,7 +148,7 @@ protected:
 
 		if (!bJumping) {
 			if (vel.x > walkAnimThreshold || vel.x < -walkAnimThreshold) {
-				graphicsComp->dir = vel.x > .01f ? 1 : -1;
+                graphicsComp->dir = vel.x > .01f ? 1 : vel.x < -.01f ?  -1 : graphicsComp->dir;
 				if (ground) {
 					if (bFalling) {
 						bodyComp->SetVelocityX(0);
@@ -238,9 +173,124 @@ protected:
 				}
 			}
 		}
-
-
 	}
+    
+    
+    void HandleMobileInput(const std::vector<FTouchInfo>& m, Timestep timestep) {
+        const glm::vec2& vel = bodyComp->GetVelocity();
+        const bool ground = bodyComp->isGrounded();
+        for ( const FTouchInfo& touch : m) {
+                    /*
+                        State 0:
+                                - Check if we have already been processed
+                                - if we haven't been processed then process
+                    */
+
+                    if (!ground) {
+                        touchId = 0;
+                        bJumping = false;
+                    }
+
+                    if ( touch.state == 0 && ground) {
+                        if (touchId == 0) {
+                            startxPos = touch.x;
+                            startyPos = touch.y;
+                            bJumping = false;
+                            touchId = touch.id;
+                            GE_CORE_ASSERT(touchId, "invalid touch id");
+                            touchTime = touch.time / 1e6;
+                            GE_CORE_ASSERT(touchTime != 0, "TIME IS ZERO");
+                        }
+                    } else if (touch.state == 1 && touchId == touch.id && ground) {
+                        lastxpos = touch.x;
+                        lastypos = touch.y;
+                    } else if ( (touch.state == 2 || touch.state == 3) && ground) {
+                        if (bJumping && touchId == touch.id ) {
+                            touchId = 0;
+                            float yDistance = (touch.y - startyPos+  Application::GetHeight()*.01f)/Application::GetHeight();
+                            
+                            float xDistance = 2.f*-(lastxpos-(float)Application::GetWidth()/2.f)/(float)Application::GetWidth();
+                            GE_CORE_DEBUG("Last Pos: {0}, Current Pos: {1}, Width: {2}, xDistance: {3}", lastxpos, touch.x, Application::GetWidth(), xDistance);
+                            if (yDistance < .001f) {
+                                bJumping = false;
+                                graphicsComp->Idle();
+                            } else {
+                                graphicsComp->JumpStart([this, xDistance, yDistance]() {
+                                    bJumping = false;
+                                    bodyComp->AddVelocity({ 10 * (abs(xDistance) > .2f ? (xDistance >= 0 ? 1.f : -1.f) *.2f : xDistance), 40.f * (yDistance > .2f ? .2f : yDistance) });
+                                });
+                            }
+                        }
+                        if (bWalking) {
+                            bWalking = false;
+                            bodyComp->SetVelocityX(0);
+                        }
+                        touchId = 0;
+                    }
+
+            if (touch.state < 2 && Time::GetEpochTimeMS() - (touch.time / 1e6) > walkDelay) {
+                        lastxpos = touch.x;
+                        lastypos = touch.y;
+                        if (!bJumping && !bFalling && ground) {
+                            float xPos = touch.x;
+                            float width = (float)Application::GetWidth();
+                            
+                            float xVel = vel.x;
+                            GE_CORE_DEBUG("Velocity: {0}", xVel);
+                            float nXVel = xVel + walkAcceleration * timestep;
+                            if ((touchId == 0 || !bJumping) && xPos >= width / 2.f) {
+                                if (bWalking && GEMath::sign(nXVel) != GEMath::sign(vel.x)) {
+                                    bodyComp->SetVelocityX(0);
+                                }
+                                bWalking = true;
+                                if (nXVel <= maxWalkSpeed) {
+                                    bodyComp->AddVelocity({ walkAcceleration * timestep, 0 });
+                                } else if ( (nXVel - maxWalkSpeed) >= 0.01f) {
+                                    bodyComp->SetVelocityX(maxWalkSpeed);
+                                }
+                            }
+                            else if (touchId != 0 || !bJumping) {
+                                float nXVel = xVel - walkAcceleration * timestep;
+                                if (bWalking && GEMath::sign(nXVel) != GEMath::sign(vel.x)) {
+                                    bodyComp->SetVelocityX(0);
+                                }
+                                bWalking = true;
+                                
+                                if (nXVel >= -maxWalkSpeed) {
+                                    bodyComp->AddVelocity({ -walkAcceleration * timestep, 0 });
+                                }
+                                else if ( (nXVel + maxWalkSpeed <= -0.01f) ) {
+                                    bodyComp->SetVelocityX(-maxWalkSpeed);
+                                }
+                                
+                            }
+                        
+                        }
+                        else {
+                            if (!ground) {
+                                bWalking = false;
+                                bJumping = false;
+                            }
+                            else if (bJumping) {
+                                int nDir = (touch.x >= (float)Application::GetWidth() / 2.f) ? -1 : 1;
+                                if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
+                                    graphicsComp->dir = nDir;
+                                    graphicsComp->animState = MovementAnim::None;
+                                    graphicsComp->Crouch();
+                                }
+                            }
+                        }
+                    }
+                    else  if (touchId != 0 && touch.y > startyPos + Application::GetHeight() * .01f) {
+                            if (!bFalling && !bJumping && ground) {
+                                bJumping = true;
+                                lastxpos = touch.x;
+                                lastypos = touch.y;
+                                graphicsComp->JumpCrouch();
+                            }
+                    }
+                }
+    }
 
 	
 	Ref<CharacterGraphics> graphicsComp;

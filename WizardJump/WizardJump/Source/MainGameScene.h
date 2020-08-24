@@ -195,7 +195,7 @@ private:
 					}
 				}
                  */
-
+/*
 				if (GEngine::Mobile_Input::GetTouchCount() == 2) {
 					std::unordered_map<uint64_t, GEngine::FTouchInfo> touches = GEngine::Mobile_Input::GetTouches();
 					std::unordered_map<uint64_t, GEngine::FTouchInfo>::iterator it = ++touches.begin();
@@ -221,7 +221,7 @@ private:
 					m_lastTouchId = touches.begin()->first;
 					m_LastTouchPos = { touches.begin()->second.x, touches.begin()->second.y };
 				}
-
+*/
 
 		});
 		m_CameraController->SetOnEventFn([this](GEngine::Event& e) {

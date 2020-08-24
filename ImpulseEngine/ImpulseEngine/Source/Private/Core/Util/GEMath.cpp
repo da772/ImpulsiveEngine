@@ -9,4 +9,12 @@ namespace GEngine {
 		return (x - min1) / (max1 - min1) * (max2 - min2) + min2;
 	}
 
+    int GEMath::sign(float x) {
+        return x > 0 ? 1 : x == 0 ? 0 : -1;
+    }
+
+    int GEMath::sign(int x) {
+       return x > 0 ? 1 : x == 0 ? 0 : -1;
+   }
+
 }
