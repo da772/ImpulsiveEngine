@@ -2,23 +2,9 @@ workspace "sandbox"
 	architecture "x64"
 
 	android_version = 21
-	binType = "exe"
 
-	newoption {
-		trigger = "with-hot-reload",
-		description = "enables hot reloading"
-	}
-
-	if _OPTIONS['with-hot-reload'] then
-		startproject "crMain"
-		binType = "dll"
-		defines
-		{
-			GE_HOT_RELOAD
-		}
-	else
-		startproject "sandbox"
-	end
+	startproject "sandbox"
+	
 
 	configurations
 	{
@@ -39,8 +25,6 @@ workspace "sandbox"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-appName = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/%{wks.name}."..binType)
-appLocation = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/")
 
 include "ImpulseEngine"
 
@@ -206,6 +190,7 @@ project "sandbox"
 			"OpenGLES.framework",
 			"GLKit.framework",
 			"UIKit.framework",
+			"OpenAL.framework",
 			"GoogleMobileAds.framework",
 			"firebase.framework",
 			"firebase_analytics.framework",
@@ -253,6 +238,7 @@ project "sandbox"
 			"android",
 			"EGL",
 			"GLESv3",
+			"OpenSLES",
 			"firebase_app",
 			"firebase_analytics",
 			"firebase_admob"
@@ -384,6 +370,7 @@ project "sandbox"
 			"OpenGL.framework",
 			"IOKit.framework",
 			"CoreVideo.framework",
+			"OpenAL.framework",
 			"vulkan.1.1.130"
 
 		}
