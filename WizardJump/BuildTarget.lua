@@ -283,6 +283,7 @@ project "WizardJump"
 			androidLibDir = "x86"
 			postbuildcommands
 			{
+			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
@@ -297,6 +298,7 @@ project "WizardJump"
 			androidLibDir = "x86_64"
 			postbuildcommands
 			{
+			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"copy /y \"%{wks.location}x64\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}x64\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}x64\"",
@@ -312,6 +314,7 @@ project "WizardJump"
 			androidLibDir = "armeabi-v7a"
 			postbuildcommands
 			{
+			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"copy /y \"%{wks.location}ARM\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}ARM\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}ARM\"",
@@ -327,6 +330,7 @@ project "WizardJump"
 			androidLibDir = "arm64-v8a"
 			postbuildcommands
 			{
+			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"copy /y \"%{wks.location}ARM64\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}ARM64\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
 			"RMDIR /Q/S \"%{wks.location}ARM64\"",
