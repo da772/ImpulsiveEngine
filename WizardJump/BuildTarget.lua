@@ -208,6 +208,7 @@ project "WizardJump"
 			"OpenGLES.framework",
 			"GLKit.framework",
 			"UIKit.framework",
+			"OpenAL.framework",
 			"GoogleMobileAds.framework",
 			"firebase.framework",
 			"firebase_analytics.framework",
@@ -387,6 +388,7 @@ project "WizardJump"
 			"OpenGL.framework",
 			"IOKit.framework",
 			"CoreVideo.framework",
+			"OpenAL.framework",
 			"vulkan.1.1.130"
 
 		}
