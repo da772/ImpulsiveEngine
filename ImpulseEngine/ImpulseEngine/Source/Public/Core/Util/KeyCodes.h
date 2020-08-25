@@ -189,10 +189,10 @@
 #define GE_KEY_BACKSPACE          259
 #define GE_KEY_INSERT             260
 #define GE_KEY_DELETE             261
-#define GE_KEY_RIGHT              262
-#define GE_KEY_LEFT               263
-#define GE_KEY_DOWN               264
-#define GE_KEY_UP                 265
+#define GE_KEY_RIGHT              21
+#define GE_KEY_LEFT               22
+#define GE_KEY_DOWN               20
+#define GE_KEY_UP                 19
 #define GE_KEY_PAGE_UP            266
 #define GE_KEY_PAGE_DOWN          267
 #define GE_KEY_HOME               268

@@ -1,7 +1,7 @@
 
 newoption {
-	trigger = "disable-openal-build",
-	description = "stops building open al"
+	trigger = "build-openal",
+	description = "builds open al"
 }
 
 IncludeDir = {}
@@ -34,7 +34,7 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
 	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
-	if not _OPTIONS['disable-openal-build'] then
+	if _OPTIONS['build-openal'] then
 		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
 	end
 
@@ -118,7 +118,7 @@ end
 		"freetype-gl",
 		"box2d",
 	}
-	if not _OPTIONS['disable-openal-build'] then	
+	if _OPTIONS['build-openal'] then	
 	links
 	{
 		"OpenAL"	
@@ -167,6 +167,7 @@ end
 			"IOKit.framework",
 			"CoreVideo.framework",
 			"libvulkan.1.1.130",
+			"OpenAL.framework",
 			"Glad",
 			"GLFW"
 		}
@@ -224,7 +225,8 @@ end
 		{
 			"OpenGLES.framework",
 			"GLKit.framework",
-			"UIKit.framework"
+			"UIKit.framework",
+			"OpenAL.framework"
 		}
 
 		libdirs

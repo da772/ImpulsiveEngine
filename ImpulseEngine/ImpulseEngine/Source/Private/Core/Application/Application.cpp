@@ -34,13 +34,32 @@ namespace GEngine {
     FWindowApi Application::s_windowApi = FWindowApi::NONE;
     FGraphicsApi Application::s_graphicsApi = FGraphicsApi::NONE;
 
+	int checkForAlErrors()
+	{
+		ALenum error = alGetError();
+		if (error == AL_NO_ERROR) {
+			return 0;
+		}
+		else {
+			fprintf(stderr, "Error: %04X\n", error);
+			return 1;
+		}
+	}
+
+#define M_TAU (3.14159265359* 2.0)
+#define SAMPLE_RATE 44100
+#define SINE_FREQ 440
+    ALuint buffers[1];
+    ALuint sources[1];
+	ALCdevice* device;
+	ALCcontext* ctx;
+
     Application::Application() {
         GE_CORE_ASSERT(!Application::s_Instance, "Application Already Exists")
         Application::s_Instance = this;
 		//SetGraphicsApi(GetDefaultGraphicsApi());
 		//SetWindowApi(GetDefaultWindowApi());
-		ALCdevice* device;
-		ALCcontext* ctx;
+
 		device = alcOpenDevice(NULL);
 		ctx = alcCreateContext(device, NULL);
 
@@ -56,7 +75,63 @@ namespace GEngine {
         alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(int), &minor);
         GE_CORE_INFO("Initalized: {0} - v{1}.{2} ", alcGetString(device, ALC_DEVICE_SPECIFIER), major,minor );
 
+        int err;
+
+		
+		alGenBuffers(sizeof(buffers) / sizeof(*buffers), buffers);
+		if (checkForAlErrors()) {
+            GE_CORE_ERROR("OPENAL: Failed to generate buffers");
+			err = EXIT_FAILURE;
+            return;
+		}
+
+		
+		alGenSources(sizeof(sources) / sizeof(*sources), sources);
+		if (checkForAlErrors()) {
+            GE_CORE_ERROR("OPENAL: Unable to generate sources");
+			err = EXIT_FAILURE;
+            return;
+		}
+
+		int16_t sineData[SAMPLE_RATE / SINE_FREQ];
+		for (size_t i = 0; i < SAMPLE_RATE / SINE_FREQ; ++i) {
+			sineData[i] = sin(i * M_TAU * SINE_FREQ / SAMPLE_RATE) * INT16_MAX;
+		}
+
+		alBufferData(buffers[0], AL_FORMAT_MONO16, sineData, sizeof(sineData), SAMPLE_RATE);
+		if (checkForAlErrors()) {
+            GE_CORE_ERROR("OPENAL: Unable to set buffer data");
+			err = EXIT_FAILURE;
+            return;
+		}
+
+		alSourcei(sources[0], AL_BUFFER, buffers[0]);
+		if (checkForAlErrors()) {
+            GE_CORE_ERROR("OPENAL: Unable to attach buffer to source");
+			err = EXIT_FAILURE;
+            return;
+		}
+
+		alSourcei(sources[0], AL_LOOPING, AL_TRUE);
+
+		alSourcePlay(sources[0]);
+		if (checkForAlErrors()) {
+            GE_CORE_ERROR("OPENAL: Unable to play source");
+			fprintf(stderr, "Unable to play source\n");
+			err = EXIT_FAILURE;
+            return;
+		}
+
+
     }
+
+	Application::~Application()
+	{
+		alDeleteSources(sizeof(sources) / sizeof(*sources), sources);
+		alDeleteBuffers(sizeof(buffers) / sizeof(*buffers), buffers);
+		alcDestroyContext(ctx);
+		alcCloseDevice(device);
+	}
 
 	Application::Application(const char* title, int width, int height) : m_width (width) , m_height(height)
 	{
@@ -74,9 +149,7 @@ namespace GEngine {
 
 
 
-	Application::~Application()
-    {
-    }
+
     
     void Application::LayerSetup() {
         if (!m_ImGuiLayer && b_EnableImGui)
