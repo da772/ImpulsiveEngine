@@ -3,7 +3,6 @@ project "box2d"
     language "C++"
     staticruntime "on"
     cppdialect "C++17"
-    staticruntime "On"
 			
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")

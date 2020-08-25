@@ -89,9 +89,7 @@ public:
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		AddEntity(eFPS);
         
-       // GEngine::Application::UnloadGraphics();
-        // GEngine::Application::ReloadGraphics();
-
+		/*
 
 #ifdef GE_MOBILE_APP
 		GEngine::AdManager::SetUserId("This Is My User ID!");
@@ -115,7 +113,7 @@ public:
 		GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); GEngine::AdManager::ShowRewardAd(); },
 			[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
 #endif
-
+*/
 	}
 
 

@@ -23,6 +23,10 @@
 #include "Public/Core/Physics/Physics.h"
 #include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
 
+#define AL_LIBTYPE_STATIC
+#include <Al/al.h>
+#include <AL/alc.h>
+
 
 namespace GEngine {
     
@@ -35,6 +39,22 @@ namespace GEngine {
         Application::s_Instance = this;
 		//SetGraphicsApi(GetDefaultGraphicsApi());
 		//SetWindowApi(GetDefaultWindowApi());
+		ALCdevice* device;
+		ALCcontext* ctx;
+		device = alcOpenDevice(NULL);
+		ctx = alcCreateContext(device, NULL);
+
+		if (ctx == NULL || alcMakeContextCurrent(ctx) == ALC_FALSE)
+		{
+			if (ctx != NULL)
+				alcDestroyContext(ctx);
+			alcCloseDevice(device);
+			GE_CORE_ERROR("COULD NOT SET ALC DEVICE");
+		}
+        int major, minor;
+        alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(int), &major);
+        alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(int), &minor);
+        GE_CORE_INFO("Initalized: {0} - v{1}.{2} ", alcGetString(device, ALC_DEVICE_SPECIFIER), major,minor );
 
     }
 
@@ -47,7 +67,7 @@ namespace GEngine {
 		SetGraphicsApi(GetDefaultGraphicsApi());
 		SetWindowApi(GetDefaultWindowApi());
         
-        
+     
       
 	}
 

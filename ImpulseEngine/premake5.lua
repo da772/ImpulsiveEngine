@@ -1,4 +1,9 @@
 
+newoption {
+	trigger = "disable-openal-build",
+	description = "stops building open al"
+}
+
 IncludeDir = {}
 IncludeDir["GLFW"] = "ImpulseEngine/vendor/GLFW/include"
 IncludeDir["ENET"] = "ImpulseEngine/vendor/Enet/include"
@@ -16,7 +21,9 @@ IncludeDir["duktape"] = "ImpulseEngine/vendor/duktape"
 IncludeDir["entt"] = "ImpulseEngine/vendor/entt/include"
 IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
 IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
+IncludeDir["OpenAL"] = "ImpulseEngine/vendor/OpenAL/include"
 IncludeDir["cr"] = "ImpulseEngine/vendor/cr/include"
+
 
 group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/GLFW"
@@ -27,6 +34,9 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
 	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
+	if not _OPTIONS['disable-openal-build'] then
+		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
+	end
 
 group ""
 if _OPTIONS['with-hot-reload'] then
@@ -88,6 +98,7 @@ end
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.firebase}/include",
 		"%{IncludeDir.box2d}",
+		"%{IncludeDir.OpenAL}",
 		"%{IncludeDir.cr}",
 
 
@@ -105,8 +116,14 @@ end
 		"Enet",
 		"miniupnpc",
 		"freetype-gl",
-		"box2d"
+		"box2d",
 	}
+	if not _OPTIONS['disable-openal-build'] then	
+	links
+	{
+		"OpenAL"	
+	}
+	end
 
 	filter "system:macosx"
 		systemversion "latest"
@@ -260,6 +277,7 @@ end
 			"android",
 			"EGL",
 			"GLESv3",
+			"OpenSLES",
 			"firebase_app",
 			"firebase_analytics",
 			"firebase_admob"

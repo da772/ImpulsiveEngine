@@ -9,6 +9,8 @@ workspace "WizardJump"
 		description = "enables hot reloading"
 	}
 
+
+
 	if _OPTIONS['with-hot-reload'] then
 		startproject "crMain"
 		binType = "dll"
@@ -253,6 +255,7 @@ project "WizardJump"
 			"android",
 			"EGL",
 			"GLESv3",
+			"OpenSLES",
 			"firebase_app",
 			"firebase_analytics",
 			"firebase_admob"
