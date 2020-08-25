@@ -17,12 +17,10 @@ IncludeDir["httplib"] = "ImpulseEngine/vendor/httplib/include"
 IncludeDir["miniupnpc"] = "ImpulseEngine/vendor/miniupnpc/include"
 IncludeDir["freetypegl"] = "ImpulseEngine/vendor/freetype-gl/src"
 IncludeDir["freetype"] = "ImpulseEngine/vendor/freetype-2.10.0/include"
-IncludeDir["duktape"] = "ImpulseEngine/vendor/duktape"
 IncludeDir["entt"] = "ImpulseEngine/vendor/entt/include"
 IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
 IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
 IncludeDir["OpenAL"] = "ImpulseEngine/vendor/OpenAL/include"
-IncludeDir["cr"] = "ImpulseEngine/vendor/cr/include"
 
 
 group "Dependencies"
@@ -39,9 +37,6 @@ group "Dependencies"
 	end
 
 group ""
-if _OPTIONS['with-hot-reload'] then
-	include "ImpulseEngine/ImpulseEngine/vendor/cr"
-end
 
 project "ImpulseEngine"
 	location "ImpulseEngine"
@@ -50,12 +45,6 @@ project "ImpulseEngine"
 	cppdialect "C++17"
 	staticruntime "on"
 
-if _OPTIONS['with-hot-reload'] then
-	defines
-	{
-		"GE_HOT_RELOAD"
-	}
-end
 
 	targetdir ("%{prj.name}/Bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{prj.name}/Bin-Obj/" .. outputdir .. "/%{prj.name}")
@@ -94,12 +83,10 @@ end
 		"%{IncludeDir.httplib}",
 		"%{IncludeDir.miniupnpc}",
 		"%{IncludeDir.freetypegl}",
-		"%{IncludeDir.duktape}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.firebase}/include",
 		"%{IncludeDir.box2d}",
 		"%{IncludeDir.OpenAL}",
-		"%{IncludeDir.cr}",
 
 
 
@@ -136,8 +123,6 @@ end
 
 		files
 		{
-			"%{IncludeDir.duktape}/src/unix/**.cpp",
-			"%{IncludeDir.duktape}/src/unix/**.h"
 		}
 
 		defines
@@ -157,7 +142,6 @@ end
 
 		includedirs
 		{
-			"%{IncludeDir.duktape}/src/unix"
 		}
 
 		links 
@@ -198,8 +182,7 @@ end
 
 		files
 		{
-			"%{IncludeDir.duktape}/src/unix/**.cpp",
-			"%{IncludeDir.duktape}/src/unix/**.h"
+
 		}
 		defines
 		{
@@ -218,7 +201,6 @@ end
 		includedirs
 		{
 			"ImpulseEngine/vendor/iOS/CoreFoundation/include",
-			"%{IncludeDir.duktape}/src/unix",
 		}
 
 		links 
@@ -263,17 +245,6 @@ end
 		pchheader "Source/gepch.h"
 		pchsource "ImpulseEngine/Source/gepch.cpp"
 
-		files
-		{
-			"%{IncludeDir.duktape}/src/unix/**.cpp",
-			"%{IncludeDir.duktape}/src/unix/**.h"
-		}
-		
-		includedirs
-		{
-			"%{IncludeDir.duktape}/src/unix",
-
-		}
 		links 
 		{
 			"android",
@@ -370,14 +341,11 @@ end
 		
 		files
 		{
-			"%{IncludeDir.duktape}/src/win32/**.h",
-			"%{IncludeDir.duktape}/src/win32/**.cpp",
 		}
 		
 		
 		includedirs
 		{
-			"%{IncludeDir.duktape}/src/win32"
 		}
 
 		defines

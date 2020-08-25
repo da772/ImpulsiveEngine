@@ -346,7 +346,6 @@ namespace GEngine {
         Physics::Initalize();
         AdManager::Initialize();
         SceneManager::Begin();
-        //ScriptManager::Init(ScriptApiType::SCRIPT_DUKTAPE);
 	}
 
 	void Application::Shutdown()
@@ -354,7 +353,6 @@ namespace GEngine {
         m_Running = false;
         Physics::Shutdown();
         SceneManager::End();
-        //ScriptManager::Shutdown();
         AdManager::Shutdown();
         Application::s_Instance = nullptr;
 	}
@@ -364,7 +362,6 @@ namespace GEngine {
     }
 
     void Application::Resume() {
-        //Mobile_Input::ClearTouches();
         m_loaded = true;
         m_LastFrameTime = Time::GetEpochTimeMS();
     }

@@ -31,16 +31,6 @@ namespace GEngine {
 
 	std::queue<std::string> ScriptObject::s_ErrorStack;
 
-	DukTapeObject::DukTapeObject(const char* path, DukValue val) : ScriptObject(path), m_value(val)
-	{
-		m_nativeObj = (void*)&m_value;
-	}
-
-	DukTapeObject::~DukTapeObject()
-	{
-
-	}
-
 	bool ScriptInput::IsKeyPressed(std::string keyCode)
 	{
 		std::transform(keyCode.begin(), keyCode.end(), keyCode.begin(), ::toupper);

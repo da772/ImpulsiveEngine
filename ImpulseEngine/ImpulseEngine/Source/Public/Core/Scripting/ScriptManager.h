@@ -2,8 +2,7 @@
 namespace GEngine {
 
 	enum class ScriptApiType {
-		SCRIPT_NONE,
-		SCRIPT_DUKTAPE,
+		SCRIPT_NONE
 	};
 
 	class ScriptApi;

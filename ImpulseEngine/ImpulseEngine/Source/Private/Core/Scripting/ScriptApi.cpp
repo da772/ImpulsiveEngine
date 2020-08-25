@@ -2,7 +2,6 @@
 
 #include "Public/Core/Scripting/ScriptApi.h"
 #include "Public/COre/Scripting/ScriptManager.h"
-#include "Public/Core/Scripting/ScriptApi_DukTape.h"
 
 
 
@@ -14,13 +13,9 @@ namespace GEngine {
 		Ref<ScriptApi> api;
 		switch (ScriptManager::GetType()) {
 	
-		case ScriptApiType::SCRIPT_DUKTAPE: {
-			api = Ref<ScriptApi>(new ScriptApi_DukTape());
-			break;
-		}
 		default:
 		case ScriptApiType::SCRIPT_NONE:
-			GE_CORE_ASSERT(false, "INVALID SCRIPTING API");
+			GE_CORE_WARN("NO SCRIPT API SELECTED");
 			return nullptr;
 		}
 		ScriptApi::s_api = api;

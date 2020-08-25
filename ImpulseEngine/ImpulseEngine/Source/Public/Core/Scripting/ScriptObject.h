@@ -1,7 +1,6 @@
 #pragma once
 #include "Public/Core/Scripting/ScriptManager.h"
-#include <duktape.h>
-#include <dukglue/dukglue.h>
+
 
 namespace GEngine {
 
@@ -195,10 +194,6 @@ namespace GEngine {
 		template <class T>
 		bool isClass() {
 			switch (ScriptManager::GetType()) {
-			case ScriptApiType::SCRIPT_DUKTAPE: {
-				return (*(DukValue*)m_nativeObj).is_class<T>();
-				break;
-			}
 			default:
 				return false;
 			}
@@ -206,16 +201,6 @@ namespace GEngine {
 
 		inline void SetPropertyNative(const char* name, Ref<ScriptObject> val) {
 			switch (ScriptManager::GetType()) {
-			case ScriptApiType::SCRIPT_DUKTAPE: {
-				duk_context* c = (*(DukValue*)m_nativeObj).context();
-				(*(DukValue*)m_nativeObj).push();
-				(*(DukValue*)m_nativeObj).prop(name).push();
-				//dukglue_push((*(DukValue*)m_nativeObj).context(), (*(DukValue*)val->GetNativeObject()).copy_from_stack);
-				duk_put_prop_string(c, 0, name);
-				duk_remove(c, -1);
-				duk_remove(c, -1);
-				break;
-			}
 			default:
 				return;
 			}
@@ -224,16 +209,6 @@ namespace GEngine {
 		template <class T>
 		inline void SetProperty(const char* name, T val) {
 			switch (ScriptManager::GetType()) {
-			case ScriptApiType::SCRIPT_DUKTAPE: {
-				duk_context* c = (*(DukValue*)m_nativeObj).context();
-				(*(DukValue*)m_nativeObj).push();
-				(*(DukValue*)m_nativeObj).prop(name).push();
-				dukglue_push((*(DukValue*)m_nativeObj).context(), val);
-				duk_put_prop_string(c, 0, name);
-				duk_remove(c, -1);
-				duk_remove(c, -1);
-				break;
-			}
 			default:
 				return;
 			}
@@ -241,13 +216,6 @@ namespace GEngine {
 
 		inline void RemoveProperty(const char* name) {
 			switch (ScriptManager::GetType()) {
-			case ScriptApiType::SCRIPT_DUKTAPE: {
-				duk_context* c = (*(DukValue*)m_nativeObj).context();
-				(*(DukValue*)m_nativeObj).push();
-				duk_del_prop_string(c, -1, name);
-				duk_pop(c);
-				break;
-			}
 			default:
 				return;
 			}
@@ -255,14 +223,6 @@ namespace GEngine {
 
 		inline void RemoveFunction(const char* name) {
 			switch (ScriptManager::GetType()) {
-			case ScriptApiType::SCRIPT_DUKTAPE: {
-				duk_context* c = (*(DukValue*)m_nativeObj).context();
-				int prev_top = duk_get_top(c);
-				(*(DukValue*)m_nativeObj).prop(name).push();
-				duk_get_prop_string(c, -1, "meat");
-				GE_CORE_WARN("STACK: {0}", duk_safe_to_string(c,-1));
-				break;
-			}
 			default:
 				return;
 			}
@@ -271,11 +231,6 @@ namespace GEngine {
 		template <class T>
 		inline void InvalidateProperty(const char* name) {
 			switch (ScriptManager::GetType()) {
-			case ScriptApiType::SCRIPT_DUKTAPE: {
-				duk_context* c = (*(DukValue*)m_nativeObj).context();
-				dukglue_invalidate_object(c, GetProp(name)->asClass<T>());
-				break;
-			}
 			default:
 				return;
 			}
@@ -284,18 +239,6 @@ namespace GEngine {
 		template <class T>
 		T* asClass() {
 			switch (ScriptManager::GetType()) {
-			case ScriptApiType::SCRIPT_DUKTAPE: {
-				DukValue val = *(DukValue*)m_nativeObj;
-				bool isClass = val.is_class<T>();
-
-				if (isClass) {
-					return val.as_object_pointer<T>();
-				}
-				else {
-					GE_CORE_ERROR("Object is not class of that type");
-					return nullptr;
-				}
-			}
 			default:
 				return nullptr;
 			}
@@ -318,57 +261,12 @@ namespace GEngine {
 
 	};
 
-
-	class DukTapeObject : public ScriptObject {
-
-	public:
-		DukTapeObject(const char* path, DukValue val);
-		virtual ~DukTapeObject();
-
-		inline virtual std::map<std::string, Script::ObjectTypes> GetVars() { return std::map<std::string, Script::ObjectTypes>(); };
-		inline virtual Ref<ScriptObject> GetArgumentObject(const char* name) { return nullptr; };
-		inline virtual float asFloat() override  { return m_value.as_float(); } ;
-		virtual void* asPointer() { return m_value.as_pointer(); };
-		inline virtual int asInt() override { return m_value.as_int(); };
-		inline virtual bool asBool() override { return m_value.as_bool(); };
-		inline virtual std::string asString() override { return m_value.as_string(); };
-		inline virtual std::string asJSONString() override { return m_value.as_json_string(); };
-		inline virtual Ref<ScriptObject> GetProp(const char* name) { return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, m_value.prop(name)));  };
-		inline virtual Script::ObjectTypes GetType() override { return m_value.is_function() ? Script::ObjectTypes::FUNCTION : m_value.is_vector() ? Script::ObjectTypes::ARRAY : (Script::ObjectTypes)m_value.type(); }
-		inline virtual Script::ObjectTypes GetTypeRaw() override { return (Script::ObjectTypes)m_value.type(); }
-		inline virtual std::unordered_map<std::string, Ref<ScriptObject>> asMap() override {
-			std::map<std::string, DukValue> m = m_value.as_map();
-			std::unordered_map<std::string, Ref<ScriptObject>> map;
-			for (std::pair<std::string, DukValue> pair : m) {
-				map[pair.first] = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, pair.second));
-			}
-			return map;
-		};
-		
-
-	protected:
-		DukValue m_value;
-
-
-	};
-
 	template <typename... ArgTs>
 	inline Ref<ScriptObject>
 		GEngine::ScriptObject::CallSelf(ArgTs... args)
 	{
 
 		switch (ScriptManager::GetType()) {
-		case ScriptApiType::SCRIPT_DUKTAPE: {
-			DukValue val = *(DukValue*)m_nativeObj;
-			try {
-				DukValue ret = dukglue_pcall<DukValue>(val.context(), val, std::forward<ArgTs>(args)...);
-				return Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, ret));
-			}
-			catch (std::exception& e) {
-				ScriptObject::AddError(e.what());
-				return nullptr;
-			}
-		}
 		default:
 			return NULL;
 		}
@@ -380,19 +278,6 @@ namespace GEngine {
 		GEngine::ScriptObject::CallMethod(const char* method_name, ArgTs... args)
 	{
 		switch (ScriptManager::GetType()) {
-		case ScriptApiType::SCRIPT_DUKTAPE: {
-			try {
-				DukValue val = *(DukValue*)m_nativeObj;
-				DukValue ret = dukglue_pcall_method<DukValue>(val.context(), val, method_name, std::forward<ArgTs>(args)...);
-				Ref<ScriptObject> o = Ref<ScriptObject>((ScriptObject*)new DukTapeObject(m_path, ret));
-				return o;
-			}
-			catch (std::exception& e) {
-				ScriptObject::AddError(e.what());
-				return nullptr;
-			}
-			break;
-		}
 		default:
 			return NULL;
 		}

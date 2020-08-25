@@ -2,25 +2,9 @@ workspace "WizardJump"
 	architecture "x64"
 
 	android_version = 21
-	binType = "exe"
 
-	newoption {
-		trigger = "with-hot-reload",
-		description = "enables hot reloading"
-	}
-
-
-
-	if _OPTIONS['with-hot-reload'] then
-		startproject "crMain"
-		binType = "dll"
-		defines
-		{
-			GE_HOT_RELOAD
-		}
-	else
-		startproject "WizardJump"
-	end
+	startproject "WizardJump"
+	
 
 	configurations
 	{
@@ -41,8 +25,6 @@ workspace "WizardJump"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-appName = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/%{wks.name}."..binType)
-appLocation = path.getabsolute("%{wks.name}/Bin/" .. outputdir .. "/%{wks.name}/")
 
 include "ImpulseEngine"
 
