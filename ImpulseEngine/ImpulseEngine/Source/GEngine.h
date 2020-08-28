@@ -61,7 +61,8 @@
 
 #include "Public/Core/Ads/AdManager.h"
 
-
+#include "Public/Core/Audio/AudioManager.h"
+#include "Public/Core/Audio/AudioSource.h"
 
 #endif
 

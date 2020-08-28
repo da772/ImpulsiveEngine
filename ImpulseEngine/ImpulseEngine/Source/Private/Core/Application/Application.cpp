@@ -23,22 +23,29 @@
 #include "Public/Core/Physics/Physics.h"
 #include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
 
+#include "Public/Core/Audio/AudioManager.h"
+
+/*DEBUG*/
+
 
 
 namespace GEngine {
-
+    
+    Application* Application::s_Instance = nullptr;
+    FWindowApi Application::s_windowApi = FWindowApi::NONE;
+    FGraphicsApi Application::s_graphicsApi = FGraphicsApi::NONE;
 
 
     Application::Application() {
         GE_CORE_ASSERT(!Application::s_Instance, "Application Already Exists")
         Application::s_Instance = this;
 		//SetGraphicsApi(GetDefaultGraphicsApi());
-		//SetWindowApi(GetDefaultWindowApi());
+		//SetWindowApi(GetDefaultWindowApi());        
     }
 
 	Application::~Application()
 	{
-        
+		
 	}
 
 	Application::Application(const char* title, int width, int height) : m_width (width) , m_height(height)
@@ -50,8 +57,6 @@ namespace GEngine {
 		SetGraphicsApi(GetDefaultGraphicsApi());
 		SetWindowApi(GetDefaultWindowApi());
         
-     
-      
 	}
 
 
@@ -251,6 +256,7 @@ namespace GEngine {
     
 	void Application::Setup()
 	{
+        AudioManager::Initalize();
         Physics::Initalize();
         AdManager::Initialize();
         SceneManager::Begin();
@@ -262,6 +268,7 @@ namespace GEngine {
         Physics::Shutdown();
         SceneManager::End();
         AdManager::Shutdown();
+        AudioManager::Shutdown();
         Application::s_Instance = nullptr;
 	}
 
@@ -342,6 +349,10 @@ namespace GEngine {
             {
                 Physics::Update(timestep);
                 CollisionDetection::CheckCollision();
+            }
+
+            {
+                AudioManager::Update();
             }
 			
 			
