@@ -59,7 +59,15 @@ public:
 					playing = true;
 				}
 			}
-
+			if (_e.GetKeyCode() == GE_KEY_L) {
+				source->Destroy();
+				source = nullptr;
+			}
+			if (_e.GetKeyCode() == GE_KEY_R) {
+				source->Pause();
+				source->Seek(0);
+				source->Play();
+			}
 		}
 
 	}

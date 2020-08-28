@@ -88,9 +88,8 @@ protected:
 				2 - the touch is over
 				  - if the touch is over and we never triggered the jumping state then we need to reset our touch variables
 		*/
-
+        std::unordered_map<uint64_t, FTouchInfo> m = Mobile_Input::GetTouches();
 		if (Mobile_Input::GetTouchCount() <= 2 && Mobile_Input::GetTouchCount() > 0) {
-            std::unordered_map<uint64_t, FTouchInfo> m = Mobile_Input::GetTouches();
             std::vector<FTouchInfo> touches;
             if (m.size() == 2) {
                 bool hasEnd = false;

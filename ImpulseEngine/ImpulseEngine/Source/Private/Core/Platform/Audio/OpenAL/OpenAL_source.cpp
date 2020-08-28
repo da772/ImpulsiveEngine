@@ -1,9 +1,11 @@
 #include "gepch.h"
 
 #include "Public/Core/Platform/Audio/OpenAL/OpenAL_source.h"
+#include "Public/Core/Audio/AudioManager.h"
 #define AL_LIBTYPE_STATIC
 #include <Al/al.h>
 #include <AL/alc.h>
+
 
 namespace GEngine {
 
@@ -36,7 +38,7 @@ namespace GEngine {
 
 	void OpenAL_source::Destroy()
 	{
-
+		AudioManager::RemoveSource(self.lock());
 	}
 
 	void OpenAL_source::SetVolume(float f)
@@ -51,7 +53,7 @@ namespace GEngine {
 
 	void OpenAL_source::Seek(float time)
 	{
-		
+		m_audioData->sizeConsumed = 0;
 	}
 
 }
