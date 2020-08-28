@@ -91,7 +91,9 @@ namespace GEngine {
 
 
 
-	void OpenAL_Context::UpdateStream(AudioStreamingData& audioData) {
+	void OpenAL_Context::UpdateStream(Ref<AudioSource> audioSource) {
+		AudioStreamingData& audioData = *audioSource->GetData();
+
 		ALint buffersProcessed = 0;
 		alCall(alGetSourcei, audioData.source, AL_BUFFERS_PROCESSED, &buffersProcessed);
 		if (buffersProcessed <= 0)
@@ -114,38 +116,39 @@ namespace GEngine {
 				std::int32_t result = ov_read(&oggFile, &data[sizeRead], AUDIO_BUFFER_SIZE - sizeRead, 0, 2, 1, &audioData.fileSection);
 				if (result == OV_HOLE)
 				{
-					std::cerr << "ERROR: OV_HOLE found in update of buffer " << std::endl;
+					GE_CORE_ERROR("ERROR: OV_HOLE found in update of buffer ");
 					break;
 				}
 				else if (result == OV_EBADLINK)
 				{
-					std::cerr << "ERROR: OV_EBADLINK found in update of buffer " << std::endl;
+					GE_CORE_ERROR("ERROR: OV_EBADLINK found in update of buffer ");
 					break;
 				}
 				else if (result == OV_EINVAL)
 				{
-					std::cerr << "ERROR: OV_EINVAL found in update of buffer " << std::endl;
+					GE_CORE_ERROR("ERROR: OV_EINVAL found in update of buffer ");
 					break;
 				}
 				else if (result == 0)
 				{
+					if (!audioSource->IsLooping()) { break; }
 					std::int32_t seekResult = ov_raw_seek(&oggFile, 0);
 					if (seekResult == OV_ENOSEEK)
-						std::cerr << "ERROR: OV_ENOSEEK found when trying to loop" << std::endl;
+						GE_CORE_ERROR("ERROR: OV_ENOSEEK found when trying to loop");
 					else if (seekResult == OV_EINVAL)
-						std::cerr << "ERROR: OV_EINVAL found when trying to loop" << std::endl;
+						GE_CORE_ERROR("ERROR: OV_EINVAL found when trying to loop");
 					else if (seekResult == OV_EREAD)
-						std::cerr << "ERROR: OV_EREAD found when trying to loop" << std::endl;
+						GE_CORE_ERROR("ERROR: OV_EREAD found when trying to loop");
 					else if (seekResult == OV_EFAULT)
-						std::cerr << "ERROR: OV_EFAULT found when trying to loop" << std::endl;
+						GE_CORE_ERROR("ERROR: OV_EFAULT found when trying to loop");
 					else if (seekResult == OV_EOF)
-						std::cerr << "ERROR: OV_EOF found when trying to loop" << std::endl;
+						GE_CORE_ERROR("ERROR: OV_EOF found when trying to loop");
 					else if (seekResult == OV_EBADLINK)
-						std::cerr << "ERROR: OV_EBADLINK found when trying to loop" << std::endl;
+						GE_CORE_ERROR("ERROR: OV_EBADLINK found when trying to loop");
 
 					if (seekResult != 0)
 					{
-						std::cerr << "ERROR: Unknown error in ov_raw_seek" << std::endl;
+						GE_CORE_ERROR("ERROR: Unknown error in ov_raw_seek");
 						return;
 					}
 				}
@@ -159,17 +162,18 @@ namespace GEngine {
 				alCall(alSourceQueueBuffers, audioData.source, 1, &buffer);
 			}
 
-			if (dataSizeToBuffer < AUDIO_BUFFER_SIZE)
-			{
-				std::cout << "Data missing" << std::endl;
-			}
+			
 
 			ALint state;
 			alCall(alGetSourcei, audioData.source, AL_SOURCE_STATE, &state);
-			if (state != AL_PLAYING)
+			if (state == AL_PLAYING)
 			{
-				alCall(alSourceStop, audioData.source);
-				alCall(alSourcePlay, audioData.source);
+				if (dataSizeToBuffer < AUDIO_BUFFER_SIZE)
+				{
+					GE_CORE_ERROR("Data missing");
+				}
+				//alCall(alSourceStop, audioData.source);
+				//alCall(alSourcePlay, audioData.source);
 			}
 
 			delete[] data;
@@ -180,7 +184,7 @@ namespace GEngine {
 	{
 		for (Ref<AudioSource> s : m_sources) {
 			if (s->IsPlaying()) {
-				UpdateStream(*s->GetData());
+				UpdateStream(s);
 			}
 			
 		}

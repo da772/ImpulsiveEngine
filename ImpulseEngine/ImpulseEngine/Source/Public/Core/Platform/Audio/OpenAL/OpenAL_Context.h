@@ -20,7 +20,7 @@ namespace GEngine {
 		void* device;
 		void* ctx;
 
-		void UpdateStream(AudioStreamingData& audioData);
+		void UpdateStream(Ref<AudioSource> audioSource);
 
 
 
