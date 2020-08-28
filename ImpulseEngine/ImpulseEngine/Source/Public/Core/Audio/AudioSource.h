@@ -2,7 +2,7 @@
 
 namespace GEngine {
 #define AUDIO_BUFFERS_NUM 4
-#define AUDIO_BUFFER_SIZE 65536
+#define AUDIO_BUFFER_SIZE 8192//65536
 
 	class FileData;
 
@@ -50,6 +50,8 @@ namespace GEngine {
 		void SetSelf(Weak<AudioSource> s) { self = s; }
 
 		inline bool IsPlaying() { return b_isPlaying; }
+
+		inline virtual void __stopPlay() { b_isPlaying = false; };
 
 		AudioStreamingData* GetData() { return m_audioData; }
 

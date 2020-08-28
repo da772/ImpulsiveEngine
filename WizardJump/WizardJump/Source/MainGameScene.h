@@ -80,8 +80,8 @@ public:
 
 		/* DEBUG */
 
-		source = GEngine::AudioManager::PlayOgg("Content/Audio/test.ogg");
-		//source->Play();
+		source = GEngine::AudioManager::PlayOgg("Content/Audio/countdown.ogg");
+		source->Play();
 
 
 
