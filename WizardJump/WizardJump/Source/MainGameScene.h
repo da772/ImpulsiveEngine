@@ -42,17 +42,44 @@ public:
 
 	}
 	
-	
+	bool playing = false;
 	
 	inline virtual void OnEvent(GEngine::Event& e) override {
 		m_CameraController->OnEvent(e);
 
+		if (e.GetEventType() == EventType::KeyReleased) {
+			GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
+			if (_e.GetKeyCode() == GE_KEY_P) {
+				if (playing) {
+					source->Pause();
+					playing = false;
+				}
+				else {
+					source->Play();
+					playing = true;
+				}
+			}
+
+		}
+
 	}
 
 	Ref<Entity> e;
+	GEngine::Ref<AudioSource> source;
 
 	inline void OnBegin() override
 	{
+
+		/* DEBUG */
+
+		source = GEngine::AudioManager::PlayOgg("Content/Audio/test.ogg");
+		//source->Play();
+
+
+
+		/* DEBUG*/
+
+
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());

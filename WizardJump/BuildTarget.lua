@@ -181,7 +181,7 @@ project "WizardJump"
 		{
 			"%{prj.location}/%{prj.name}/Source",
 			"%{prj.location}/%{prj.name}/Source/iOS",
-			"ImpulseEngine/%{IncludeDir.duktape}/src/unix/",
+	
 			"ImpulseEngine/%{IncludeDir.firebase}/include"
 		}
 
@@ -249,13 +249,11 @@ project "WizardJump"
 			"%{prj.location}/%{prj.name}/Source/Android/**.h",
 			"%{prj.location}/%{prj.name}/Source/Android/**.c",
 			"%{prj.location}/%{prj.name}/Source/Android/**.cpp",
-			"ImpulseEngine/%{IncludeDir.duktape}/src/unix/"
 		}
 
 		includedirs 
 		{
 			"%{prj.location}/%{prj.name}/Source",
-			"ImpulseEngine/%{IncludeDir.duktape}/src/unix"
 		}
 		androidLibDir = ""
 
@@ -360,7 +358,7 @@ project "WizardJump"
 
 		includedirs
 		{
-			"ImpulseEngine/%{IncludeDir.duktape}/src/unix/"
+	
 		}
 		
 		xcodebuildsettings
