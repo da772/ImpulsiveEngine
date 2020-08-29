@@ -3,6 +3,7 @@
 void BackgroundEntity::OnBegin()
 {
 	m_backgroundSprite = CreateGameObject<SpriteComponent>();
+	AddComponent(CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f));
 	AddComponent(m_backgroundSprite);
 	m_backgroundSprite->CreateQuad({ 0,0,-1 }, 0, { 1000,1000,1 }, { .25,.25,.25,1 }, Texture2D::Create("Content/Textures/Checkerboard.png", TEXTUREFLAGS_Wrap_Repeat), 1000);
 

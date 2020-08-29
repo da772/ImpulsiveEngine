@@ -42,7 +42,9 @@ public:
 
 	}
 	
-	bool playing = false;
+	Ref<Entity> e;
+	GEngine::Ref<AudioSource> source;
+
 	
 	inline virtual void OnEvent(GEngine::Event& e) override {
 		m_CameraController->OnEvent(e);
@@ -50,40 +52,42 @@ public:
 		if (e.GetEventType() == EventType::KeyReleased) {
 			GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
 			if (_e.GetKeyCode() == GE_KEY_P) {
-				if (playing) {
+				if (source->IsPlaying()) {
 					source->Pause();
-					playing = false;
 				}
 				else {
 					source->Play();
-					playing = true;
 				}
-			}
-			if (_e.GetKeyCode() == GE_KEY_L) {
-				source->Destroy();
-				source = nullptr;
 			}
 			if (_e.GetKeyCode() == GE_KEY_R) {
 				source->Pause();
 				source->Seek(0);
 				source->Play();
 			}
+			if (_e.GetKeyCode() == GE_KEY_L) {
+				source->SetLoop(!source->IsLooping());
+			}
 		}
 
 	}
 
-	Ref<Entity> e;
-	GEngine::Ref<AudioSource> source;
+
 
 	inline void OnBegin() override
 	{
 
 		/* DEBUG */
+		/*
+		auto a = GEngine::AudioManager::Load_OGG("Content/Audio/countdown2.ogg");
+		
+		//source->Play();
 
-		source = GEngine::AudioManager::PlayOgg("Content/Audio/countdown.ogg");
+		source = GEngine::AudioManager::Load_OGG("Content/Audio/countdown.ogg");
 		source->Play();
+		//a->SetLoop(true);
+		//a->Play();
 
-
+		*/
 
 		/* DEBUG*/
 
@@ -104,6 +108,9 @@ public:
 		e = GEngine::CreateGameObject<CharacterEntity>();
 		AddEntity(e);
 
+		
+		
+
 		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -20,0), glm::vec2(20,20 ), 90.f);
 		AddEntity(wall);
 		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(20, 0), glm::vec2(20, 20), 90.f);
@@ -112,14 +119,19 @@ public:
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 2.f), glm::vec2(2.f, 1.f)) );
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(8.f, 4.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 6.f), glm::vec2(2.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 8.f), glm::vec2(2.f, 1.f)));
+		auto topE = GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 2.5f), glm::vec2(2.f, 1.f));
+		topE->AddComponent(CreateGameObject<AudioComponent>("Content/Audio/countdown2.ogg", true, true, false));
+		AddEntity(topE);
 
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.f, 10.f), glm::vec2(2.f, 1.f)));
+		
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-6.f, 8.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-9.5f, 6.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-8.f, 4.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-6.f, 2.f), glm::vec2(2.f, 1.f)));
 
+
+		
 
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		AddEntity(eFPS);

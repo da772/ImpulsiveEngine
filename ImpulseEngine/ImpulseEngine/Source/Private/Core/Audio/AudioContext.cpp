@@ -1,6 +1,7 @@
 #include "gepch.h"
 
 #include "Public/Core/Audio/AudioContext.h"
+#include "Public/Core/Audio/AudioSource.h"
 
 #ifdef GE_AUDIO_OPENAL
 
@@ -17,6 +18,20 @@ namespace GEngine {
 #endif
 
 		return nullptr;
+	}
+
+	void AudioContext::Pause()
+	{
+		for (Ref<AudioSource> s : m_sources) {
+			s->Pause();
+		}
+	}
+
+	void AudioContext::Resume()
+	{
+		for (Ref<AudioSource> s : m_sources) {
+			s->Play();
+		}
 	}
 
 }

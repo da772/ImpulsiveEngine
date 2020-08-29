@@ -2,7 +2,7 @@
 
 namespace GEngine {
 #define AUDIO_BUFFERS_NUM 4
-#define AUDIO_BUFFER_SIZE 8192//65536
+#define AUDIO_BUFFER_SIZE 65536
 
 	class FileData;
 
@@ -30,7 +30,7 @@ namespace GEngine {
 
 	public:
 
-		inline AudioSource(AudioStreamingData* data) { m_audioData = data; };
+		inline AudioSource() { };
 		inline virtual ~AudioSource() {};
 
 		virtual void Play() = 0;
@@ -47,21 +47,31 @@ namespace GEngine {
 		inline virtual float GetPitch() { return m_pitch; }
 		inline virtual bool IsLooping() { return b_loop; }
 
+		inline virtual void MaxDistance(const float f) = 0;
+
+		inline virtual void SetPosition(const glm::vec3& pos) { m_position = pos; }
+
 		void SetSelf(Weak<AudioSource> s) { self = s; }
 
 		inline bool IsPlaying() { return b_isPlaying; }
 
 		inline virtual void __stopPlay() { b_isPlaying = false; };
 
-		AudioStreamingData* GetData() { return m_audioData; }
+		AudioStreamingData& GetData() { return m_audioData; }
+
+		inline virtual bool GetStatic() { return b_isStatic; }
+
+		virtual void SetStatic(bool b) = 0;
 
 	protected:
 		float m_gain = 1.f;
 		float m_pitch = 1.f;
 		bool b_loop = false;
 		bool b_isPlaying = false;
-		AudioStreamingData* m_audioData;
+		bool b_isStatic = false;
+		AudioStreamingData m_audioData;
 		Weak<AudioSource> self;
+		glm::vec3 m_position;
 
 
 

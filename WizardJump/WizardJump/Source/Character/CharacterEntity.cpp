@@ -7,10 +7,14 @@
 	{
 		m_characterComponent = CreateGameObject<CharacterController>();
 		m_spriteComponent = CreateGameObject<CharacterGraphics>();
+		m_audioComponent = CreateGameObject<AudioListenerComponent>();
 
+
+		
 
         AddComponent(m_spriteComponent);
 		AddComponent(m_characterComponent);
+		AddComponent(m_audioComponent);
 	}
 
 	void CharacterEntity::OnEnd()
