@@ -23,6 +23,8 @@
 #include "Public/Core/Application/Components/QuadColliderComponent.h"
 #include "Public/Core/Application/Components/UI/ButtonComponent.h"
 #include "Public/Core/Application/Components/NativeScriptComponent.h"
+#include "Public/Core/Application/Components/Audio/AudioComponent.h"
+#include "Public/Core/Application/Components/Audio/AudioListenerComponent.h"
 
 
 #include "Public/Core/Events/ApplicationEvent.h"

@@ -2,6 +2,7 @@
 #include "Public/Core/Platform/Audio/OpenAL/OpenAL_Context.h"
 #include "Public/Core/Platform/Audio/OpenAL/OpenAL_source.h"
 #include "Public/Core/Audio/AudioSource.h"
+#include "Public/Core/Util/ThreadPool.h"
 
 #define AL_LIBTYPE_STATIC
 #include <Al/al.h>
@@ -12,15 +13,9 @@
 
 
 
-#define M_TAU (3.14159265359* 2.0)
-#define SAMPLE_RATE 44100
-#define SINE_FREQ 440
-
-
-
 namespace GEngine {
 
-	OggVorbis_File oggFile;
+	
 
 	void check_al_errors(const std::string& filename, const std::uint_fast32_t line);
 
@@ -67,22 +62,23 @@ namespace GEngine {
 			alcCloseDevice((ALCdevice*)device);
 			GE_CORE_ERROR("COULD NOT SET ALC DEVICE");
 		}
+		alCall(alDistanceModel, AL_INVERSE_DISTANCE_CLAMPED);
 		int major, minor;
 		alcGetIntegerv((ALCdevice*)device, ALC_MAJOR_VERSION, sizeof(int), &major);
 		alcGetIntegerv((ALCdevice*)device, ALC_MINOR_VERSION, sizeof(int), &minor);
 		GE_CORE_INFO("Initalized: {0} - v{1}.{2} ", alcGetString((ALCdevice*)device, ALC_DEVICE_SPECIFIER), major, minor);
 
-		/* DEBUG */
-
-		
+		alGetListener3f(AL_POSITION, &m_listenerPos.x, &m_listenerPos.y, &m_listenerPos.z);
+		alGetListenerf(AL_PITCH, &m_listenerPitch);
+		alGetListenerf(AL_GAIN, &m_listenerVolume);
 
 	}
 
 	OpenAL_Context::~OpenAL_Context()
 	{
 		for (Ref<AudioSource> s : m_sources) {
-			alDeleteSources(1, &s->GetData()->source);
-			alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData()->buffers[0]);
+			alDeleteSources(1, &s->GetData().source);
+			alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
 		}
 
 		alcDestroyContext((ALCcontext*)ctx);
@@ -92,7 +88,9 @@ namespace GEngine {
 
 
 	void OpenAL_Context::UpdateStream(Ref<AudioSource> audioSource) {
-		AudioStreamingData& audioData = *audioSource->GetData();
+		
+		AudioStreamingData& audioData = audioSource->GetData();
+		OggVorbis_File* oggFile = &dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
 
 		ALint buffersProcessed = 0;
 		alCall(alGetSourcei, audioData.source, AL_BUFFERS_PROCESSED, &buffersProcessed);
@@ -113,7 +111,7 @@ namespace GEngine {
 
 			while (sizeRead < AUDIO_BUFFER_SIZE)
 			{
-				std::int32_t result = ov_read(&oggFile, &data[sizeRead], AUDIO_BUFFER_SIZE - sizeRead, 0, 2, 1, &audioData.fileSection);
+				std::int32_t result = ov_read(oggFile, &data[sizeRead], AUDIO_BUFFER_SIZE - sizeRead, 0, 2, 1, &audioData.fileSection);
 				if (result == OV_HOLE)
 				{
 					GE_CORE_ERROR("ERROR: OV_HOLE found in update of buffer ");
@@ -132,7 +130,7 @@ namespace GEngine {
 				else if (result == 0)
 				{
 					if (!audioSource->IsLooping()) { break; }
-					std::int32_t seekResult = ov_raw_seek(&oggFile, 0);
+					std::int32_t seekResult = ov_raw_seek(oggFile, 0);
 					if (seekResult == OV_ENOSEEK)
 						GE_CORE_ERROR("ERROR: OV_ENOSEEK found when trying to loop");
 					else if (seekResult == OV_EINVAL)
@@ -149,6 +147,7 @@ namespace GEngine {
 					if (seekResult != 0)
 					{
 						GE_CORE_ERROR("ERROR: Unknown error in ov_raw_seek");
+						delete[] data;
 						return;
 					}
 				}
@@ -170,10 +169,16 @@ namespace GEngine {
 			{
 				if (dataSizeToBuffer < AUDIO_BUFFER_SIZE)
 				{
-					GE_CORE_ERROR("Data missing");
 				}
-				//alCall(alSourceStop, audioData.source);
+				
 				//alCall(alSourcePlay, audioData.source);
+			}
+			else {
+				GE_CORE_DEBUG("AUDIO STOPPED");
+				ov_raw_seek(oggFile, 0);
+				ResetBuffers(dynamic_pointer_cast<OpenAL_source>(audioSource));
+				audioSource->Pause();
+				
 			}
 
 			delete[] data;
@@ -194,18 +199,105 @@ namespace GEngine {
 	void OpenAL_Context::Destroy(Ref<AudioSource> s)
 	{
 		m_sources.erase(s);
-		alDeleteSources(1, &s->GetData()->source);
-		alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData()->buffers[0]);
+		alDeleteSources(1, &s->GetData().source);
+		alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
 	}
 
 	void OpenAL_Context::SetListenerPosition(const glm::vec3& pos)
 	{
+		m_listenerPos = pos;
 		alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
+	}
+
+	const glm::vec3& OpenAL_Context::GetListenerPosition()
+	{
+		return m_listenerPos;
+	}
+
+	void OpenAL_Context::SetListenerPitch(float f)
+	{
+		m_listenerPitch = f;
+		alListenerf(AL_PITCH, f);
+	}
+
+	void OpenAL_Context::SetListenerVolume(float f)
+	{
+		m_listenerVolume = f;
+		alListenerf(AL_GAIN, f);
+	}
+
+	const float OpenAL_Context::GetListenerPitch()
+	{
+		return m_listenerPitch;
+	}
+
+	const float OpenAL_Context::GetListenerVolume()
+	{
+		return m_listenerVolume;
+	}
+
+	void OpenAL_Context::ResetBuffers(Ref<AudioSource> audioSource)
+	{
+		OggVorbis_File& oggFile = dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
+		AudioStreamingData* audioData = &audioSource->GetData();
+		char* data = new char[AUDIO_BUFFER_SIZE];
+
+		for (std::uint8_t i = 0; i < AUDIO_BUFFERS_NUM; ++i)
+		{
+			std::int32_t dataSoFar = 0;
+			while (dataSoFar < AUDIO_BUFFER_SIZE)
+			{
+				std::int32_t result = ov_read(&oggFile, &data[dataSoFar], AUDIO_BUFFER_SIZE - dataSoFar, 0, 2, 1, &audioData->fileSection);
+				if (result == OV_HOLE)
+				{
+					GE_CORE_ERROR("ERROR: OV_HOLE found in initial read of buffer {0}", i);
+					break;
+				}
+				else if (result == OV_EBADLINK)
+				{
+					GE_CORE_ERROR("ERROR: OV_EBADLINK found in initial read of buffer {0}", i);
+					break;
+				}
+				else if (result == OV_EINVAL)
+				{
+					GE_CORE_ERROR("ERROR: OV_EINVAL found in inital read of buffer {0}", i);
+					break;
+				}
+				else if (result == 0)
+				{
+					GE_CORE_ERROR("ERROR: EOF found in initial read of buffer {0}", i);
+					break;
+				}
+
+				dataSoFar += result;
+			}
+
+			if (audioData->channels == 1 && audioData->bitsPerSample == 8)
+				audioData->format = AL_FORMAT_MONO8;
+			else if (audioData->channels == 1 && audioData->bitsPerSample == 16)
+				audioData->format = AL_FORMAT_MONO16;
+			else if (audioData->channels == 2 && audioData->bitsPerSample == 8)
+				audioData->format = AL_FORMAT_STEREO8;
+			else if (audioData->channels == 2 && audioData->bitsPerSample == 16)
+				audioData->format = AL_FORMAT_STEREO16;
+			else
+			{
+				GE_CORE_ERROR("OpenAL: Unrecongnized ogg fomrat: {0} channels, {1} bps", audioData->channels, audioData->bitsPerSample);
+				delete[] data;
+				return;
+			}
+
+			alCall(alBufferData, audioData->buffers[i], audioData->format, data, dataSoFar, audioData->sampleRate);
+		}
+
+		alCall(alSourceQueueBuffers, audioData->source, AUDIO_BUFFERS_NUM, &audioData->buffers[0]);
+		delete[] data;
 	}
 
 	Ref<AudioSource> OpenAL_Context::LoadSource(const char* fileName, bool fromPak /*= true*/, bool relative /*= true*/)
 	{
-		AudioStreamingData* audioData = new AudioStreamingData();
+		Ref<OpenAL_source> s = make_shared<OpenAL_source>();
+		AudioStreamingData* audioData = &s->GetData();
 		audioData->fileName = fileName;
 		audioData->fromPak = fromPak;
 		audioData->relative = relative;
@@ -220,7 +312,7 @@ namespace GEngine {
 		oggCallbacks.seek_func = seek_ogg_callback;
 		oggCallbacks.tell_func = tell_ogg_callback;
 
-		
+		OggVorbis_File& oggFile = s->oggFile;
 
 		if (ov_open_callbacks(reinterpret_cast<void*>(audioData), &oggFile, nullptr, -1, oggCallbacks) < 0) {
 			GE_CORE_ERROR("COULD NOT OPEN OV_OPEN_CALLBACKS");
@@ -298,8 +390,9 @@ namespace GEngine {
 		
 
 		delete[] data;
-		Ref<AudioSource> s = make_shared<OpenAL_source>(audioData);
+		
 		s->SetSelf(s);
+		s->oggFile = std::move(oggFile);
 		m_sources.insert(s);
 		return s;
 	}

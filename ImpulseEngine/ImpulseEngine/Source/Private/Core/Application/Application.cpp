@@ -106,7 +106,7 @@ namespace GEngine {
         Font::UnloadGraphics();
         Texture2D::UnloadTextures();
         Shader::UnloadShaders();
-        
+        AudioManager::Pause();
         
     }
 
@@ -117,7 +117,9 @@ namespace GEngine {
         Texture2D::ReloadTextures();
         Font::ReloadGraphics();
         Shader::ReloadShaders();
+        AudioManager::Resume();
         SceneManager::ReloadGraphics();
+        
     }
     
 	int Application::GetWidth()
