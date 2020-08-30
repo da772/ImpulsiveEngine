@@ -57,6 +57,8 @@ namespace GEngine {
 
 		static void UnloadGraphics();
 		static void ReloadGraphics();
+		static void Stop();
+		static void Start();
 
 		static int GetWidth();
 		static int GetHeight();
