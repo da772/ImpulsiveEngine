@@ -74,7 +74,7 @@ WizardJump::WizardJump()
 	EnableImGui(false);
 #endif
 	
-	GetWindow()->SetVSync(true);
+	GetWindow()->SetVSync(false);
 
 	m_ExampleLayer = new ExampleLayer();
 	m_DebugLayer = new DebugLayer();

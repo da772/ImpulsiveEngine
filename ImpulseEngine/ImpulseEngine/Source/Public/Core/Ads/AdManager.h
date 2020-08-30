@@ -12,7 +12,7 @@ namespace GEngine {
 		static void LoadRewardAd(const std::function<void()> f1, const std::function<void(int, std::string)> f);
 		static void ShowRewardAd();
 		static void SetUserId(const char* id);
-
+		static bool AdPlaying();
 		static void Shutdown();
 
 	private:

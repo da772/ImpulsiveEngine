@@ -43,6 +43,7 @@ namespace GEngine {
 	std::size_t read_ogg_callback(void* destination, std::size_t size1, std::size_t size2, void* fileHandle);
 	int32_t seek_ogg_callback(void* fileHandle, ogg_int64_t to, std::int32_t type);
 	long int tell_ogg_callback(void* fileHandle);
+	int close_ogg_callback(void* fileHandle);
 
 	OpenAL_Context::OpenAL_Context()
 	{
@@ -201,6 +202,7 @@ namespace GEngine {
 		m_sources.erase(s);
 		alDeleteSources(1, &s->GetData().source);
 		alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
+		ov_clear(&dynamic_pointer_cast<OpenAL_source>(s)->oggFile);
 	}
 
 	void OpenAL_Context::SetListenerPosition(const glm::vec3& pos)
@@ -308,7 +310,7 @@ namespace GEngine {
 
 		ov_callbacks oggCallbacks;
 		oggCallbacks.read_func = read_ogg_callback;
-		oggCallbacks.close_func = nullptr;
+		oggCallbacks.close_func = close_ogg_callback;
 		oggCallbacks.seek_func = seek_ogg_callback;
 		oggCallbacks.tell_func = tell_ogg_callback;
 
@@ -395,6 +397,10 @@ namespace GEngine {
 		s->oggFile = std::move(oggFile);
 		m_sources.insert(s);
 		return s;
+	}
+
+	int close_ogg_callback(void* fileHandle) {
+		return 0;
 	}
 
 	std::size_t read_ogg_callback(void* destination, std::size_t size1, std::size_t size2, void* fileHandle)

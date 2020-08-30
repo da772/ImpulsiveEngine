@@ -18,7 +18,7 @@ namespace GEngine {
 		static Ad* Create(const EAdPlatforms platform);
 		virtual void LoadRewardAd(const std::function<void()> f1, const std::function<void(int, std::string)> f) = 0;
 		virtual void ShowRewardAd() = 0;
-
+		virtual bool AdPlaying() = 0;
 		inline virtual void SetUserId(const std::string id) { m_userId = id; }
 		inline virtual void SetAdId(const std::string id) { m_adId = id; }
 		inline virtual void SetRewardAdId(const std::string id) { m_rewardAdId = id; }

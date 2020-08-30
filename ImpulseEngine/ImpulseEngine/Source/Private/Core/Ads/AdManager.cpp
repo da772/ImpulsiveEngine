@@ -57,6 +57,14 @@ namespace GEngine {
 		}
 	}
 
+	bool AdManager::AdPlaying()
+	{
+		if (m_ad) {
+			return m_ad->AdPlaying();
+		}
+		return false;
+	}
+
 	void AdManager::Shutdown()
 	{
 		if (m_ad != nullptr) {

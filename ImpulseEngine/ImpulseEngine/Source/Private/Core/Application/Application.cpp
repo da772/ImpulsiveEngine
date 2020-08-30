@@ -100,28 +100,42 @@ namespace GEngine {
     }
 
     void Application::UnloadGraphics() {
-        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || !Application::GetApp()->m_loaded) return;
-        Application::GetApp()->Pause();
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running) return;
+        if (!AdManager::AdPlaying() && Application::GetApp()->m_loaded) Application::GetApp()->Pause();
         SceneManager::UnloadGraphics();
         Font::UnloadGraphics();
         Texture2D::UnloadTextures();
         Shader::UnloadShaders();
-        AudioManager::Pause();
+        if (!AdManager::AdPlaying()) AudioManager::Pause();
         
     }
 
     void Application::ReloadGraphics() {
-        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || Application::GetApp()->m_loaded) return;
-        Application::GetApp()->Resume();
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running) return;
+        if (!AdManager::AdPlaying() && !Application::GetApp()->m_loaded) Application::GetApp()->Resume();
         RenderCommand::Init();
         Texture2D::ReloadTextures();
         Font::ReloadGraphics();
         Shader::ReloadShaders();
-        AudioManager::Resume();
+        if (!AdManager::AdPlaying()) AudioManager::Resume();
         SceneManager::ReloadGraphics();
         
     }
     
+	void Application::Stop()
+	{
+        if (!Application::GetApp()->m_loaded) return;
+		Application::GetApp()->Pause();
+		AudioManager::Pause();
+	}
+
+	void Application::Start()
+	{
+        if (Application::GetApp()->m_loaded) return;
+		Application::GetApp()->Resume();
+        AudioManager::Resume();
+	}
+
 	int Application::GetWidth()
 	{
         return  s_Instance->GetWindow()->GetWindowData().Width;
