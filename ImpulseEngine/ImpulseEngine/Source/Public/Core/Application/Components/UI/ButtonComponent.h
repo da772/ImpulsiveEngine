@@ -14,7 +14,7 @@ namespace GEngine {
 	class ButtonComponent : public Component {
 	public:
 
-		ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, const float textureScale = 1 );
+		ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, glm::vec2 textureScale = { 1,1 });
 		virtual ~ButtonComponent();
 
 		void SetImageSubTexture(Ref<SubTexture2D> texture);
@@ -57,7 +57,7 @@ namespace GEngine {
 		Ref<Texture2D> m_texture = nullptr;
 		Ref<Shader> m_Shader = nullptr;
 		Ref<SubTexture2D> m_subTexture = nullptr;
-		float m_textureScale;
+		glm::vec2 m_textureScale;
 		glm::vec2 m_worldPosition;
 		glm::vec2 m_worldScale;
 		float m_worldRotation;

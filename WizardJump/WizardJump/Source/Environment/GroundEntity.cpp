@@ -8,7 +8,8 @@ void GroundEntity::OnBegin()
 	if (debug) {
 		m_debugSprite = CreateGameObject<SpriteComponent>();
 		AddComponent(m_debugSprite);
-		m_debugSprite->CreateQuad({ 0,0,0 }, 0, { 1,1,1 }, { .0f,1.f,0.f,1.f }, Texture2D::Create("Content/Textures/Checkerboard.png", TEXTUREFLAGS_Wrap_Repeat), 20.f);
+		m_debugSprite->CreateQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1.f,1.f,1.f,1.f },
+			Texture2D::Create("Content/Textures/bricks_01.png", TEXTUREFLAGS_Wrap_Repeat), { 20/2,20/2});
 	}
 
 	m_collider = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(0, 0), glm::vec2(1, 1), 0.f, 0.f);

@@ -1,7 +1,6 @@
 #include "gepch.h"
 
 #include "Public/Core/Application/Components/Graphics/SpriteComponent.h"
-#include "Public/Core/Renderer/Graphics/ShapeBatch2D.h"
 #include "Public/Core/Renderer/Graphics/Quad.h"
 #include "Public/Core/Renderer/Graphics/Shader.h"
 #include "Public/Core/Renderer/RenderCommand.h"
@@ -74,7 +73,7 @@ namespace GEngine {
 	}
 
 	long SpriteComponent::CreateQuad(const Vector3& _pos, const float rotation, const Vector3& scale, const Vector4& _color,
-		const Ref<Texture2D> texture, const float textureScale)
+		const Ref<Texture2D> texture, const glm::vec2& textureScale)
 	{
 		Ref<Entity> e = entity.lock();
 		long id = s_ShapeFactory->AddShape(_pos+e->GetEntityPosition(), rotation+e->GetEntityRotation().z, scale* e->GetEntityScale(), _color, texture, textureScale);
@@ -83,15 +82,15 @@ namespace GEngine {
 	}
 
 	long SpriteComponent::CreateQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale, const Ref<ScriptVector4>& _color,
-		const Ref<Texture2D>& texture, const float tScale)
+		const Ref<Texture2D>& texture, const glm::vec2& textureScale)
 	{
-		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, tScale);
+		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, textureScale);
 	}
 
 	long SpriteComponent::CreateSubTexturedQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale,
-		const Ref<ScriptVector4>& _color,const Ref<SubTexture2D>& texture,const float tscale)
+		const Ref<ScriptVector4>& _color,const Ref<SubTexture2D>& texture, const glm::vec2& textureScale)
 	{
-		return CreateSubTexturedQuad(_pos->GetGlm(), rot , scale->GetGlm(), _color->GetGlm(), texture, tscale);
+		return CreateSubTexturedQuad(_pos->GetGlm(), rot , scale->GetGlm(), _color->GetGlm(), texture, textureScale);
 	}
 
 	void SpriteComponent::SetSubTexture(const long id, const Ref<SubTexture2D>& texture)
@@ -130,7 +129,7 @@ namespace GEngine {
 	}
 
 	long SpriteComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, 
-		const Vector4& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const float textureScale /*= 1*/)
+		const Vector4& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const glm::vec2& textureScale/*= 1*/)
 	{
 		Ref<Entity> e = entity.lock();
 		long id = s_ShapeFactory->AddShape(_pos + e->GetEntityPosition(), rot + e->GetEntityRotation().z, scale * e->GetEntityScale(), _color, texture, textureScale);

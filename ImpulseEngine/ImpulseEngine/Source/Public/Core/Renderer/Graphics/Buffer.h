@@ -27,7 +27,7 @@ namespace GEngine {
 		case ShaderDataName::Rotation:
 			return ShaderDataType::Float3;
 		case ShaderDataName::TextureScale:
-			return ShaderDataType::Float;
+			return ShaderDataType::Float2;
 		case ShaderDataName::AlphaChannel:
 			return ShaderDataType::Float;
 		default:

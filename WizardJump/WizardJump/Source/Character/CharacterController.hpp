@@ -16,13 +16,22 @@ public:
 	~CharacterController() {};
 
 	Ref<CharacterBody> bodyComp;
-	
+    Ref<AudioComponent> jumpSound;
+    Ref<AudioComponent> landSound;
+    Ref<AudioComponent> musicSound;
 
 protected:
 	void OnBegin() override
 	{
 		bodyComp = CreateGameObject<CharacterBody>();
 		GetEntity()->AddComponent(bodyComp);
+        jumpSound = CreateGameObject<AudioComponent>("Content/Audio/testJump01.ogg", false, false, true);
+        landSound = CreateGameObject<AudioComponent>("Content/Audio/dink.ogg", false, false, true);
+        musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
+
+        GetEntity()->AddComponent(landSound);
+        GetEntity()->AddComponent(jumpSound);
+        GetEntity()->AddComponent(musicSound);
 		graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
 		
 	}
@@ -42,7 +51,7 @@ protected:
 	const float maxWalkSpeed = 2.5f;
     const int walkDelay = 100;
 	const float walkAcceleration = 5.f;
-    const float jumpThreshold = .001f;
+    const float jumpThreshold = .005f;
 
     /*
         PC Touch Emulation
@@ -63,6 +72,11 @@ protected:
         int lstX = Input::GetMouseX();
         int lstY = Input::GetMouseY();
         bool addTouch = false;
+        ImGuiIO& io = ImGui::GetIO();
+        
+#if !defined(GE_DIST)
+        if (io.WantCaptureKeyboard || io.WantCaptureMouse) goto consoleEnd;
+#endif
         if (Input::IsMouseButtonPressed(0)) {
             if (pcState == -1 || pcState == 2) {
                 pcTouchTime = Time::GetEpochTimeNS();
@@ -112,7 +126,9 @@ protected:
 					bodyComp->AddVelocity({ 0, 5.f }); });
 				});
 		} 
-
+#if !defined(GE_DIST)
+        consoleEnd:
+#endif
 #endif
 		/*
 			Mobile Controls
@@ -197,6 +213,7 @@ protected:
 				if (ground) {
 					if (bFalling) {
 						bodyComp->SetVelocityX(0);
+                        landSound->SetPlaying(true);
 						graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
 					}
 					else {
@@ -210,6 +227,7 @@ protected:
 				//graphicsComp->dir = vel.x > 0.f ? 1 : -1;
 				if (ground) {
 					if (bFalling) {
+                        landSound->SetPlaying(true);
 						graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
 					}
 					else {
@@ -262,6 +280,7 @@ protected:
                             } else {
                                 graphicsComp->JumpStart([this, xDistance, yDistance]() {
                                     bJumping = false;
+                                    jumpSound->SetPlaying(true);
                                     bodyComp->AddVelocity({ 10 * (abs(xDistance) > .2f ? (xDistance >= 0 ? 1.f : -1.f) *.2f : xDistance), 40.f * (yDistance > .2f ? .2f : yDistance) });
                                 });
                             }

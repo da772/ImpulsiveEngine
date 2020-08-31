@@ -29,6 +29,8 @@ void ExampleLayer::OnAttach()
 	GEngine::Ref<MainGameScene> s2 = GEngine::CreateGameObject<MainGameScene>("mainGame", nullptr);
 	GEngine::SceneManager::AddScene("mainGame", s2);
 	GEngine::SceneManager::SetCurrentScene("splashScreen");
+
+
 }
 
 void ExampleLayer::OnDetach()

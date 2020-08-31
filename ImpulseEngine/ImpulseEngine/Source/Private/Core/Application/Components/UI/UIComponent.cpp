@@ -46,7 +46,7 @@ namespace GEngine {
 		
 	}
 
-	const long UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, const float textureScale /*= 1*/, const float alphaChannel)
+	const long UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, const glm::vec2& textureScale /*= 1*/, const float alphaChannel)
 	{
 		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
@@ -58,12 +58,8 @@ namespace GEngine {
 		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture);
 	}
 
-	const long UIComponent::CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, const float textureScale)
-	{
-		return CreateSubTexturedQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, textureScale);
-	}
 
-	const long UIComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const float textureScale /*= 1.f*/, const float alphaChannel)
+	const long UIComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const glm::vec2& textureScale /*= 1.f*/, const float alphaChannel)
 	{
 		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
@@ -82,7 +78,7 @@ namespace GEngine {
 		std::vector<CharacterData> data = font->DrawString(string, 2, width, height);
 		std::vector<long> ids;
 		for (CharacterData& d : data) {
-			long id = CreateSubTexturedQuad(GetEntityPosition()+glm::vec3( d.position.x + pos.x, d.position.y + pos.y, pos.z), 0, { d.scale.x , d.scale.y , 1 }, color, d.texture, 1, 1);
+			long id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x + pos.x, d.position.y + pos.y, pos.z), 0, { d.scale.x , d.scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
 

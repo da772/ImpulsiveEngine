@@ -202,7 +202,7 @@ protected:
 		SpriteComponent::OnBegin();
 		m_characterSpriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/wizard.png"),
 			{ 0,1 }, { 74,74 }, { 1,1 });
-		quad = CreateSubTexturedQuad({ 0,0,0 }, 0.f, { 2,2,1 }, { 1,1,1,1 }, m_characterSpriteSheet, 1.f);
+		quad = CreateSubTexturedQuad({ 0,0,0 }, 0.f, { 2,2,1 }, { 1,1,1,1 }, m_characterSpriteSheet);
 		m_animationComp = CreateGameObject<SpriteAnimationComponent>();
 		GetEntity()->AddComponent(m_animationComp);
 		Idle();

@@ -22,14 +22,18 @@ namespace GEngine {
 
 	void OpenAL_source::Play()
 	{
-		b_isPlaying = true;
-		alSourcePlay(m_audioData.source);
+		if (!b_isPlaying) {
+			b_isPlaying = true;
+			alSourcePlay(m_audioData.source);
+		}
 	}
 
 	void OpenAL_source::Pause()
 	{
-		b_isPlaying = false;
-		alSourceStop(m_audioData.source);
+		if (b_isPlaying) {
+			b_isPlaying = false;
+			alSourceStop(m_audioData.source);
+		}
 	}
 
 	void OpenAL_source::SetStatic(bool b)

@@ -22,6 +22,7 @@ namespace GEngine {
 		int_fast32_t fileSection = 0;
 		uint32_t duration;
 		bool fromPak = true;
+		uint32_t bufferNum = AUDIO_BUFFERS_NUM;
 		bool relative = true;
 
 	};
@@ -53,7 +54,7 @@ namespace GEngine {
 
 		void SetSelf(Weak<AudioSource> s) { self = s; }
 
-		inline bool IsPlaying() { return b_isPlaying; }
+		bool IsPlaying();
 
 		inline virtual void __stopPlay() { b_isPlaying = false; };
 

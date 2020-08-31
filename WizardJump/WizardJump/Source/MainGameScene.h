@@ -7,6 +7,7 @@
 #include "Environment/GroundEntity.hpp"
 #include "Environment/WallEntity.hpp"
 #include "Environment/PlatformEntity.hpp"
+#include "Environment/Objects/FireEntity.hpp"
 
 
 class MainGameScene : public GEngine::Scene {
@@ -24,9 +25,15 @@ public:
 	inline void OnUpdate(GEngine::Timestep timestep) override
 	{
 		long long time = GEngine::Time::GetEpochTimeMS();
-
+#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
+		ImGuiIO& io = ImGui::GetIO();
 		m_CameraController->SetPosition(e->GetEntityPosition());
+		if (!io.WantCaptureKeyboard && !io.WantCaptureMouse) {
+			m_CameraController->OnUpdate(timestep);
+		}
+#else
 		m_CameraController->OnUpdate(timestep);
+#endif
 
 		
 
@@ -47,6 +54,10 @@ public:
 
 	
 	inline virtual void OnEvent(GEngine::Event& e) override {
+#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureKeyboard || io.WantCaptureMouse) return;
+#endif
 		m_CameraController->OnEvent(e);
 
 		if (e.GetEventType() == EventType::KeyReleased) {
@@ -92,7 +103,7 @@ public:
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(7.5f);
-		m_CameraController->SetPosition({ 0,0,0 });
+		m_CameraController->SetPosition({ 0,6.5,0 });
 		m_CameraController->SetRotation({ 0,0,0 });
 
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
@@ -104,15 +115,40 @@ public:
 		e = GEngine::CreateGameObject<CharacterEntity>();
 		AddEntity(e);
 
+
+		/* test fire
 		
 		
+		*/
 
-		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -20,0), glm::vec2(20,20 ), 90.f);
-		AddEntity(wall);
-		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(20, 0), glm::vec2(20, 20), 90.f);
+		auto fireEnt = GEngine::CreateGameObject<FireEntity>();
+		AddEntity(fireEnt);
+
+
+		/* test fire
+
+
+		*/
+
+
+
+		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -6,10), glm::vec2(5,20 ), 0.f);
 		AddEntity(wall);
 
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 2.f), glm::vec2(2.f, 1.f)) );
+		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(6, 10), glm::vec2(5, 20), 0.f);
+		AddEntity(wall);
+		
+		/**
+		 *  Platforms
+		 */
+
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(2.f, 1.f)) );
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 2.2f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 4.9f), glm::vec2(2.f, .5f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 7.1f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.5f, 9.3f), glm::vec2(4.f, 1.f)));
+		
+		/*
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(8.f, 4.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 6.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 2.5f), glm::vec2(2.f, 1.f)));
@@ -123,7 +159,7 @@ public:
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-9.5f, 6.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-8.f, 4.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-6.f, 2.f), glm::vec2(2.f, 1.f)));
-
+		*/
 
 	
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
@@ -165,7 +201,10 @@ public:
 	}
 
 	inline void OnImGuiRender() override {
+
 		
+
+
 	}
 
 	inline void OnLoad() override
