@@ -21,6 +21,7 @@ IncludeDir["entt"] = "ImpulseEngine/vendor/entt/include"
 IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
 IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
 IncludeDir["OpenAL"] = "ImpulseEngine/vendor/OpenAL/include"
+IncludeDir["Vorbis"] = "ImpulseEngine/vendor/Vorbis/include"
 
 
 group "Dependencies"
@@ -35,6 +36,7 @@ group "Dependencies"
 	if _OPTIONS['build-openal'] then
 		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
 	end
+	include "ImpulseEngine/ImpulseEngine/vendor/Vorbis"
 
 group ""
 
@@ -87,8 +89,7 @@ project "ImpulseEngine"
 		"%{IncludeDir.firebase}/include",
 		"%{IncludeDir.box2d}",
 		"%{IncludeDir.OpenAL}",
-
-
+		"%{IncludeDir.Vorbis}",
 
 	}
 
@@ -97,6 +98,8 @@ project "ImpulseEngine"
 		"%{IncludeDir.Vulkan}/lib"
 	}
 	
+	
+
 	links
 	{
 		"ImGui",
@@ -104,6 +107,7 @@ project "ImpulseEngine"
 		"miniupnpc",
 		"freetype-gl",
 		"box2d",
+		"Vorbis"
 	}
 	if _OPTIONS['build-openal'] then	
 	links

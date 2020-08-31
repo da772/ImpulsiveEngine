@@ -36,7 +36,7 @@ namespace GEngine {
 	u32 Quad::GetVerticesSize()
 	{
 		// AMT * ROWS
-		return 48;
+		return 52;
 	}
 
 	std::vector<u32> Quad::GetIndices(u32 offset) 
@@ -54,7 +54,7 @@ namespace GEngine {
 	}
 
 	std::vector<float> Quad::GetVertices(Vector3 position, float rotation, Vector3 scale /*= Vector3(1,1,1)*/,
-		Vector4 color /*= Vector4(1,1,1,1)*/, u32 texture /*= 0*/, float textureScale, const Vector2* textureCoords, float alphaChannel)
+		Vector4 color /*= Vector4(1,1,1,1)*/, u32 texture /*= 0*/, glm::vec2 textureScale, const Vector2* textureCoords, float alphaChannel)
 	{
 		std::vector<QuadVertex> vert;
 

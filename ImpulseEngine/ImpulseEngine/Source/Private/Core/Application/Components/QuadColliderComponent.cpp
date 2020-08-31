@@ -20,7 +20,8 @@ namespace GEngine {
 		m_position(position), m_scale(scale), m_rotation(rotation),
 		m_dynamic(dynamic), m_mass(mass), m_physics(physics)
 	{
-		bUpdates = true;
+		if (dynamic)
+			bUpdates = true;
 		
 	}
 

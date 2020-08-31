@@ -29,6 +29,8 @@ void ExampleLayer::OnAttach()
 	GEngine::Ref<MainGameScene> s2 = GEngine::CreateGameObject<MainGameScene>("mainGame", nullptr);
 	GEngine::SceneManager::AddScene("mainGame", s2);
 	GEngine::SceneManager::SetCurrentScene("splashScreen");
+
+
 }
 
 void ExampleLayer::OnDetach()
@@ -74,7 +76,7 @@ WizardJump::WizardJump()
 	EnableImGui(false);
 #endif
 	
-	GetWindow()->SetVSync(true);
+	GetWindow()->SetVSync(false);
 
 	m_ExampleLayer = new ExampleLayer();
 	m_DebugLayer = new DebugLayer();

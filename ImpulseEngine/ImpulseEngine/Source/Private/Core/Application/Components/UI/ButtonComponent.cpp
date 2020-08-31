@@ -19,7 +19,7 @@ namespace GEngine {
 
 	Ref<BatchRenderer> ButtonComponent::s_ShapeFactory = nullptr;
 
-	ButtonComponent::ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, const float textureScale /*= 1*/) :
+	ButtonComponent::ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, glm::vec2 textureScale /*= 1*/) :
 		m_colliderPosition(pos), m_colliderRotation(rot), m_colliderScale(scale), m_imagePosition(pos), m_imageRotation(rot), m_imageScale(scale), m_color(color), m_textureScale(textureScale)
 	{
 		if (b_debug)
@@ -179,7 +179,7 @@ namespace GEngine {
 			if (i == 1) {
 				glm::vec3 m_p = m_colliderPosition;
 				m_p.z += .1f;
-				m_ids[i] = s_ShapeFactory->AddShape(m_p + e->GetEntityPosition(), m_colliderRotation, m_colliderScale, glm::vec4(1, 0, 0, .25f), nullptr);
+				m_ids[i] = s_ShapeFactory->AddShape(m_p + e->GetEntityPosition(), m_colliderRotation, m_colliderScale, glm::vec4(1, 0, 0, .25f));
 			}
 		}
 		

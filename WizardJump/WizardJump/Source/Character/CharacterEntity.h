@@ -6,6 +6,7 @@ using namespace GEngine;
 class CharacterController;
 class CharacterGraphics;
 
+
 class CharacterEntity : public Entity {
 
 public:
@@ -15,6 +16,7 @@ public:
 
 	GEngine::Ref<CharacterController> m_characterComponent;
 	GEngine::Ref<CharacterGraphics> m_spriteComponent;
+	GEngine::Ref<AudioListenerComponent> m_audioComponent;
 
 
 protected:

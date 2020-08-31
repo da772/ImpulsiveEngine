@@ -2,7 +2,6 @@
 
 
 #include "Public/Core/Application/Components/Graphics/ParticleSystem2DComponent.h"
-#include "Public/Core/Renderer/Graphics/ShapeBatch2D.h"
 #include "Public/Core/Renderer/Graphics/Quad.h"
 #include "Public/Core/Renderer/Graphics/Shader.h"
 #include "Public/Core/Renderer/RenderCommand.h"
@@ -114,7 +113,7 @@ namespace GEngine {
 		
 		if (particle.id != -1) {
 			s_ShapeFactory->EditShape(particle.id, { particle.Position.x, particle.Position.y, particle.zOrder }, particle.Rotation, particle.Scale,
-				color, m_particleProps.texture, 1);
+				color, m_particleProps.texture, { 1,1 });
 		}
 		else {
 			if (m_particleProps.texture == nullptr && m_particleProps.subTexture == nullptr) {
@@ -127,7 +126,7 @@ namespace GEngine {
 			}
 			else if (m_particleProps.subTexture != nullptr) {
 				particle.id = s_ShapeFactory->AddShape({ particle.Position.x, particle.Position.y, particle.zOrder },
-					particle.Rotation, particle.Scale, color, m_particleProps.subTexture, 1);
+					particle.Rotation, particle.Scale, color, m_particleProps.subTexture, { 1,1 });
 			}
 
 			m_ids.insert(particle.id);

@@ -58,11 +58,16 @@
 
 /* Define if we have the WASAPI backend */
 #ifdef _WINDOWS
-#define HAVE_WASAPI
+/*
+#define HAVE_WASAPI*/
 /* Define if we have the DSound backend */
-#define HAVE_DSOUND
+/*#define HAVE_DSOUND*/
 /* Define if we have the Windows Multimedia backend */
 #define HAVE_WINMM
+
+/*#define HAVE_WASAPI */ //DOG SHIT
+/* Define if we have the DSound backend */
+/*#define HAVE_DSOUND*/
 #endif
 
 /* Define if we have the PortAudio backend */

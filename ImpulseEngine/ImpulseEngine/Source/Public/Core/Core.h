@@ -10,6 +10,8 @@
 	#define GE_PHYSICS_BOX2D
 #endif
 
+#define GE_AUDIO_OPENAL
+
 #ifdef GE_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #ifdef GE_DYNAMIC_LINK

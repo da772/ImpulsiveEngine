@@ -7,6 +7,7 @@
 #include "Environment/GroundEntity.hpp"
 #include "Environment/WallEntity.hpp"
 #include "Environment/PlatformEntity.hpp"
+#include "Environment/Objects/FireEntity.hpp"
 
 
 class MainGameScene : public GEngine::Scene {
@@ -24,9 +25,15 @@ public:
 	inline void OnUpdate(GEngine::Timestep timestep) override
 	{
 		long long time = GEngine::Time::GetEpochTimeMS();
-
+#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
+		ImGuiIO& io = ImGui::GetIO();
 		m_CameraController->SetPosition(e->GetEntityPosition());
+		if (!io.WantCaptureKeyboard && !io.WantCaptureMouse) {
+			m_CameraController->OnUpdate(timestep);
+		}
+#else
 		m_CameraController->OnUpdate(timestep);
+#endif
 
 		
 
@@ -42,22 +49,61 @@ public:
 
 	}
 	
-	
+	Ref<Entity> e;
+	GEngine::Ref<AudioSource> source;
+
 	
 	inline virtual void OnEvent(GEngine::Event& e) override {
+#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureKeyboard || io.WantCaptureMouse) return;
+#endif
 		m_CameraController->OnEvent(e);
+
+		if (e.GetEventType() == EventType::KeyReleased) {
+			GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
+			if (_e.GetKeyCode() == GE_KEY_P) {
+				if (source->IsPlaying()) {
+					source->Pause();
+				}
+				else {
+					source->Play();
+				}
+			}
+			
+			if (_e.GetKeyCode() == GE_KEY_L) {
+				source->SetLoop(!source->IsLooping());
+			}
+		}
 
 	}
 
-	Ref<Entity> e;
+
 
 	inline void OnBegin() override
 	{
+
+		/* DEBUG */
+		/*
+		auto a = GEngine::AudioManager::Load_OGG("Content/Audio/countdown2.ogg");
+		
+		//source->Play();
+
+		source = GEngine::AudioManager::Load_OGG("Content/Audio/countdown.ogg");
+		source->Play();
+		//a->SetLoop(true);
+		//a->Play();
+
+		*/
+
+		/* DEBUG*/
+
+
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(7.5f);
-		m_CameraController->SetPosition({ 0,0,0 });
+		m_CameraController->SetPosition({ 0,6.5,0 });
 		m_CameraController->SetRotation({ 0,0,0 });
 
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
@@ -69,44 +115,74 @@ public:
 		e = GEngine::CreateGameObject<CharacterEntity>();
 		AddEntity(e);
 
-		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -20,0), glm::vec2(20,20 ), 90.f);
-		AddEntity(wall);
-		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(20, 0), glm::vec2(20, 20), 90.f);
+
+		/* test fire
+		
+		
+		*/
+
+		auto fireEnt = GEngine::CreateGameObject<FireEntity>();
+		AddEntity(fireEnt);
+
+
+		/* test fire
+
+
+		*/
+
+
+
+		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -6,10), glm::vec2(5,20 ), 0.f);
 		AddEntity(wall);
 
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 2.f), glm::vec2(2.f, 1.f)) );
+		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(6, 10), glm::vec2(5, 20), 0.f);
+		AddEntity(wall);
+		
+		/**
+		 *  Platforms
+		 */
+
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(2.f, 1.f)) );
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 2.2f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 4.9f), glm::vec2(2.f, .5f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 7.1f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.5f, 9.3f), glm::vec2(4.f, 1.f)));
+		
+		/*
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(8.f, 4.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 6.f), glm::vec2(2.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 8.f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 2.5f), glm::vec2(2.f, 1.f)));
 
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.f, 10.f), glm::vec2(2.f, 1.f)));
+		
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-6.f, 8.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-9.5f, 6.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-8.f, 4.f), glm::vec2(2.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-6.f, 2.f), glm::vec2(2.f, 1.f)));
+		*/
 
-
+	
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		AddEntity(eFPS);
         
+		
 		/*
-
 #ifdef GE_MOBILE_APP
 		GEngine::AdManager::SetUserId("This Is My User ID!");
 #ifdef GE_PLATFORM_ANDROID
 
 		GEngine::AdManager::SetAdId("ca-app-pub-0400118858384122~7825957542");
 		// Prototype Ad
-		GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
+		//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
 
 		// Google Test Id
-		//GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
+		GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
 #endif
 #ifdef GE_PLATFORM_IOS
 		GEngine::AdManager::SetAdId("ca-app-pub-4619437690188394~6799169535");
         // Google Test Id
-        //GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
-		GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/5486087868");
+        GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
+		//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/5486087868");
 
 #endif
 
@@ -114,6 +190,7 @@ public:
 			[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
 #endif
 */
+
 	}
 
 
@@ -124,7 +201,10 @@ public:
 	}
 
 	inline void OnImGuiRender() override {
+
 		
+
+
 	}
 
 	inline void OnLoad() override

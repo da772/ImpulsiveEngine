@@ -41,6 +41,16 @@ static inline void App_Create(int width, int height) {
     }
 }
 
+static inline void App_Start() {
+    if (MobileEntry::App == nullptr) return;
+    GEngine::Application::Start();
+}
+
+static inline void App_Stop() {
+	if (MobileEntry::App == nullptr) return;
+	GEngine::Application::Stop();
+}
+
 static inline void App_Resize(int width, int height) {
     if (MobileEntry::App == nullptr) return;
     GE_CORE_DEBUG("Window ReSize: {0}, {1}", width, height);
