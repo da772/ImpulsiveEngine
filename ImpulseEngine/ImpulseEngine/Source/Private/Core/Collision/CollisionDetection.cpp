@@ -4,6 +4,8 @@
 #include "Public/Core/Collision/Collider.h"
 #include "Public/Core/Util/ThreadPool.h"
 #include "Public/Core/Application/Components/QuadColliderComponent.h"
+#include "Public/Core/Util/GEMath.h"
+#include "Public/Core/Application/Application.h"
 
 namespace GEngine {
 
@@ -77,9 +79,11 @@ namespace GEngine {
 	bool CollisionDetection::CheckPointUI(const float x, const float y)
 	{
 		bool b = false;
+		float _x = GEMath::MapRange(x / Application::GetWidth(), 0, 1, -1, 1);
+		float _y = -GEMath::MapRange(y / Application::GetHeight(), 0, 1, -1, 1);
 		std::lock_guard<std::mutex> guard(s_uiMutex);
 		for (Ref<Collider> c : s_uiColliders) {
-			if (c->CheckCollisionPoint(x, y)) {
+			if (c->CheckCollisionPoint(_x, _y)) {
 				return true;
 			}
 		}

@@ -44,14 +44,24 @@ public:
 		}
 		else if (state == 0) {
 			App_Start();
+			if (m_stateCallback) {
+				ThreadPool::AddMainThreadFunction([this]() {
+					m_stateCallback((int)state);
+				});
+			}
+				
 		}
 	}
-	void SetCallback(std::function<void(int, std::string)> f) {
+	void SetRewardCallback(std::function<void(int, std::string)> f) {
 		m_callback = f;
+	}
+	void SetStateChangeCallback(std::function<void(int)> f) {
+		m_stateCallback = f;
 	}
 
 private:
 	std::function<void(int, std::string)> m_callback;
+	std::function<void(int)> m_stateCallback;
 };
 LoggingRewardedVideoListener* rewarded_video_listener = new LoggingRewardedVideoListener();
 firebase::admob::AdRequest my_ad_request;
@@ -66,7 +76,7 @@ namespace GEngine {
 
 	Firebase_Ads::~Firebase_Ads()
 	{
-#ifdef GE_PLATFORM_ANDROID
+#if defined (GE_PLATFORM_ANDROID) && defined(GE_ADS_FIREBASE)
 		if (m_rewardAdInit) {
 			AndroidUtil::CleanJNIEnv();
 			delete rewarded_video_listener;
@@ -105,7 +115,7 @@ namespace GEngine {
 						firebase::admob::rewarded_video::Initialize();
 
 						while (firebase::admob::rewarded_video::InitializeLastResult().status() == 1) {
-							if (Time::GetEpochTimeSec() - ct > 30.0) {
+							if (Time::GetEpochTimeSec() - ct > 30.0f) {
 								GE_CORE_ERROR("Firebase: Failed to initialize reward video");
 								return;
 							}
@@ -148,7 +158,7 @@ namespace GEngine {
 #endif
 	}
 
-	void Firebase_Ads::LoadRewardAd(std::function<void()> f1, std::function<void(int, std::string)> f)
+	void Firebase_Ads::LoadRewardAd(std::function<void()> f1)
 	{
 #ifdef GE_ADS_FIREBASE
 		ThreadPool::AddJob([this, f,f1]() {
@@ -178,9 +188,14 @@ namespace GEngine {
 					
 				}
 			}
+			{
+				std::lock_guard<std::mutex> guard(m_initMutex);
+				if (m_rewardAdLoaded)
+					return;
+			}
 
 			GE_CORE_INFO("Firebase App Reward Video Initialized!");
-			rewarded_video_listener->SetCallback(f);
+			
 			firebase::admob::rewarded_video::SetListener(rewarded_video_listener);
 			
 			const char* devices[] = { "TEST_EMULATOR" };
@@ -213,7 +228,7 @@ namespace GEngine {
 			}
 
 			{
-				std::lock_guard<std::mutex> guard(m_initMutex); 
+				std::lock_guard<std::mutex> guard(m_initMutex);
 				m_rewardAdLoaded = true;
 			}
 			if (f1) {
@@ -224,7 +239,7 @@ namespace GEngine {
 #endif
 	}
 
-	void Firebase_Ads::ShowRewardAd()
+	void Firebase_Ads::ShowRewardAd(std::function<void(int, std::string)> rewardCallback, std::function<void(int)> endCallback)
 	{
 #ifdef GE_ADS_FIREBASE
 		ThreadPool::AddJob([this]() {
@@ -234,11 +249,13 @@ namespace GEngine {
 				return;
 			}
 
-			if (!m_rewardAdInit) {
-				GE_CORE_ERROR("Firebase: Reward Ad not loaded calls LoadRewardAd()");
+			if (!m_rewardAdLoaded) {
+				GE_CORE_ERROR("Firebase: Reward Ad not loaded call LoadRewardAd()");
 				return;
 			}
 
+			rewarded_video_listener->SetRewardCallback(rewardCallback);
+			rewarded_video_listener->SetStateChangeCallback(endCallback);
 			firebase::Future<void> f = firebase::admob::rewarded_video::Show(Mobile_Input_Callback::GetViewContext());
 			
 			if (f.error() != 0) {
@@ -249,6 +266,10 @@ namespace GEngine {
 			long long ct = Time::GetEpochTimeMS();
 			while (Time::GetEpochTimeMS() - ct < 500) {
 				continue;
+			}
+
+			{
+				m_rewardAdLoaded = false;
 			}
 
 			if (firebase::admob::rewarded_video::presentation_state() == 0) {
@@ -273,6 +294,15 @@ namespace GEngine {
 		if (m_app && m_rewardAdInit) {
 			return firebase::admob::rewarded_video::presentation_state() != 0;
 		}
+#endif
+		return false;
+	}
+
+	bool Firebase_Ads::AdLoaded()
+	{
+#if GE_ADS_FIREBASE
+		std::lock_guard<std::mutex> guard(m_initMutex);
+		return m_rewardAdLoaded;
 #endif
 		return false;
 	}

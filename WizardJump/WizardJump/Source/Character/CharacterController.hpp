@@ -27,11 +27,11 @@ protected:
 		GetEntity()->AddComponent(bodyComp);
         jumpSound = CreateGameObject<AudioComponent>("Content/Audio/testJump01.ogg", false, false, true);
         landSound = CreateGameObject<AudioComponent>("Content/Audio/dink.ogg", false, false, true);
-        musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
+        //musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
 
         GetEntity()->AddComponent(landSound);
         GetEntity()->AddComponent(jumpSound);
-        GetEntity()->AddComponent(musicSound);
+        //GetEntity()->AddComponent(musicSound);
 		graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
 		
 	}
@@ -41,6 +41,8 @@ protected:
 	{
 		bodyComp = nullptr;
 		graphicsComp = nullptr;
+        jumpSound = nullptr;
+        landSound = nullptr;
 
 	}
 
@@ -248,6 +250,17 @@ protected:
                                 - Check if we have already been processed
                                 - if we haven't been processed then process
                     */
+
+
+                    if (CollisionDetection::CheckPointUI(touch.x, touch.y)) {
+                        touchId = 0;
+                        bJumping = false;
+                        bWalking = false;
+                        if (ground) {
+                            bodyComp->SetVelocityX(0);
+                        }
+                        continue;
+                    }
 
                     if (!ground) {
                         touchId = 0;

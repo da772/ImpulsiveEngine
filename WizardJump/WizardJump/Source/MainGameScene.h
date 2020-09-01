@@ -27,24 +27,34 @@ public:
 		long long time = GEngine::Time::GetEpochTimeMS();
 #if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
 		ImGuiIO& io = ImGui::GetIO();
-		m_CameraController->SetPosition(e->GetEntityPosition());
 		if (!io.WantCaptureKeyboard && !io.WantCaptureMouse) {
 			m_CameraController->OnUpdate(timestep);
 		}
 #else
 		m_CameraController->OnUpdate(timestep);
 #endif
-
-		
+		glm::vec3 pos;
+		float dist = GEngine::GEMath::distance(m_CameraController->GetPosition(), e->GetEntityPosition());
+		if (dist > .01f) {
+			pos = GEngine::GEMath::lerp(m_CameraController->GetPosition(), e->GetEntityPosition(), 10.f * timestep);
+		}
+		else {
+			pos = e->GetEntityPosition();
+		}
+	
+		m_CameraController->SetPosition(pos);
 
 		if (FPSuiComponent) {
 
-			if (textId != 0) {
+			if (!textId.empty()) {
 				FPSuiComponent->RemoveText(textId);
-				textId = 0;
+				textId = "";
 			}
 
-			textId = FPSuiComponent->CreateText(std::to_string((int)GEngine::Application::GetApp()->profile["FPS"]) + " FPS", font, { -1, .95f - (((float)GEngine::Application::GetWidth() * .2f) / (float)GEngine::Application::GetHeight())/2.f,1 }, { 0,0,1 }, { 1,1,1,1 });
+			textId = FPSuiComponent->CreateText(std::to_string((int)
+				GEngine::Application::GetApp()->profile["FPS"]) + " FPS", font, { -1, .95f - (((float)GEngine::Application::GetWidth() * .2f) /
+					(float)GEngine::Application::GetHeight())/2.f,1 },
+				{ 1,1,1 }, { 1,1,1,1 });
 		}
 
 	}
@@ -83,20 +93,31 @@ public:
 	inline void OnBegin() override
 	{
 
-		/* DEBUG */
-		/*
-		auto a = GEngine::AudioManager::Load_OGG("Content/Audio/countdown2.ogg");
+
+
+#ifdef GE_MOBILE_APP
+		GEngine::AdManager::SetUserId("This Is My User ID!");
+#ifdef GE_PLATFORM_ANDROID
+
+		GEngine::AdManager::SetAdId("ca-app-pub-0400118858384122~7825957542");
+
+		// Google Test Id
+		GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
+
+
+		// Prototype Ad
+		//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
+#endif
+#ifdef GE_PLATFORM_IOS
+		GEngine::AdManager::SetAdId("ca-app-pub-7573801306023183~4210089663");
+		// Google Test Id
+		GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
 		
-		//source->Play();
+		//GEngine::AdManager::SetRewardAdId("ca-app-pub-7573801306023183/6644681314");
 
-		source = GEngine::AudioManager::Load_OGG("Content/Audio/countdown.ogg");
-		source->Play();
-		//a->SetLoop(true);
-		//a->Play();
-
-		*/
-
-		/* DEBUG*/
+#endif
+		GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); });
+#endif
 
 
 		camera = m_CameraController->GetCamera().get();
@@ -109,13 +130,30 @@ public:
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
-        GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(glm::vec3(0,0,0), 0, glm::vec2(.25,.25), glm::vec4(1,1,1,1.f));
-        button->SetOnMouseEndCollide([](float x, float y){
-            GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); GEngine::AdManager::ShowRewardAd(); },
-            [](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
-        });
+		AddEntity(eFPS);
+        GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
+			glm::vec3(.9,.95,0), 0.f, glm::vec2(.2,.1), glm::vec4(1,1,1,1.f));
 		eFPS->AddComponent(FPSuiComponent);
-        eFPS->AddComponent(button);
+		eFPS->AddComponent(button);
+
+		button->SetImageTexture(GEngine::Texture2D::Create("Content/Textures/videoLife_button_7.png"));
+		//FPSuiComponent->CreateText("Ad", font, { .84f, .94f, 1.f }, { .5 ,.5,1 }, { 0,0,0,1 });
+
+        button->SetOnMouseEndCollide([](float x, float y){
+			if (GEngine::AdManager::AdLoaded()) {
+				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
+					[](int state) { if (state == 0) GEngine::AdManager::LoadRewardAd(); });
+			}
+			else {
+				GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); 
+				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
+					[](int state) { if (state == 0) GEngine::AdManager::LoadRewardAd(); });
+				});
+			}
+			
+        });
+	
+		
 		AddEntity(GEngine::CreateGameObject<BackgroundEntity>());
 		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
 		e = GEngine::CreateGameObject<CharacterEntity>();
@@ -169,32 +207,9 @@ public:
 
 	
 		AddEntity(GEngine::CreateGameObject<GroundEntity>());
-		AddEntity(eFPS);
+	
         
-		
-		
-#ifdef GE_MOBILE_APP
-		GEngine::AdManager::SetUserId("This Is My User ID!");
-#ifdef GE_PLATFORM_ANDROID
 
-		GEngine::AdManager::SetAdId("ca-app-pub-0400118858384122~7825957542");
-		// Prototype Ad
-		//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
-
-		// Google Test Id
-		GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
-#endif
-#ifdef GE_PLATFORM_IOS
-		GEngine::AdManager::SetAdId("ca-app-pub-7573801306023183~4210089663");
-        // Google Test Id
-        //GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
-		GEngine::AdManager::SetRewardAdId("ca-app-pub-7573801306023183/6644681314");
-
-#endif
-
-        //GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); /*GEngine::AdManager::ShowRewardAd();*/ },
-		//	[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
-#endif
 
 
 	}
@@ -234,13 +249,13 @@ private:
 	GEngine::Ref<GEngine::Font> font;
 
 	bool bImGui = true;
-	long textId = -1;
+	std::string textId;
 
 
 
 	inline void SetupCamera() {
 		m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
-			(float)GEngine::Application::GetApp()->GetWindow()->GetWidth() / (float)GEngine::Application::GetApp()->GetWindow()->GetHeight()));
+			(float)1080.f / (float)1920.f));
 		m_CameraController->SetOnUpdateFn([this](GEngine::Timestep timeStep, glm::vec3& m_Position, glm::vec3& m_Rotation, glm::vec2& m_LastTouchPos,
 			uint64_t& m_lastTouchId, float& m_LastDistance) {
 

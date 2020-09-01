@@ -64,7 +64,7 @@ namespace GEngine {
 		std::function<void(float, float)> m_onCollide;
 		std::function<void(float, float)> m_endCollide;
 		int m_debug = 1;
-		bool b_debug = true;
+		bool b_debug = false;
 
 	};
 
