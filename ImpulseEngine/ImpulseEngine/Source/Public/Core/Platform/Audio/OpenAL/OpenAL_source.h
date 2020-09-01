@@ -28,6 +28,8 @@ namespace GEngine {
 		virtual void Seek(float time) override;
 		virtual void SetPosition(const glm::vec3& pos) override;
 		virtual void MaxDistance(const float f) override;
+        virtual void Unload() override;
+        virtual void Reload() override;
 
 		OggVorbis_File oggFile;
 

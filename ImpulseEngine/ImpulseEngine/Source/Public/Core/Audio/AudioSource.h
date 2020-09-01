@@ -43,6 +43,9 @@ namespace GEngine {
 		virtual void SetVolume(float f) = 0;
 		virtual void SetPitch(float f) = 0;
 		virtual void Seek(float time) = 0;
+        
+        virtual void Unload() = 0;
+        virtual void Reload() = 0;
 
 		inline virtual float GetVolume() { return m_gain; }
 		inline virtual float GetPitch() { return m_pitch; }

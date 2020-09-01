@@ -23,14 +23,14 @@ namespace GEngine {
 	void AudioContext::Pause()
 	{
 		for (Ref<AudioSource> s : m_sources) {
-			s->Pause();
+                s->Unload();
 		}
 	}
 
 	void AudioContext::Resume()
 	{
 		for (Ref<AudioSource> s : m_sources) {
-			s->Play();
+            s->Reload();
 		}
 	}
 

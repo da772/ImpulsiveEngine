@@ -131,14 +131,11 @@ namespace GEngine {
 					//GE_CORE_DEBUG("COLLIDE: Mouse Pos: ({0}, {1}) - Collider: ({2},{3}), ({4},{5})",
 					//	x, y, c->GetPosition().x, c->GetPosition().y, c->GetScale().x, c->GetScale().y);
 					if (!s_lastCollider || c != lastC) {
-						ThreadPool::AddMainThreadFunction([c,x,y]() {
-							std::lock_guard<std::mutex> guard(s_uiMutex);
 							c->UIMouseCollideStart(x,y);
 							if (s_lastCollider && s_lastUICollision.lock() != c)
 								s_lastUICollision.lock()->UIMouseCollideEnd(x,y);
 							s_lastUICollision = c;
 							s_lastCollider = true;
-						});
 						return c;
 					}
 					return c;
@@ -156,14 +153,12 @@ namespace GEngine {
 
 	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionEndUI(const float x, const float y)
 	{
-		ThreadPool::AddJob([x, y]()
-			{
-				std::lock_guard<std::mutex> guard(s_uiMutex);
-				if (s_lastCollider) {
-					s_lastUICollision.lock()->UIMouseCollideEnd(x,y);
-					s_lastCollider = false;
-				}
-			});
+
+        std::lock_guard<std::mutex> guard(s_uiMutex);
+        if (s_lastCollider) {
+            s_lastUICollision.lock()->UIMouseCollideEnd(x,y);
+            s_lastCollider = false;
+        }
 		return nullptr;
 	}
 

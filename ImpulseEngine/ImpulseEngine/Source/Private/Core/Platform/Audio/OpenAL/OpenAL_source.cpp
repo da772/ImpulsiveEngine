@@ -36,6 +36,16 @@ namespace GEngine {
 		}
 	}
 
+    void OpenAL_source::Unload() {
+        if (b_isPlaying)
+            alSourceStop(m_audioData.source);
+    }
+
+    void OpenAL_source::Reload() {
+        if (b_isPlaying)
+            alSourcePlay(m_audioData.source);
+    }
+
 	void OpenAL_source::SetStatic(bool b)
 	{
 		b_isStatic = b;

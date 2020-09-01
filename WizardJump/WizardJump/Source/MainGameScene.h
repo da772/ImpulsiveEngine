@@ -109,7 +109,13 @@ public:
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
+        GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(glm::vec3(0,0,0), 0, glm::vec2(.25,.25), glm::vec4(1,1,1,1.f));
+        button->SetOnMouseEndCollide([](float x, float y){
+            GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); GEngine::AdManager::ShowRewardAd(); },
+            [](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
+        });
 		eFPS->AddComponent(FPSuiComponent);
+        eFPS->AddComponent(button);
 		AddEntity(GEngine::CreateGameObject<BackgroundEntity>());
 		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
 		e = GEngine::CreateGameObject<CharacterEntity>();
@@ -166,7 +172,7 @@ public:
 		AddEntity(eFPS);
         
 		
-		/*
+		
 #ifdef GE_MOBILE_APP
 		GEngine::AdManager::SetUserId("This Is My User ID!");
 #ifdef GE_PLATFORM_ANDROID
@@ -179,17 +185,17 @@ public:
 		GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
 #endif
 #ifdef GE_PLATFORM_IOS
-		GEngine::AdManager::SetAdId("ca-app-pub-4619437690188394~6799169535");
+		GEngine::AdManager::SetAdId("ca-app-pub-7573801306023183~4210089663");
         // Google Test Id
-        GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
-		//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/5486087868");
+        //GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
+		GEngine::AdManager::SetRewardAdId("ca-app-pub-7573801306023183/6644681314");
 
 #endif
 
-		GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); GEngine::AdManager::ShowRewardAd(); },
-			[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
+        //GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); /*GEngine::AdManager::ShowRewardAd();*/ },
+		//	[](int i, std::string s) { GE_CORE_DEBUG("AD WATCHED {0} : {1}", i, s); });
 #endif
-*/
+
 
 	}
 
