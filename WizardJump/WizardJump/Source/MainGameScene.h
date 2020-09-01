@@ -114,12 +114,12 @@ public:
         button->SetOnMouseEndCollide([](float x, float y){
 			if (GEngine::AdManager::AdLoaded()) {
 				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
-					[](int state) { GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
+					[](int state) { GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
 			}
 			else {
 				GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); 
 				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
-					[](int state) {  GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
+					[](int state) {  GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
 				});
 			}
 			
