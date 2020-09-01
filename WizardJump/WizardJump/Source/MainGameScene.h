@@ -153,6 +153,7 @@ public:
 
 		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(6, 10), glm::vec2(5, 20), 0.f);
 		AddEntity(wall);
+        AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		
 		/**
 		 *  Platforms
@@ -178,7 +179,7 @@ public:
 		*/
 
 	
-		AddEntity(GEngine::CreateGameObject<GroundEntity>());
+		
 	
         
 

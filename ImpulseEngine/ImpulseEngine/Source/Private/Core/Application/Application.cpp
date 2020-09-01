@@ -111,7 +111,7 @@ namespace GEngine {
     }
 
     void Application::ReloadGraphics() {
-        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running) return;
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || Application::GetApp()->m_loaded) return;
         if (!AdManager::AdPlaying() && !Application::GetApp()->m_loaded) Application::GetApp()->Resume();
         RenderCommand::Init();
         Texture2D::ReloadTextures();
