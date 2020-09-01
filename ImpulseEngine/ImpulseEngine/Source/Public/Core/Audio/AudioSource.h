@@ -22,6 +22,7 @@ namespace GEngine {
 		int_fast32_t fileSection = 0;
 		uint32_t duration;
 		bool fromPak = true;
+		uint32_t bufferNum = AUDIO_BUFFERS_NUM;
 		bool relative = true;
 
 	};
@@ -42,6 +43,9 @@ namespace GEngine {
 		virtual void SetVolume(float f) = 0;
 		virtual void SetPitch(float f) = 0;
 		virtual void Seek(float time) = 0;
+        
+        virtual void Unload() = 0;
+        virtual void Reload() = 0;
 
 		inline virtual float GetVolume() { return m_gain; }
 		inline virtual float GetPitch() { return m_pitch; }
@@ -53,7 +57,7 @@ namespace GEngine {
 
 		void SetSelf(Weak<AudioSource> s) { self = s; }
 
-		inline bool IsPlaying() { return b_isPlaying; }
+		bool IsPlaying();
 
 		inline virtual void __stopPlay() { b_isPlaying = false; };
 

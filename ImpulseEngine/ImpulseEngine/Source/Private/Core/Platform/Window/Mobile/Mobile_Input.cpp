@@ -87,7 +87,7 @@ namespace GEngine {
 
 		if (e.GetEventType() == EventType::TouchReleased) {
 			const TouchReleasedEvent& event = (TouchReleasedEvent&)e;
-			if (GetTouchCount() <= 0) {
+			if (GetTouchCount() <= 1) {
 				CollisionDetection::InteractionEndUI(
 					GEMath::MapRange(event.GetX() / (float)width, 0, 1, -1, 1),
 					-GEMath::MapRange(event.GetY() / (float)height, 0, 1, -1, 1));

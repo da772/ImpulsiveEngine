@@ -132,7 +132,7 @@ namespace GEngine {
 
 
 
-	 long BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, float textureScale, float alphaChannel /*= 4*/)
+	 long BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 Setup();
 
@@ -149,7 +149,7 @@ namespace GEngine {
 		 return AddShape(data);
 	 }
 
-	 long BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, float textureScale, float alphaChannel /*= 4*/)
+	 long BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 if (m_renderType == ERenderType::UI) {
 			 position.y = GEMath::MapRange(position.y, -1.f, 1.f, Application::GetSafeBottomUI() - 1.f, 1.f - Application::GetSafeTopUI());
@@ -184,7 +184,7 @@ namespace GEngine {
 		 return id;
 	 }
 
-	 void BatchRenderer::EditShape(long id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, float textureScale, float alphaChannel /*= 4*/)
+	 void BatchRenderer::EditShape(long id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
 			 return e.first == id;
@@ -214,7 +214,8 @@ namespace GEngine {
 		 }
 	 }
 
-	 void BatchRenderer::EditShape(long id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, float textureScale, float alphaChannel /*= 4*/)
+	 void BatchRenderer::EditShape(long id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, 
+		 const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
 			 return e.first == id;

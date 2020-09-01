@@ -99,6 +99,8 @@ namespace GEngine {
 		{
 			return;
 		}
+		if (buffersProcessed > audioData.bufferNum)
+			buffersProcessed = audioData.bufferNum;
 		while (buffersProcessed--)
 		{
 			ALuint buffer;
@@ -158,9 +160,10 @@ namespace GEngine {
 
 			if (dataSizeToBuffer > 0)
 			{
-				alCall(alBufferData, buffer, audioData.format, data, dataSizeToBuffer, audioData.sampleRate);
-				alCall(alSourceQueueBuffers, audioData.source, 1, &buffer);
+				
 			}
+			alCall(alBufferData, buffer, audioData.format, data, dataSizeToBuffer, audioData.sampleRate);
+			alCall(alSourceQueueBuffers, audioData.source, 1, &buffer);
 
 			
 
@@ -175,11 +178,10 @@ namespace GEngine {
 				//alCall(alSourcePlay, audioData.source);
 			}
 			else {
-				GE_CORE_DEBUG("AUDIO STOPPED");
-				ov_raw_seek(oggFile, 0);
-				ResetBuffers(dynamic_pointer_cast<OpenAL_source>(audioSource));
+				GE_CORE_DEBUG("AUDIO STOPPED - {0}", audioData.fileName);
 				audioSource->Pause();
-				
+				ResetBuffers(audioSource);
+				if (audioSource->IsLooping()) audioSource->Play();
 			}
 
 			delete[] data;
@@ -192,7 +194,6 @@ namespace GEngine {
 			if (s->IsPlaying()) {
 				UpdateStream(s);
 			}
-			
 		}
 	}
 
@@ -242,9 +243,15 @@ namespace GEngine {
 	{
 		OggVorbis_File& oggFile = dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
 		AudioStreamingData* audioData = &audioSource->GetData();
-		char* data = new char[AUDIO_BUFFER_SIZE];
 
-		for (std::uint8_t i = 0; i < AUDIO_BUFFERS_NUM; ++i)
+		ALint buffersProcessed = 0;
+
+		alCall(alGetSourcei, audioData->source, AL_BUFFERS_PROCESSED, &buffersProcessed);
+		
+		char* data = new char[AUDIO_BUFFER_SIZE];
+		memset(data, 0, AUDIO_BUFFER_SIZE);
+		ov_raw_seek(&oggFile, 0);
+		for (std::uint8_t i = 0; i < audioData->bufferNum; i++)
 		{
 			std::int32_t dataSoFar = 0;
 			while (dataSoFar < AUDIO_BUFFER_SIZE)
@@ -274,25 +281,14 @@ namespace GEngine {
 				dataSoFar += result;
 			}
 
-			if (audioData->channels == 1 && audioData->bitsPerSample == 8)
-				audioData->format = AL_FORMAT_MONO8;
-			else if (audioData->channels == 1 && audioData->bitsPerSample == 16)
-				audioData->format = AL_FORMAT_MONO16;
-			else if (audioData->channels == 2 && audioData->bitsPerSample == 8)
-				audioData->format = AL_FORMAT_STEREO8;
-			else if (audioData->channels == 2 && audioData->bitsPerSample == 16)
-				audioData->format = AL_FORMAT_STEREO16;
-			else
-			{
-				GE_CORE_ERROR("OpenAL: Unrecongnized ogg fomrat: {0} channels, {1} bps", audioData->channels, audioData->bitsPerSample);
-				delete[] data;
-				return;
+			ALuint buffer;
+			alCall(alSourceUnqueueBuffers, audioData->source, 1, &buffer);
+			if (dataSoFar > 0) {
+				alCall(alBufferData, buffer, audioData->format, data, dataSoFar, audioData->sampleRate);
 			}
-
-			alCall(alBufferData, audioData->buffers[i], audioData->format, data, dataSoFar, audioData->sampleRate);
 		}
 
-		alCall(alSourceQueueBuffers, audioData->source, AUDIO_BUFFERS_NUM, &audioData->buffers[0]);
+		alCall(alSourceQueueBuffers, audioData->source, audioData->bufferNum, &audioData->buffers[0]);
 		delete[] data;
 	}
 
@@ -336,8 +332,12 @@ namespace GEngine {
 		alCall(alSource3f, audioData->source, AL_VELOCITY, 0, 0, 0);
 		alCall(alSourcei, audioData->source, AL_LOOPING, AL_FALSE);
 
-		alCall(alGenBuffers, AUDIO_BUFFERS_NUM, &audioData->buffers[0]);
 		
+
+		alCall(alGenBuffers, AUDIO_BUFFERS_NUM, &audioData->buffers[0]);
+
+		int bufferNum = AUDIO_BUFFERS_NUM;
+
 		char* data = new char[AUDIO_BUFFER_SIZE];
 
 		for (std::uint8_t i = 0; i < AUDIO_BUFFERS_NUM; ++i)
@@ -364,6 +364,8 @@ namespace GEngine {
 				else if (result == 0)
 				{
 					GE_CORE_ERROR("ERROR: EOF found in initial read of buffer {0}", i);
+					if (bufferNum == AUDIO_BUFFERS_NUM)
+						bufferNum = i + 1;
 					break;
 				}
 
@@ -388,9 +390,9 @@ namespace GEngine {
 			alCall(alBufferData, audioData->buffers[i], audioData->format, data, dataSoFar, audioData->sampleRate);
 		}
 
-		alCall(alSourceQueueBuffers, audioData->source, AUDIO_BUFFERS_NUM, &audioData->buffers[0]);
+		audioData->bufferNum = bufferNum;
+		alCall(alSourceQueueBuffers, audioData->source, audioData->bufferNum, &audioData->buffers[0]);
 		
-
 		delete[] data;
 		
 		s->SetSelf(s);

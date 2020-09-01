@@ -70,4 +70,11 @@ namespace GEngine {
 		return s;
 	}
 
+	void Utility::GenerateHash(char* str, const int len)
+	{
+		for (int i = 0; i < len; ++i) {
+			str[i] = alphanum[std::rand() % (sizeof(alphanum) - 1)];
+		}
+	}
+
 }

@@ -12,6 +12,7 @@
 #include "Public/Core/Application/Entity.h"
 
 #include "Public/Core/Scripting/ScriptObject.h"
+#include "Public/Core/Util/Utility.h"
 
 namespace GEngine {
 
@@ -46,7 +47,7 @@ namespace GEngine {
 		
 	}
 
-	const long UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, const float textureScale /*= 1*/, const float alphaChannel)
+	const long UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, const glm::vec2& textureScale /*= 1*/, const float alphaChannel)
 	{
 		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
@@ -58,19 +59,15 @@ namespace GEngine {
 		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture);
 	}
 
-	const long UIComponent::CreateSubTexturedQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<SubTexture2D> texture, const float textureScale)
-	{
-		return CreateSubTexturedQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, textureScale);
-	}
 
-	const long UIComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const float textureScale /*= 1.f*/, const float alphaChannel)
+	const long UIComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const glm::vec2& textureScale /*= 1.f*/, const float alphaChannel)
 	{
 		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
 
-	const long UIComponent::CreateText(const std::string& string, Ref<Font> font, const Vector3& pos, const Vector3& scale, const Vector4& color)
+	const std::string UIComponent::CreateText(const std::string& string, Ref<Font> font, const Vector3& pos, const Vector3& scale, const Vector4& color)
 	{
 
 		/* Should use Framebuffer size of pipeline */
@@ -78,31 +75,31 @@ namespace GEngine {
         width  = GEngine::Application::GetApp()->GetWindow()->GetWidth();
         height = GEngine::Application::GetApp()->GetWindow()->GetHeight();
 
-
+		std::string hash;
+		hash = Utility::GenerateHash(16);
+		while (m_text.find(hash) != m_text.end()) {
+			hash = Utility::GenerateHash(16);
+		}
+		
 		std::vector<CharacterData> data = font->DrawString(string, 2, width, height);
 		std::vector<long> ids;
 		for (CharacterData& d : data) {
-			long id = CreateSubTexturedQuad(GetEntityPosition()+glm::vec3( d.position.x + pos.x, d.position.y + pos.y, pos.z), 0, { d.scale.x , d.scale.y , 1 }, color, d.texture, 1, 1);
+			long id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x*scale.x + pos.x, d.position.y*scale.y + pos.y, pos.z), 0, { d.scale.x*scale.x , d.scale.y*scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
 
-		long id = -(++m_textCounter);
-		m_text[id] = ids;
-		return id;
+		m_text[hash] = ids;
+		return hash;
 	}
 
-	const long UIComponent::CreateTextScript(const std::string& string, Ref<Font> font, Ref<ScriptVector3> pos, Ref<ScriptVector3> scale, Ref<ScriptVector4> color)
-	{
-		return CreateText(string, font, pos->GetGlm(), scale->GetGlm(), color->GetGlm());
-	}
-
-	void UIComponent::RemoveText(long id)
+	void UIComponent::RemoveText(const std::string& id)
 	{
 		std::vector<long> ids = m_text[id];
 		for (long l : ids) {
 			s_ShapeFactory->RemoveShape(l);
 			m_ids.erase(std::find(m_ids.begin(), m_ids.end(), l));
 		}
+		
 		m_text.erase(id);
 	}
 
@@ -137,12 +134,6 @@ namespace GEngine {
 		if (id >= 0) {
 			s_ShapeFactory->SetZOrder(id, zOrder + entity.lock()->GetEntityPosition().z);
 		}
-		else {
-			std::vector<long> ids = m_text[id];
-			for (long l : ids) {
-				s_ShapeFactory->SetZOrder(l , zOrder + entity.lock()->GetEntityPosition().z);
-			}
-		}
 	}
 
 	void UIComponent::SetColor(const long id, const glm::vec4& color)
@@ -156,9 +147,11 @@ namespace GEngine {
 			s_ShapeFactory->RemoveShape(id);
 			m_ids.erase(std::find(m_ids.begin(), m_ids.end(), id));
 		}
-		else {
-			RemoveText(id);
-		}
+	}
+
+	void UIComponent::Remove(const std::string& hash)
+	{
+		RemoveText(hash);
 	}
 
 	void UIComponent::ClearQuads()
@@ -166,7 +159,7 @@ namespace GEngine {
 		for (long id : m_ids) {
 			s_ShapeFactory->RemoveShape(id);
 		}
-		for (std::pair<long, std::vector<long>> p : m_text) {
+		for (std::pair<std::string, std::vector<long>> p : m_text) {
 			for (long id : p.second) {
 				s_ShapeFactory->RemoveShape(id);
 			}

@@ -274,7 +274,6 @@ namespace GEngine {
 	{
         AudioManager::Initalize();
         Physics::Initalize();
-        AdManager::Initialize();
         SceneManager::Begin();
 	}
 
