@@ -53,7 +53,7 @@ protected:
 	bool bWalking = false;
 	const float walkAnimThreshold = .03f;
 	const float maxWalkSpeed = 2.5f;
-    const int walkDelay = 100;
+    const int walkDelay = 125;
 	const float walkAcceleration = 5.f;
     const float jumpThreshold = .005f;
 
