@@ -19,10 +19,12 @@ public:
     Ref<AudioComponent> jumpSound;
     Ref<AudioComponent> landSound;
     Ref<AudioComponent> musicSound;
+    long long startTime;
 
 protected:
 	void OnBegin() override
 	{
+        startTime = Time::GetEpochTimeNS();
 		bodyComp = CreateGameObject<CharacterBody>();
 		GetEntity()->AddComponent(bodyComp);
         jumpSound = CreateGameObject<AudioComponent>("Content/Audio/testJump01.ogg", false, false, true);
@@ -252,7 +254,7 @@ protected:
                     */
 
 
-                    if (CollisionDetection::CheckPointUI(touch.x, touch.y)) {
+                    if (CollisionDetection::CheckPointUI(touch.x, touch.y) || startTime > touch.time) {
                         touchId = 0;
                         bJumping = false;
                         bWalking = false;

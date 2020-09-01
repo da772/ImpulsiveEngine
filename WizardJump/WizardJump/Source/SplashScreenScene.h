@@ -49,6 +49,8 @@ public:
 
 	inline void OnBegin() override
 	{
+
+
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		logoEntity = GEngine::CreateGameObject<GEngine::Entity>();

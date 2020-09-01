@@ -45,9 +45,7 @@ public:
 		else if (state == 0) {
 			App_Start();
 			if (m_stateCallback) {
-				ThreadPool::AddMainThreadFunction([this]() {
-					m_stateCallback((int)state);
-				});
+				m_stateCallback((int)state);
 			}
 				
 		}
@@ -161,7 +159,7 @@ namespace GEngine {
 	void Firebase_Ads::LoadRewardAd(std::function<void()> f1)
 	{
 #ifdef GE_ADS_FIREBASE
-		ThreadPool::AddJob([this, f,f1]() {
+		ThreadPool::AddJob([this, f1]() {
 			double ct = Time::GetEpochTimeSec();
 			
 			bool bInit = false;
@@ -242,7 +240,7 @@ namespace GEngine {
 	void Firebase_Ads::ShowRewardAd(std::function<void(int, std::string)> rewardCallback, std::function<void(int)> endCallback)
 	{
 #ifdef GE_ADS_FIREBASE
-		ThreadPool::AddJob([this]() {
+		ThreadPool::AddJob([this, rewardCallback, endCallback]() {
 			std::lock_guard<std::mutex> guard(m_initMutex);
 			if (!m_rewardAdInit) {
 				GE_CORE_ERROR("Firebase: Reward Ad module not initalized");
@@ -300,7 +298,7 @@ namespace GEngine {
 
 	bool Firebase_Ads::AdLoaded()
 	{
-#if GE_ADS_FIREBASE
+#ifdef GE_ADS_FIREBASE
 		std::lock_guard<std::mutex> guard(m_initMutex);
 		return m_rewardAdLoaded;
 #endif

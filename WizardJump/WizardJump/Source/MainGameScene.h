@@ -92,34 +92,6 @@ public:
 
 	inline void OnBegin() override
 	{
-
-
-
-#ifdef GE_MOBILE_APP
-		GEngine::AdManager::SetUserId("This Is My User ID!");
-#ifdef GE_PLATFORM_ANDROID
-
-		GEngine::AdManager::SetAdId("ca-app-pub-0400118858384122~7825957542");
-
-		// Google Test Id
-		GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
-
-
-		// Prototype Ad
-		//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
-#endif
-#ifdef GE_PLATFORM_IOS
-		GEngine::AdManager::SetAdId("ca-app-pub-7573801306023183~4210089663");
-		// Google Test Id
-		GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
-		
-		//GEngine::AdManager::SetRewardAdId("ca-app-pub-7573801306023183/6644681314");
-
-#endif
-		GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); });
-#endif
-
-
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
@@ -142,12 +114,12 @@ public:
         button->SetOnMouseEndCollide([](float x, float y){
 			if (GEngine::AdManager::AdLoaded()) {
 				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
-					[](int state) { if (state == 0) GEngine::AdManager::LoadRewardAd(); });
+					[](int state) { GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
 			}
 			else {
 				GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); 
 				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
-					[](int state) { if (state == 0) GEngine::AdManager::LoadRewardAd(); });
+					[](int state) {  GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
 				});
 			}
 			

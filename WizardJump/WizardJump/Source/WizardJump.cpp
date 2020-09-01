@@ -78,6 +78,32 @@ WizardJump::WizardJump()
 	
 	GetWindow()->SetVSync(false);
 
+#ifdef GE_MOBILE_APP
+	GEngine::AdManager::Initialize();
+	GEngine::AdManager::SetUserId("This Is My User ID!");
+#ifdef GE_PLATFORM_ANDROID
+
+	GEngine::AdManager::SetAdId("ca-app-pub-0400118858384122~7825957542");
+
+	// Google Test Id
+	GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
+
+
+	// Prototype Ad
+	//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
+#endif
+#ifdef GE_PLATFORM_IOS
+	GEngine::AdManager::SetAdId("ca-app-pub-7573801306023183~4210089663");
+	// Google Test Id
+	GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
+
+	//GEngine::AdManager::SetRewardAdId("ca-app-pub-7573801306023183/6644681314");
+
+#endif
+	GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); });
+#endif
+
+
 	m_ExampleLayer = new ExampleLayer();
 	m_DebugLayer = new DebugLayer();
 	PushLayer(m_DebugLayer);
