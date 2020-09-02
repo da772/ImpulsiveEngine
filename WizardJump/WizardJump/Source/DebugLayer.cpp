@@ -10,10 +10,10 @@ DebugLayer::DebugLayer() : Layer("DebugLayer")
 void DebugLayer::OnImGuiRender()
 {
 	//ImGui::PushFont(font2);
-	if (showLog)
-		ShowDock(&showLog);
-	if (showLog)
-		GEngine::Log::GetImGuiLog()->Draw("Console Log", &showLog);
+	if (DebugLayer::showLog)
+		ShowDock(&DebugLayer::showLog);
+	if (DebugLayer::showLog)
+		GEngine::Log::GetImGuiLog()->Draw("Console Log", &DebugLayer::showLog);
 
 	//ImGui::PopFont();
 }
@@ -23,7 +23,7 @@ void DebugLayer::OnEvent(GEngine::Event& event)
 	if (event.GetEventType() == GEngine::EventType::KeyPressed) {
 		GEngine::KeyPressedEvent& e = (GEngine::KeyPressedEvent&)event;
 		if (e.GetKeyCode() == GE_KEY_TILDE) {
-			showLog = !showLog;
+			DebugLayer::showLog = !DebugLayer::showLog;
 		}
 		if (e.GetKeyCode() == GE_KEY_R) {
 			if (GEngine::Input::IsKeyPressed(GE_KEY_LEFT_CONTROL)) {
@@ -98,8 +98,8 @@ void DebugLayer::ShowDock(bool p_open)
 				GEngine::SceneManager::SetCurrentScene("splashScreen");
 			}
 			
-			if (ImGui::MenuItem("Hide Console", "", showLog == 0))
-				showLog = !showLog;
+			if (ImGui::MenuItem("Hide Console", "", DebugLayer::showLog == 0))
+				DebugLayer::showLog = !DebugLayer::showLog;
 			ImGui::EndMenu();
 		}
 

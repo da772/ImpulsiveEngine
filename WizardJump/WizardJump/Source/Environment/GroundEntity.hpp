@@ -19,8 +19,8 @@ protected:
 	void OnEnd() override;
 
 
-	glm::vec2 scale;
-	glm::vec2 pos;
+	glm::vec2 scale = glm::vec2(40,20);
+	glm::vec2 pos = glm::vec2(0, -10);
 	float rot;
 
 	void OnUpdate(Timestep timestep) override;

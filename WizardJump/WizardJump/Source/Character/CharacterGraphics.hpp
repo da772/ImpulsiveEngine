@@ -196,13 +196,39 @@ public:
 		});
 	}
 
+	void SetDirectionIndicator(float dir) {
+		if (directionIndicatorColor.w > 0) {
+			indicatorDirection = dir;
+			SetRotation(directionIndicator, dir);
+		}
+	}
+
+	void ShowDirectionIndicator(bool b) {
+		if (b && directionIndicatorColor.w <= 0.f) {
+			directionIndicatorColor.w = 1.f;
+			SetQuadColor(directionIndicator, directionIndicatorColor);
+		}
+		if (!b && directionIndicator != -1 ) {
+			directionIndicatorColor.w = 0.f;
+			SetQuadColor(directionIndicator, directionIndicatorColor);
+		}
+	}
+
 protected:
+
+	long directionIndicator = -1;
+	float indicatorDirection = 0;
+	glm::vec3 directionIndicatorPos = glm::vec3(0, .45f, 1.f);
+	glm::vec3 directionIndicatorScale = glm::vec3(.75f, .75f, 1.f);
+	glm::vec4 directionIndicatorColor = glm::vec4(1, 1, 1, 0.f);
+	
 	void OnBegin() override
 	{
 		SpriteComponent::OnBegin();
 		m_characterSpriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/wizard.png"),
 			{ 0,1 }, { 74,74 }, { 1,1 });
 		quad = CreateSubTexturedQuad({ 0,0,0 }, 0.f, { 2,2,1 }, { 1,1,1,1 }, m_characterSpriteSheet);
+		directionIndicator = CreateQuad(directionIndicatorPos, 0.f, directionIndicatorScale, directionIndicatorColor, Texture2D::Create("Content/Textures/halfCircle.png"));
 		m_animationComp = CreateGameObject<SpriteAnimationComponent>();
 		GetEntity()->AddComponent(m_animationComp);
 		Idle();

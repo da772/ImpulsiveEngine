@@ -11,7 +11,7 @@ public:
 	inline PlatformEntity(const glm::vec2 pos, const glm::vec2 scale = glm::vec2(1,1), const float rot = 0) : pos(pos), scale(scale), rot(rot) {};
 	~PlatformEntity() {};
 
-	bool debug = true;
+	bool debug = false;
 
 protected:
 	void OnBegin() override;
@@ -27,6 +27,7 @@ protected:
 	float rot;
 
 	Ref<SpriteComponent> m_debugSprite;
+	Ref<SpriteComponent> m_sprite;
 	Ref<QuadColliderComponent> m_colliderWall;
 	Ref<QuadColliderComponent> m_colliderFloor;
 

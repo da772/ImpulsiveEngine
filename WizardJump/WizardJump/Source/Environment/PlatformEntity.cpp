@@ -16,9 +16,14 @@ void PlatformEntity::OnBegin()
 
 		// Test Texture
 
-		m_debugSprite->CreateSubTexturedQuad({ 0, 0,0 }, rot, { 1,1,1 }, { 1,1,1,1.f },
-			SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/desert_B.png"), { 3,5 }, { 16,16 }, { 2,1 }));
+		
 	}
+
+	m_sprite = CreateGameObject<SpriteComponent>();
+	AddComponent(m_sprite);
+	m_sprite->CreateSubTexturedQuad({ 0, 0,0 }, rot, { 1,1,1 }, { 1,1,1,1.f },
+		SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/bluishBricks.png", TEXTUREFLAGS_Wrap_Repeat), { 0,0 }, { 64,64 }, { 1,1 }), { scale.x / 4.f, scale.y / 4.f });
+
 
 	m_colliderWall = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(0, scale.y * -.025f), glm::vec2(1, .95f), rot, 0.f);
 	m_colliderWall->SetTag("wall");
@@ -33,7 +38,10 @@ void PlatformEntity::OnBegin()
 
 void PlatformEntity::OnEnd()
 {
-
+	m_debugSprite = nullptr;
+	m_colliderFloor = nullptr;
+	m_colliderWall = nullptr;
+	m_sprite = nullptr;
 }
 
 void PlatformEntity::OnUpdate(Timestep timestep)

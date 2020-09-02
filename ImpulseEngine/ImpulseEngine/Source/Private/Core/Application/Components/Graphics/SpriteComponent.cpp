@@ -128,7 +128,12 @@ namespace GEngine {
 		SetQuadColor(id, color->GetGlm());
 	}
 
-	long SpriteComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, 
+	void SpriteComponent::SetRotation(const long id, const float rotation)
+	{
+		s_ShapeFactory->SetRotation(id, rotation);
+	}
+
+	long SpriteComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/,
 		const Vector4& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const glm::vec2& textureScale/*= 1*/)
 	{
 		Ref<Entity> e = entity.lock();

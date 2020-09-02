@@ -95,7 +95,7 @@ public:
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
-		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(7.5f);
+		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
 		m_CameraController->SetPosition({ 0,6.5,0 });
 		m_CameraController->SetRotation({ 0,0,0 });
 
@@ -104,7 +104,7 @@ public:
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
 		AddEntity(eFPS);
         GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			glm::vec3(.9,.95,0), 0.f, glm::vec2(.2,.1), glm::vec4(1,1,1,1.f));
+			glm::vec3(.85,.90,0), 0.f, glm::vec2(.2,.1), glm::vec4(1,1,1,1.f));
 		eFPS->AddComponent(FPSuiComponent);
 		eFPS->AddComponent(button);
 
@@ -148,10 +148,10 @@ public:
 
 
 
-		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -6,10), glm::vec2(5,20 ), 0.f);
+		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -10,10), glm::vec2(5,20 ), 0.f);
 		AddEntity(wall);
 
-		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(6, 10), glm::vec2(5, 20), 0.f);
+		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(10, 10), glm::vec2(5, 20), 0.f);
 		AddEntity(wall);
         AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		
@@ -160,10 +160,9 @@ public:
 		 */
 
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(2.f, 1.f)) );
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 2.2f), glm::vec2(2.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 4.9f), glm::vec2(2.f, .5f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 7.1f), glm::vec2(2.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.5f, 9.3f), glm::vec2(4.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 4.9f), glm::vec2(2.f, .5f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 7.75f), glm::vec2(1.25f, .5f)));
+	
 		
 		/*
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(8.f, 4.f), glm::vec2(2.f, 1.f)));
@@ -196,7 +195,26 @@ public:
 
 	inline void OnImGuiRender() override {
 
-		
+#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
+
+		if (!DebugLayer::showLog) return;
+		ImGui::Begin("Debug Info", &DebugLayer::showLog);
+		ImGui::Separator();
+		ImGui::Text("Camera");
+		ImGui::Separator();
+		ImGui::Text("Camera Position: (%f, %f, %f)", m_CameraController->GetPosition().x, m_CameraController->GetPosition().y, m_CameraController->GetPosition().z);
+		ImGui::Text("Camera Rotation: (%f, %f, %f)", m_CameraController->GetRotation().x, m_CameraController->GetRotation().y, m_CameraController->GetRotation().z);
+		ImGui::Text("Camera Zoom: %f", m_CameraController->GetFOV());
+		ImGui::Separator();
+		ImGui::Text("Character: ");
+		ImGui::Separator();
+		ImGui::Text("Player Position:  (%f, %f, %f)", e->GetEntityPosition().x, e->GetEntityPosition().y, e->GetEntityPosition().z);
+		ImGui::Separator();
+
+		ImGui::End();
+
+
+#endif
 
 
 	}
@@ -228,7 +246,7 @@ private:
 
 	inline void SetupCamera() {
 		m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
-			(float)1080.f / (float)1920.f));
+			(float)Application::GetWidth()/ (float)Application::GetHeight()));
 		m_CameraController->SetOnUpdateFn([this](GEngine::Timestep timeStep, glm::vec3& m_Position, glm::vec3& m_Rotation, glm::vec2& m_LastTouchPos,
 			uint64_t& m_lastTouchId, float& m_LastDistance) {
 

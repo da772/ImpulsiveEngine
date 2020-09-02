@@ -56,6 +56,10 @@ protected:
     const int walkDelay = 125;
 	const float walkAcceleration = 5.f;
     const float jumpThreshold = .005f;
+    const float jumpYMultipler = 40.f;
+    const float jumpXMultipler = 20.f;
+    const float jumpYDragClamp = .2f;
+    const float jumpXDragClamp = .2f;
 
     /*
         PC Touch Emulation
@@ -198,6 +202,8 @@ protected:
 
         }
 
+        graphicsComp->ShowDirectionIndicator(bJumping);
+
 		if (!ground) {
 			if (bFalling) {
 				float nDir = vel.x > .01f ? 1 : vel.x < -.01f ?  -1 : graphicsComp->dir;
@@ -210,6 +216,7 @@ protected:
 			bFalling = true;
 			graphicsComp->Falling();
 		}
+
 
 		if (!bJumping) {
 			if (vel.x > walkAnimThreshold || vel.x < -walkAnimThreshold) {
@@ -296,7 +303,8 @@ protected:
                                 graphicsComp->JumpStart([this, xDistance, yDistance]() {
                                     bJumping = false;
                                     jumpSound->SetPlaying(true);
-                                    bodyComp->AddVelocity({ 10 * (abs(xDistance) > .2f ? (xDistance >= 0 ? 1.f : -1.f) *.2f : xDistance), 40.f * (yDistance > .2f ? .2f : yDistance) });
+                                    glm::vec2 _vel = { jumpXMultipler * (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), jumpYMultipler * (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
+                                    bodyComp->AddVelocity(_vel);
                                 });
                             }
                         }
@@ -352,7 +360,14 @@ protected:
                             }
                             else if (bJumping) {
                                 int nDir = (touch.x >= (float)Application::GetWidth() / 2.f) ? -1 : 1;
+								float yDistance = (touch.y - startyPos + Application::GetHeight() * jumpThreshold) / Application::GetHeight();
+								float xDistance = 2.f * -(lastxpos - (float)Application::GetWidth() / 2.f) / (float)Application::GetWidth();
+                                glm::vec2 _vel = { jumpXMultipler * (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), jumpYMultipler * (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
+                                float _deg = glm::degrees(atan2( jumpXMultipler * jumpXDragClamp, jumpYMultipler * jumpYDragClamp));
+                                GE_LOG_DEBUG("{0},{1} : {2}", _vel.x, _vel.y, _deg);
+                                graphicsComp->SetDirectionIndicator(-GEMath::MapRange(_vel.x, -2, 2, -_deg, _deg));
                                 if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
+                                   
                                     graphicsComp->dir = nDir;
                                     graphicsComp->animState = MovementAnim::None;
                                     graphicsComp->Crouch();
