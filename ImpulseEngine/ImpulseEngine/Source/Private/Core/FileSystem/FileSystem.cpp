@@ -63,13 +63,17 @@ namespace GEngine {
 		std::ofstream _out(out, std::ios::out | std::ios::binary | std::ios::trunc);
 		uint32_t _size = map.size();
 		_out.write((char*)&_size, sizeof(uint32_t));
+		char* _str = new char[GE_FILESYSTEM_CHAR_LENGTH];
 		for (auto key : map) {
+			memset(_str, 0, GE_FILESYSTEM_CHAR_LENGTH);
+			memcpy(_str, &key.first[0], key.first.size());
 			uint64_t s = key.second->GetDataSize();
-			_out.write((char*)key.first.c_str(), sizeof(char) * GE_FILESYSTEM_CHAR_LENGTH);
+			_out.write((char*)_str, sizeof(char) * GE_FILESYSTEM_CHAR_LENGTH);
 			_out.write((char*)&s, sizeof(uint64_t));
 			_out.write((char*)key.second->GetData(), key.second->GetDataSize());
 		}
 		_out.close();
+		delete[] _str;
 #endif
 	}
 

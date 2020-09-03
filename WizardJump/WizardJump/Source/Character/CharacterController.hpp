@@ -56,10 +56,12 @@ protected:
     const int walkDelay = 125;
 	const float walkAcceleration = 5.f;
     const float jumpThreshold = .005f;
-    const float jumpYMultipler = 40.f;
-    const float jumpXMultipler = 20.f;
-    const float jumpYDragClamp = .2f;
-    const float jumpXDragClamp = .2f;
+    const float jumpYMultipler = 33.f;
+    const float jumpXMultipler = 7.5f;
+    const float jumpYDragClamp = .3f;
+    const float jumpXDragClamp = .25f;
+    const float maxJumpXVel = 5.f;
+    const float maxJumpYVel = 5.f;
 
     /*
         PC Touch Emulation
@@ -67,6 +69,12 @@ protected:
     uint64_t pcTouchTime = 0;
     int pcX = 0, pcY = 0, pcState = -1;
 
+
+    void SetJumping(bool bJump) {
+        bJumping = bJump;
+        graphicsComp->ShowDirectionIndicator(bJumping);
+        graphicsComp->ShowPowerBar(bJumping);
+    }
 
 	void OnUpdate(Timestep timestep) override
 	{
@@ -119,21 +127,6 @@ protected:
             m[pcTouchTime] = FTouchInfo(pcTouchTime, pcState, pcX, pcY, .5f, pcTouchTime);
         }
 
-		if (bodyComp->isGrounded() && !Input::IsKeyPressed(GE_KEY_SPACE) && !bFalling && !bJumping) {
-			if (Input::IsKeyPressed(GE_KEY_LEFT)) {
-				bodyComp->AddVelocity({ -5 * timestep, 0 });
-			} else if (Input::IsKeyPressed(GE_KEY_RIGHT)) {
-				bodyComp->AddVelocity({ 5 * timestep, 0 });				
-			}
-		} 
-		if (bodyComp->isGrounded() && Input::IsKeyPressed(GE_KEY_SPACE) && !bFalling && !bJumping) {
-			bJumping = true;
-			graphicsComp->JumpCrouch([this, timestep]() {
-				graphicsComp->JumpStart([this, timestep]() {
-					bJumping = false;
-					bodyComp->AddVelocity({ 0, 5.f }); });
-				});
-		} 
 #if !defined(GE_DIST)
         consoleEnd:
 #endif
@@ -188,7 +181,7 @@ protected:
                     });
                     HandleMobileInput(touches, timestep);
                 } else {
-                    bJumping = false;
+                    SetJumping(false);
                     if (bWalking && ground) {
                         bodyComp->SetVelocityX(0.f);
                     }
@@ -202,7 +195,7 @@ protected:
 
         }
 
-        graphicsComp->ShowDirectionIndicator(bJumping);
+        
 
 		if (!ground) {
 			if (bFalling) {
@@ -263,7 +256,7 @@ protected:
 
                     if (CollisionDetection::CheckPointUI(touch.x, touch.y) || startTime > touch.time) {
                         touchId = 0;
-                        bJumping = false;
+                        SetJumping(false);
                         bWalking = false;
                         if (ground) {
                             bodyComp->SetVelocityX(0);
@@ -273,14 +266,14 @@ protected:
 
                     if (!ground) {
                         touchId = 0;
-                        bJumping = false;
+                        SetJumping(false);
                     }
 
                     if ( touch.state == 0 && ground) {
                         if (touchId == 0) {
                             startxPos = touch.x;
                             startyPos = touch.y;
-                            bJumping = false;
+                            SetJumping(false);
                             touchId = touch.id;
                             GE_CORE_ASSERT(touchId, "invalid touch id");
                             touchTime = touch.time / 1e6;
@@ -297,14 +290,19 @@ protected:
                             float xDistance = 2.f*-(lastxpos-(float)Application::GetWidth()/2.f)/(float)Application::GetWidth();
                             GE_CORE_DEBUG("Last Pos: {0}, Current Pos: {1}, Width: {2}, xDistance: {3}", lastxpos, touch.x, Application::GetWidth(), xDistance);
                             if (yDistance < .001f) {
-                                bJumping = false;
+                                SetJumping(false);
                                 graphicsComp->Idle();
                             } else {
+                                graphicsComp->ShowDirectionIndicator(false);
                                 graphicsComp->JumpStart([this, xDistance, yDistance]() {
-                                    bJumping = false;
+                                    SetJumping(false);
                                     jumpSound->SetPlaying(true);
-                                    glm::vec2 _vel = { jumpXMultipler * (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), jumpYMultipler * (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-                                    bodyComp->AddVelocity(_vel);
+                                    glm::vec2 _vel = {  (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
+                                    float magnitude = sqrt(_vel.x * _vel.x + _vel.y * _vel.y);
+                                    glm::vec2 _unitVec = { _vel.x / magnitude, _vel.y / magnitude };
+                                    bodyComp->AddVelocity({abs(_vel.x)*_unitVec.x * jumpYMultipler, _vel.y*_unitVec.y* jumpYMultipler });
+
+
                                 });
                             }
                         }
@@ -356,16 +354,17 @@ protected:
                         else {
                             if (!ground) {
                                 bWalking = false;
-                                bJumping = false;
+                                SetJumping(false);
                             }
                             else if (bJumping) {
                                 int nDir = (touch.x >= (float)Application::GetWidth() / 2.f) ? -1 : 1;
 								float yDistance = (touch.y - startyPos + Application::GetHeight() * jumpThreshold) / Application::GetHeight();
 								float xDistance = 2.f * -(lastxpos - (float)Application::GetWidth() / 2.f) / (float)Application::GetWidth();
-                                glm::vec2 _vel = { jumpXMultipler * (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), jumpYMultipler * (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-                                float _deg = glm::degrees(atan2( jumpXMultipler * jumpXDragClamp, jumpYMultipler * jumpYDragClamp));
+                                glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
+                                float _deg = glm::degrees(atan2( jumpXDragClamp, jumpYDragClamp));
                                 GE_LOG_DEBUG("{0},{1} : {2}", _vel.x, _vel.y, _deg);
-                                graphicsComp->SetDirectionIndicator(-GEMath::MapRange(_vel.x, -2, 2, -_deg, _deg));
+                                graphicsComp->SetDirectionIndicator(-GEMath::MapRange(_vel.x, -jumpYDragClamp, jumpYDragClamp, -_deg, _deg));
+                                graphicsComp->SetPowerBar(GEMath::MapRange(_vel.y, 0, jumpYDragClamp, 0, 1.f));
                                 if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
                                    
                                     graphicsComp->dir = nDir;
@@ -377,7 +376,7 @@ protected:
                     }
                     else if (touchId != 0 && touch.y > startyPos + Application::GetHeight() * jumpThreshold) {
                             if (!bFalling && !bJumping && ground) {
-                                bJumping = true;
+                                SetJumping(true);
                                 lastxpos = touch.x;
                                 lastypos = touch.y;
                                 graphicsComp->JumpCrouch();

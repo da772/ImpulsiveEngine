@@ -37,4 +37,19 @@ namespace GEngine {
 		return sqrt(pow(a.x - b.x, 2.f) + pow(a.y - b.y, 2.f) + pow(a.z - b.z, 2.f));
 	}
 
+	float GEMath::max(float in, float max)
+	{
+		return in > max ? in : max;
+	}
+
+	float GEMath::clamp(float in, float min, float max)
+	{
+		return in > max ? max : in < min ? min : in;
+	}
+
+	int GEMath::clamp(int in, int min, int max)
+	{
+		return in > max ? max : in < min ? min : in;
+	}
+
 }
