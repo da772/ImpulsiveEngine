@@ -14,6 +14,12 @@ namespace GEngine {
 		static float max(float in, float max);
 		static float clamp(float in, float min, float max);
 		static int clamp(int in, int min, int max);
+		static glm::vec2 projection(const glm::vec2& a, const glm::vec2& b);
+		static float dot(const glm::vec2& a, const glm::vec2& b);
+		static float magnitude(const glm::vec2 a);
+		static glm::vec2 normalize(const glm::vec2& v);
+		static glm::vec2 reflect(const glm::vec2& v, const glm::vec2 n);
+		
 	};
 
 

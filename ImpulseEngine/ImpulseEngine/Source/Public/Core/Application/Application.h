@@ -107,7 +107,6 @@ namespace GEngine {
 		bool m_loaded = true;
         
 		
-		
 		int m_width = 1280, m_height = 720;
 
 		const char* title = "NULL";

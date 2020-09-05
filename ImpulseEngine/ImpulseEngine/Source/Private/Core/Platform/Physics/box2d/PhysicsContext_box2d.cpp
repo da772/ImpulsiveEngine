@@ -71,7 +71,7 @@ namespace GEngine {
 		def.position.Set(info.position.x* GE_PHYSICS_SCALAR, info.position.y* GE_PHYSICS_SCALAR);
 		def.angle = info.rotation;
 		def.linearVelocity.Set(info.linearVelocity.x * GE_PHYSICS_SCALAR, info.linearVelocity.y * GE_PHYSICS_SCALAR);
-		def.linearDamping = info.angularDamping * GE_PHYSICS_SCALAR;
+		def.linearDamping = info.linearDamping * GE_PHYSICS_SCALAR;
 		def.angularDamping = info.angularDamping;
 		def.allowSleep = info.canSleep;
 		def.awake = info.awake;
@@ -96,6 +96,93 @@ namespace GEngine {
 		GE_CORE_ASSERT(m_world, "WORLD NOT CREATED");
 		m_gravity = gravity;
 		m_world->SetGravity(b2Vec2(m_gravity.x, m_gravity.y));
+	}
+
+	const glm::vec2 PhysicsContext_box2d::GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step)
+	{
+		float t = 1.f / 60.f; // seconds per time step (at 60fps)
+		
+		glm::vec2 stepVelocity = { t * startVel.x, t * startVel.y }; // m/s
+		glm::vec2 stepGravity = { t * t *m_world->GetGravity().x , t * t* m_world->GetGravity().y }; // m/s/s
+		return { startPos.x + step * stepVelocity.x + 0.5f * (step * step + step) * stepGravity.x, startPos.y + step * stepVelocity.y +.5f * (step*step+step) * stepGravity.y };
+		
+	}
+
+
+
+	class _b2_RayCastCallback : public b2RayCastCallback {
+
+	public:
+		_b2_RayCastCallback(const std::vector<Weak<PhysicsBody>>& bodies) : ignoreBodies(bodies) {
+
+		}
+		float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
+		{
+			hitInfo = make_shared<RayCastInfo>();
+			
+			Ref<PhysicsBody> _pbody = ((PhysicsParent*)(fixture->GetUserData()))->parent.lock();
+
+			for (const Weak<PhysicsBody>& b : ignoreBodies) {
+				if (b.lock() == _pbody) {
+					return -1;
+				}
+			}
+
+			hitInfo->physicsBody = _pbody;
+			hitInfo->hitPoint = glm::vec2(point.x, point.y);
+			hitInfo->hitNormal= glm::vec2(normal.x, normal.y);
+			hitInfo->fraction = fraction;
+			return 0;
+		}
+
+		Ref<RayCastInfo> hitInfo = nullptr;
+		const std::vector<Weak<PhysicsBody>>& ignoreBodies;
+
+	};
+
+	Ref<RayCastInfo> PhysicsContext_box2d::RayCast2D(const glm::vec2& start, const glm::vec2& end, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
+	{
+
+		_b2_RayCastCallback callback(ignoreBodies);
+		m_world->RayCast(&callback, { start.x, start.y }, { end.x, end.y });
+		return callback.hitInfo;
+	}
+
+	class __b2QueryCallback : public b2QueryCallback {
+		public:
+		__b2QueryCallback(const std::vector<Weak<PhysicsBody>>& ignoreBodies) : ignoreBodies(ignoreBodies) {
+
+		}
+	
+		bool ReportFixture(b2Fixture* fixture) override
+		{
+			Ref<PhysicsBody> _pbody = ((PhysicsParent*)(fixture->GetUserData()))->parent.lock();
+
+			for (const Weak<PhysicsBody>& b : ignoreBodies) {
+				if (b.lock() == _pbody) {
+					return -1;
+				}
+			}
+
+			if (_pbody != nullptr) {
+				hitBodies.push_back(_pbody);
+			}
+			return 0;
+		}
+
+		std::vector<Weak<PhysicsBody>> hitBodies;	
+		const std::vector<Weak<PhysicsBody>>& ignoreBodies;
+	};
+
+
+	std::vector<Weak<PhysicsBody>> PhysicsContext_box2d::QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
+	{
+		__b2QueryCallback callback(ignoreBodies);
+		b2AABB aabb;
+		aabb.lowerBound = { position.x - scale.x/2.f , position.y - scale.y/2.f };
+		aabb.upperBound = { position.x + scale.x/2.f, position.y + scale.y/2.f };
+		m_world->QueryAABB(&callback, aabb);
+		return callback.hitBodies;
 	}
 
 	void PhysicsContext_box2d::Simulate(float timeStep, int velIteration, int posIteration)

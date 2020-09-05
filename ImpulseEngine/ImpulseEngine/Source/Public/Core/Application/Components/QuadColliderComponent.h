@@ -40,6 +40,8 @@ namespace GEngine {
 		
 		void SetDynamic(bool b);
 
+		Ref<PhysicsBody> GetPhysicsBody() const { return m_body; }
+
 		void IncreaseLinearVelocity(const float x, const float y);
 		void IncreaseAngularVelocity(const float v);
 

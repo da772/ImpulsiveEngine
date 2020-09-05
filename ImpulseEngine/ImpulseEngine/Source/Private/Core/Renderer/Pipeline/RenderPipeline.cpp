@@ -46,4 +46,8 @@ namespace GEngine {
 			});
 	}
 
+	void RenderPipeline::Clear() {
+		renderables.clear();
+	}
+
 }

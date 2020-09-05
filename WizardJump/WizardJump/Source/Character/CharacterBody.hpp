@@ -31,12 +31,13 @@ public:
 		return m_quadCollider->GetLinearVelocity();
 	}
 
-	bool debug = false;
+	bool debug = true;
 	int groundedCount = 0;
 
 	bool isGrounded() { return groundedCount > 0; };
 
-
+	Ref<QuadColliderComponent> m_quadCollider;
+	Ref<QuadColliderComponent> m_groundCollider;
 protected:
 	void OnBegin() override
 	{
@@ -91,8 +92,7 @@ protected:
 
 	
 
-	Ref<QuadColliderComponent> m_quadCollider;
-	Ref<QuadColliderComponent> m_groundCollider;
+	
 	Ref<SpriteComponent> m_debugSprite;
 
 };

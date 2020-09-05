@@ -50,6 +50,8 @@ void ExampleLayer::OnDraw()
 void ExampleLayer::OnEvent(GEngine::Event& event)
 {
 
+
+
 }
 
 WizardJump::WizardJump()
@@ -76,7 +78,7 @@ WizardJump::WizardJump()
 	EnableImGui(false);
 #endif
 	
-	GetWindow()->SetVSync(false);
+	GetWindow()->SetVSync(true);
 
 #ifdef GE_MOBILE_APP
 	GEngine::AdManager::Initialize();

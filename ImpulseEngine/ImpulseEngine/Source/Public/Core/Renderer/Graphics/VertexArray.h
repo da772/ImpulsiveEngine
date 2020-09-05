@@ -16,6 +16,7 @@ namespace GEngine {
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() = 0;
 
 		inline uint32_t GetVertexCount() const { return m_VertexCount; }
+		inline void SetVertexCount(const uint32_t count) { m_VertexCount = count; }
 
 		static VertexArray* Create();
 

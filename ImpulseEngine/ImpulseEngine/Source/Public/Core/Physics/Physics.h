@@ -6,7 +6,7 @@ namespace GEngine {
 	class PhysicsContext;
 	struct PhysicsInfo;
 	class PhysicsBody;
-	
+	struct RayCastInfo;
 
 	class Physics {
 
@@ -16,10 +16,14 @@ namespace GEngine {
 		static void* GetWorld();
 		static void SetGravity(const glm::vec2& gravity);
 		static Ref<PhysicsBody> CreateBody(const PhysicsInfo& info);
+		static glm::vec2 GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step);
+		static Ref<RayCastInfo> RayCast2D(const glm::vec2 startPos, const glm::vec2 endPos, const std::vector< Weak<PhysicsBody>>& ignoreBodies = {});
+		static std::vector<Weak<PhysicsBody>> QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies);
 		static void Update(float timestep);
 
 	private:
 		static Ref<PhysicsContext> m_context;
+		static long long m_lastUpdate;
 
 	};
 

@@ -362,8 +362,8 @@ namespace GEngine {
 			}
 
             {
-                Physics::Update(timestep);
-                CollisionDetection::CheckCollision();
+				Physics::Update(timestep);
+				CollisionDetection::CheckCollision();
             }
 
             {

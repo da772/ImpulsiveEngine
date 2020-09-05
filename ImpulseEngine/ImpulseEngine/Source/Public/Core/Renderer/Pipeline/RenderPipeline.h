@@ -17,6 +17,7 @@ namespace GEngine {
 		void Add(Ref<Renderable> r);
 		void Remove(Ref<Renderable> r);
 		void Sort();
+		void Clear();
 		virtual void RenderStart() {};
 		virtual void RenderEnd() {};
 

@@ -6,6 +6,13 @@ namespace GEngine {
 	class PhysicsBody;
 	struct PhysicsInfo;
 
+	struct RayCastInfo {
+		Weak<PhysicsBody> physicsBody;
+		glm::vec2 hitPoint;
+		glm::vec2 hitNormal;
+		float fraction;
+	};
+
 
 	class PhysicsContext {
 
@@ -16,9 +23,10 @@ namespace GEngine {
 		virtual Ref<PhysicsBody> CreateBody(const PhysicsInfo& info) = 0;
 		virtual void SetGravity(const glm::vec2& gravity) = 0;
 		virtual void* GetNativeWorld() = 0;
-
+		virtual const glm::vec2 GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step) = 0;
 		virtual void Simulate(float timeStep, int velIteration = 8, int posIteration = 2) = 0;
-
+		virtual Ref<RayCastInfo> RayCast2D(const glm::vec2& startPos, const glm::vec2& endPos, const std::vector<Weak<PhysicsBody>>& ignoreBodies) = 0;
+		virtual std::vector<Weak<PhysicsBody>> QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies) = 0;
 
 	protected:
 

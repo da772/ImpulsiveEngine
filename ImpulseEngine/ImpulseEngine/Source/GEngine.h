@@ -66,5 +66,10 @@
 #include "Public/Core/Audio/AudioManager.h"
 #include "Public/Core/Audio/AudioSource.h"
 
+
+#include "Public/Core/Physics/Physics.h"
+#include "Public/Core/Physics/PhysicsContext.h"
+#include "Public/Core/Physics/PhysicsBody.h"
+
 #endif
 

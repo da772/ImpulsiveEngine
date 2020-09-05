@@ -16,6 +16,8 @@
 #include "Public/Core/Renderer/Pipeline/RenderPipeline_2d.h"
 #include "Public/Core/Renderer/Pipeline/RenderPipeline_ui.h"
 
+#include "Public/Core/Renderer/Graphics/Renderable.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -25,6 +27,23 @@
 
 
 namespace GEngine {
+
+
+	class DebugRenderable : public Renderable {
+
+	public:
+		DebugRenderable(std::function<void()> f = nullptr) : m_function(f) {};
+
+		void Render() override
+		{
+			if (m_function)
+				m_function();
+		}
+
+	private:
+		std::function<void()> m_function;
+
+	};
 
 
 
@@ -60,8 +79,9 @@ namespace GEngine {
 	void Renderer::OnInit()
 	{
 		Renderer::AddPipeline("2d", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 0);
+		Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 998);
 		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 999);
-
+		
 		s_ShapeData.reset(new ShapeData());
 
 		s_ShapeData->shape_shader = Shader::Create("Content/shaders/TextureShader.glsl");
@@ -135,6 +155,7 @@ namespace GEngine {
 
 	void Renderer::EndScene()
 	{
+		Renderer::queueId["Debug2D"].p->Clear();
 		Renderer2D::EndScene();
 	}
 
@@ -198,11 +219,39 @@ namespace GEngine {
 		};
 
 		s_ShapeData->line_vBuffer->SetVertices(f, sizeof(f));
-		
 		glm::mat4 transform = glm::translate(glm::mat4(1.f), { 0,0,0 });
 
-		GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
+		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([transform]() {
 
+			GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
+				
+			}));
+
+	}
+
+	void Renderer::DrawLines(const std::vector<float>& lines, const glm::vec4& color)
+	{
+		
+		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([lines, color]() {
+
+			Renderer::s_ShapeData->shape_shader->Bind();
+			Renderer::s_ShapeData->shape_shader->UploadUniformInt("u_Texture", 0);
+
+			Renderer::s_ShapeData->shape_shader->UploadUniformFloat4("u_Color", color);
+			Renderer::s_ShapeData->shape_shader->UploadUniformFloat2("u_UV", { 1.f,1.f });
+			Renderer::s_ShapeData->shape_shader->UploadUniformFloat("u_Threshold", 0.f);
+
+			Renderer::s_ShapeData->empty_texture->Bind();
+
+			s_ShapeData->line_vBuffer->SetVertices((float*)lines.data(), lines.size() * sizeof(float));
+			s_ShapeData->line_vArray->SetVertexCount(lines.size() / 3.f);
+
+			glm::mat4 transform = glm::translate(glm::mat4(1.f), { 0,0,0 });
+
+			GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
+			
+		}));		
+		
 	}
 
 	void Renderer::DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center) {

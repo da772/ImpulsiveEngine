@@ -71,8 +71,8 @@ namespace GEngine {
 		float m_rotation = 0.f;
 		glm::vec2 m_linearVelocity = glm::vec2(0, 0);
 		float m_angluarVelocity = 0;
-		float m_linearDamping = .1f;
-		float m_angularDamping = .1f;
+		float m_linearDamping = 0.f;
+		float m_angularDamping = 0.f;
 		bool m_canSleep = true;
 		bool m_awake = true;
 		bool m_fixedRotation = false;

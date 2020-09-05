@@ -118,6 +118,8 @@ namespace GEngine {
 		m_fixture = m_body->CreateFixture(&shape, mass);
 		m_fixture->SetUserData((void*)&m_self);
 		m_fixture->SetSensor(m_sensor);
+		m_fixture->SetDensity(0);
+
 	}
 
 
