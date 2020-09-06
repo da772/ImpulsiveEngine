@@ -6,6 +6,7 @@
 #include "Public/Core/Util/Timestep.h"
 #include "Public/Core/Renderer/Camera.h"
 #include "Public/Core/Renderer/Graphics/GraphicsContext.h"
+#include "Public/Core/Application/Application.h"
 
 namespace GEngine {
 
@@ -42,7 +43,7 @@ namespace GEngine {
 
 	bool Orthographic_CameraController::OnWindowResized(WindowResizeEvent& e)
 	{
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+		m_AspectRatio = (float)Application::GetWidth() / (float)Application::GetHeight();
 		m_Camera->SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}

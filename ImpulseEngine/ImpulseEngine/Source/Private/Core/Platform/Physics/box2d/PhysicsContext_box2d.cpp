@@ -101,7 +101,6 @@ namespace GEngine {
 	const glm::vec2 PhysicsContext_box2d::GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step)
 	{
 		float t = 1.f / 60.f; // seconds per time step (at 60fps)
-		
 		glm::vec2 stepVelocity = { t * startVel.x, t * startVel.y }; // m/s
 		glm::vec2 stepGravity = { t * t *m_world->GetGravity().x , t * t* m_world->GetGravity().y }; // m/s/s
 		return { startPos.x + step * stepVelocity.x + 0.5f * (step * step + step) * stepGravity.x, startPos.y + step * stepVelocity.y +.5f * (step*step+step) * stepGravity.y };

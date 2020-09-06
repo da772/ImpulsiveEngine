@@ -13,7 +13,7 @@ namespace GEngine {
 		virtual inline uint32_t GetWidth() const override { return m_Width; }
 		virtual inline uint32_t GetHeight() const override { return m_Height; }
 		virtual inline const u32 GetRendererID() const override { return m_RendererID; }
-		virtual void SetData(void* data, uint32_t size, u32 flags = 0) override;
+		virtual void SetData(void* data, uint32_t size, u32 flags = 0, int width =0, int height = 0) override;
 		virtual inline void Unload() {};
 		virtual inline void Reload() {};
 

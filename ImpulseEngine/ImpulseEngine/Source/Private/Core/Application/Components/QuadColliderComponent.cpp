@@ -40,13 +40,16 @@ namespace GEngine {
 		m_worldRotation = m_rotation + e->GetEntityRotation().z;
 
 		PhysicsInfo info;
-		info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Static;
+		info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Kinematic;
 		info.position = glm::vec2(e->GetEntityPosition().x, e->GetEntityPosition().y);
 		info.rotation = glm::radians(e->GetEntityRotation().z);
 		info.fixedRotation = true;
 		m_body = Physics::CreateBody(info);
 		m_body->SetComponent(std::static_pointer_cast<Component>(self.lock()));
 		m_body->SetSensor(!m_physics);
+		m_body->SetGroupIndex(m_groupIndex);
+		m_body->SetCategory(m_category);
+		m_body->SetMask(m_mask);
 		m_body->SetQuad(m_worldScale, m_position, m_mass, m_rotation);
 
 		
@@ -72,8 +75,10 @@ namespace GEngine {
 		if (m_physics && m_dynamic) {
 			const glm::vec2& pos = m_body->GetPosition();
 			const float rot = m_body->GetRotation();
+			m_movedSelf = true;
 			entity.lock()->SetEntityPosition(glm::vec3(pos.x, pos.y, 1));
 			entity.lock()->SetEntityRotation(glm::vec3(0, 0, glm::degrees(rot)));
+			m_movedSelf = false;
 		}
 	}
 
@@ -101,6 +106,12 @@ namespace GEngine {
 	const glm::vec2 QuadColliderComponent::GetScale()
 	{
 		return m_worldScale;
+	}
+
+	void QuadColliderComponent::SetGravityScale(const float f)
+	{
+		if (m_physics)
+			m_body->SetGravityScale(f);
 	}
 
 	const glm::vec2 QuadColliderComponent::GetLinearVelocity()
@@ -174,6 +185,18 @@ namespace GEngine {
 		m_body->SetLinearVelocity({ x, y });
 	}
 
+	void QuadColliderComponent::SetCollisionLayers(const uint16_t category, const uint16_t mask, const int16_t index)
+	{
+		m_mask = mask;
+		m_category = category;
+		m_groupIndex = index;
+		if (m_body) {
+			m_body->SetCategory(category);
+			m_body->SetMask(mask);
+			m_body->SetGroupIndex(index);
+		}
+	}
+
 	void QuadColliderComponent::SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc)
 	{
 		m_onCollide = onCollideFunc;
@@ -217,16 +240,25 @@ namespace GEngine {
 				glm::vec3 pos = glm::vec3(m_position.x, m_position.y, 1);
 				pos = pos + transform->GetPosition();
 				m_worldPosition = pos;
-				if (!m_physics)
+				if (!m_physics) {
 					m_body->SetPosition(transform->GetPosition());
+					m_body->SetAwake(true);
+				}
+				else if (!m_movedSelf ) {
+					m_body->SetPosition(transform->GetPosition());
+					m_body->SetAwake(true);
+				}
+					
+				
 
 
 			
 				glm::vec3 scale = glm::vec3(m_scale.x, m_scale.y, 1);
 				scale = scale * transform->GetScale();
 				m_worldScale = glm::vec2(scale.x, scale.y);
-				if (!m_physics)
-					m_body->SetScale(m_worldScale);
+				m_body->SetScale(m_worldScale);
+
+					
 
 				glm::vec3 rotation = glm::vec3(0, 0, m_rotation);
 				rotation = rotation + transData.rotation;

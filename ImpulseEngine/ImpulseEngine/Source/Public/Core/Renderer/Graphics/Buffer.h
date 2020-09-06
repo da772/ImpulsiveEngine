@@ -215,6 +215,25 @@ namespace GEngine {
 
 	};
 
+	class Texture2D;
+
+	class FrameBuffer {
+	public:
+		inline virtual ~FrameBuffer() {};
+		virtual void Bind() = 0;
+		virtual void UnBind() = 0;
+		virtual void UpdateSize(int width, int height) = 0;
+		inline Ref<Texture2D> GetTexture() const { return m_texture; }
+
+		static Ref<FrameBuffer> Create(int width, int height, int format = 0);
+
+	protected:
+		inline FrameBuffer(int width, int height, uint32_t format) :m_width(width), m_height(height), m_format(format) {};
+		uint32_t m_format;
+		int m_width, m_height;
+		Ref<Texture2D> m_texture;
+	};
+
 
 
 

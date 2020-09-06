@@ -31,5 +31,23 @@ namespace GEngine {
 		uint32_t m_RendererID = 0;
 	};
 
+	class OpenGL_FrameBuffer : public FrameBuffer {
+
+	public:
+		OpenGL_FrameBuffer(int width, int height, int format);
+		virtual ~OpenGL_FrameBuffer();
+
+		
+
+		void Bind() override;
+		void UnBind() override;
+		void UpdateSize(int width, int height) override;
+	private:
+		uint32_t m_rendererId;
+		void Create();
+		void Invalidate();
+
+	};
+
 
 }

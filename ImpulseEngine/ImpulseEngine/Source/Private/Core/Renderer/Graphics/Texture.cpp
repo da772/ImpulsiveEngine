@@ -2,6 +2,7 @@
 #include "Public/Core/Renderer/Graphics/Texture.h"
 #include "Public/Core/Renderer/Graphics/GraphicsContext.h"
 #include "Public/Core/Util/Pooling.h"
+#include "Public/Core/Util/Utility.h"
 
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 #include "Public/Core/Platform/Graphics/OpenGL/OpenGL_Texture.h"
@@ -10,6 +11,7 @@
 #ifdef GE_GRAPHICS_API_VULKAN
 #include "Public/Core/Platform/Graphics/Vulkan/Vulkan_Texture.h"
 #endif
+
 
 namespace GEngine {
 
@@ -60,10 +62,17 @@ namespace GEngine {
 
 	}
 
-	GEngine::Ref<GEngine::Texture2D> Texture2D::Create(const std::string& name, uint32_t width, uint32_t height)
+	GEngine::Ref<GEngine::Texture2D> Texture2D::Create(std::string name, uint32_t width, uint32_t height)
 	{
 
 		Ref<Texture2D> t = nullptr;
+
+		if (name == "") {
+			name = Utility::GenerateHash(16);
+			while (s_TexturePool.find(name) != s_TexturePool.end()) {
+				name = Utility::GenerateHash(16);
+			}
+		}
 
 		if (Texture::s_TexturePool.count(name)) {
 			Ref<Texture> _t = Texture::s_TexturePool[name].lock();

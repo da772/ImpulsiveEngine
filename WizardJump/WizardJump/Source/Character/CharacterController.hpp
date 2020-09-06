@@ -47,7 +47,7 @@ protected:
         landSound = nullptr;
 
 	}
-
+public:
 	bool bFalling = false;
 	bool bJumping = false;
 	bool bWalking = false;
@@ -63,16 +63,21 @@ protected:
     const float maxJumpXVel = 5.f;
     const float maxJumpYVel = 5.f;
 
+	std::unordered_map<uint64_t, FTouchInfo> m;
+
+	/* TRAJECTORTY TEST */
+	std::vector<float> trajectory_pos;
+	glm::vec2 _realVel;
+
+
+protected:
+
     /*
         PC Touch Emulation
     */
     uint64_t pcTouchTime = 0;
     int pcX = 0, pcY = 0, pcState = -1;
 
-
-    /* TRAJECTORTY TEST */
-	std::vector<float> trajectory_pos;
-	glm::vec2 _realVel;
 
     void SetJumping(bool bJump) {
         bJumping = bJump;
@@ -87,7 +92,7 @@ protected:
             Renderer::DrawLines(trajectory_pos, glm::vec4(1, 0, 0, 1.f));
 		const glm::vec2& vel = bodyComp->GetVelocity();
 		const bool ground = bodyComp->isGrounded();
-        std::unordered_map<uint64_t, FTouchInfo> m = Mobile_Input::GetTouches();
+        m = Mobile_Input::GetTouches();
 #ifdef GE_CONSOLE_APP
 		/*
 			PC Controls
@@ -95,11 +100,7 @@ protected:
         int lstX = Input::GetMouseX();
         int lstY = Input::GetMouseY();
         bool addTouch = false;
-        ImGuiIO& io = ImGui::GetIO();
-        
-#if !defined(GE_DIST)
-        if (io.WantCaptureKeyboard || io.WantCaptureMouse) goto consoleEnd;
-#endif
+
         if (Input::IsMouseButtonPressed(0)) {
             if (pcState == -1 || pcState == 2) {
                 pcTouchTime = Time::GetEpochTimeNS();
@@ -304,13 +305,7 @@ protected:
                                 graphicsComp->JumpStart([this, xDistance, yDistance]() {
                                     SetJumping(false);
                                     jumpSound->SetPlaying(true);
-                                    glm::vec2 _vel = {  (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-                                    float magnitude = sqrt(_vel.x * _vel.x + _vel.y * _vel.y);
-                                    glm::vec2 _unitVec = { _vel.x / magnitude, _vel.y / magnitude };
-                                    GE_LOG_WARN("LAUN VEL: {0},{1}", _realVel.x, _realVel.y);
-                                    bodyComp->SetVelocity({ abs(_vel.x) * _unitVec.x * jumpYMultipler, _vel.y * _unitVec.y * jumpYMultipler });;
-
-
+                                    bodyComp->SetVelocity(CalculateJumpVelocity(xDistance, yDistance));
                                 });
                             }
                         }
@@ -398,15 +393,17 @@ protected:
                 }
     }
 
+    glm::vec2 CalculateJumpVelocity(float xDistance, float yDistance) {
+		glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
+		float magnitude = sqrt(_vel.x * _vel.x + _vel.y * _vel.y);
+		glm::vec2 _unitVec = { _vel.x / magnitude, _vel.y / magnitude };
+		return { abs(_vel.x) * _unitVec.x * jumpYMultipler, _vel.y * _unitVec.y * jumpYMultipler };
+    }
+
   
 
     void PredictPath(float xDistance, float yDistance) {
-        
-
-            glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-            float magnitude = sqrt(_vel.x * _vel.x + _vel.y * _vel.y);
-            glm::vec2 _unitVec = { _vel.x / magnitude, _vel.y / magnitude };
-            _realVel = { abs(_vel.x) * _unitVec.x * jumpYMultipler, _vel.y * _unitVec.y * jumpYMultipler };
+            _realVel = CalculateJumpVelocity(xDistance, yDistance);
             GE_LOG_WARN("PREDICTED VEL: {0},{1}", _realVel.x, _realVel.y);
             trajectory_pos.clear();
             std::vector<Weak<PhysicsBody>> ignoreBodies = { bodyComp->m_groundCollider->GetPhysicsBody(), bodyComp->m_quadCollider->GetPhysicsBody() };
@@ -414,7 +411,7 @@ protected:
 			for (int i = 0; i < 180; i++) {
 				glm::vec2 newPos = Physics::GetTrajectoryPoint2D(_startPos ,
 					_realVel, i);
-                /*
+                
 				if (trajectory_pos.size() >= 3) {
                         
 						Ref<RayCastInfo> info = Physics::RayCast2D({ trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] }, { newPos.x,newPos.y }, ignoreBodies);
@@ -425,9 +422,9 @@ protected:
                             trajectory_pos.push_back(info->hitPoint.y);
                             trajectory_pos.push_back(1.f);
 							if (info->physicsBody.lock() && info->physicsBody.lock()->GetBounce() != 0.f) {
-								GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
+								//GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
                                 //_realVel = GEMath::reflect(_realVel * info->physicsBody.lock()->GetBounce(), info->hitNormal);
-								GE_CORE_DEBUG("{0}, {1}", _realVel.x, _realVel.y);
+								//GE_CORE_DEBUG("{0}, {1}", _realVel.x, _realVel.y);
 								//i = 0.f;
 								//_startPos = info->hitPoint;
 								continue;
@@ -437,8 +434,7 @@ protected:
 						}
                      
 					
-					}
-                */
+                }
                 trajectory_pos.push_back(newPos.x);
                 trajectory_pos.push_back(newPos.y);
                 trajectory_pos.push_back(1.f);

@@ -28,6 +28,8 @@ namespace GEngine {
 		const glm::vec2 GetPosition();
 		const glm::vec2 GetScale();
 
+		void SetGravityScale(const float f);
+
 
 		const glm::vec2 GetLinearVelocity();
 
@@ -49,6 +51,8 @@ namespace GEngine {
 		void SetVelocityY(const float y);
 		void SetVelocity(const float x, const float y);
 
+		void SetCollisionLayers(const uint16_t category, const uint16_t mask, const int16_t index);
+
 		void SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc);
 		void SetOnCollideFunction_Script(Ref<ScriptObject> onColliderFunc);
 		void SetEndCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc);
@@ -67,6 +71,10 @@ namespace GEngine {
 		bool m_dynamic = false;
 		float m_mass = 0;
 		Ref<PhysicsBody> m_body;
+		bool m_movedSelf = false;
+		uint16_t m_category = 0x02;
+		int16_t m_groupIndex = 0x02;
+		uint16_t m_mask = 0x02;
 
 		std::function<void(Ref<QuadColliderComponent>)> m_onCollide;
 		std::function<void(Ref<QuadColliderComponent>)> m_endCollide;

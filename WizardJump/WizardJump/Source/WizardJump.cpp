@@ -69,8 +69,20 @@ WizardJump::WizardJump()
 	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"), 
 		GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);
 
+	s_debugTools = true;
+	if (s_debugTools) {
+		this->m_width = 1280;
+		this->m_height = 720;
+	}
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
+
+	if (s_debugTools) {
+		this->m_viewPortWidth = 1080;
+		this->m_viewPortHeight = 1920;
+		GEngine::RenderPipeline::GetFrameBuffer()->UpdateSize(m_viewPortWidth, m_viewPortHeight);
+	}
+
 
 #if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
 	EnableImGui(true);

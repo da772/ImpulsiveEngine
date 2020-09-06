@@ -29,10 +29,13 @@ void PlatformEntity::OnBegin()
 	m_colliderWall->SetTag("wall");
 	AddComponent(m_colliderWall);
 	m_colliderWall->SetBounce(.5f);
+	
 
+	
 	m_colliderFloor = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(0, scale.y * .475f), glm::vec2(1, .05f), rot, 0.f);
 	m_colliderFloor->SetTag("ground");
 	AddComponent(m_colliderFloor);
+
 
 }
 

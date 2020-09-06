@@ -58,6 +58,9 @@ namespace GEngine {
 	{
 		PhysicsBody::SetAngularDamping(angularDamping);
 		m_body->SetAngularDamping(angularDamping);
+
+		
+
 	}
 
 	void PhysicsBody_box2d::SetEnabled(const bool b)
@@ -119,6 +122,11 @@ namespace GEngine {
 		m_fixture->SetUserData((void*)&m_self);
 		m_fixture->SetSensor(m_sensor);
 		m_fixture->SetDensity(0);
+		b2Filter filter;
+		filter.categoryBits = m_categoryBits;
+		filter.groupIndex = m_groupIndex;
+		filter.maskBits = m_maskBits;
+		m_fixture->SetFilterData(filter);
 
 	}
 
@@ -127,6 +135,43 @@ namespace GEngine {
 	{
 		PhysicsBody::SetAngularVelocity(f);
 		m_body->SetAngularVelocity(f);
+	}
+
+	void PhysicsBody_box2d::SetAwake(bool b)
+	{
+		PhysicsBody::SetAwake(b);
+		m_body->SetAwake(b);
+	}
+
+	void PhysicsBody_box2d::SetMask(const uint16_t bits)
+	{
+		PhysicsBody::SetMask(bits);
+		if (m_fixture) {
+			b2Filter filter = m_fixture->GetFilterData();
+			filter.maskBits = bits;
+			m_fixture->SetFilterData(filter);
+		}
+
+	}
+
+	void PhysicsBody_box2d::SetCategory(const uint16_t bits)
+	{
+		PhysicsBody::SetCategory(bits);
+		if (m_fixture) {
+			b2Filter filter = m_fixture->GetFilterData();
+			filter.categoryBits = bits;
+			m_fixture->SetFilterData(filter);
+		}
+	}
+
+	void PhysicsBody_box2d::SetGroupIndex(const int16_t index)
+	{
+		PhysicsBody::SetGroupIndex(index);
+		if (m_fixture) {
+			b2Filter filter = m_fixture->GetFilterData();
+			filter.groupIndex = index;
+			m_fixture->SetFilterData(filter);
+		}
 	}
 
 	void PhysicsBody_box2d::SetSensor(const bool b)

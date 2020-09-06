@@ -4,6 +4,15 @@
 
 namespace GEngine {
 
+#define PHYSICS_LAYER_DEFAULT 0x02
+#define PHYSICS_LAYER_01 0x04
+#define PHYSICS_LAYER_02 0x08
+#define PHYSICS_LAYER_03 0x10
+#define PHYSICS_LAYER_04 0x20
+#define PHYSICS_LAYER_05 0x40
+#define PHYSICS_LAYER_06 0x80
+#define PHYSICS_LAYER_07 0x100
+#define PHYSICS_LAYER_08 0x200
 #define GE_PHYSICS_SCALAR 1.f
 
 	class Component;
@@ -19,6 +28,8 @@ namespace GEngine {
 
 		inline virtual void SetPosition(const glm::vec2& position) { m_position = position; }
 		inline virtual void SetRotation(const float rot) { m_rotation = rot; }
+
+		inline virtual void SetAwake(bool b) { m_awake = b; }
 
 		inline virtual void SetLinearVelocity(const glm::vec2& velocity) { m_linearVelocity = velocity; }
 		inline virtual void SetLinearDamping(const float linearDamping) { m_linearDamping = linearDamping; }
@@ -49,6 +60,10 @@ namespace GEngine {
 		inline virtual const PhysicsInfoType& GetPhysicsType() { return m_type; }
 		inline virtual const float GetAngularVelocity() { return m_angluarVelocity; };
 		inline virtual const float GetBounce() { return m_bounce; }
+
+		inline virtual void SetMask(const uint16_t bits) { m_maskBits = bits; }
+		inline virtual void SetCategory(const uint16_t bits) { m_categoryBits = bits; }
+		inline virtual void SetGroupIndex(const int16_t index) { m_groupIndex = index; }
 
 		inline virtual void SetComponent(Weak<Component> c) { m_component = c; }
 		inline virtual void SetSelf(Weak<PhysicsBody> self) { m_self.parent = self; }
@@ -82,6 +97,9 @@ namespace GEngine {
 		float m_gravityScale = 1.f;
 		float m_bounce = 0.f;
 		bool m_sensor = false;
+		uint16_t m_categoryBits = PHYSICS_LAYER_DEFAULT;
+		uint16_t m_maskBits = PHYSICS_LAYER_DEFAULT | PHYSICS_LAYER_01;
+		int16_t m_groupIndex = PHYSICS_LAYER_DEFAULT | PHYSICS_LAYER_01;
 
 		PhysicsParent m_self;
 		Weak<Component> m_component;

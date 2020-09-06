@@ -8,7 +8,7 @@ namespace GEngine {
 	class RenderPipeline_ui : public RenderPipeline {
 
 	public:
-		RenderPipeline_ui() {};
+		RenderPipeline_ui();
 		virtual ~RenderPipeline_ui() {};
 
 		virtual void RenderStart() override;

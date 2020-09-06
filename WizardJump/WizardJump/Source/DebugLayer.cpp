@@ -1,21 +1,28 @@
 #include "DebugLayer.h"
 
-bool DebugLayer::showLog = false;
+bool DebugLayer::showLog = true;
+
+bool handleResize = false;
 
 DebugLayer::DebugLayer() : Layer("DebugLayer")
 {
 
 }
 
+
+
 void DebugLayer::OnImGuiRender()
 {
-	//ImGui::PushFont(font2);
 	if (DebugLayer::showLog)
 		ShowDock(&DebugLayer::showLog);
 	if (DebugLayer::showLog)
 		GEngine::Log::GetImGuiLog()->Draw("Console Log", &DebugLayer::showLog);
 
-	//ImGui::PopFont();
+	if (GEngine::Application::DebugTools()) {
+		CreateViewPort();
+		CreateSceneHierarchy();
+	}
+
 }
 
 void DebugLayer::OnEvent(GEngine::Event& event)
@@ -36,7 +43,11 @@ void DebugLayer::OnEvent(GEngine::Event& event)
 				GEngine::SceneManager::SetCurrentScene("splashScreen");
 			}
 		}
+	
 	}	
+	if (event.GetEventType() == GEngine::EventType::WindowResize) {
+		//handleResize = true;
+	}
 }
 
 void DebugLayer::ShowDock(bool p_open)
@@ -78,10 +89,6 @@ void DebugLayer::ShowDock(bool p_open)
 		ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), opt_flags);
 	}
-	else
-	{
-
-	}
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -107,5 +114,122 @@ void DebugLayer::ShowDock(bool p_open)
 	}
 
 	ImGui::End();
+}
+
+void DebugLayer::CreateSceneHierarchy()
+{
+
+	ImGui::Begin("Scene Hierarchy"); {
+
+		ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+		if (ImGui::TreeNode("Entities"))
+		{
+
+			std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
+			for ( const std::pair<uint64_t, GEngine::Ref<GEngine::Entity>>& e : entities )
+			{
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
+				if (ImGui::TreeNode((void*)(intptr_t)e.first, "%s (%ju)", typeid(*e.second.get()).name(),e.first))
+				{
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.75, .75, .75, 1));
+					std::unordered_map<uint64_t, GEngine::Ref<GEngine::Component>> components = e.second->GetComponents();
+
+					for (const std::pair<uint64_t, GEngine::Ref<GEngine::Component>>& c : components) {
+						std::string compName = typeid(*c.second.get()).name();
+						if (ImGui::TreeNode((void*)(intptr_t)c.first, "%s (%ju)", typeid(*c.second.get()).name(), c.first)) {
+
+							if (compName == "class GEngine::Transform") {
+								float v[3];
+								GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second);
+
+								if (!transform) return;
+
+								v[0] = transform->GetPosition().x;
+								v[1] = transform->GetPosition().y;
+								v[2] = transform->GetPosition().z;
+								if (ImGui::InputFloat3("Position", v, 4)) {
+									if (v[0] != transform->GetPosition().x || v[1] != transform->GetPosition().y || v[2] != transform->GetPosition().z) {
+										e.second->SetEntityPosition({ v[0], v[1], v[2] });
+									}
+								}
+
+
+
+							}
+
+
+
+							ImGui::TreePop();
+						}
+					}
+
+					ImGui::PopStyleColor(1);
+					ImGui::TreePop();
+				}
+				ImGui::PopStyleColor(1);
+			}
+			
+			ImGui::TreePop();
+		}
+		
+
+
+		
+	}
+	ImGui::End();
+
+}
+
+glm::vec2 lastFrameSize;
+glm::vec2 finalSize = { 0, 0 };
+glm::vec2 originalSize = { 0,0 };
+
+glm::vec2 scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHeight) {
+
+
+	// calc
+	float widthRatio = (float)maxWidth / (float)imgWidth,
+		heightRatio = (float)maxHeight / (float)imgHeight;
+	float bestRatio = min(widthRatio, heightRatio);
+
+	// output
+	int newWidth = (float)imgWidth * bestRatio,
+		newHeight = (float)imgHeight * bestRatio;
+	return { newWidth, newHeight };
+}
+
+
+
+
+void DebugLayer::CreateViewPort()
+{
+	if (originalSize.x == 0) {
+		originalSize = { GEngine::Application::GetApp()->m_viewPortWidth,GEngine::Application::GetApp()->m_viewPortHeight };
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::Begin("ViewPort");
+	GEngine::Application::SetInputEnabled(ImGui::IsWindowFocused());
+	ImVec2 viewPortSize = ImGui::GetContentRegionAvail();
+	glm::vec2 sz = { viewPortSize.x, viewPortSize.y };
+	glm::vec2 csz = { GEngine::RenderPipeline::GetFrameBuffer()->GetTexture()->GetWidth(), GEngine::RenderPipeline::GetFrameBuffer()->GetTexture()->GetHeight() };
+	if (lastFrameSize != sz || handleResize) {
+		
+		finalSize = scaleRatio(sz.x, sz.y, originalSize.x, originalSize.y);
+		GEngine::Application::GetApp()->m_viewPortWidth = finalSize.x;
+		GEngine::Application::GetApp()->m_viewPortHeight = finalSize.y;
+		//GEngine::RenderPipeline::GetFrameBuffer()->UpdateSize(originalSize.x, originalSize.y);
+		lastFrameSize = sz;
+		/*
+		handleResize = false;
+		*/
+	}
+
+
+	ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - finalSize.x) * .5f , ImGui::GetCursorPosY() });
+	GEngine::Application::SetViewPortOffset({ ImGui::GetCursorPosX() + ImGui::GetWindowPos().x, ImGui::GetCursorPosY() + ImGui::GetWindowPos().y });
+	ImGui::Image((void*)(intptr_t)GEngine::RenderPipeline::GetFrameBuffer()->GetTexture()->GetRendererID(), { finalSize.x, finalSize.y }, { 0,1 }, { 1,0 });
+	ImGui::End();
+	ImGui::PopStyleVar();
 }
 

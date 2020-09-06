@@ -27,6 +27,13 @@ namespace GEngine {
 		virtual void SetGravityScale(const float f) override;
 		virtual void SetScale(const glm::vec2& scale) override;
 		virtual void SetAngularVelocity(const float f) override;
+		virtual void SetAwake(bool b) override;
+
+
+		virtual void SetMask(const uint16_t bits) override;
+		virtual void SetCategory(const uint16_t bits) override;
+		virtual void SetGroupIndex(const int16_t index) override;
+
 
 		virtual void SetSensor(const bool b) override;
 

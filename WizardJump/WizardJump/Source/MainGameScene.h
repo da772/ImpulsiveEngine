@@ -8,6 +8,7 @@
 #include "Environment/WallEntity.hpp"
 #include "Environment/PlatformEntity.hpp"
 #include "Environment/Objects/FireEntity.hpp"
+#include "Character/CharacterController.hpp"
 
 
 class MainGameScene : public GEngine::Scene {
@@ -25,21 +26,14 @@ public:
 	inline void OnUpdate(GEngine::Timestep timestep) override
 	{
 		long long time = GEngine::Time::GetEpochTimeMS();
-#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
-		ImGuiIO& io = ImGui::GetIO();
-		if (!io.WantCaptureKeyboard && !io.WantCaptureMouse) {
-			m_CameraController->OnUpdate(timestep);
-		}
-#else
 		m_CameraController->OnUpdate(timestep);
-#endif
 		glm::vec3 pos;
-		float dist = GEngine::GEMath::distance(m_CameraController->GetPosition(), e->GetEntityPosition());
+		float dist = GEngine::GEMath::distance(m_CameraController->GetPosition(), characterEntity->GetEntityPosition());
 		if (dist > .01f) {
-			pos = GEngine::GEMath::lerp(m_CameraController->GetPosition(), e->GetEntityPosition(), 10.f * timestep);
+			pos = GEngine::GEMath::lerp(m_CameraController->GetPosition(), characterEntity->GetEntityPosition(), 10.f * timestep);
 		}
 		else {
-			pos = e->GetEntityPosition();
+			pos = characterEntity->GetEntityPosition();
 		}
 	
 		m_CameraController->SetPosition(pos);
@@ -59,17 +53,16 @@ public:
 
 	}
 	
-	Ref<Entity> e;
+	Ref<CharacterEntity> characterEntity;
 	GEngine::Ref<AudioSource> source;
 
 	
 	inline virtual void OnEvent(GEngine::Event& e) override {
-#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
-		ImGuiIO& io = ImGui::GetIO();
-		if (io.WantCaptureKeyboard || io.WantCaptureMouse) return;
-#endif
-		m_CameraController->OnEvent(e);
 
+		m_CameraController->OnEvent(e);
+#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
+		if (!Application::InputEnabled()) return;
+#endif
 		if (e.GetEventType() == EventType::KeyReleased) {
 			GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
 			if (_e.GetKeyCode() == GE_KEY_P) {
@@ -128,8 +121,8 @@ public:
 		
 		AddEntity(GEngine::CreateGameObject<BackgroundEntity>());
 		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
-		e = GEngine::CreateGameObject<CharacterEntity>();
-		AddEntity(e);
+		characterEntity = GEngine::CreateGameObject<CharacterEntity>();
+		AddEntity(characterEntity);
 
 
 		/* test fire
@@ -200,17 +193,35 @@ public:
 		if (!DebugLayer::showLog) return;
 		ImGui::Begin("Debug Info", &DebugLayer::showLog);
 		ImGui::Separator();
+		ImGui::Text("Character: ");
+		ImGui::Separator();
+		ImGui::Text("Player Position:  (%f, %f, %f)", characterEntity->GetEntityPosition().x, characterEntity->GetEntityPosition().y, characterEntity->GetEntityPosition().z);
+		ImGui::Text("Player Projected Velocity:  (%f, %f)", characterEntity->m_characterComponent->_realVel.x, characterEntity->m_characterComponent->_realVel.y);
+		ImGui::Text("Player Velocity Velocity:  (%f, %f)", characterEntity->m_characterComponent->bodyComp->GetVelocity().x, characterEntity->m_characterComponent->bodyComp->GetVelocity().y);
+		ImGui::Separator();
+		ImGui::Text("Touch Info");
+		ImGui::Separator();
+		ImGui::Text("Touch Count: %d", characterEntity->m_characterComponent->m.size());
+		if (characterEntity->m_characterComponent->m.size() == 1) {
+			ImGui::Text("Touch id: %lld", characterEntity->m_characterComponent->m.begin()->first);
+			ImGui::Text("Touch State: %d", characterEntity->m_characterComponent->m.begin()->second.GetState());
+			ImGui::Text("Touch X: %f", characterEntity->m_characterComponent->m.begin()->second.GetX());
+			ImGui::Text("Touch Y: %f", characterEntity->m_characterComponent->m.begin()->second.GetY());
+			ImGui::Text("Touch Force: %f", characterEntity->m_characterComponent->m.begin()->second.GetForce());
+			ImGui::Text("Touch Time: %lld", characterEntity->m_characterComponent->m.begin()->second.GetTime());
+		}
+
+		ImGui::Separator();
+
+		ImGui::Separator();
 		ImGui::Text("Camera");
 		ImGui::Separator();
 		ImGui::Text("Camera Position: (%f, %f, %f)", m_CameraController->GetPosition().x, m_CameraController->GetPosition().y, m_CameraController->GetPosition().z);
 		ImGui::Text("Camera Rotation: (%f, %f, %f)", m_CameraController->GetRotation().x, m_CameraController->GetRotation().y, m_CameraController->GetRotation().z);
 		ImGui::Text("Camera Zoom: %f", m_CameraController->GetFOV());
 		ImGui::Separator();
-		ImGui::Text("Character: ");
-		ImGui::Separator();
-		ImGui::Text("Player Position:  (%f, %f, %f)", e->GetEntityPosition().x, e->GetEntityPosition().y, e->GetEntityPosition().z);
-		ImGui::Separator();
-
+		ImGui::Text("Mouse");
+		ImGui::Text("Mouse Position: (%f, %f}", Input::GetMousePosition().first, Input::GetMousePosition().second);
 		ImGui::End();
 
 

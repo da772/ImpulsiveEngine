@@ -97,6 +97,8 @@ namespace GEngine {
 
 		Entity();
 
+		inline const std::unordered_map<uint64_t, Ref<Component>>& GetComponents() const { return components; }
+
 		static int refCount;
 
 	private:

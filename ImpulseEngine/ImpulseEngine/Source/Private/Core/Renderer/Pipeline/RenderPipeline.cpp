@@ -4,9 +4,11 @@
 #include "Public/Core/Renderer/Graphics/Renderable.h"
 
 #include "Public/Core/Renderer/Renderer2D.h"
+#include "Public/Core/Renderer/Graphics/Buffer.h"
 
 namespace GEngine {
 
+	Ref<FrameBuffer> RenderPipeline::s_frameBuffer;
 
 	void RenderPipeline::Render()
 	{
@@ -48,6 +50,11 @@ namespace GEngine {
 
 	void RenderPipeline::Clear() {
 		renderables.clear();
+	}
+
+	void RenderPipeline::SetSize(const int width, const int height)
+	{
+		s_frameBuffer->UpdateSize(width, height);
 	}
 
 }
