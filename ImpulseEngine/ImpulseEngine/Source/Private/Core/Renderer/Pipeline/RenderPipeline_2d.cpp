@@ -10,8 +10,10 @@ namespace GEngine {
 
 	RenderPipeline_2d::RenderPipeline_2d()
 	{
-		if (!s_frameBuffer)
+#if defined( GE_CONSOLE_APP)
+		if (!s_frameBuffer && Application::DebugTools())
 			s_frameBuffer = FrameBuffer::Create(Application::GetWidth(), Application::GetHeight(), TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
+#endif
 	}
 
 	RenderPipeline_2d::~RenderPipeline_2d()

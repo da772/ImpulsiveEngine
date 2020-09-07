@@ -10,8 +10,10 @@ namespace GEngine {
 
 	RenderPipeline_ui::RenderPipeline_ui()
 	{
-		if (!s_frameBuffer)
+#if defined( GE_CONSOLE_APP)
+		if (!s_frameBuffer && Application::DebugTools())
 			s_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
+#endif
 	}
 
 	void RenderPipeline_ui::RenderStart()
