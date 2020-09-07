@@ -17,6 +17,9 @@
 #include <OpenGLES/ES3/gl.h>
 #endif
 #endif
+#include "Public/Core/Renderer/Graphics/Texture.h"
+#include "Public/Core/Renderer/RenderCommand.h"
+#include "Public/Core/Application/Application.h"
 
 namespace GEngine {
 
@@ -98,6 +101,59 @@ namespace GEngine {
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	}
+
+	OpenGL_FrameBuffer::OpenGL_FrameBuffer(int width, int height, int format) : FrameBuffer(width, height, format)
+	{
+		Create();
+	}
+
+	OpenGL_FrameBuffer::~OpenGL_FrameBuffer()
+	{
+		glDeleteFramebuffers(1, &m_rendererId);
+		m_texture = nullptr;
+	}
+
+	void OpenGL_FrameBuffer::Create()
+	{
+		glGenFramebuffers(1, &m_rendererId);
+		Bind();
+		m_texture = Texture2D::Create("", m_width, m_height);
+		m_texture->SetData(NULL, 0, m_format, m_width, m_height);
+		m_texture->Bind();
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture->GetRendererID(), 0);
+		m_texture->UnBind();
+		UnBind();
+	}
+
+	void OpenGL_FrameBuffer::Invalidate()
+	{
+		m_texture = nullptr;
+		glDeleteFramebuffers(1, &m_rendererId);
+		m_rendererId = 0;
+		UnBind();
+	}
+
+	void OpenGL_FrameBuffer::Bind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_rendererId);
+		RenderCommand::SetViewport(0, 0, m_width, m_height);
+	}
+
+	void OpenGL_FrameBuffer::UnBind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		if (Application::GetApp()->GetWindow())
+			RenderCommand::SetViewport(0, 0, Application::GetWindowWidth(), Application::GetWindowWidth());
+	}
+
+	void OpenGL_FrameBuffer::UpdateSize(int width, int height)
+	{
+		//Invalidate();
+		m_width = width;
+		m_height = height;
+		m_texture->SetData(NULL, 0, m_format, m_width, m_height);
+		
 	}
 
 }

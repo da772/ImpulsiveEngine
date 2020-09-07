@@ -8,6 +8,7 @@
 namespace GEngine {
 
 	Ref<PhysicsContext> Physics::m_context;
+	long long Physics::m_lastUpdate;
 
 	void Physics::Initalize()
 	{
@@ -46,10 +47,29 @@ namespace GEngine {
 		return m_context->CreateBody(info);
 	}
 
-	void Physics::Update(float timestep)
+	glm::vec2 Physics::GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
-		m_context->Simulate(timestep);
+		return m_context->GetTrajectoryPoint2D(startPos, startVel, step);
+	}
+
+	GEngine::Ref<GEngine::RayCastInfo> Physics::RayCast2D(const glm::vec2 startPos, const glm::vec2 endPos, const std::vector< Weak<PhysicsBody>>& ignoreBodies)
+	{
+		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
+		return m_context->RayCast2D(startPos, endPos, ignoreBodies);
+	}
+
+	std::vector<GEngine::Weak<GEngine::PhysicsBody>> Physics::QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
+	{
+		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
+		return m_context->QueryCollision(position, scale, ignoreBodies);
+	}
+
+	void Physics::Update(float dt)
+	{
+		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
+		m_context->Simulate(dt);
+		
 	}
 
 }

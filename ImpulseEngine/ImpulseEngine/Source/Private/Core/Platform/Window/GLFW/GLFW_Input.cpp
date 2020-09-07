@@ -56,11 +56,10 @@ namespace GEngine {
 		if (e.GetEventType() == EventType::MouseMoved) {
 			
 			const MouseMovedEvent& mouse = (MouseMovedEvent&)e;
-			int width, height;
-			Application::GetApp()->GetWindow()->GetFrameBufferSize(&width, &height);
+			int width = Application::GetWidth(), height = Application::GetHeight();
 				CollisionDetection::InteractionUI(
-					GEMath::MapRange(mouse.GetX() / (float)width, 0, 1, -1, 1),
-					-GEMath::MapRange(mouse.GetY() / (float)height, 0, 1, -1, 1));
+					GEMath::MapRange(Input::GetMouseX() / (float)width, 0, 1, -1, 1),
+					-GEMath::MapRange(Input::GetMouseY() / (float)height, 0, 1, -1, 1));
 		}
 	}
 

@@ -42,7 +42,7 @@ namespace GEngine {
 		void SetZOrder(const long id, const float zOrder);
 		void SetQuadColor(const long id, const glm::vec4& color);
 		void SetQuadColorScript(const long id, const Ref<ScriptVector4>& color);
-		void SetRotation(const long id, const float rotation) {};
+		void SetRotation(const long id, const float rotation);
 
 		virtual void OnAttached(Ref<Entity> entity) override;
 		virtual void DeAttached(Ref<Entity> entity) override;

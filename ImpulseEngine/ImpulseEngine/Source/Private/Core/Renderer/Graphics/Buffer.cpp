@@ -77,4 +77,17 @@ namespace GEngine {
 	}
 
 
+	GEngine::Ref<GEngine::FrameBuffer> FrameBuffer::Create(int width, int height, int format)
+	{
+		switch (GraphicsContext::GetGraphicsApi()) {
+#if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
+		case GraphicsApi::FGraphicsApi::OPENGL:
+			return make_shared<OpenGL_FrameBuffer>(width, height, format);
+#endif
+		default:
+			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
+			return nullptr;
+		}
+	}
+
 }

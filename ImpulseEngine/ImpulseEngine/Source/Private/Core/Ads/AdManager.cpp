@@ -46,7 +46,7 @@ namespace GEngine {
 	void AdManager::ShowRewardAd(std::function<void(int, std::string)> rewardCallback, std::function<void(int)> endCallback)
 	{
 		if (AdManager::m_ad != nullptr) {
-			m_ad->ShowRewardAd();
+			m_ad->ShowRewardAd(rewardCallback,endCallback);
 		}
 	}
 

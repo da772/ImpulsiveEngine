@@ -24,6 +24,7 @@
 #include "Public/Core/Application/Components/UI/ButtonComponent.h"
 #include "Public/Core/Application/Components/NativeScriptComponent.h"
 #include "Public/Core/Application/Components/Audio/AudioComponent.h"
+#include "Public/Core/Application/Components/TransformComponent.h"
 #include "Public/Core/Application/Components/Audio/AudioListenerComponent.h"
 
 
@@ -37,6 +38,7 @@
 #include "Public/Core/Renderer/Graphics/Shader.h"
 #include "Public/Core/Renderer/Graphics/Texture.h"
 #include "Public/Core/Renderer/Graphics/Font.h"
+#include "Public/Core/Renderer/Pipeline/RenderPipeline.h"
 
 #include "Public/Core/Renderer/Graphics/VertexArray.h"
 #include "Public/Core/Renderer/Graphics/SubTexture2D.h"
@@ -65,6 +67,11 @@
 
 #include "Public/Core/Audio/AudioManager.h"
 #include "Public/Core/Audio/AudioSource.h"
+
+
+#include "Public/Core/Physics/Physics.h"
+#include "Public/Core/Physics/PhysicsContext.h"
+#include "Public/Core/Physics/PhysicsBody.h"
 
 #endif
 

@@ -26,7 +26,7 @@ namespace GEngine {
 
 	}
 
-	void Vulkan_Texture2D::SetData(void* data, uint32_t size, u32 flags)
+	void Vulkan_Texture2D::SetData(void* data, uint32_t size, u32 flags, int width, int height)
 	{
 
 	}

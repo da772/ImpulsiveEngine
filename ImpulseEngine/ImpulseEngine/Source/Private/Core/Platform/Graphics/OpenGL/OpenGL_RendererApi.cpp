@@ -86,7 +86,7 @@ namespace GEngine {
 
 	void OpenGL_RendererApi::DrawArraysLines(const Ref<VertexArray>& vertexArray)
 	{
-		glDrawArrays(GL_LINES, 0, vertexArray->GetVertexCount());
+		glDrawArrays(GL_LINE_STRIP, 0, vertexArray->GetVertexCount());
 	}
 
 	void OpenGL_RendererApi::DrawText3D(const char* txt, const glm::vec4& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center)

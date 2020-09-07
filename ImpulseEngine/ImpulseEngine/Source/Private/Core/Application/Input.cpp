@@ -11,13 +11,46 @@
 #include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
 #endif
 
+#include "Public/Core/Application/Application.h"
 
 namespace GEngine {
 
 	Input* Input::s_Instance = nullptr;
 
+	bool Input::IsKeyPressed(int keycode)
+	{
+		if (!Application::InputEnabled()) return false;
+		return s_Instance->IsKeyPressedImpl(keycode); 
+	}
+
+	bool Input::IsMouseButtonPressed(int button)
+	{
+		if (!Application::InputEnabled()) return false;
+		return s_Instance->IsMouseButtonPressedImpl(button);
+	}
+
+	float Input::GetMouseX()
+	{
+		if (!Application::InputEnabled()) return 0;
+		return s_Instance->GetMouseXImpl() - Application::GetViewPortOffsetX();
+	}
+
+	float Input::GetMouseY()
+	{
+		if (!Application::InputEnabled()) return 0;
+		return s_Instance->GetMouseYImpl() - Application::GetViewPortOffsetY();
+	}
+
+	std::pair<float, float> Input::GetMousePosition()
+	{
+		if (!Application::InputEnabled()) return { 0.f,0.f };
+		std::pair<float, float> pair = s_Instance->GetMousePositionImpl();
+		return { pair.first - Application::GetViewPortOffsetX(), pair.second - Application::GetViewPortOffsetY() };
+	}
+
 	void Input::ProcessEvents(const Event& e)
 	{
+		if (!Application::InputEnabled()) return;
 		if (s_Instance != nullptr)
 			s_Instance->ProcessEvent(e);
 	}

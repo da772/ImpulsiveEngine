@@ -13,11 +13,15 @@ namespace GEngine {
 		virtual void Reload() override;
 
 		virtual void Bind(uint32_t slot = 0) const override;
+		virtual void UnBind() const override;
 		virtual inline uint32_t GetWidth() const override { return m_Width; }
 		virtual inline uint32_t GetHeight() const override { return m_Height; }
 		virtual inline const u32 GetRendererID() const override { return m_RendererID; }
-		virtual void SetData(void* data, uint32_t size, u32 flags) override;
+		virtual void SetData(void* data, uint32_t size, u32 flags, int width = 0, int height = 0) override;
 		
+
+
+		void Resize(int width, int height) override;
 
 	private:
 		void UploadDataSTBI(unsigned char* _data, uint64_t _size);

@@ -66,6 +66,7 @@ namespace GEngine {
 		static void DrawCube(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color);
 
 		static void DrawLine(const glm::vec3& startPos,const glm::vec3& endPos,const glm::vec4& color);
+		static void DrawLines(const std::vector<float>& lines, const glm::vec4& color);
 		
 		static void DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center = true);
 
@@ -146,6 +147,7 @@ namespace GEngine {
 			Ref<Shader> shape_shader;
 			Ref<GEngine::Texture2D> empty_texture;
 			Ref<GEngine::VertexArray> line_vArray;
+
 			Ref<GEngine::VertexBuffer> line_vBuffer;
 
 		};

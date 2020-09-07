@@ -62,6 +62,8 @@ namespace GEngine {
 
 		static int GetWidth();
 		static int GetHeight();
+		static int GetWindowWidth();
+		static int GetWindowHeight();
 		static int GetSafeTop();
 		static int GetSafeBottom();
 		static int GetSafeLeft();
@@ -70,7 +72,14 @@ namespace GEngine {
 		static float GetSafeBottomUI();
 		static float GetSafeLeftUI();
 		static float GetSafeRightUI();
+		static inline bool DebugTools() { return s_debugTools; }
 
+		static const int GetViewPortOffsetX() { return s_Instance->m_viewPortOffset.x; }
+		static const int GetViewPortOffsetY() { return s_Instance->m_viewPortOffset.y; }
+
+		static void SetViewPortOffset(const glm::vec2& offset) { s_Instance->m_viewPortOffset = offset; }
+
+		inline static const bool IsGamePaused() { return s_Instance->m_pause; };
 
 		void Setup();
 		void Shutdown();
@@ -78,6 +87,10 @@ namespace GEngine {
         void Draw();
         void Pause();
         void Resume();
+
+
+		static void PauseGame();
+		static void ResumeGame();
 
 		std::unordered_map<std::string, float> profile = {
 		{"Layers", 0.f},
@@ -89,6 +102,12 @@ namespace GEngine {
 
 		inline bool IsRunning() { return m_Running; }
 		void EnableImGui(bool b);
+
+		int m_viewPortWidth = 0, m_viewPortHeight = 0;
+
+		static bool InputEnabled();
+		static void SetInputEnabled(bool b);
+
 	protected:
 		void SetWindowApi(const FWindowApi& windowApi);
 		void SetGraphicsApi(const FGraphicsApi& graphicsApi);
@@ -100,25 +119,28 @@ namespace GEngine {
 		FWindowApi GetDefaultWindowApi();
 		FGraphicsApi GetDefaultGraphicsApi();
 
+		bool m_pause = false;
+
 		double m_LastFrameTime = 0;
 		int m_frameCount = 0;
 		float m_totalTime = 0;
 		float m_fps = 0;
 		bool m_loaded = true;
         
-		
-		
+		glm::vec2 m_viewPortOffset = glm::vec2(0,0);
 		int m_width = 1280, m_height = 720;
 
 		const char* title = "NULL";
 		
-	
+		static bool s_debugTools;
 		
-		
+		bool m_enableInput = true;
 	private:
 		bool b_EnableImGui = false;
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+
+		
 		
 		void LayerSetup();
 		void LayerReset();

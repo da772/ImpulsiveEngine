@@ -36,9 +36,10 @@ namespace GEngine {
 		virtual uint32_t GetHeight() const = 0;
 		virtual uint32_t GetWidth() const = 0;
 
-		virtual void SetData(void* data, uint32_t size, u32 flags = 0) = 0;
+		virtual void SetData(void* data, uint32_t size, u32 flags = 0, int width = 0, int height = 0) = 0;
 		virtual const u32 GetRendererID() const = 0;
 		virtual void Bind(uint32_t slot = 0) const = 0;
+		virtual void UnBind() const = 0;
 		virtual inline const std::string& GetName() { return name; }
 
 		virtual void Unload() = 0;
@@ -58,12 +59,14 @@ namespace GEngine {
 		static void UnloadTextures();
 		static void ReloadTextures();
 		static Ref<Texture2D> Create(const std::string& path, const u32 flags = 0);
-		static Ref<Texture2D> Create(const std::string& name,u32 width, uint32_t height);
+		static Ref<Texture2D> Create(std::string name,u32 width, uint32_t height);
+		virtual void Resize(int width, int height) {};
 		virtual uint32_t GetHeight() const override { return 0; };
 		virtual uint32_t GetWidth() const override { return 0; }
-		virtual void SetData(void* data, uint32_t size, u32 flags = 0)override {};
+		virtual void SetData(void* data, uint32_t size, u32 flags = 0, int width = 0, int height = 0)override {};
 		virtual const u32 GetRendererID() const override { return 0; };
 		virtual void Bind(uint32_t slot = 0) const override {};
+		virtual void UnBind() const override {};
 		static void Destroy(Weak<Texture2D> texture);
 		std::mutex m_mutex;
 

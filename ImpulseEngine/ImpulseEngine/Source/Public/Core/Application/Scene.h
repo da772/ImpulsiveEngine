@@ -22,8 +22,8 @@ namespace GEngine {
 		inline std::vector<Ref<Entity>> FindComponentOfType() {
 			std::vector<Ref<Entity>> c;
 			for (std::pair<uint32_t, Ref<Entity>> _c : entities) {
-                if (dynamic_cast<C*>(_c.second.get()) != nullptr) {
-                    c.push_back(_c.second);
+				if (dynamic_cast<C*>(_c.second.get()) != nullptr) {
+					c.push_back(_c.second);
 				}
 			}
 			return c;
@@ -45,7 +45,7 @@ namespace GEngine {
 		void Pause(bool b);
 		void UnloadGraphics();
 		void ReloadGraphics();
-		
+
 		bool IsInitalized() { return b_init; }
 
 		inline virtual void OnEvent(Event& e) {};
@@ -58,6 +58,8 @@ namespace GEngine {
 
 		inline virtual bool GetLoaded() { return b_loaded; }
 		inline virtual void SetLoaded(bool bLoaded) {  }
+
+		inline const std::unordered_map<uint64_t, Ref<Entity>>& GetEntities() const { return entities; }
 
 		
 	protected:

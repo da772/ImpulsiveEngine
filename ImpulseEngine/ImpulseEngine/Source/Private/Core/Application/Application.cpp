@@ -34,7 +34,7 @@ namespace GEngine {
     Application* Application::s_Instance = nullptr;
     FWindowApi Application::s_windowApi = FWindowApi::NONE;
     FGraphicsApi Application::s_graphicsApi = FGraphicsApi::NONE;
-
+    bool Application::s_debugTools = false;
 
     Application::Application() {
         GE_CORE_ASSERT(!Application::s_Instance, "Application Already Exists")
@@ -111,7 +111,7 @@ namespace GEngine {
     }
 
     void Application::ReloadGraphics() {
-        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running) return;
+        if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running || Application::GetApp()->m_loaded) return;
         if (!AdManager::AdPlaying() && !Application::GetApp()->m_loaded) Application::GetApp()->Resume();
         RenderCommand::Init();
         Texture2D::ReloadTextures();
@@ -138,10 +138,28 @@ namespace GEngine {
 
 	int Application::GetWidth()
 	{
+		if (!s_Instance->GetWindow())
+			return s_Instance->m_width;
+		if (s_debugTools)
+			return s_Instance->m_viewPortWidth;
         return  s_Instance->GetWindow()->GetWindowData().Width;
 	}
 
 	int Application::GetHeight()
+	{
+        if (!s_Instance->GetWindow())
+            return s_Instance->m_height;
+		if (s_debugTools)
+			return s_Instance->m_viewPortHeight;
+        return  s_Instance->GetWindow()->GetWindowData().Height;
+	}
+
+	int Application::GetWindowWidth()
+	{
+        return  s_Instance->GetWindow()->GetWindowData().Width;
+	}
+
+	int Application::GetWindowHeight()
 	{
         return  s_Instance->GetWindow()->GetWindowData().Height;
 	}
@@ -236,6 +254,16 @@ namespace GEngine {
         LayerSetup();
 	}
 
+	bool Application::InputEnabled()
+	{
+        return Application::s_Instance->m_enableInput;
+	}
+
+	void Application::SetInputEnabled(bool b)
+	{
+        Application::s_Instance->m_enableInput = b;
+	}
+
 	void Application::PushLayer(Layer* layer)
     {
         m_LayerStack.PushLayer(layer);
@@ -296,6 +324,18 @@ namespace GEngine {
         m_LastFrameTime = Time::GetEpochTimeMS();
     }
 
+	void Application::PauseGame()
+	{
+        Application::GetApp()->m_pause = true;
+        AudioManager::Pause();
+	}
+
+	void Application::ResumeGame()
+	{
+        Application::GetApp()->m_pause = false;
+        AudioManager::Resume();
+	}
+
 	void Application::Update(float ts) {
         
         if (!m_loaded) return;
@@ -333,7 +373,7 @@ namespace GEngine {
 		{
 			{
 				GE_PROFILE_TIMER("Application:OnUpdate", &profile["OnUpdate"]);
-				if (!m_Minimized) {
+				if (!m_Minimized && !m_pause) {
 					OnUpdate(timestep);
                     SceneManager::Update(timestep);
                     {
@@ -362,12 +402,15 @@ namespace GEngine {
 			}
 
             {
-                Physics::Update(timestep);
-                CollisionDetection::CheckCollision();
+                if (!m_pause) {
+                    Physics::Update(timestep);
+                    CollisionDetection::CheckCollision();
+                }
             }
 
             {
-                AudioManager::Update();
+                if (!m_pause)
+                 AudioManager::Update();
             }
 			
 			

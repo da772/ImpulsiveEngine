@@ -72,8 +72,8 @@ namespace GEngine {
 
 		/* Should use Framebuffer size of pipeline */
 		int width, height;
-        width  = GEngine::Application::GetApp()->GetWindow()->GetWidth();
-        height = GEngine::Application::GetApp()->GetWindow()->GetHeight();
+		width = 1080;//GEngine::Application::GetApp()->GetWindow()->GetWidth();
+		height = 1920;//GEngine::Application::GetApp()->GetWindow()->GetHeight();
 
 		std::string hash;
 		hash = Utility::GenerateHash(16);

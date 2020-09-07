@@ -21,7 +21,7 @@
 #include "Public/Core/Util/ThreadPool.h"
 #include "Public/Core/FileSystem/FileSystem.h"
 #include "Public/Core/Renderer/Graphics/SubTexture2D.h"
-
+	
 namespace GEngine {
 
 	OpenGL_Texture2D::OpenGL_Texture2D(const std::string& path, const u32 flags)
@@ -50,12 +50,18 @@ namespace GEngine {
 	{
 	}
 
-	void OpenGL_Texture2D::SetData(void* data, uint32_t size, u32 flags)
+	void OpenGL_Texture2D::SetData(void* data, uint32_t size, u32 flags, int width, int height)
 	{
 		m_flags = flags;
 		m_data = data;
 		m_size = size;
-		glGenTextures(1, (unsigned int*)&m_RendererID);
+		if (width != 0)
+			m_Width = width;
+		if (height != 0)
+			m_Height = height;
+
+		if (m_RendererID == 0)
+			glGenTextures(1, (unsigned int*)&m_RendererID);
         
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
@@ -99,6 +105,10 @@ namespace GEngine {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
 
+		if (m_flags & TEXTUREFLAGS_Min_Linear) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		}
+
 		if (m_flags & TEXTUREFLAGS_Mag_Linear_MipMap) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		}
@@ -123,6 +133,13 @@ namespace GEngine {
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 
+	}
+
+	void OpenGL_Texture2D::Resize(int width, int height)
+	{
+		m_Width = width;
+		m_Height = height;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_data);
 	}
 
 	void OpenGL_Texture2D::UploadDataSTBI(unsigned char* _data, uint64_t _size)
@@ -208,7 +225,13 @@ namespace GEngine {
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 	}
 
-	void OpenGL_Texture2D::Unload(){
+	void OpenGL_Texture2D::UnBind() const
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	void OpenGL_Texture2D::Unload() {
 		glDeleteTextures(1,(unsigned int*)&m_RendererID);
 		m_RendererID = 0;
 	}

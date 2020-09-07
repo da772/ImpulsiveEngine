@@ -37,4 +37,44 @@ namespace GEngine {
 		return sqrt(pow(a.x - b.x, 2.f) + pow(a.y - b.y, 2.f) + pow(a.z - b.z, 2.f));
 	}
 
+	float GEMath::max(float in, float max)
+	{
+		return in > max ? in : max;
+	}
+
+	float GEMath::clamp(float in, float min, float max)
+	{
+		return in > max ? max : in < min ? min : in;
+	}
+
+	int GEMath::clamp(int in, int min, int max)
+	{
+		return in > max ? max : in < min ? min : in;
+	}
+
+	glm::vec2 GEMath::projection(const glm::vec2& a, const glm::vec2& normal)
+	{
+		return (normal * dot(a, normal));
+	}
+
+	float GEMath::dot(const glm::vec2& a, const glm::vec2& b)
+	{
+		return a.x* b.x + a.y * b.y;
+	}
+
+	float GEMath::magnitude(const glm::vec2 a)
+	{
+		return (sqrt(a.x * a.x + a.y * a.y));
+	}
+
+	glm::vec2 GEMath::normalize(const glm::vec2& v)
+	{
+		return v / magnitude(v);
+	}
+
+	glm::vec2 GEMath::reflect(const glm::vec2& v, const glm::vec2 n)
+	{
+		return v - 2 * (dot(v, n)) * n;
+	}
+
 }

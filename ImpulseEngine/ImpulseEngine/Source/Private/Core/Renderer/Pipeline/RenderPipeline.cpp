@@ -4,9 +4,11 @@
 #include "Public/Core/Renderer/Graphics/Renderable.h"
 
 #include "Public/Core/Renderer/Renderer2D.h"
+#include "Public/Core/Renderer/Graphics/Buffer.h"
 
 namespace GEngine {
 
+	Ref<FrameBuffer> RenderPipeline::s_frameBuffer;
 
 	void RenderPipeline::Render()
 	{
@@ -44,6 +46,15 @@ namespace GEngine {
 		std::sort(renderables.begin(), renderables.end(), [](const Ref<Renderable>& r1, const Ref<Renderable>& r2) {
 			return r1->GetPriority() == r2->GetPriority() ? r1->GetTime() < r2->GetTime() :  r1->GetPriority() < r2->GetPriority();
 			});
+	}
+
+	void RenderPipeline::Clear() {
+		renderables.clear();
+	}
+
+	void RenderPipeline::SetSize(const int width, const int height)
+	{
+		s_frameBuffer->UpdateSize(width, height);
 	}
 
 }

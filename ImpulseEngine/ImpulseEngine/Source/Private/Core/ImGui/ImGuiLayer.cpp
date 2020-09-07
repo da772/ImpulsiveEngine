@@ -19,6 +19,7 @@
 #include "Public/Core/Platform/Graphics/Vulkan/Vulkan_GraphicsContext.h"
 #endif
 
+#include "Public/Core/FileSystem/FileSystem.h"
 
 
 
@@ -36,7 +37,7 @@ namespace GEngine {
 
 	}
 
-
+	ImFont* font2;
 	void ImGuiLayer::OnAttach()
 	{
 		IMGUI_CHECKVERSION();
@@ -50,7 +51,21 @@ namespace GEngine {
 
 		ImGui::StyleColorsCustom();
 
+		ImFont* font1 = io.Fonts->AddFontDefault();
+		Ref<FileData> fd = FileSystem::FileDataFromPath("Content/Fonts/roboto.ttf");
+
+		void* fnt = malloc(fd->GetDataSize());
+		memcpy( fnt, fd->GetData(), fd->GetDataSize());
+		font2 = io.Fonts->AddFontFromMemoryTTF(fnt, fd->GetDataSize(), 20);
+		//ImGui::PushFont(font2);
 		ImGuiStyle& style = ImGui::GetStyle();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 0);
+		
+		
+		
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
 			style.WindowRounding = 0.f;
@@ -79,6 +94,9 @@ namespace GEngine {
 	{
 		Api_Begin();
 		ImGui::NewFrame();
+		ImGui::PushFont(font2);
+		
+
 	}
 
 	void ImGuiLayer::End()
@@ -86,8 +104,9 @@ namespace GEngine {
 		ImGuiIO& io = ImGui::GetIO();
 		Application* app = Application::GetApp();
 		io.DisplaySize = ImVec2((float)app->GetWindow()->GetWidth(), (float)app->GetWindow()->GetHeight());
-
+		ImGui::PopFont();
 		ImGui::Render();
+		
 		Api_End();
 		
 	}

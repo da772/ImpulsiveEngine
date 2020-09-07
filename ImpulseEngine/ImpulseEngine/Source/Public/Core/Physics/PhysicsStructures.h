@@ -28,7 +28,7 @@ namespace GEngine {
 		float rotation = 0;
 		glm::vec2 linearVelocity = glm::vec2(0,0);
 		float angularVelocity = 0;
-		float linearDamping = .1f;
+		float linearDamping = 0.f;
 		float angularDamping = .1f;
 		bool canSleep = true;
 		bool awake = true;
