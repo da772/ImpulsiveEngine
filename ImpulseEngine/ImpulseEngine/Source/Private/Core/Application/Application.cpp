@@ -324,6 +324,18 @@ namespace GEngine {
         m_LastFrameTime = Time::GetEpochTimeMS();
     }
 
+	void Application::PauseGame()
+	{
+        Application::GetApp()->m_pause = true;
+        AudioManager::Pause();
+	}
+
+	void Application::ResumeGame()
+	{
+        Application::GetApp()->m_pause = false;
+        AudioManager::Resume();
+	}
+
 	void Application::Update(float ts) {
         
         if (!m_loaded) return;
@@ -361,7 +373,7 @@ namespace GEngine {
 		{
 			{
 				GE_PROFILE_TIMER("Application:OnUpdate", &profile["OnUpdate"]);
-				if (!m_Minimized) {
+				if (!m_Minimized && !m_pause) {
 					OnUpdate(timestep);
                     SceneManager::Update(timestep);
                     {
@@ -390,12 +402,15 @@ namespace GEngine {
 			}
 
             {
-				Physics::Update(timestep);
-				CollisionDetection::CheckCollision();
+                if (!m_pause) {
+                    Physics::Update(timestep);
+                    CollisionDetection::CheckCollision();
+                }
             }
 
             {
-                AudioManager::Update();
+                if (!m_pause)
+                 AudioManager::Update();
             }
 			
 			

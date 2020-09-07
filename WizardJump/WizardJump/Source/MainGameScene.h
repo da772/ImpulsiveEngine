@@ -38,7 +38,7 @@ public:
 	
 		m_CameraController->SetPosition(pos);
 
-		if (FPSuiComponent) {
+		if (FPSuiComponent && FPSuiComponent->IsInitialized()) {
 
 			if (!textId.empty()) {
 				FPSuiComponent->RemoveText(textId);
@@ -59,10 +59,12 @@ public:
 	
 	inline virtual void OnEvent(GEngine::Event& e) override {
 
-		m_CameraController->OnEvent(e);
 #if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
 		if (!Application::InputEnabled()) return;
 #endif
+
+		m_CameraController->OnEvent(e);
+
 		if (e.GetEventType() == EventType::KeyReleased) {
 			GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
 			if (_e.GetKeyCode() == GE_KEY_P) {

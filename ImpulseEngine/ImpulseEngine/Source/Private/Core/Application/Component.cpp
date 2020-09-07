@@ -8,6 +8,11 @@ namespace GEngine {
 
 	int Component::refCount = 0;
 
+	void Component::Destroy()
+	{
+		entity.lock()->RemoveComponent(static_pointer_cast<GEngine::Component>(self.lock()));
+	}
+
 	void Component::SetEntity(Weak<Entity> e)
 	{
 		if (entity.lock() == nullptr) {

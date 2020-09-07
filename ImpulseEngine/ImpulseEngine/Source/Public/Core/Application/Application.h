@@ -79,12 +79,18 @@ namespace GEngine {
 
 		static void SetViewPortOffset(const glm::vec2& offset) { s_Instance->m_viewPortOffset = offset; }
 
+		inline static const bool IsGamePaused() { return s_Instance->m_pause; };
+
 		void Setup();
 		void Shutdown();
         void Update(float ts = 0);
         void Draw();
         void Pause();
         void Resume();
+
+
+		static void PauseGame();
+		static void ResumeGame();
 
 		std::unordered_map<std::string, float> profile = {
 		{"Layers", 0.f},
@@ -112,6 +118,8 @@ namespace GEngine {
 		CameraController* m_CameraContoller = nullptr;
 		FWindowApi GetDefaultWindowApi();
 		FGraphicsApi GetDefaultGraphicsApi();
+
+		bool m_pause = false;
 
 		double m_LastFrameTime = 0;
 		int m_frameCount = 0;

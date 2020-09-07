@@ -65,6 +65,8 @@ namespace GEngine {
 		inline virtual const std::string& GetTag() { return m_tag; }
 		inline virtual void SetTag(const std::string& tag) { m_tag = tag; }
 
+		void Destroy();
+
 	protected:
 		virtual void OnBegin() {};
 		virtual void OnEnd() {};
