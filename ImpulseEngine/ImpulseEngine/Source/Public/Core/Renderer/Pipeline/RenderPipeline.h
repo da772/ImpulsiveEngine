@@ -22,6 +22,8 @@ namespace GEngine {
 		static Ref<FrameBuffer> GetFrameBuffer() { return s_frameBuffer; };
 		virtual void RenderStart() {};
 		virtual void RenderEnd() {};
+		virtual void Unload() {};
+		virtual void Reload() {};
 
 	protected:
 		std::vector<Ref<Renderable>> renderables;

@@ -13,8 +13,7 @@ namespace GEngine {
 
 
 	public:
-
-		
+	
 		void Begin();
 		void Update(Timestep timestep);
 		void End();

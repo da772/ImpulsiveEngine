@@ -103,6 +103,7 @@ namespace GEngine {
         if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running) return;
         if (!AdManager::AdPlaying() && Application::GetApp()->m_loaded) Application::GetApp()->Pause();
         SceneManager::UnloadGraphics();
+        Renderer::Unload();
         Font::UnloadGraphics();
         Texture2D::UnloadTextures();
         Shader::UnloadShaders();
@@ -117,6 +118,7 @@ namespace GEngine {
         Texture2D::ReloadTextures();
         Font::ReloadGraphics();
         Shader::ReloadShaders();
+        Renderer::Reload();
         if (!AdManager::AdPlaying()) AudioManager::Resume();
         SceneManager::ReloadGraphics();
         

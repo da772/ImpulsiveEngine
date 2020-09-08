@@ -12,7 +12,12 @@ namespace GEngine {
 		Weak<GameObject> self;
 		uint64_t hash;
 
+		
 
+	protected:
+		inline std::string GetClassName() {
+			return typeid(*self.lock().get()).name();
+		}
 
 	};
 

@@ -67,6 +67,7 @@ namespace GEngine {
 
 		static void DrawLine(const glm::vec3& startPos,const glm::vec3& endPos,const glm::vec4& color);
 		static void DrawLines(const std::vector<float>& lines, const glm::vec4& color);
+		static void DrawDebugLines(const std::vector<float>& lines, const glm::vec4& color);
 		
 		static void DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center = true);
 
@@ -76,11 +77,17 @@ namespace GEngine {
 
 		static void SetDepth(bool b);
 
+		static void Unload();
+		static void Reload();
+
+		
+
 	private:
 		static std::vector<FPipeline> queue;
 		static std::unordered_map<std::string, FPipeline> queueId;
 		static void OnInit();
-
+		static void CreateBuffers();
+		static void DestroyBuffers();
 
 
 		struct SceneData

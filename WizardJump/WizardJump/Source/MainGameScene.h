@@ -224,6 +224,15 @@ public:
 		ImGui::Separator();
 		ImGui::Text("Mouse");
 		ImGui::Text("Mouse Position: (%f, %f}", Input::GetMousePosition().first, Input::GetMousePosition().second);
+		ImGui::Separator();
+
+		if (ImGui::Button("ReloadGraphics")) {
+			GEngine::Application::UnloadGraphics();
+			GEngine::Application::GetApp()->QueueGraphicsApi(GEngine::FGraphicsApi::OPENGL);
+			GEngine::Application::ReloadGraphics();
+		}
+
+
 		ImGui::End();
 
 

@@ -51,7 +51,7 @@ namespace GEngine {
 	Scope<Renderer::ShapeData> Renderer::s_ShapeData;
 	std::vector<FPipeline> Renderer::queue;
 	std::unordered_map<std::string, FPipeline> Renderer::queueId;
-	
+
 	void Renderer::BeginScene(Camera* camera)
 	{
 		if (camera == nullptr) {
@@ -81,18 +81,23 @@ namespace GEngine {
 		Renderer::AddPipeline("2d", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 0);
 		Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 998);
 		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 999);
-		
+
 		s_ShapeData.reset(new ShapeData());
 
 		s_ShapeData->shape_shader = Shader::Create("Content/shaders/TextureShader.glsl");
 		s_ShapeData->empty_texture.reset();
-		s_ShapeData->empty_texture = std::shared_ptr<GEngine::Texture2D>(GEngine::Texture2D::Create("rendererEmptyTexture",1, 1));
+		s_ShapeData->empty_texture = std::shared_ptr<GEngine::Texture2D>(GEngine::Texture2D::Create("rendererEmptyTexture", 1, 1));
 		uint32_t whiteTextureData = 0xffffffff;
 		s_ShapeData->empty_texture->SetData(&whiteTextureData, sizeof(uint32_t));
 
+		CreateBuffers();
+	}
+
+	void Renderer::CreateBuffers()
+	{
 		s_ShapeData->box_vArray.reset(VertexArray::Create());
 		s_ShapeData->box_vBuffer.reset(VertexBuffer::Create(s_ShapeData->Box, sizeof(s_ShapeData->Box)));
-		s_ShapeData->box_vBuffer->SetLayout(std::shared_ptr< BufferLayout>( new GEngine::BufferLayout({ { GEngine::ShaderDataName::Position} })));
+		s_ShapeData->box_vBuffer->SetLayout(std::shared_ptr< BufferLayout>(new GEngine::BufferLayout({ { GEngine::ShaderDataName::Position} })));
 		s_ShapeData->box_vArray->AddVertexBuffer(s_ShapeData->box_vBuffer);
 
 		s_ShapeData->line_vArray.reset(VertexArray::Create());
@@ -101,9 +106,17 @@ namespace GEngine {
 		s_ShapeData->line_vArray->AddVertexBuffer(s_ShapeData->line_vBuffer);
 	}
 
+	void Renderer::DestroyBuffers()
+	{
+		s_ShapeData->box_vArray = nullptr;
+		s_ShapeData->box_vBuffer = nullptr;
+		s_ShapeData->line_vArray = nullptr;
+		s_ShapeData->line_vBuffer = nullptr;
+	}
+
 	void Renderer::Shutdown()
 	{
-
+		s_ShapeData = nullptr;
 		Renderer::queue.clear();
 		Renderer::queueId.clear();
 		RenderCommand::Destroy();
@@ -121,7 +134,7 @@ namespace GEngine {
 
 	void Renderer::Prepare()
 	{
-		RenderCommand::SetClearColor({0, 0, 0, 1});
+		RenderCommand::SetClearColor({ 0, 0, 0, 1 });
 		RenderCommand::Clear();
 	}
 
@@ -140,7 +153,7 @@ namespace GEngine {
 			std::sort(Renderer::queue.begin(), Renderer::queue.end(), [](const FPipeline& p1, const FPipeline& p2) {return p1.i < p2.i; });
 			Renderer::queueId[std::string(id)] = _p;
 			return;
-		} 
+		}
 		return;
 	}
 
@@ -148,9 +161,25 @@ namespace GEngine {
 	{
 		if (Renderer::queueId.size() > 0 && Renderer::queueId.count(id)) {
 			return Renderer::queueId[std::string(id)].p;
-		} 
+		}
 		GE_CORE_ASSERT(false, "PIPELINE NOT FOUND");
 		return nullptr;
+	}
+
+	void Renderer::Unload()
+	{
+		for (const FPipeline& p : queue) {
+			p.p->Unload();
+		}
+		DestroyBuffers();
+	}
+
+	void Renderer::Reload()
+	{
+		CreateBuffers();
+		for (const FPipeline& p : queue) {
+			p.p->Reload();
+		}
 	}
 
 	void Renderer::EndScene()
@@ -159,7 +188,7 @@ namespace GEngine {
 		Renderer2D::EndScene();
 	}
 
-	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform )
+	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
 	{
 		shader->Bind();
 		shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
@@ -190,7 +219,7 @@ namespace GEngine {
 		Renderer::s_ShapeData->shape_shader->Bind();
 		Renderer::s_ShapeData->shape_shader->UploadUniformInt("u_Texture", 0);
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1) , scale);
+		glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1), scale);
 
 		Renderer::s_ShapeData->shape_shader->UploadUniformFloat4("u_Color", color);
 		Renderer::s_ShapeData->shape_shader->UploadUniformFloat2("u_UV", { 1.f,1.f });
@@ -224,14 +253,14 @@ namespace GEngine {
 		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([transform]() {
 
 			GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
-				
+
 			}));
 
 	}
 
 	void Renderer::DrawLines(const std::vector<float>& lines, const glm::vec4& color)
 	{
-		
+
 		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([lines, color]() {
 
 			Renderer::s_ShapeData->shape_shader->Bind();
@@ -249,9 +278,32 @@ namespace GEngine {
 			glm::mat4 transform = glm::translate(glm::mat4(1.f), { 0,0,0 });
 
 			GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
-			
-		}));		
-		
+
+			}));
+
+	}
+
+	void Renderer::DrawDebugLines(const std::vector<float>& lines, const glm::vec4& color)
+	{
+		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([lines, color]() {
+
+			Renderer::s_ShapeData->shape_shader->Bind();
+			Renderer::s_ShapeData->shape_shader->UploadUniformInt("u_Texture", 0);
+
+			Renderer::s_ShapeData->shape_shader->UploadUniformFloat4("u_Color", color);
+			Renderer::s_ShapeData->shape_shader->UploadUniformFloat2("u_UV", { 1.f,1.f });
+			Renderer::s_ShapeData->shape_shader->UploadUniformFloat("u_Threshold", 0.f);
+
+			Renderer::s_ShapeData->empty_texture->Bind();
+
+			s_ShapeData->line_vBuffer->SetVertices((float*)lines.data(), lines.size() * sizeof(float));
+			s_ShapeData->line_vArray->SetVertexCount(lines.size() / 3.f);
+
+			glm::mat4 transform = glm::translate(glm::mat4(1.f), { 0,0,0 });
+
+			GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
+
+			}));
 	}
 
 	void Renderer::DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center) {
