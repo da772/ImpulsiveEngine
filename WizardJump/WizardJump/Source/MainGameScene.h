@@ -148,15 +148,18 @@ public:
 
 		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(10, 10), glm::vec2(5, 20), 0.f);
 		AddEntity(wall);
-        AddEntity(GEngine::CreateGameObject<GroundEntity>());
+       // AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		
 		/**
 		 *  Platforms
 		 */
 
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(10, 10), glm::vec2(5, 20)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-10, 10), glm::vec2(5, 20)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0, -5.f), glm::vec2(25, 10)) );
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(2.f, 1.f)) );
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 4.9f), glm::vec2(2.f, .5f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 7.75f), glm::vec2(1.25f, .5f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 7.75f), glm::vec2(1.5f, .5f)));
 	
 		
 		/*
@@ -263,12 +266,13 @@ private:
 
 	bool bImGui = true;
 	std::string textId;
+	int targetWidth = 1080, targetHeight = 1920;
 
 
 
 	inline void SetupCamera() {
 		m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
-			(float)Application::GetWidth()/ (float)Application::GetHeight()));
+			(float)targetWidth/ (float)targetHeight));
 		m_CameraController->SetOnUpdateFn([this](GEngine::Timestep timeStep, glm::vec3& m_Position, glm::vec3& m_Rotation, glm::vec2& m_LastTouchPos,
 			uint64_t& m_lastTouchId, float& m_LastDistance) {
 

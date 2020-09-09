@@ -97,12 +97,10 @@ WizardJump::WizardJump()
 	GEngine::AdManager::Initialize();
 	GEngine::AdManager::SetUserId("This Is My User ID!");
 #ifdef GE_PLATFORM_ANDROID
-
 	GEngine::AdManager::SetAdId("ca-app-pub-0400118858384122~7825957542");
 
 	// Google Test Id
 	GEngine::AdManager::SetRewardAdId("ca-app-pub-3940256099942544/5224354917");
-
 
 	// Prototype Ad
 	//GEngine::AdManager::SetRewardAdId("ca-app-pub-4619437690188394/1929986237");
