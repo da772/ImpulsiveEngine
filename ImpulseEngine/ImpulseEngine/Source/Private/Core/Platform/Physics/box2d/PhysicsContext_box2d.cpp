@@ -150,7 +150,6 @@ namespace GEngine {
 	class __b2QueryCallback : public b2QueryCallback {
 		public:
 		__b2QueryCallback(const std::vector<Weak<PhysicsBody>>& ignoreBodies) : ignoreBodies(ignoreBodies) {
-
 		}
 	
 		bool ReportFixture(b2Fixture* fixture) override

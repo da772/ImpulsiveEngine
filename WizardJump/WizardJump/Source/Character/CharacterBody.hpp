@@ -31,7 +31,7 @@ public:
 		return m_quadCollider->GetLinearVelocity();
 	}
 
-	bool debug = false;
+	bool debug = true;
 	int groundedCount = 0;
 
 	bool isGrounded() { return groundedCount > 0; };
@@ -71,8 +71,8 @@ protected:
 		if (debug) {
 			m_debugSprite = CreateGameObject<SpriteComponent>();
 			GetEntity()->AddComponent(m_debugSprite);
-			m_debugSprite->CreateQuad({ pos.x,pos.y,1 }, 0, { scale.x,scale.y,1 }, { 1,0,0,.25f });
-			m_debugSprite->CreateQuad({ groundPos.x,groundPos.y,1 }, 0, { groundScale.x,groundScale.y,1 }, { 0,1,0,.25f });
+			m_debugSprite->CreateQuad({ pos.x,pos.y,11 }, 0, { scale.x,scale.y,1 }, { 1,0,0,.25f });
+			m_debugSprite->CreateQuad({ groundPos.x,groundPos.y,11}, 0, { groundScale.x,groundScale.y,1 }, { 0,1,0,.25f });
 		}
 
 	}

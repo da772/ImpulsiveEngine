@@ -16,6 +16,9 @@
 #include "Public/Core/Util/GEMath.h"
 
 namespace GEngine {
+
+	int Batch::s_BatchCount = 0;
+
      Batch::Batch(Ref<Shape> shape, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, int maxShapes, int maxTextures) : 
         m_IndexBuffer(indexBuffer), m_Shader(shader) {
 
@@ -33,6 +36,7 @@ namespace GEngine {
 			samplers.push_back(i);
 		}
 		m_Shader->UploadUniformIntArray("u_Textures", samplers.data(), maxTextures);
+		s_BatchCount++;
      }
 
      Batch::~Batch() {
@@ -42,6 +46,7 @@ namespace GEngine {
         m_Shader = nullptr;
 		m_Vertices.clear();
 		m_TextureIds.clear();
+		s_BatchCount--;
      }
 
 	 void Batch::SetVertices(std::vector<float>& vertices, std::vector<int>& textures, int indexCount)

@@ -1,8 +1,8 @@
 #include "Environment/PlatformEntity.hpp"
 
 std::unordered_map<EPlatformType, glm::vec2> platformPositions = {
-	{EPlatformType::TOP, {0,0}}, {EPlatformType::BOTTOM, {1,0}},{ EPlatformType::TOP_RIGHT, {2,0}}, {EPlatformType::TOP_LEFT, {3,0}}, {EPlatformType::MIDDLE, {4,0}},
-	{EPlatformType::MIDDLE_RIGHT, {5,0}}, {EPlatformType::MIDDLE_LEFT, {6,0}}, {EPlatformType::BOTTOM_LEFT, {7,0}}, {EPlatformType::BOTTOM_RIGHT, {8,0}} };
+	{EPlatformType::TOP, {0,0}}, {EPlatformType::BOTTOM, {1,0}},{ EPlatformType::TOP_RIGHT, {2,0}}, {EPlatformType::MIDDLE_RIGHT, {3,0}}, {EPlatformType::MIDDLE, {4,0}},
+	{EPlatformType::MIDDLE_LEFT, {5,0}}, {EPlatformType::BOTTOM_LEFT, {6,0}}, {EPlatformType::BOTTOM_RIGHT, {7,0}}, {EPlatformType::TOP_LEFT, {8,0}} };
 
 
 
@@ -11,13 +11,18 @@ void PlatformEntity::OnBegin()
 	SetEntityPosition({ pos.x,pos.y,0 });
 	SetEntityScale({ scale.x,scale.y,1 });
 
+	glm::vec2 bottomPos( 0, scale.y / 2.f - (scale.y - groundTopSize) / 2.f - groundTopSize / 2.f - groundOffset);
+	glm::vec2 bottomScale(1, (scale.y - groundTopSize - groundOffset) / scale.y);
+	glm::vec2 topPos( 0, scale.y / 2.f - groundTopSize / 2.f - groundOffset );
+	glm::vec2 topScale(1, groundTopSize / scale.y);
+
 	if (debug) {
 		m_debugSprite = CreateGameObject<SpriteComponent>();
 		AddComponent(m_debugSprite);
 		// Bottom
-		m_debugSprite->CreateQuad({ 0, scale.y*-.025f,5 }, rot, { 1,.95f,1 }, { 0,0,0,.45f });
+		m_debugSprite->CreateQuad({ bottomPos.x, bottomPos.y, 6 }, rot, {bottomScale.x, bottomScale.y, 1}, { 1,0,0,.65f });
 		// Top
-		m_debugSprite->CreateQuad({ 0, scale.y*.475f,6 }, rot, { 1,.05f,1.f }, { 0,1,0,.45f });
+		m_debugSprite->CreateQuad({ topPos.x, topPos.y, 6}, rot, {topScale.x, topScale.y, 1}, { 0,1,0,.65f });
 
 
 		// Test Texture
@@ -37,8 +42,8 @@ void PlatformEntity::OnBegin()
 		for (int x = 0; x < columns; x++) {
 			EPlatformType e = GetPlatformType(x, y);
 			m_sprite->CreateSubTexturedQuad({ (x * columnSize+(columnSize)/2.f )-(scale.x/2.f), -y * rowSize + (scale.y / 2.f) - (rowSize) / 2.f, 1 }, 0, {columnSize / (float)scale.x,  rowSize / (float)scale.y , 1 }
-				, { 1,1,1,1 },
-				SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/bricks-spritesheet.png"), platformPositions[e], { 16,16 }, { 1,1 }));
+				, { 1.f, 1.f, 1.f,1 },
+				SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/bricks-spritesheet.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest), platformPositions[e], { 16,16 }, { 1,1 }));
 
 		}
 	}
@@ -50,14 +55,14 @@ void PlatformEntity::OnBegin()
 	*/
 
 
-	m_colliderWall = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(0, scale.y * -.025f), glm::vec2(1, .95f), rot, 0.f);
+	m_colliderWall = CreateGameObject<QuadColliderComponent>(false, true,bottomPos, bottomScale, rot, 0.f);
 	m_colliderWall->SetTag("wall");
 	AddComponent(m_colliderWall);
 	m_colliderWall->SetBounce(.5f);
 	
 
 	
-	m_colliderFloor = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(0, scale.y * .475f), glm::vec2(1, .05f), rot, 0.f);
+	m_colliderFloor = CreateGameObject<QuadColliderComponent>(false, true, topPos, topScale, rot, 0.f);
 	m_colliderFloor->SetTag("ground");
 	AddComponent(m_colliderFloor);
 

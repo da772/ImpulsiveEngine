@@ -251,7 +251,7 @@ protected:
 		SpriteComponent::OnBegin();
 		m_characterSpriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/wizard.png"),
 			{ 0,1 }, { 74,74 }, { 1,1 });
-		quad = CreateSubTexturedQuad({ 0,0,0 }, 0.f, { 2,2,1 }, { 1,1,1,1 }, m_characterSpriteSheet);
+		quad = CreateSubTexturedQuad({ 0,0,10 }, 0.f, { 2,2,1 }, { 1,1,1,1 }, m_characterSpriteSheet);
 		powerIndicatorTexture = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/jumpProgressBar.png"), { 0,0 }, { 32,32 });
 		directionIndicator = CreateQuad(directionIndicatorPos, 0.f, directionIndicatorScale, directionIndicatorColor, Texture2D::Create("Content/Textures/halfCircle.png"));
 		powerIndicator = CreateSubTexturedQuad(powerIndicatorPos, 0.f, powerIndicatorScale, powerIndicatorColor,

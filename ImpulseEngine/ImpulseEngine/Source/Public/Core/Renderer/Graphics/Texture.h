@@ -41,7 +41,7 @@ namespace GEngine {
 		virtual void Bind(uint32_t slot = 0) const = 0;
 		virtual void UnBind() const = 0;
 		virtual inline const std::string& GetName() { return name; }
-
+		inline static const std::unordered_map<std::string, Weak<Texture>>& GetLoadedTextures() { return s_TexturePool; }
 		virtual void Unload() = 0;
 		virtual void Reload() = 0;
 

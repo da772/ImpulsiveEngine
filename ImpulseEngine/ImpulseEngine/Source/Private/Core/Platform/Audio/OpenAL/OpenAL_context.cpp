@@ -178,7 +178,7 @@ namespace GEngine {
 				//alCall(alSourcePlay, audioData.source);
 			}
 			else {
-				GE_CORE_DEBUG("AUDIO STOPPED - {0}", audioData.fileName);
+				//GE_CORE_DEBUG("AUDIO STOPPED - {0}", audioData.fileName);
 				audioSource->Pause();
 				ResetBuffers(audioSource);
 				if (audioSource->IsLooping()) audioSource->Play();
@@ -274,7 +274,7 @@ namespace GEngine {
 				}
 				else if (result == 0)
 				{
-					GE_CORE_ERROR("ERROR: EOF found in initial read of buffer {0}", i);
+					//GE_CORE_ERROR("ERROR: EOF found in initial read of buffer {0}", i);
 					break;
 				}
 
@@ -363,7 +363,7 @@ namespace GEngine {
 				}
 				else if (result == 0)
 				{
-					GE_CORE_ERROR("ERROR: EOF found in initial read of buffer {0}", i);
+					//GE_CORE_ERROR("ERROR: EOF found in initial read of buffer {0}", i);
 					if (bufferNum == AUDIO_BUFFERS_NUM)
 						bufferNum = i + 1;
 					break;

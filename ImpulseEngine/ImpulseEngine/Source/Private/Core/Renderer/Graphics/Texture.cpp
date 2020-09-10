@@ -24,7 +24,8 @@ namespace GEngine {
 
 	Texture2D::~Texture2D()
 	{
-		
+		if (s_TexturePool.find(name) != s_TexturePool.end()) 
+			s_TexturePool.erase(this->name);
 	}
 
 	Ref<Texture2D> Texture2D::Create(const std::string& path, const u32 flags)
@@ -36,6 +37,8 @@ namespace GEngine {
 			Ref<Texture> _t = Texture::s_TexturePool[path].lock();
 			if (_t != nullptr)
 				return std::static_pointer_cast<Texture2D>(_t);
+			else
+				Texture::s_TexturePool.erase(path);
 		}
 
 		switch (GraphicsContext::GetGraphicsApi()) {
@@ -78,6 +81,8 @@ namespace GEngine {
 			Ref<Texture> _t = Texture::s_TexturePool[name].lock();
 			if (_t != nullptr)
 				return std::static_pointer_cast<Texture2D>(_t);
+			else
+				s_TexturePool.erase(name);
 		}
 
 		switch (GraphicsContext::GetGraphicsApi()) {

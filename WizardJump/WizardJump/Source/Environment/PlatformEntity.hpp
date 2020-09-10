@@ -47,6 +47,8 @@ protected:
 	int rows = 0;
 	int columns = 0;
 	float rowSize = .5f, columnSize = .5f;
+	float groundOffset = .075f;
+	float groundTopSize = .05f;
 
 	Ref<SpriteComponent> m_debugSprite;
 	Ref<SpriteComponent> m_sprite;

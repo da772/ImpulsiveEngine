@@ -366,12 +366,13 @@ protected:
 								float xDistance = 2.f * -(lastxpos - (float)Application::GetWidth() / 2.f) / (float)Application::GetWidth();
 
                                 /* DEBUG */
-                                PredictPath(xDistance, yDistance);
+                                if (touch.state == 1)
+                                    PredictPath(xDistance, yDistance);
 
-                                glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-                                float _deg = glm::degrees(atan2( jumpXDragClamp, jumpYDragClamp));
+                                glm::vec2 _vel = CalculateJumpVelocity(xDistance, yDistance);
+                                float _deg = glm::degrees(atan2(-_vel.x, _vel.y));
                                 GE_LOG_DEBUG("{0},{1} : {2}", _vel.x, _vel.y, _deg);
-                                graphicsComp->SetDirectionIndicator(-GEMath::MapRange(_vel.x, -jumpYDragClamp, jumpYDragClamp, -_deg, _deg));
+                                graphicsComp->SetDirectionIndicator(_deg);
                                 graphicsComp->SetPowerBar(GEMath::MapRange(_vel.y, 0, jumpYDragClamp, 0, 1.f));
                                 if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
                                    
@@ -404,10 +405,10 @@ protected:
 
     void PredictPath(float xDistance, float yDistance) {
             _realVel = CalculateJumpVelocity(xDistance, yDistance);
-            GE_LOG_WARN("PREDICTED VEL: {0},{1}", _realVel.x, _realVel.y);
+           // GE_LOG_WARN("PREDICTED VEL: {0},{1}", _realVel.x, _realVel.y);
             trajectory_pos.clear();
             std::vector<Weak<PhysicsBody>> ignoreBodies = { bodyComp->m_groundCollider->GetPhysicsBody(), bodyComp->m_quadCollider->GetPhysicsBody() };
-            glm::vec2 _startPos = { GetEntityPosition().x,  bodyComp->m_quadCollider->GetPosition().y - bodyComp->m_quadCollider->GetScale().y/2.f};
+            glm::vec2 _startPos = { GetEntityPosition().x,  bodyComp->m_quadCollider->GetPosition().y + bodyComp->m_quadCollider->GetScale().y/2.f};
 			for (int i = 0; i < 180; i++) {
 				glm::vec2 newPos = Physics::GetTrajectoryPoint2D(_startPos ,
 					_realVel, i);
@@ -416,11 +417,12 @@ protected:
                         
 						Ref<RayCastInfo> info = Physics::RayCast2D({ trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] }, { newPos.x,newPos.y }, ignoreBodies);
 						if (info && info->physicsBody.lock() != nullptr) {
-							if (info->physicsBody.lock())
-								GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
+							//if (info->physicsBody.lock())
+							//	GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
                             trajectory_pos.push_back(info->hitPoint.x);
                             trajectory_pos.push_back(info->hitPoint.y);
                             trajectory_pos.push_back(1.f);
+                            /*
 							if (info->physicsBody.lock() && info->physicsBody.lock()->GetBounce() != 0.f) {
 								//GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
                                 //_realVel = GEMath::reflect(_realVel * info->physicsBody.lock()->GetBounce(), info->hitNormal);
@@ -429,6 +431,7 @@ protected:
 								//_startPos = info->hitPoint;
 								continue;
 							}
+                            */
 
 							break;
 						}

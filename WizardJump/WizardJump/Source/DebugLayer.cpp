@@ -25,6 +25,7 @@ void DebugLayer::OnImGuiRender()
 	if (GEngine::Application::DebugTools()) {
 		CreateViewPort();
 		CreateSceneHierarchy();
+		CreateGraphicsDebuggger();
 	}
 
 
@@ -108,7 +109,7 @@ void DebugLayer::ShowDock(bool p_open)
 			ImGui::DockBuilderDockWindow("ViewPort", ImGui::DockBuilderGetCentralNode(dock_up_id)->ID);
 			//ImGui::DockBuilderDockWindow("Actions", dock_up_id);
 			ImGui::DockBuilderDockWindow("Scene Hierarchy", dock_right_id);
-			ImGui::DockBuilderDockWindow("Debug Info", dock_left_id);
+			ImGui::DockBuilderDockWindow("Graphics Debugger", dock_left_id);
 			ImGui::DockBuilderDockWindow("Console Log", dock_down_id);
 			//ImGui::DockBuilderDockWindow("Project", dock_down_right_id);
 
@@ -339,4 +340,49 @@ void DebugLayer::CreateViewPort()
 	ImGui::End();
 	ImGui::PopStyleVar();
 }
+
+std::string textureSelected;
+
+void DebugLayer::CreateGraphicsDebuggger()
+{
+	ImGui::Begin("Graphics Debugger");
+
+	ImGui::Text("Batch Count: %d", GEngine::Batch::GetBatchCount());
+
+
+
+	auto& textures = GEngine::Texture::GetLoadedTextures();
+	if (ImGui::TreeNodeEx("Textures Loaded", 0,  "Textures Loaded: %d", textures.size())) {
+		for (auto& a : textures) {
+			ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+			if (textureSelected == a.first)
+				base_flags |= ImGuiTreeNodeFlags_Selected;
+			
+			bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)&a.first, base_flags, "%s", a.first.c_str());
+			if (ImGui::IsItemClicked()) {
+				textureSelected = a.first;
+			}
+			if (show_c) {
+				if (!a.second.expired()) {
+					if (ImGui::ImageButton((ImTextureID)a.second.lock()->GetRendererID(), { 50,50 }, { 0,1 }, { 1,0 })) {
+						ImGui::OpenPopup("texture_pop_up");
+					}
+					if (ImGui::BeginPopup("texture_pop_up", ImGuiWindowFlags_AlwaysAutoResize))
+					{
+						ImGui::Image((ImTextureID)a.second.lock()->GetRendererID(), {(float) a.second.lock()->GetWidth(),(float)a.second.lock()->GetHeight()}, { 0,1 }, { 1,0 });
+						ImGui::EndPopup();
+					}
+				}
+				ImGui::TreePop();
+			}
+			
+		}
+		ImGui::TreePop();
+	}
+
+
+
+	ImGui::End();
+}
+
 

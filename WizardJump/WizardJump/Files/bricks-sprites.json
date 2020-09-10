@@ -40,7 +40,7 @@
     "duration": 100
    },
    "bricks-sprites (MiddleRight).aseprite": {
-    "frame": { "x": 80, "y": 0, "w": 16, "h": 16 },
+    "frame": { "x": 48, "y": 0, "w": 16, "h": 16 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
@@ -48,7 +48,7 @@
     "duration": 100
    },
    "bricks-sprites (MiddleLeft).aseprite": {
-    "frame": { "x": 96, "y": 0, "w": 16, "h": 16 },
+    "frame": { "x": 80, "y": 0, "w": 16, "h": 16 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
@@ -56,7 +56,7 @@
     "duration": 100
    },
    "bricks-sprites (BottomLeft).aseprite": {
-    "frame": { "x": 112, "y": 0, "w": 16, "h": 16 },
+    "frame": { "x": 96, "y": 0, "w": 16, "h": 16 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
@@ -64,6 +64,14 @@
     "duration": 100
    },
    "bricks-sprites (BottomRight).aseprite": {
+    "frame": { "x": 112, "y": 0, "w": 16, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
+    "sourceSize": { "w": 16, "h": 16 },
+    "duration": 100
+   },
+   "bricks-sprites (TopRight).aseprite": {
     "frame": { "x": 128, "y": 0, "w": 16, "h": 16 },
     "rotated": false,
     "trimmed": false,
@@ -90,7 +98,8 @@
    { "name": "MiddleRight", "opacity": 255, "blendMode": "normal" },
    { "name": "MiddleLeft", "opacity": 255, "blendMode": "normal" },
    { "name": "BottomLeft", "opacity": 255, "blendMode": "normal" },
-   { "name": "BottomRight", "opacity": 255, "blendMode": "normal" }
+   { "name": "BottomRight", "opacity": 255, "blendMode": "normal" },
+   { "name": "TopRight", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]

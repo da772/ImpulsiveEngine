@@ -73,5 +73,7 @@
 #include "Public/Core/Physics/PhysicsContext.h"
 #include "Public/Core/Physics/PhysicsBody.h"
 
+#include "Public/Core/Renderer/Graphics/BatchRenderer.h"
+
 #endif
 

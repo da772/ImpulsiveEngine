@@ -36,6 +36,7 @@ namespace GEngine {
 
 		virtual void Render() override;
 
+		static inline const int GetBatchCount() { return s_BatchCount; }
 
 
 	private:
@@ -46,6 +47,10 @@ namespace GEngine {
 		std::vector<float> m_Vertices;
 		std::vector<int> m_TextureIds;
 		int m_IndexCount = 0;
+
+
+
+		static int s_BatchCount;
 
 
 	};
@@ -126,6 +131,8 @@ namespace GEngine {
 		bool m_Sort = true;
 
 		int counter = 0;
+
+		
 
 		
 
