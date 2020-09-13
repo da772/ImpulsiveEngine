@@ -37,6 +37,11 @@ namespace GEngine {
 		return sqrt(pow(a.x - b.x, 2.f) + pow(a.y - b.y, 2.f) + pow(a.z - b.z, 2.f));
 	}
 
+	float GEMath::distance(glm::vec2 a, glm::vec2 b)
+	{
+		return sqrt(pow(a.x - b.x, 2.f) + pow(a.y - b.y, 2.f));
+	}
+
 	float GEMath::max(float in, float max)
 	{
 		return in > max ? in : max;
@@ -75,6 +80,20 @@ namespace GEngine {
 	glm::vec2 GEMath::reflect(const glm::vec2& v, const glm::vec2 n)
 	{
 		return v - 2 * (dot(v, n)) * n;
+	}
+
+	float GEMath::ClosestMultiple(float x, float n)
+	{
+		float f = x * 2.f;
+		float d = x - floor(x);
+
+		if (d >= n / 2.f) {
+			return ceil(f) * n;
+		}
+		else {
+			return floor(f) * n;
+		}
+
 	}
 
 }

@@ -69,7 +69,28 @@ namespace GEngine {
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		m_context->Simulate(dt);
-		
+	}
+
+	glm::vec2 Physics::GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos)
+	{
+		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
+		return m_context->GetVelocityToPosition(startPos, endPos);
+	}
+
+	float Physics::GetVelocityMaxHeight(const glm::vec2& velocity)
+	{
+		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
+		return m_context->GetVelocityMaxHeight(velocity);
+	}
+
+	float Physics::GetMaxVelocityTime(const glm::vec2& velocity)
+	{
+		return m_context->GetMaxVelocityTime(velocity);
+	}
+
+	float Physics::GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel)
+	{
+		return m_context->GetMaxHeight(startPos, startVel);
 	}
 
 }

@@ -11,7 +11,7 @@
 #include "box2d/b2_math.h"
 #include "box2d/b2_contact.h"
 #include "box2d/b2_world_callbacks.h"
-
+#include "Public/Core/Util/GEMath.h"
 
 
 namespace GEngine {
@@ -189,6 +189,66 @@ namespace GEngine {
 		m_world->Step(timeStep, velIteration, posIteration);
 	}
 
+
+	float PhysicsContext_box2d::GetVelocityMaxHeight(const glm::vec2& velocity)
+	{
+		return CalculateVerticalVelocityForHeight(velocity.y);
+	}
+
+	glm::vec2 PhysicsContext_box2d::GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos)
+	{
+
+		float velY = CalculateVerticalVelocityForHeight(endPos.y);
+		glm::vec2 sVel = { 0, velY };
+		float topTime = TimeToTop(sVel);
+		float targetPosX = endPos.x;
+		float velX = targetPosX / topTime * 60.f;
+		return { velX, velY };
+
+	}
+
+	float PhysicsContext_box2d::CalculateVerticalVelocityForHeight(float height)
+	{
+		float t = 1 / 60.f;
+		glm::vec2 stepGravity = t * t* glm::vec2( m_world->GetGravity().x,m_world->GetGravity().y);
+
+		float a = .5f / stepGravity.y;
+		float b = .5f;
+		float c = height;
+
+		float q1 = (-b - std::sqrt(b * b - 4 * a * c)) / (2 * a);
+		float q2 = (-b + std::sqrt(b * b - 4 * a * c)) / (2 * a);
+
+		float v = q1;
+		if (v < 0)
+			v = q2;
+
+		return v * 60.f;
+	}
+
+	float PhysicsContext_box2d::TimeToTop(const glm::vec2& velocity)
+	{
+		float t = 1 / 60.0f;
+		glm::vec2 stepVelocity = t * velocity; // m/s
+		glm::vec2 stepGravity = t * t* glm::vec2(m_world->GetGravity().x, m_world->GetGravity().y); // m/s/s
+
+		float n = -stepVelocity.y / stepGravity.y - 1;
+		return n;
+	}
+
+	float PhysicsContext_box2d::GetMaxVelocityTime(const glm::vec2& velocity)
+	{
+		return TimeToTop(velocity);
+	}
+
+	float PhysicsContext_box2d::GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel)
+	{
+		float t = 1 / 60.f;
+		glm::vec2 stepVel = t * startVel;
+		glm::vec2 stepGravity = t * t * glm::vec2(m_world->GetGravity().x, m_world->GetGravity().y);
+		float n = -stepVel.y / stepGravity.y - 1;
+		return startPos.y + n * stepVel.y + .5f * (n * n + n) * stepGravity.y;
+	}
 
 }
 

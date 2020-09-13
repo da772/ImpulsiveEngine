@@ -9,6 +9,7 @@
 #include "Environment/PlatformEntity.hpp"
 #include "Environment/Objects/FireEntity.hpp"
 #include "Character/CharacterController.hpp"
+#include "Generation/ProceduralPlatformGeneration.hpp"
 #include "Environment/BackgroundTiledEntity.hpp"
 
 
@@ -149,11 +150,6 @@ public:
 		 */
 
 
-		GEngine::Ref<GEngine::Entity> wall = GEngine::CreateGameObject<WallEntity>(glm::vec2( -10,10), glm::vec2(5,20 ), 0.f);
-		AddEntity(wall);
-
-		wall = GEngine::CreateGameObject<WallEntity>(glm::vec2(10, 10), glm::vec2(5, 20), 0.f);
-		AddEntity(wall);
        // AddEntity(GEngine::CreateGameObject<GroundEntity>());
 		
 		/**
@@ -162,18 +158,42 @@ public:
 
 		//AddEntity(GEngine::CreateGameObject<BackgroundTiledEntity>(glm::vec2(0, 10), glm::vec2(34.f, 20)));
 
+
+		/*
+		std::vector <glm::vec4> pos = ProceduralPlatformGeneration::GenerateLevel(GEngine::Time::GetEpochTimeMS(), { -10,0 }, { 10, 20 }, { 1, 1 }, { 3,3 }, { .1f,.1f }, { characterEntity->m_characterComponent->jumpXDragClamp,characterEntity->m_characterComponent->jumpYDragClamp }, [this](float x, float y) { return characterEntity->m_characterComponent->CalculateJumpVelocity(x, y); }, .5f);
+
+		for (const glm::vec4& p : pos) {
+			AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(p.x, p.y), glm::vec2(p.z, p.w)));
+
+		}
+		*/
+
+
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(10, 10), glm::vec2(5, 20)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-10, 10), glm::vec2(5, 20)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0, -5.f), glm::vec2(25, 10)) );
-		//AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(2.f, 1.f)) );
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(4.f, 1.5f)) );
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 4.9f), glm::vec2(2.f, .5f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0.f, 7.75f), glm::vec2(1.5f, .5f)));
+		/*
+		std::vector<glm::vec4> pos = ProceduralPlatformGeneration::GenerateLevel(GEngine::Time::GetEpochTimeSec(), { -5,0 }, { 5, 20 }, { 1,1 }, { 3,3 }, { CharacterController::jumpXDragClamp / 2.f, CharacterController::jumpYDragClamp / 2.f }, { CharacterController::jumpXDragClamp, CharacterController::jumpYDragClamp }, { 1,2 }, [](float x, float y) {return CharacterController::CalculateJumpVelocity(x, y); }, .5f);
 
+		for (glm::vec4 p : pos) {
+			AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(p.x, p.y), glm::vec2(p.z, p.w)));
+		}
+		*/
 
-
-	
 		
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0, -5.f), glm::vec2(25, 10)) );
+		
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(2.f, 1.f)) );
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.5f, 4.4f), glm::vec2(2.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(6.5f, 6.6f), glm::vec2(1.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 8.8f), glm::vec2(1.f, 2.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.f, 11.f), glm::vec2(3.f, 2.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 14.f), glm::vec2(2.f, 2.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-7.f, 15.f), glm::vec2(1.f, 2.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-1.5f, 18.f), glm::vec2(3.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.f, 18.f), glm::vec2(3.f, 1.f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 21.5f), glm::vec2(1.f, .5f)));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.f, 22.f), glm::vec2(2.f, 1.f)));
+
 
 		/**
 		 * END CHUNK

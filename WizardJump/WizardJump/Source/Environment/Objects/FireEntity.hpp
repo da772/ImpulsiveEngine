@@ -19,7 +19,7 @@ protected:
 	inline void OnBegin() override
 	{
 		SetEntityScale({ 1,2,1 });
-		SetEntityPosition({ 1.5,1.5,1 });
+		SetEntityPosition({1.f, 24.f, 1});
 		spriteComp = CreateGameObject<SpriteComponent>();
 		animComp = CreateGameObject<SpriteAnimationComponent>();
 		audioComp = CreateGameObject<AudioComponent>("Content/Audio/fireSound.ogg", true, true, false, .2f);

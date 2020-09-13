@@ -27,6 +27,10 @@ namespace GEngine {
 		virtual void Simulate(float timeStep, int velIteration = 8, int posIteration = 2) = 0;
 		virtual Ref<RayCastInfo> RayCast2D(const glm::vec2& startPos, const glm::vec2& endPos, const std::vector<Weak<PhysicsBody>>& ignoreBodies) = 0;
 		virtual std::vector<Weak<PhysicsBody>> QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies) = 0;
+		virtual glm::vec2 GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos) = 0;
+		virtual float GetVelocityMaxHeight(const glm::vec2& velocity) = 0;
+		virtual float GetMaxVelocityTime(const glm::vec2& velocity) = 0;
+		virtual float GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel) = 0;
 
 	protected:
 

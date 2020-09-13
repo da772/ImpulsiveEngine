@@ -22,6 +22,10 @@ namespace GEngine {
 		static Ref<RayCastInfo> RayCast2D(const glm::vec2 startPos, const glm::vec2 endPos, const std::vector< Weak<PhysicsBody>>& ignoreBodies = {});
 		static std::vector<Weak<PhysicsBody>> QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies);
 		static void Update(float timestep);
+		static glm::vec2 GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos);
+		static float GetVelocityMaxHeight(const glm::vec2& velocity);
+		static float GetMaxVelocityTime(const glm::vec2& velocity);
+		static float GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel);
 
 	private:
 		static Ref<PhysicsContext> m_context;

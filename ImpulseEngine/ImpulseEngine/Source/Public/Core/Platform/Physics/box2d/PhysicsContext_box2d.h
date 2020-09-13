@@ -24,8 +24,12 @@ namespace GEngine {
 		virtual Ref<RayCastInfo> RayCast2D(const glm::vec2& start, const glm::vec2& end, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
 		virtual std::vector<Weak<PhysicsBody>> QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
 		void Simulate(float timeStep, int velIteration = 2, int posIteration = 3) override;
-
-
+		virtual float GetVelocityMaxHeight(const glm::vec2& velocity) override;
+		virtual glm::vec2 GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos) override;
+		float CalculateVerticalVelocityForHeight(float height);
+		float TimeToTop(const glm::vec2& velocity);
+		virtual float GetMaxVelocityTime(const glm::vec2& velocity) override;
+		virtual float GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel) override;
 
 	private:
 		b2World* m_world;

@@ -40,7 +40,8 @@ public:
 				if (f) {
 					bAnimating = false;
 					ThreadPool::AddMainThreadFunction([f]() {
-						f();
+						if (f)
+							f();
 						});
 					return;
 				}
@@ -52,7 +53,8 @@ public:
 				bAnimating = false;
 				if (f) {
 					ThreadPool::AddMainThreadFunction([f]() {
-						f();
+						if (f)
+							f();
 						});
 				}
 			}
@@ -68,8 +70,9 @@ public:
             if (frame == 2) {
                 bAnimating = false;
                 if (f) {
-                    ThreadPool::AddMainThreadFunction([f]() {
-                        f();
+					ThreadPool::AddMainThreadFunction([f]() {
+						if (f)
+							f();
                         });
                 }
                 return;
@@ -90,7 +93,8 @@ public:
 				bAnimating = false;
 				if (f) {
 					ThreadPool::AddMainThreadFunction([f]() {
-						f();
+						if (f)
+							f();
 						});
 				}
 				return;
@@ -111,7 +115,8 @@ public:
 				if (f) {
 					bAnimating = false;
 					ThreadPool::AddMainThreadFunction([f]() {
-						f();
+						if (f)
+							f();
 						});
 					return;
 				}
@@ -132,7 +137,8 @@ public:
                 if (f) {
                     bAnimating = false;
                     ThreadPool::AddMainThreadFunction([f]() {
-                        f();
+						if (f)
+							f();
                         });
                     return;
                 }
@@ -153,7 +159,8 @@ public:
 				bAnimating = false;
 				if (f) {
 					ThreadPool::AddMainThreadFunction([f]() {
-						f();
+						if (f)
+							f();
 						});
 				}
 				return;
@@ -174,7 +181,8 @@ public:
 			bAnimating = false;
 			if (f) {
 				ThreadPool::AddMainThreadFunction([f]() {
-					f();
+					if (f)
+						f();
 					});
 			}
 			});
@@ -190,7 +198,8 @@ public:
 			bAnimating = false;
 			if (f) {
 				ThreadPool::AddMainThreadFunction([f]() {
-					f();
+					if (f)
+						f();
 					});
 			}
 		});

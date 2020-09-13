@@ -22,21 +22,7 @@ public:
     long long startTime;
 
 protected:
-	void OnBegin() override
-	{
-        startTime = Time::GetEpochTimeNS();
-		bodyComp = CreateGameObject<CharacterBody>();
-		GetEntity()->AddComponent(bodyComp);
-        jumpSound = CreateGameObject<AudioComponent>("Content/Audio/testJump01.ogg", false, false, true);
-        landSound = CreateGameObject<AudioComponent>("Content/Audio/dink.ogg", false, false, true);
-        //musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
-
-        GetEntity()->AddComponent(landSound);
-        GetEntity()->AddComponent(jumpSound);
-        //GetEntity()->AddComponent(musicSound);
-		graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
-
-	}
+    void OnBegin() override;
 
 
 	void OnEnd() override
@@ -56,18 +42,44 @@ public:
     const int walkDelay = 125;
 	const float walkAcceleration = 5.f;
     const float jumpThreshold = .005f;
-    const float jumpYMultipler = 33.f;
-    const float jumpXMultipler = 7.5f;
-    const float jumpYDragClamp = .3f;
-    const float jumpXDragClamp = .25f;
-    const float maxJumpXVel = 5.f;
-    const float maxJumpYVel = 5.f;
+	const static float jumpYMultipler;
+	const static float jumpXMultipler;
+    const static float jumpXDragClamp;
+    const static float jumpYDragClamp;
+    static const float maxJumpXVel;
+    static const float maxJumpYVel;
+
+
 
 	std::unordered_map<uint64_t, FTouchInfo> m;
 
 	/* TRAJECTORTY TEST */
 	std::vector<float> trajectory_pos;
 	glm::vec2 _realVel;
+
+	static glm::vec2 CalculateJumpVelocity(float xDistance, float yDistance) {
+		glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
+        
+        glm::vec2 normal_vec = GEMath::normalize(_vel);
+        glm::vec2 vel = { abs(_vel.x) * normal_vec.x * jumpXMultipler, _vel.y * normal_vec.y * jumpYMultipler };
+        
+        
+        GE_CORE_DEBUG("Mag: ({0},{1}), UnitVector: ({2},{3})", GEMath::normalize(vel).x, GEMath::normalize(vel).y, normal_vec.x, normal_vec.y);
+
+
+
+        return vel;
+	}
+
+	static bool ValidVelocity(const glm::vec2& velocity ) {
+        
+       // glm::vec2 _velUnitVector = {GEMath::magnitude(velocity);
+        if (abs(velocity.x) / velocity.y <= jumpXDragClamp / jumpYDragClamp) {
+
+        }
+        //return 
+        return false;
+	}
 
 
 protected:
@@ -373,7 +385,7 @@ protected:
                                 float _deg = glm::degrees(atan2(-_vel.x, _vel.y));
                                 GE_LOG_DEBUG("{0},{1} : {2}", _vel.x, _vel.y, _deg);
                                 graphicsComp->SetDirectionIndicator(_deg);
-                                graphicsComp->SetPowerBar(GEMath::MapRange(_vel.y, 0, jumpYDragClamp, 0, 1.f));
+                                graphicsComp->SetPowerBar(GEMath::MapRange(yDistance, 0, jumpYDragClamp, 0, 1.f));
                                 if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
                                    
                                     graphicsComp->dir = nDir;
@@ -394,12 +406,6 @@ protected:
                 }
     }
 
-    glm::vec2 CalculateJumpVelocity(float xDistance, float yDistance) {
-		glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-		float magnitude = sqrt(_vel.x * _vel.x + _vel.y * _vel.y);
-		glm::vec2 _unitVec = { _vel.x / magnitude, _vel.y / magnitude };
-		return { abs(_vel.x) * _unitVec.x * jumpYMultipler, _vel.y * _unitVec.y * jumpYMultipler };
-    }
 
   
 
@@ -408,14 +414,17 @@ protected:
            // GE_LOG_WARN("PREDICTED VEL: {0},{1}", _realVel.x, _realVel.y);
             trajectory_pos.clear();
             std::vector<Weak<PhysicsBody>> ignoreBodies = { bodyComp->m_groundCollider->GetPhysicsBody(), bodyComp->m_quadCollider->GetPhysicsBody() };
-            glm::vec2 _startPos = { GetEntityPosition().x,  bodyComp->m_quadCollider->GetPosition().y + bodyComp->m_quadCollider->GetScale().y/2.f};
+            glm::vec2 _startPos = { GetEntityPosition().x,  bodyComp->m_quadCollider->GetPosition().y - bodyComp->m_quadCollider->GetScale().y/2.f};
 			for (int i = 0; i < 180; i++) {
 				glm::vec2 newPos = Physics::GetTrajectoryPoint2D(_startPos ,
+					_realVel, i);
+                glm::vec2 newPos2 = Physics::GetTrajectoryPoint2D({ _startPos.x, _startPos.y + bodyComp->m_quadCollider->GetScale().y },
 					_realVel, i);
                 
 				if (trajectory_pos.size() >= 3) {
                         
 						Ref<RayCastInfo> info = Physics::RayCast2D({ trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] }, { newPos.x,newPos.y }, ignoreBodies);
+                        Ref<RayCastInfo> info2 = Physics::RayCast2D({ trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] }, { newPos2.x,newPos2.y }, ignoreBodies);
 						if (info && info->physicsBody.lock() != nullptr) {
 							//if (info->physicsBody.lock())
 							//	GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
@@ -435,6 +444,26 @@ protected:
 
 							break;
 						}
+
+                        if (info2 && info2->physicsBody.lock() != nullptr) {
+                            //if (info->physicsBody.lock())
+                            //	GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
+                            trajectory_pos.push_back(info2->hitPoint.x);
+                            trajectory_pos.push_back(info2->hitPoint.y);
+                            trajectory_pos.push_back(1.f);
+                            /*                            if (info2->physicsBody.lock() && info2->physicsBody.lock()->GetBounce() != 0.f) {
+                                //GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
+                                _realVel = GEMath::reflect(_realVel * info2->physicsBody.lock()->GetBounce(), info2->hitNormal);
+                                //GE_CORE_DEBUG("{0}, {1}", _realVel.x, _realVel.y);
+                                i = 0.f;
+                                _startPos = info2->hitPoint;
+                                continue;
+                            }
+							*/
+
+
+                            break;
+                        }
                      
 					
                 }

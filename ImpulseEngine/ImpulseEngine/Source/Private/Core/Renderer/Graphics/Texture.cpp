@@ -24,7 +24,7 @@ namespace GEngine {
 
 	Texture2D::~Texture2D()
 	{
-		if (s_TexturePool.find(name) != s_TexturePool.end()) 
+		if (s_TexturePool.size() > 1) 
 			s_TexturePool.erase(this->name);
 	}
 
