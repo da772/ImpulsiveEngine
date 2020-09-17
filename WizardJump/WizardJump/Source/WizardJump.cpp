@@ -33,6 +33,8 @@ void ExampleLayer::OnAttach()
 	GEngine::SceneManager::SetCurrentScene("splashScreen");
 
 
+
+
 }
 
 void ExampleLayer::OnDetach()

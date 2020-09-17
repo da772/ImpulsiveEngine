@@ -47,7 +47,7 @@ namespace GEngine {
 		void OnBegin() override;
 		void OnEnd() override;
 		void OnUpdate(Timestep timestep) override;
-		long m_ids[2];
+		long m_ids[2] = { -1,-1 };
 		static Ref<BatchRenderer> s_ShapeFactory;
 		glm::vec3 m_imagePosition, m_colliderPosition;
 		float m_imageRotation, m_colliderRotation;

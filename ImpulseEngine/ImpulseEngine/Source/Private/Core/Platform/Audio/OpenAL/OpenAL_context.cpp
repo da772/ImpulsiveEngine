@@ -104,7 +104,10 @@ namespace GEngine {
 		while (buffersProcessed--)
 		{
 			ALuint buffer;
-			alCall(alSourceUnqueueBuffers, audioData.source, 1, &buffer);
+			if (audioData.queued) {
+				alCall(alSourceUnqueueBuffers, audioData.source, 1, &buffer);
+				audioData.queued = false;
+			}
 
 			char* data = new char[AUDIO_BUFFER_SIZE];
 			std::memset(data, 0, AUDIO_BUFFER_SIZE);
@@ -162,8 +165,12 @@ namespace GEngine {
 			{
 				
 			}
+
+			
+			GE_CORE_ASSERT(!audioData.queued, "Buffer Already queued");
 			alCall(alBufferData, buffer, audioData.format, data, dataSizeToBuffer, audioData.sampleRate);
 			alCall(alSourceQueueBuffers, audioData.source, 1, &buffer);
+			audioData.queued = true;
 
 			
 
@@ -180,7 +187,7 @@ namespace GEngine {
 			else {
 				//GE_CORE_DEBUG("AUDIO STOPPED - {0}", audioData.fileName);
 				audioSource->Pause();
-				ResetBuffers(audioSource);
+				ResetBuffers(audioSource, buffer);
 				if (audioSource->IsLooping()) audioSource->Play();
 			}
 
@@ -239,7 +246,7 @@ namespace GEngine {
 		return m_listenerVolume;
 	}
 
-	void OpenAL_Context::ResetBuffers(Ref<AudioSource> audioSource)
+	void OpenAL_Context::ResetBuffers(Ref<AudioSource> audioSource, uint32_t buffer)
 	{
 		OggVorbis_File& oggFile = dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
 		AudioStreamingData* audioData = &audioSource->GetData();
@@ -281,14 +288,18 @@ namespace GEngine {
 				dataSoFar += result;
 			}
 
-			ALuint buffer;
-			alCall(alSourceUnqueueBuffers, audioData->source, 1, &buffer);
+			if (audioData->queued) {
+				alCall(alSourceUnqueueBuffers, audioData->source, 1, &buffer);
+				audioData->queued = false;
+			}
+				
 			if (dataSoFar > 0) {
 				alCall(alBufferData, buffer, audioData->format, data, dataSoFar, audioData->sampleRate);
 			}
 		}
-
+		GE_CORE_ASSERT(!audioData->queued, "Buffer Already queued");
 		alCall(alSourceQueueBuffers, audioData->source, audioData->bufferNum, &audioData->buffers[0]);
+		audioData->queued = true;
 		delete[] data;
 	}
 
@@ -331,11 +342,11 @@ namespace GEngine {
 		alCall(alSource3f, audioData->source, AL_POSITION, 0, 0, 0);
 		alCall(alSource3f, audioData->source, AL_VELOCITY, 0, 0, 0);
 		alCall(alSourcei, audioData->source, AL_LOOPING, AL_FALSE);
+		
 
 		
 
 		alCall(alGenBuffers, AUDIO_BUFFERS_NUM, &audioData->buffers[0]);
-
 		int bufferNum = AUDIO_BUFFERS_NUM;
 
 		char* data = new char[AUDIO_BUFFER_SIZE];
@@ -390,8 +401,10 @@ namespace GEngine {
 			alCall(alBufferData, audioData->buffers[i], audioData->format, data, dataSoFar, audioData->sampleRate);
 		}
 
+		GE_CORE_ASSERT(!audioData->queued, "Buffer Already queued");
 		audioData->bufferNum = bufferNum;
 		alCall(alSourceQueueBuffers, audioData->source, audioData->bufferNum, &audioData->buffers[0]);
+		audioData->queued = true;
 		
 		delete[] data;
 		

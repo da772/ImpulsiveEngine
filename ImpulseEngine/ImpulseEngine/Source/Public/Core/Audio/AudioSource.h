@@ -24,6 +24,7 @@ namespace GEngine {
 		bool fromPak = true;
 		uint32_t bufferNum = AUDIO_BUFFERS_NUM;
 		bool relative = true;
+		bool queued = false;
 
 	};
 

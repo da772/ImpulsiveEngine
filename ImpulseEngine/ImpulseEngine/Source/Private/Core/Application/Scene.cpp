@@ -61,10 +61,11 @@ namespace GEngine {
 	{
 		if (!b_loaded)
 			Load();
-		OnBegin();
 		b_init = true;
+		OnBegin();
 		for (std::pair<u64, Ref<Entity>> e : entities) {
-			e.second->Begin();
+			if (!e.second->IsInitialized())
+				e.second->Begin();
 		}
 	}
 

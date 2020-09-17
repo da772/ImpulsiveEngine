@@ -59,26 +59,13 @@ public:
 
 	static glm::vec2 CalculateJumpVelocity(float xDistance, float yDistance) {
 		glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-        
-        glm::vec2 normal_vec = GEMath::normalize(_vel);
-        glm::vec2 vel = { abs(_vel.x) * normal_vec.x * jumpXMultipler, _vel.y * normal_vec.y * jumpYMultipler };
-        
-        
-        GE_CORE_DEBUG("Mag: ({0},{1}), UnitVector: ({2},{3})", GEMath::normalize(vel).x, GEMath::normalize(vel).y, normal_vec.x, normal_vec.y);
-
-
-
+        glm::vec2 mapped_vel = { GEMath::sign(_vel.x) * GEMath::MapRange(abs(_vel.x), 0, jumpXDragClamp, 0, 1), GEMath::MapRange(_vel.y, 0, jumpYDragClamp, 0, 1)};
+        glm::vec2 vel = { mapped_vel.x * jumpXMultipler, mapped_vel.y * jumpYMultipler };
         return vel;
 	}
 
-	static bool ValidVelocity(const glm::vec2& velocity ) {
-        
-       // glm::vec2 _velUnitVector = {GEMath::magnitude(velocity);
-        if (abs(velocity.x) / velocity.y <= jumpXDragClamp / jumpYDragClamp) {
-
-        }
-        //return 
-        return false;
+    static glm::vec2 DragRequiredForVelocity(const glm::vec2& velocity) {
+        return { GEMath::sign(velocity.x) * GEMath::MapRange(abs(velocity.x) / jumpXMultipler, 0, 1, 0, jumpXDragClamp), GEMath::MapRange(velocity.y / jumpYMultipler, 0,1, 0, jumpYDragClamp) };
 	}
 
 
@@ -100,8 +87,8 @@ protected:
 	void OnUpdate(Timestep timestep) override
 	{
 
-        if (trajectory_pos.size() > 0)
-            Renderer::DrawDebugLines(trajectory_pos, glm::vec4(1, 0, 0, 1.f));
+        //if (trajectory_pos.size() > 0)
+          //  Renderer::DrawDebugLines(trajectory_pos, glm::vec4(1, 0, 0, 1.f));
 		const glm::vec2& vel = bodyComp->GetVelocity();
 		const bool ground = bodyComp->isGrounded();
         m = Mobile_Input::GetTouches();
@@ -422,48 +409,52 @@ protected:
 					_realVel, i);
                 
 				if (trajectory_pos.size() >= 3) {
-                        
-						Ref<RayCastInfo> info = Physics::RayCast2D({ trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] }, { newPos.x,newPos.y }, ignoreBodies);
-                        Ref<RayCastInfo> info2 = Physics::RayCast2D({ trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] }, { newPos2.x,newPos2.y }, ignoreBodies);
-						if (info && info->physicsBody.lock() != nullptr) {
-							//if (info->physicsBody.lock())
-							//	GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
-                            trajectory_pos.push_back(info->hitPoint.x);
-                            trajectory_pos.push_back(info->hitPoint.y);
-                            trajectory_pos.push_back(1.f);
-                            /*
-							if (info->physicsBody.lock() && info->physicsBody.lock()->GetBounce() != 0.f) {
-								//GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
-                                //_realVel = GEMath::reflect(_realVel * info->physicsBody.lock()->GetBounce(), info->hitNormal);
-								//GE_CORE_DEBUG("{0}, {1}", _realVel.x, _realVel.y);
-								//i = 0.f;
-								//_startPos = info->hitPoint;
-								continue;
-							}
-                            */
-
-							break;
+                    Ref<RayCastInfo> info = nullptr;
+                    Ref<RayCastInfo> info2 = nullptr;
+                    glm::vec2 rayPos = { trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] };
+                    if (rayPos != newPos) {
+                        info = Physics::RayCast2D(rayPos, { newPos.x,newPos.y }, ignoreBodies);
+                        info2 = Physics::RayCast2D(rayPos, { newPos2.x,newPos2.y }, ignoreBodies);
+                    }
+					if (info && info->physicsBody.lock() != nullptr) {
+						//if (info->physicsBody.lock())
+						//	GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
+                        trajectory_pos.push_back(info->hitPoint.x);
+                        trajectory_pos.push_back(info->hitPoint.y);
+                        trajectory_pos.push_back(1.f);
+                        /*
+						if (info->physicsBody.lock() && info->physicsBody.lock()->GetBounce() != 0.f) {
+							//GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
+                            //_realVel = GEMath::reflect(_realVel * info->physicsBody.lock()->GetBounce(), info->hitNormal);
+							//GE_CORE_DEBUG("{0}, {1}", _realVel.x, _realVel.y);
+							//i = 0.f;
+							//_startPos = info->hitPoint;
+							continue;
 						}
+                        */
 
-                        if (info2 && info2->physicsBody.lock() != nullptr) {
-                            //if (info->physicsBody.lock())
-                            //	GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
-                            trajectory_pos.push_back(info2->hitPoint.x);
-                            trajectory_pos.push_back(info2->hitPoint.y);
-                            trajectory_pos.push_back(1.f);
-                            /*                            if (info2->physicsBody.lock() && info2->physicsBody.lock()->GetBounce() != 0.f) {
-                                //GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
-                                _realVel = GEMath::reflect(_realVel * info2->physicsBody.lock()->GetBounce(), info2->hitNormal);
-                                //GE_CORE_DEBUG("{0}, {1}", _realVel.x, _realVel.y);
-                                i = 0.f;
-                                _startPos = info2->hitPoint;
-                                continue;
-                            }
-							*/
+						break;
+					}
 
-
-                            break;
+                    if (info2 && info2->physicsBody.lock() != nullptr) {
+                        //if (info->physicsBody.lock())
+                        //	GE_CORE_INFO("HIT OBJECT, {0} Bounce: {1}", info->physicsBody.lock()->GetComponent()->GetTag(), info->physicsBody.lock()->GetBounce());
+                        trajectory_pos.push_back(info2->hitPoint.x);
+                        trajectory_pos.push_back(info2->hitPoint.y);
+                        trajectory_pos.push_back(1.f);
+                        /*                            if (info2->physicsBody.lock() && info2->physicsBody.lock()->GetBounce() != 0.f) {
+                            //GE_LOG_INFO("Normal: {0}, {1}", info->hitNormal.x, info->hitNormal.y);
+                            _realVel = GEMath::reflect(_realVel * info2->physicsBody.lock()->GetBounce(), info2->hitNormal);
+                            //GE_CORE_DEBUG("{0}, {1}", _realVel.x, _realVel.y);
+                            i = 0.f;
+                            _startPos = info2->hitPoint;
+                            continue;
                         }
+						*/
+
+
+                        break;
+                    }
                      
 					
                 }

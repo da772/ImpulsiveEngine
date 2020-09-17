@@ -40,11 +40,17 @@ namespace GEngine {
 	void ButtonComponent::SetImageSubTexture(Ref<SubTexture2D> texture)
 	{
 		m_subTexture = texture;
+		if (m_ids[0] != -1) {
+			s_ShapeFactory->SetSubTexture(m_ids[0], m_subTexture);
+		}
 	}
 
 	void ButtonComponent::SetImageTexture(Ref<Texture2D> texture)
 	{
 		m_texture = texture;
+		if (m_ids[0] != -1) {
+			s_ShapeFactory->SetTexture(m_ids[0], m_texture);
+		}
 	}
 
 	void ButtonComponent::SetImageColor(const glm::vec4& color)

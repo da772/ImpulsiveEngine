@@ -22,7 +22,7 @@ namespace GEngine {
 		static Ref<AudioContext> Create();
 		virtual void Pause();
 		virtual void Resume();
-		virtual void ResetBuffers(Ref<AudioSource> audioSource) = 0;
+		virtual void ResetBuffers(Ref<AudioSource> audioSource, uint32_t buffer = 0) = 0;
 		virtual const float GetListenerVolume() = 0;
 		virtual const float GetListenerPitch() = 0;
 

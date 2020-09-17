@@ -93,7 +93,7 @@ namespace GEngine {
 		for (u32 i = 0; i < m_MaxIndices; i += m_Shape->GetIndicesSize()) {
 			std::vector<u32> ind = m_Shape->GetIndices(offset);
 			for (u32 j = 0; j < m_Shape->GetIndicesSize(); j++) {
-				m_Indices[i + j] = ind[j];
+				m_Indices[(uint64_t)i + (uint64_t)j] = ind[j];
 			};
 			offset += m_Shape->GetVerticesRows();
 		}
@@ -213,7 +213,7 @@ namespace GEngine {
 			 it->second.vertices = m_Shape->GetVertices(it->second.position, it->second.rotation, { it->second.scale.x, it->second.scale.y, 1 }, it->second.color,
 				 it->second.textureId, textureScale, nullptr, alphaChannel);
 
-			 memcpy(&vertices[m_Shape->GetVerticesSize() * it->second.batchPos], &it->second.vertices[0], it->second.vertices.size() * sizeof(float));
+			 memcpy(&vertices[(uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos], &it->second.vertices[0], it->second.vertices.size() * sizeof(float));
 
 			 batch->RefreshVertices();
 		 }
@@ -244,7 +244,7 @@ namespace GEngine {
 
 			 ReCreateShapeVertices(&it->second);
 
-			 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + (m_Shape->GetVerticesSize() * it->second.batchPos));
+			 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 
 			 batch->RefreshVertices();
 		 }
@@ -262,7 +262,7 @@ namespace GEngine {
 		 it->second.color = color;
 		 ReCreateShapeVertices(&it->second);
 		
-		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + (m_Shape->GetVerticesSize() * it->second.batchPos));
+		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
 
 
@@ -285,7 +285,7 @@ namespace GEngine {
 		 it->second.position = { position.x, position.y, it->second.position.z };
 
 		 ReCreateShapeVertices(&it->second);
-		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + (m_Shape->GetVerticesSize() * it->second.batchPos));
+		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
 	 }
 
@@ -320,13 +320,45 @@ namespace GEngine {
 
 			 ReCreateShapeVertices(&it->second);
 
-			 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + (m_Shape->GetVerticesSize() * it->second.batchPos));
+			 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 
 			 batch->RefreshVertices();
 		 }
 		 else {
 			 it->second.texture = texture != nullptr ? texture->GetTexture() : m_BlankTexture;
 			 it->second.subTexture = texture;
+			 ReCreateBatches();
+		 }
+	 }
+
+
+	 void BatchRenderer::SetTexture(long id, Ref<Texture2D> texture)
+	 {
+		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 Ref<Batch> batch = m_Batches[it->second.batchId];
+		 std::vector<int>& textures = batch->GetTextures();
+		 std::vector<int>::iterator tIt = std::find(textures.begin(), textures.end(), texture != nullptr ? texture->GetRendererID() : m_BlankTexture->GetRendererID());
+
+
+		 if (tIt != textures.end()) {
+
+			 std::vector<float>& vertices = batch->GetVertices();
+
+			 it->second.texture = texture;
+			 it->second.subTexture = nullptr;
+
+			 ReCreateShapeVertices(&it->second);
+
+			 std::copy(it->second.vertices.begin(), it->second.vertices.end(),(vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos)));
+
+			 batch->RefreshVertices();
+		 }
+		 else {
+			 it->second.texture = texture;
+			 it->second.subTexture = nullptr;
 			 ReCreateBatches();
 		 }
 	 }
@@ -342,7 +374,7 @@ namespace GEngine {
 		 it->second.rotation= rotation;
 
 		 ReCreateShapeVertices(&it->second);
-		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + (m_Shape->GetVerticesSize() * it->second.batchPos));
+		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
 	 }
 
@@ -357,10 +389,11 @@ namespace GEngine {
 		 it->second.scale = scale;
 
 		 ReCreateShapeVertices(&it->second);
-		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + (m_Shape->GetVerticesSize() * it->second.batchPos));
+		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
 
 	 }
+
 
 
 

@@ -65,7 +65,7 @@ namespace GEngine {
 		Ref<SubTexture2D> subTexture = nullptr;
 		long long time;
 		long batchId = -1;
-		long batchPos = 0;
+		uint32_t batchPos = 0;
 		int textureId = 0;
 	};
 
@@ -92,6 +92,7 @@ namespace GEngine {
 		void SetSubTexture(long id, Ref<SubTexture2D> texture);
 		void SetRotation(long id, float rotation);
 		void SetScale(long id, glm::vec2 scale);
+		void SetTexture(long id, Ref<Texture2D>);
 
 
 		void UnloadGraphics();

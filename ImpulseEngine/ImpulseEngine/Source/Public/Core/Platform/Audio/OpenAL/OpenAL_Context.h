@@ -15,7 +15,7 @@ namespace GEngine {
 		virtual void Destroy(Ref<AudioSource> s) override;
 		virtual void SetListenerPosition(const glm::vec3& pos) override;
 		Ref<AudioSource> LoadSource(const char* fileName, bool fromPak = true, bool relative = true) override;
-		virtual void ResetBuffers(Ref<AudioSource> audioSource) override;;
+		virtual void ResetBuffers(Ref<AudioSource> audioSource, uint32_t buffer) override;;
 		virtual const glm::vec3& GetListenerPosition() override;
 		virtual void SetListenerPitch(float f)  override;
 		virtual void SetListenerVolume(float f) override;

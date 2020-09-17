@@ -4,11 +4,11 @@
 
 const float CharacterController::maxJumpXVel = 5.f;
 const float CharacterController::maxJumpYVel = 5.f;
-const float CharacterController::jumpXDragClamp = .25f;
+const float CharacterController::jumpXDragClamp = .35f;
 const float CharacterController::jumpYDragClamp = .3f;
 
-const float CharacterController::jumpYMultipler = 33.f;
-const float CharacterController::jumpXMultipler = 33.f;
+const float CharacterController::jumpYMultipler = 10.f;
+const float CharacterController::jumpXMultipler = 4.f;
 
 void CharacterController::OnBegin()
 {
