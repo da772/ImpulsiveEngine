@@ -4,7 +4,7 @@
 namespace GEngine {
 
     Transform::Transform() : Component() {
-        
+        m_tag = "Transform";
     }
 
     Transform::~Transform() {

@@ -19,7 +19,7 @@ namespace GEngine {
 	public:
 		Entity(glm::vec3 position);
 		virtual ~Entity();
-
+		std::string m_tag = "Entity";
 		template <class C = Component>
 		inline std::vector<Ref<Component>> FindComponentOfType() {
 			std::vector<Ref<Component>> c;
