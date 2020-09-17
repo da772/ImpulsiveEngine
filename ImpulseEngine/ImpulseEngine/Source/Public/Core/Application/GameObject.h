@@ -12,6 +12,7 @@ namespace GEngine {
 		Weak<GameObject> self;
 		uint64_t hash;
 
+		std::string m_tag = "GameObject";
 		
 
 	protected:

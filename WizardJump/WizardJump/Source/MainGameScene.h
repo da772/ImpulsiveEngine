@@ -185,10 +185,20 @@ public:
 		*/
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0, -5.f), glm::vec2(25, 10)) );
 		
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 2.2f), glm::vec2(2.f, 1.f)) );
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.5f, 4.4f), glm::vec2(2.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(6.5f, 6.6f), glm::vec2(1.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(4.f, 8.8f), glm::vec2(1.f, 2.f)));
+		
+		
+		// Castle Wall
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.5f, 16.7f), glm::vec2(4.f, 1.f), 5.f, "CastleTop01"));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.f, 9.7f), glm::vec2(1.f, 15.f),  5.f, "CastleWall01"));
+
+		// Inside Castle
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(6.7f, 2.2f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle01"));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.3f, 4.4f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle02"));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(7.2f, 6.6f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle03"));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.3f, 10.f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle04"));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(7.2f, 13.f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle05"));
+
+		/*
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.f, 11.f), glm::vec2(3.f, 2.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 14.f), glm::vec2(2.f, 2.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-7.f, 15.f), glm::vec2(1.f, 2.f)));
@@ -196,7 +206,8 @@ public:
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.f, 18.f), glm::vec2(3.f, 1.f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 21.5f), glm::vec2(1.f, .5f)));
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.f, 22.f), glm::vec2(2.f, 1.f)));
-		
+		*/
+
 
 		/**
 		 * END CHUNK

@@ -245,11 +245,11 @@ protected:
 	long directionIndicator = -1;
 	float indicatorDirection = 0;
 	long powerIndicator = -1;
-	glm::vec3 powerIndicatorPos = glm::vec3(.45f, .45f, 1.f);
+	glm::vec3 powerIndicatorPos = glm::vec3(.45f, .45f, 5.f);
 	glm::vec3 powerIndicatorScale = glm::vec3(.5f, .5f, 1.f);
 	glm::vec4 powerIndicatorColor = glm::vec4(1, 1, 1, 1.f);
 
-	glm::vec3 directionIndicatorPos = glm::vec3(0, .45f, 1.f);
+	glm::vec3 directionIndicatorPos = glm::vec3(0, .45f, 5.f);
 	glm::vec3 directionIndicatorScale = glm::vec3(.75f, .75f, 1.f);
 	glm::vec4 directionIndicatorColor = glm::vec4(1, 1, 1, 0.f);
 

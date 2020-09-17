@@ -21,6 +21,7 @@
 	{
 		m_characterComponent = nullptr;
 		m_spriteComponent = nullptr;
+		m_audioComponent = nullptr;
 	}
 
 	void CharacterEntity::OnUpdate(Timestep timestep)

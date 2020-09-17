@@ -63,15 +63,13 @@ namespace GEngine {
 		
 		inline virtual const std::string& GetTag() { return m_tag; }
 		inline virtual void SetTag(const std::string& tag) { m_tag = tag; }
-
+		std::string m_tag = "Component";
 		void Destroy();
 
 	protected:
 		virtual void OnBegin() {};
 		virtual void OnEnd() {};
 		virtual void OnUpdate(Timestep timestep) {};
-		
-		std::string m_tag = "Default";
 	
 		Weak<Entity> entity;
 		bool bInit = false;

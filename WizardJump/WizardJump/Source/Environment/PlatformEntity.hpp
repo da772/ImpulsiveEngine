@@ -24,7 +24,7 @@ enum class EPlatformType {
 class PlatformEntity : public Entity {
 public:
 
-	inline PlatformEntity(const glm::vec2 pos, const glm::vec2 scale = glm::vec2(1,1), const float rot = 0) : pos(pos), scale(scale), rot(rot) {};
+	PlatformEntity(const glm::vec2 pos, const glm::vec2 scale = glm::vec2(1, 1), const float zOrder = 5, const std::string& entityTag = "Platform Entity", const float rot = 0);
 	~PlatformEntity() {};
 
 	bool debug = false;
@@ -49,6 +49,7 @@ protected:
 	float rowSize = .5f, columnSize = .5f;
 	float groundOffset = .075f;
 	float groundTopSize = .05f;
+	float zOrder = 1;
 
 	Ref<SpriteComponent> m_debugSprite;
 	Ref<SpriteComponent> m_sprite;

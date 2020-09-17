@@ -6,6 +6,12 @@ std::unordered_map<EPlatformType, glm::vec2> platformPositions = {
 
 
 
+PlatformEntity::PlatformEntity(const glm::vec2 pos, const glm::vec2 scale /*= glm::vec2(1, 1)*/, const float zOrder /*= 1*/, const std::string& entityTag /*= ""*/, const float rot /*= 0*/) : pos(pos), scale(scale), rot(rot), zOrder(zOrder) 
+{
+	if (entityTag.size() > 0)
+		m_tag = entityTag;
+}
+
 void PlatformEntity::OnBegin()
 {
 	SetEntityPosition({ pos.x,pos.y,0 });
@@ -20,9 +26,9 @@ void PlatformEntity::OnBegin()
 		m_debugSprite = CreateGameObject<SpriteComponent>();
 		AddComponent(m_debugSprite);
 		// Bottom
-		m_debugSprite->CreateQuad({ bottomPos.x, bottomPos.y, 6 }, rot, {bottomScale.x, bottomScale.y, 1}, { 1,0,0,.65f });
+		m_debugSprite->CreateQuad({ bottomPos.x, bottomPos.y, zOrder }, rot, {bottomScale.x, bottomScale.y, 1}, { 1,0,0,.65f });
 		// Top
-		m_debugSprite->CreateQuad({ topPos.x, topPos.y, 6}, rot, {topScale.x, topScale.y, 1}, { 0,1,0,.65f });
+		m_debugSprite->CreateQuad({ topPos.x, topPos.y, zOrder }, rot, {topScale.x, topScale.y, 1}, { 0,1,0,.65f });
 
 
 		// Test Texture
@@ -41,7 +47,7 @@ void PlatformEntity::OnBegin()
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < columns; x++) {
 			EPlatformType e = GetPlatformType(x, y);
-			m_sprite->CreateSubTexturedQuad({ (x * columnSize+(columnSize)/2.f )-(scale.x/2.f), -y * rowSize + (scale.y / 2.f) - (rowSize) / 2.f, 1 }, 0, {columnSize / (float)scale.x,  rowSize / (float)scale.y , 1 }
+			m_sprite->CreateSubTexturedQuad({ (x * columnSize+(columnSize)/2.f )-(scale.x/2.f), -y * rowSize + (scale.y / 2.f) - (rowSize) / 2.f, zOrder }, 0, {columnSize / (float)scale.x,  rowSize / (float)scale.y , 1 }
 				, { 1.f, 1.f, 1.f,1 },
 				SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/bricks-spritesheet.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest), platformPositions[e], { 16,16 }, { 1,1 }));
 

@@ -206,7 +206,7 @@ void DebugLayer::CreateSceneHierarchy()
 				if (hashSelected == e.second) {
 					entity_base_flags |= ImGuiTreeNodeFlags_Selected;
 				}
-				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s (%ju)", typeid(*e.second.get()).name(), e.first);
+				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%ju)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), e.first);
 				if (ImGui::IsItemClicked()) {
 					b_component = false;
 					hashSelected = e.second;
@@ -225,7 +225,7 @@ void DebugLayer::CreateSceneHierarchy()
 						if (hashSelected == c.second) {
 							component_base_flags |= ImGuiTreeNodeFlags_Selected;
 						}
-						bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s (%ju)", typeid(*c.second.get()).name(), c.first);
+						bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s : %s (%ju)", c.second->m_tag.c_str(), typeid(*c.second.get()).name(), c.first);
 						if (ImGui::IsItemClicked()) {
 							b_component = true;
 							hashSelected = c.second;
