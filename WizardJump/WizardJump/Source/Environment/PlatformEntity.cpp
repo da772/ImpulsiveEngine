@@ -26,9 +26,9 @@ void PlatformEntity::OnBegin()
 		m_debugSprite = CreateGameObject<SpriteComponent>();
 		AddComponent(m_debugSprite);
 		// Bottom
-		m_debugSprite->CreateQuad({ bottomPos.x, bottomPos.y, zOrder }, rot, {bottomScale.x, bottomScale.y, 1}, { 1,0,0,.65f });
+		m_debugSprite->CreateQuad({ bottomPos.x, bottomPos.y, zOrder+1 }, rot, {bottomScale.x, bottomScale.y, 1}, { 1,0,0,.65f });
 		// Top
-		m_debugSprite->CreateQuad({ topPos.x, topPos.y, zOrder }, rot, {topScale.x, topScale.y, 1}, { 0,1,0,.65f });
+		m_debugSprite->CreateQuad({ topPos.x, topPos.y, zOrder+2 }, rot, {topScale.x, topScale.y, 1}, { 0,1,0,.65f });
 
 
 		// Test Texture

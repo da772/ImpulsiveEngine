@@ -189,7 +189,7 @@ public:
 		
 		// Castle Wall
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.5f, 16.7f), glm::vec2(4.f, 1.f), 5.f, "CastleTop01"));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.f, 9.7f), glm::vec2(1.f, 15.f),  5.f, "CastleWall01"));
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.f, 9.3f), glm::vec2(1.f, 14.f),  5.f, "CastleWall01"));
 
 		// Inside Castle
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(6.7f, 2.2f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle01"));
