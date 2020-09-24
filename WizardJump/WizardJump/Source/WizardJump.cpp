@@ -63,6 +63,7 @@ void ExampleLayer::OnEvent(GEngine::Event& event)
 
 WizardJump::WizardJump()
 {
+    SetUIResolution(1080, 1920);
 #ifdef GE_CONSOLE_APP
 	this->m_width = 540;
 	this->m_height = 960;
@@ -73,7 +74,7 @@ WizardJump::WizardJump()
 		this->m_height = 720;
 	}
 
-	SetUIResolution(1080, 1920);
+
 
 #if !defined GE_DIST
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3)+"WizardJump/Content",

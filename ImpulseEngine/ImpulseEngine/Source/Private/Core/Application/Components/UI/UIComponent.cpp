@@ -97,6 +97,7 @@ namespace GEngine {
 		
 		std::vector<CharacterData> data = font->DrawString(string, 2, width, height);
 		std::vector<long> ids;
+        
 		for (CharacterData& d : data) {
 			long id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x*scale.x + pos.x, d.position.y*scale.y + pos.y, pos.z), 0, { d.scale.x*scale.x , d.scale.y*scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
