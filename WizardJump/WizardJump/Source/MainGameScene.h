@@ -49,7 +49,7 @@ public:
 
 			textId = FPSuiComponent->CreateText(std::to_string((int)
 				GEngine::Application::GetApp()->profile["FPS"]) + " FPS", font, { -1, .9f,1 },
-				{ 2,2,1 }, { 1,1,1,1 });
+				{ (float)GEngine::Application::GetWidth()/(float)GEngine::Application::GetUIResolutionWidth(),(float)GEngine::Application::GetHeight()/GEngine::Application::GetUIResolutionHeight(),1 }, { 1,1,1,1 });
 		}
 
 	}
@@ -283,7 +283,7 @@ public:
 	{
 		SetupCamera();
 
-		font = GEngine::Font::Create("Content/Fonts/arial.ttf", (float)GEngine::Application::GetHeight()*.2f );
+		font = GEngine::Font::Create("Content/Fonts/arial.ttf", (float)360.f );
 		font->LoadCharactersEN();
 
 	}
