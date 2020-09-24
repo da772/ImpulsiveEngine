@@ -179,6 +179,19 @@ namespace GEngine {
 	void ButtonComponent::OnBegin()
 	{
 		Ref<Entity> e = entity.lock();
+
+		int w = GEngine::Application::GetUIResolutionWidth();
+		int h = GEngine::Application::GetUIResolutionHeight();
+		if (w != 0 && h != 0) {
+			if (w > h) {
+				m_imageScale.y = (w * m_imageScale.y) / (float)h;
+				m_colliderScale.y = (w * m_colliderScale.y) / (float)h;
+			}
+			else {
+				m_imageScale.x = (h * m_imageScale.x) / (float)w;
+				m_colliderScale.x = (h * m_colliderScale.x) / (float)w;
+			}
+		}
 		for (int i = 0; i < m_debug; i++) {
 			if (i == 0)
 				m_ids[i] = s_ShapeFactory->AddShape(m_imagePosition+e->GetEntityPosition(), m_imageRotation, m_imageScale, m_color, m_texture, m_textureScale);

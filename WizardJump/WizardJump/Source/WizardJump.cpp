@@ -68,7 +68,10 @@ WizardJump::WizardJump()
 	if (s_debugTools) {
 		this->m_width = 1280;
 		this->m_height = 720;
-}
+	}
+
+	SetUIResolution(1080, 1920);
+
 #if !defined GE_DIST
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3)+"WizardJump/Content",
 		GEngine::FileSystem::FilePath("Data/Content.pak"), false);

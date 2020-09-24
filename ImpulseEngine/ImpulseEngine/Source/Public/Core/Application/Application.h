@@ -77,6 +77,11 @@ namespace GEngine {
 		static const int GetViewPortOffsetX() { return s_Instance->m_viewPortOffset.x; }
 		static const int GetViewPortOffsetY() { return s_Instance->m_viewPortOffset.y; }
 
+		static const int GetUIResolutionWidth() { return s_Instance->m_uiResolutionWidth; }
+		static const int GetUIResolutionHeight() { return s_Instance->m_uiResolutionHeight; }
+
+
+
 		static void SetViewPortOffset(const glm::vec2& offset) { s_Instance->m_viewPortOffset = offset; }
 
 		inline static const bool IsGamePaused() { return s_Instance->m_pause; };
@@ -119,6 +124,8 @@ namespace GEngine {
 		FWindowApi GetDefaultWindowApi();
 		FGraphicsApi GetDefaultGraphicsApi();
 
+		inline void SetUIResolution(const int width, const int height) { m_uiResolutionWidth = width; m_uiResolutionHeight = height;};
+
 		bool m_pause = false;
 
 		double m_LastFrameTime = 0;
@@ -129,6 +136,7 @@ namespace GEngine {
         
 		glm::vec2 m_viewPortOffset = glm::vec2(0,0);
 		int m_width = 1280, m_height = 720;
+		int m_uiResolutionWidth = 0, m_uiResolutionHeight = 0;
 
 		const char* title = "NULL";
 		

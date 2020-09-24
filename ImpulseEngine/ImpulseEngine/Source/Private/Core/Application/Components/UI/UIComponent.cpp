@@ -49,7 +49,24 @@ namespace GEngine {
 
 	const long UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, const glm::vec2& textureScale /*= 1*/, const float alphaChannel)
 	{
-		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
+
+		glm::vec3 _scale = scale;;
+		int w = GEngine::Application::GetUIResolutionWidth();
+		int h = GEngine::Application::GetUIResolutionHeight();
+		if (w != 0 && h != 0) {
+			if (w > h) {
+				_scale.y = (w * scale.y) / (float)h;
+			}
+			else {
+				_scale.x = (h * scale.x) / (float)w;
+			}
+		}
+		
+
+
+
+
+		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}

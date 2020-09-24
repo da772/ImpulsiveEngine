@@ -65,8 +65,8 @@ public:
 		float x = width > height ? 1 : (float)width / (float)height;
 		float y = height > width ? 1 : (float)height / (float)width;
 
-		long id = logoComponent->CreateQuad({ 0,0,0 }, { 0 }, { 1.f * y,1.f * x,1 }, { 1,1,1,0.f }, texture);
-		logoComponent->CreateQuad({ 0,0,-1 }, { 0 }, { 2,2,1 }, { .05f,.05f,.05f,1 });
+		long id = logoComponent->CreateQuad({ 0,0,0 }, { 0 }, { .5f,.5f,1 }, { 1,1,1,0.f }, texture);
+		logoComponent->CreateQuad({ 0,0,-1 }, { 0 }, { 5,5,1 }, { .05f,.05f,.05f,1 });
 		
 		logoAnimation->SetFrameAnimation(30, 150, false, [this, id](int frame) {
 			logoComponent->SetColor(id, { 1, 1, 1, frame / 150.f });

@@ -101,7 +101,7 @@ public:
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
 		AddEntity(eFPS);
         GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			glm::vec3(.85,.90,0), 0.f, glm::vec2(.2,.1), glm::vec4(1,1,1,1.f));
+			glm::vec3(.85,.90,0), 0.f, glm::vec2(.15,.1), glm::vec4(1,1,1,1.f));
 		eFPS->AddComponent(FPSuiComponent);
 		eFPS->AddComponent(button);
 
