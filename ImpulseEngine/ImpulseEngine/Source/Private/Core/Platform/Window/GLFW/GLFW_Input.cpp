@@ -54,13 +54,13 @@ namespace GEngine {
 	void GLFW_Input::ProcessEvent(const Event& e)
 	{
 		if (e.GetEventType() == EventType::MouseMoved) {
-			
 			const MouseMovedEvent& mouse = (MouseMovedEvent&)e;
 			int width = Application::GetWidth(), height = Application::GetHeight();
 				CollisionDetection::InteractionUI(
 					GEMath::MapRange(Input::GetMouseX() / (float)width, 0, 1, -1, 1),
 					-GEMath::MapRange(Input::GetMouseY() / (float)height, 0, 1, -1, 1));
 		}
+		CollisionDetection::OnEvent(e);
 	}
 
 }

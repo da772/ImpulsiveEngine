@@ -142,6 +142,7 @@ namespace GEngine {
 							s_lastCollider = true;
 						return c;
 					}
+					
 					return c;
 				}
 			}
@@ -149,8 +150,9 @@ namespace GEngine {
 
 		Ref<Collider> lastC = s_lastUICollision.lock();
 		if (s_lastCollider) {
-			lastC->UIMouseCollideEnd(x,y);
+			if (lastC) lastC->UIMouseCollideEnd(x,y);
 			s_lastCollider = false;
+			s_lastUICollision.reset();
 		}
 		return nullptr;
 	}
@@ -169,6 +171,13 @@ namespace GEngine {
 	bool CollisionDetection::CheckLastUI(Ref<Collider> c)
 	{
 		return s_lastUICollision.lock() == c;
+	}
+
+	void CollisionDetection::OnEvent(const Event& e)
+	{
+		if (s_lastUICollision.lock())
+			s_lastUICollision.lock()->UIOnEvent(e);
+			
 	}
 
 	bool UIComparator::operator()(Ref<Collider>left, Ref<Collider> right) const

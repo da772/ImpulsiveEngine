@@ -22,6 +22,7 @@ namespace GEngine {
 
 	class Entity;
 	class Component;
+	class Event;
 
 	class Collider {
 	public:
@@ -42,6 +43,7 @@ namespace GEngine {
 
 		inline void SetUICollisionStartFunction(std::function<void(float, float)> func) { m_uiCollisionFunctionStart = func; }
 		inline void SetUICollisionEndFunction(std::function<void(float, float)> func) { m_uiCollisionFunctionEnd = func; }
+		inline void SetUIOnEvent(std::function<void(const Event&)> func) { m_uiEvent = func; }
 
 
 		void CollideStart(Ref<Collider> collider);
@@ -49,6 +51,7 @@ namespace GEngine {
 
 		void UIMouseCollideStart(const float x,const float y);
 		void UIMouseCollideEnd(const float x,const float y);
+		void UIOnEvent(const Event& e) { if (m_uiEvent) m_uiEvent(e); }
 
 		const glm::vec3 GetPosition() const { return position; };
 		const glm::vec3 GetScale() const { return scale;}
@@ -83,9 +86,11 @@ namespace GEngine {
 		glm::vec3 rotation;
 		std::function<void(Ref<Collider>)> m_collisionFunctionStart;
 		std::function<void(Ref<Collider>)> m_collisionFunctionEnd;
+		
 
 		std::function<void(float, float)> m_uiCollisionFunctionStart;
 		std::function<void(float, float)> m_uiCollisionFunctionEnd;
+		std::function<void(const Event& e)> m_uiEvent = nullptr;
 
 		std::vector<Weak<Collider>> m_lastCollide;
 

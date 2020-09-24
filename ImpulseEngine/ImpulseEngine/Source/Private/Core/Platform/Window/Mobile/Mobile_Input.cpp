@@ -93,8 +93,7 @@ namespace GEngine {
 					-GEMath::MapRange(event.GetY() / (float)height, 0, 1, -1, 1));
 			}
 		}
-
-
+		CollisionDetection::OnEvent(e);
 	}
 
 void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, float force)

@@ -5,6 +5,7 @@ namespace GEngine {
 	class Collider;
 
 	class QuadColliderComponent;
+	class Event;
 
 
 	struct UIComparator final {
@@ -23,6 +24,7 @@ namespace GEngine {
 		static Ref<Collider> InteractionUI(const float x, const float y);
 		static Ref<Collider> InteractionEndUI(const float x, const float y);
 		static bool CheckLastUI(Ref<Collider> c);
+		static void OnEvent(const Event& e);
 		
 	private:
 		static std::unordered_set<Ref<Collider>> s_GameColliders;

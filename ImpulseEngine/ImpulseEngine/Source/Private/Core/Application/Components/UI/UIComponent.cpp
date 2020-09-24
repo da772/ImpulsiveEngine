@@ -54,6 +54,7 @@ namespace GEngine {
 		int w = GEngine::Application::GetUIResolutionWidth();
 		int h = GEngine::Application::GetUIResolutionHeight();
 		if (w != 0 && h != 0) {
+			
 			if (w > h) {
 				_scale.y = (w * scale.y) / (float)h;
 			}
@@ -61,10 +62,6 @@ namespace GEngine {
 				_scale.x = (h * scale.x) / (float)w;
 			}
 		}
-		
-
-
-
 
 		const long id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);

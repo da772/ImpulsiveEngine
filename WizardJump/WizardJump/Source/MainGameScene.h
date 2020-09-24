@@ -48,9 +48,8 @@ public:
 			}
 
 			textId = FPSuiComponent->CreateText(std::to_string((int)
-				GEngine::Application::GetApp()->profile["FPS"]) + " FPS", font, { -1, .95f - (((float)GEngine::Application::GetWidth() * .2f) /
-					(float)GEngine::Application::GetHeight())/2.f,1 },
-				{ 1,1,1 }, { 1,1,1,1 });
+				GEngine::Application::GetApp()->profile["FPS"]) + " FPS", font, { -1, .9f,1 },
+				{ 2,2,1 }, { 1,1,1,1 });
 		}
 
 	}
@@ -100,9 +99,10 @@ public:
 
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
 		AddEntity(eFPS);
-        GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			glm::vec3(.85,.90,0), 0.f, glm::vec2(.15,.1), glm::vec4(1,1,1,1.f));
+       
 		eFPS->AddComponent(FPSuiComponent);
+		GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
+			glm::vec3(.85, .90, 0), 0.f, glm::vec2(.15, .1), glm::vec4(1, 1, 1, 1.f));
 		eFPS->AddComponent(button);
 
 		button->SetImageTexture(GEngine::Texture2D::Create("Content/Textures/videoLife_button_7.png"));
@@ -283,7 +283,7 @@ public:
 	{
 		SetupCamera();
 
-		font = GEngine::Font::Create("Content/Fonts/arial.ttf", (float)GEngine::Application::GetWidth()*.2f );
+		font = GEngine::Font::Create("Content/Fonts/arial.ttf", (float)GEngine::Application::GetHeight()*.2f );
 		font->LoadCharactersEN();
 
 	}

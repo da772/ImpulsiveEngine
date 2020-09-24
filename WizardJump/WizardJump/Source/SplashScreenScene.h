@@ -19,7 +19,7 @@ public:
 
 		if (e.GetEventType() == GEngine::EventType::KeyPressed) {
 			if (!m_sceneChanged) {
-				GEngine::SceneManager::SetCurrentScene("mainGame");
+				GEngine::SceneManager::SetCurrentScene("menuScene");
 				m_sceneChanged = true;
 			}
 
@@ -27,7 +27,7 @@ public:
 
 		if (e.GetEventType() == GEngine::EventType::MouseButtonPressed) {
 			if (!m_sceneChanged) {
-				GEngine::SceneManager::SetCurrentScene("mainGame");
+				GEngine::SceneManager::SetCurrentScene("menuScene");
 				m_sceneChanged = true;
 			}
 
@@ -35,7 +35,7 @@ public:
 
 		if (e.GetEventType() == GEngine::EventType::TouchPressed) {
 			if (!m_sceneChanged) {
-				GEngine::SceneManager::SetCurrentScene("mainGame");
+				GEngine::SceneManager::SetCurrentScene("menuScene");
 				m_sceneChanged = true;
 			}
 		}
@@ -74,8 +74,8 @@ public:
 
 			}
 			if (frame >= 150) {
-				if (GEngine::SceneManager::GetScene("mainGame")->IsLoaded()) {
-					GEngine::SceneManager::SetCurrentScene("mainGame");
+				if (GEngine::SceneManager::GetScene("menuScene")->IsLoaded()) {
+					GEngine::SceneManager::SetCurrentScene("menuScene");
 				}
 				else {
                     std::lock_guard<std::mutex> guard(loadNewScene);
@@ -86,7 +86,7 @@ public:
 		
 
 		AddEntity(logoEntity);
-		GEngine::SceneManager::GetScene("mainGame")->Load();	
+		GEngine::SceneManager::GetScene("menuScene")->Load();	
 	}
 
 

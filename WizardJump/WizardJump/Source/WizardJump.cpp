@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "SplashScreenScene.h"
 #include "MainGameScene.h"
+#include "MenuScene.h"
 
 ExampleLayer::ExampleLayer()
 
@@ -29,7 +30,9 @@ void ExampleLayer::OnAttach()
 	GEngine::Ref<SplashScreenScene> s = GEngine::CreateGameObject<SplashScreenScene>("splashScreen", nullptr);
 	GEngine::SceneManager::AddScene("splashScreen",s);
 	GEngine::Ref<MainGameScene> s2 = GEngine::CreateGameObject<MainGameScene>("mainGame", nullptr);
+	GEngine::Ref<MenuScene> s3 = GEngine::CreateGameObject<MenuScene>("menuScene", nullptr);
 	GEngine::SceneManager::AddScene("mainGame", s2);
+	GEngine::SceneManager::AddScene("menuScene", s3);
 	GEngine::SceneManager::SetCurrentScene("splashScreen");
 
 
@@ -123,10 +126,11 @@ WizardJump::WizardJump()
 	GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); });
 #endif
 
-
+	if (s_debugTools) {
+		m_DebugLayer = new DebugLayer();
+		PushLayer(m_DebugLayer);
+	}
 	m_ExampleLayer = new ExampleLayer();
-	m_DebugLayer = new DebugLayer();
-	PushLayer(m_DebugLayer);
 	PushLayer(m_ExampleLayer);
 }
 

@@ -10,6 +10,7 @@ namespace GEngine {
 	class Collider2D;
 	class Shader;
 	class ScriptObject;
+	class Event;
 
 	class ButtonComponent : public Component {
 	public:
@@ -33,8 +34,10 @@ namespace GEngine {
 		void SetOnMouseEndCollideScript(Ref<ScriptObject> obj);
 		void SetOnMouseStartCollideScript(Ref<ScriptObject> obj);
 
+
 		inline void SetOnMouseStartCollide(const std::function<void(float, float)> f) { m_onCollide = f; };
 		inline void SetOnMouseEndCollide(const std::function<void(float, float)> f) { m_endCollide = f; };
+		inline void SetOnEvent(const std::function<void(const Event&)> f) { m_onEvent = f; }
 
 		inline void RemoveOnMouseCollideFunction() { m_onCollide = nullptr; }
 		inline void RemoveEndMouseCollideFunction() { m_endCollide = nullptr; }
@@ -63,6 +66,7 @@ namespace GEngine {
 		float m_worldRotation;
 		std::function<void(float, float)> m_onCollide;
 		std::function<void(float, float)> m_endCollide;
+		std::function<void(const Event&)> m_onEvent;
 		int m_debug = 1;
 		bool b_debug = false;
 
