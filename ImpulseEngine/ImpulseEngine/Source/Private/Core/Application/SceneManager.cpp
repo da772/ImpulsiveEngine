@@ -29,7 +29,7 @@ namespace GEngine {
 
 	void SceneManager::SetCurrentScene(const std::string& name, bool unload)
 	{
-		ThreadPool::AddMainThreadFunction([name, unload]() {
+		ThreadPool::AddEndFrameFunction([name, unload]() {
 			if (SceneManager::scene != nullptr) {
 				scene->End();
 				if (unload)

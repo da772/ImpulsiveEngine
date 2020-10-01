@@ -239,7 +239,7 @@ protected:
 				if (ground) {
 					if (bFalling) {
                         landSound->SetPlaying(true);
-						graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
+                        graphicsComp->LandIdle([this]() { if (!graphicsComp) return; bFalling = false;  graphicsComp->Idle(); });
 					}
 					else {
 						graphicsComp->Idle();

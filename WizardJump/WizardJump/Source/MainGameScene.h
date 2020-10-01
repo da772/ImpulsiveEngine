@@ -104,8 +104,8 @@ public:
 		eFPS->AddComponent(FPSuiComponent);
 		GEngine::Ref<GEngine::Texture2D > buttonTexture = GEngine::Texture2D::Create("Content/Textures/back_button.png");
 		float size = max((float)Application::GetWidth() / (float)Application::GetUIResolutionWidth(), (float)Application::GetHeight() / (float)Application::GetUIResolutionHeight());
-		float buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
-		float buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
+		float buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 6.25f;
+		float buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 6.25f;
 		GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
 			glm::vec3(.85, .90, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
 		eFPS->AddComponent(button);

@@ -208,8 +208,10 @@ namespace GEngine {
 	void OpenAL_Context::Destroy(Ref<AudioSource> s)
 	{
 		m_sources.erase(s);
+        alSourceStop(s->GetData().source);
 		alDeleteSources(1, &s->GetData().source);
 		alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
+        alSourcei(s->GetData().source, AL_BUFFER, AL_NONE);
 		ov_clear(&dynamic_pointer_cast<OpenAL_source>(s)->oggFile);
 	}
 

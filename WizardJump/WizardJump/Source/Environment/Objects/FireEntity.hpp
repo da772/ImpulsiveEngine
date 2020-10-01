@@ -34,7 +34,7 @@ protected:
 		spriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/fireAnim.png"),
 			{ 3,0 }, { 64,128 }, { 1,1 });
 		id = spriteComp->CreateSubTexturedQuad({ 0,0,10 }, 0.f, { 2,4,1 }, { 1,1,1,1 }, spriteSheet);
-		id2 = spriteComp->CreateQuad({ 0, 0, 9 }, 0.f, { 6,6,1 }, { 1.f,.5f, 0.f,75.f },Texture2D::Create("Content/Textures/radialLight.png"));
+		id2 = spriteComp->CreateQuad({ 0, 0, 9 }, 0.f, { 6,6,1 }, { 1.f,.5f, 0.f,.5f },Texture2D::Create("Content/Textures/radialLight.png"));
 
 		
 		animComp->SetFrameAnimation(16, 8, true, [this](int frame) {
