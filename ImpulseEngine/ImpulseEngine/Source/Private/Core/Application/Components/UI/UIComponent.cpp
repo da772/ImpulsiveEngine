@@ -89,10 +89,10 @@ namespace GEngine {
 		width = 1080;//GEngine::Application::GetApp()->GetWindow()->GetWidth();
 		height = 1920;//GEngine::Application::GetApp()->GetWindow()->GetHeight();
 
-		std::string hash;
-		hash = Utility::GenerateHash(16);
+		char hash[16];
+		Utility::GenerateHash(hash, 16);
 		while (m_text.find(hash) != m_text.end()) {
-			hash = Utility::GenerateHash(16);
+			Utility::GenerateHash(hash, 16);
 		}
 		
 		std::vector<CharacterData> data = font->DrawString(string, 2, width, height);
@@ -102,7 +102,6 @@ namespace GEngine {
 			long id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x*scale.x + pos.x, d.position.y*scale.y + pos.y, pos.z), 0, { d.scale.x*scale.x , d.scale.y*scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
-
 		m_text[hash] = ids;
 		return hash;
 	}

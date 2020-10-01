@@ -128,16 +128,20 @@ namespace GEngine {
 	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionUI(const float x, const float y)
 	{
 		{
+
 			std::lock_guard<std::mutex> guard(s_uiMutex);
+			Ref<Collider> lastC = s_lastUICollision.lock();
 			for (const Ref<Collider>& c : s_uiColliders) {
 				if (c->CheckCollisionPoint(x, y)) {
-					Ref<Collider> lastC = s_lastUICollision.lock();
+					
+					if (!lastC)
+						s_lastCollider = false;
 					//GE_CORE_DEBUG("COLLIDE: Mouse Pos: ({0}, {1}) - Collider: ({2},{3}), ({4},{5})",
 					//	x, y, c->GetPosition().x, c->GetPosition().y, c->GetScale().x, c->GetScale().y);
 					if (!s_lastCollider || c != lastC) {
 							c->UIMouseCollideStart(x,y);
-							if (s_lastCollider && s_lastUICollision.lock() != c)
-								s_lastUICollision.lock()->UIMouseCollideEnd(x,y);
+							if (s_lastCollider && lastC && s_lastUICollision.lock() != c)
+								lastC->UIMouseCollideEnd(x,y);
 							s_lastUICollision = c;
 							s_lastCollider = true;
 						return c;
@@ -177,6 +181,10 @@ namespace GEngine {
 	{
 		if (s_lastUICollision.lock())
 			s_lastUICollision.lock()->UIOnEvent(e);
+		else if (s_lastCollider) {
+			s_lastUICollision.reset();
+			s_lastCollider = false;
+		}
 			
 	}
 

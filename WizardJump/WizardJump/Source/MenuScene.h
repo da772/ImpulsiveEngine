@@ -33,12 +33,14 @@ public:
 		textComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 		buttonsEntity->AddComponent(textComponent);
 		textComponent->CreateQuad({ 0,0,0 }, 0, { 1.5,2,1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/sky_01.png"));
-
+		Ref<Texture2D> buttonTexture = GEngine::Texture2D::Create("Content/Textures/play_button.png");
+		float size = max( (float)Application::GetWidth() /(float)Application::GetUIResolutionWidth(), (float) Application::GetHeight()/(float)Application::GetUIResolutionHeight());
+		float buttonY = size*((float)buttonTexture->GetHeight()/ (float)Application::GetHeight())*5.f;
+		float buttonX = size*((float)buttonTexture->GetWidth() / (float)Application::GetWidth())*5.f;
 		startButton = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			glm::vec3(0, 0, 0), 0.f, glm::vec2(.15, .1), glm::vec4(1, 1, 1, 1.f));
+			glm::vec3(0, 0, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
 		buttonsEntity->AddComponent(startButton);
-
-		startButton->SetImageTexture(GEngine::Texture2D::Create("Content/Textures/videoLife_button_7.png"));
+		startButton->SetImageTexture(buttonTexture);
 		//FPSuiComponent->CreateText("Ad", font, { .84f, .94f, 1.f }, { .5 ,.5,1 }, { 0,0,0,1 });
 
 

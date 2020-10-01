@@ -15,11 +15,14 @@ protected:
 	Ref<SpriteAnimationComponent> animComp;
 
 	long id = 0;
+	long id2 = 0;
+
+	std::string m_tag = "Fire Entity";
 
 	inline void OnBegin() override
 	{
-		SetEntityScale({ 1,2,1 });
-		SetEntityPosition({1.f, 24.f, 1});
+		SetEntityScale({ 1,1,1 });
+		SetEntityPosition({ -2.f, 1.4f, 1 });
 		spriteComp = CreateGameObject<SpriteComponent>();
 		animComp = CreateGameObject<SpriteAnimationComponent>();
 		audioComp = CreateGameObject<AudioComponent>("Content/Audio/fireSound.ogg", true, true, false, .2f);
@@ -30,7 +33,8 @@ protected:
 
 		spriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/fireAnim.png"),
 			{ 3,0 }, { 64,128 }, { 1,1 });
-		id = spriteComp->CreateSubTexturedQuad({ 0,0,10 }, 0.f, { 2,2,1 }, { 1,1,1,1 }, spriteSheet);
+		id = spriteComp->CreateSubTexturedQuad({ 0,0,10 }, 0.f, { 2,4,1 }, { 1,1,1,1 }, spriteSheet);
+		id2 = spriteComp->CreateQuad({ 0, 0, 9 }, 0.f, { 6,6,1 }, { 1.f,.5f, 0.f,75.f },Texture2D::Create("Content/Textures/radialLight.png"));
 
 		
 		animComp->SetFrameAnimation(16, 8, true, [this](int frame) {
@@ -38,6 +42,12 @@ protected:
 			//int p2 = 3-floor(frame / 8);
 			spriteSheet->SetCoords({ p1, 0 }, { 64,128 });
 			spriteComp->SetSubTexture(id, spriteSheet);
+
+			if (frame % 2 == 0) {
+				float op = Random::FloatRange(.5f, .75f);
+				spriteComp->SetQuadColor(id2, { 1.f,.5f, 0.f, op });
+			}
+
 		});
 		
 

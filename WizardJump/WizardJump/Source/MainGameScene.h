@@ -49,7 +49,7 @@ public:
             
 			textId = FPSuiComponent->CreateText(std::to_string((int)
 				GEngine::Application::GetApp()->profile["FPS"]) + " FPS", font, { -1, .9f,1 },
-				{ (float)GEngine::Application::GetWidth()/(float)GEngine::Application::GetUIResolutionWidth(),(float)GEngine::Application::GetHeight()/GEngine::Application::GetUIResolutionHeight(),1 }, { 1,1,1,1 });
+				{ 1,1,1 }, { 1,1,1,1 });
 		}
 
 	}
@@ -98,17 +98,43 @@ public:
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
+		eFPS->m_tag = "UI Entity";
 		AddEntity(eFPS);
        
 		eFPS->AddComponent(FPSuiComponent);
+		GEngine::Ref<GEngine::Texture2D > buttonTexture = GEngine::Texture2D::Create("Content/Textures/back_button.png");
+		float size = max((float)Application::GetWidth() / (float)Application::GetUIResolutionWidth(), (float)Application::GetHeight() / (float)Application::GetUIResolutionHeight());
+		float buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
+		float buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
 		GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			glm::vec3(.85, .90, 0), 0.f, glm::vec2(.15, .1), glm::vec4(1, 1, 1, 1.f));
+			glm::vec3(.85, .90, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
 		eFPS->AddComponent(button);
+		button->SetImageTexture(buttonTexture);
+		float lastButtonX = buttonX;
+		float lastButtonY = buttonY;
+		buttonTexture = GEngine::Texture2D::Create("Content/Textures/videoLife_button_7.png");
+		buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
+		buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
+		GEngine::Ref<GEngine::ButtonComponent> button2 = GEngine::CreateGameObject<GEngine::ButtonComponent>(
+			glm::vec3(.8 - (lastButtonX / 2.f) - buttonX/2.f, .90, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
+		eFPS->AddComponent(button2);
+		button2->SetImageTexture(buttonTexture);
 
-		button->SetImageTexture(GEngine::Texture2D::Create("Content/Textures/videoLife_button_7.png"));
+		button->SetOnEvent([](const GEngine::Event& e) {
+
+			if (e.GetEventType() == EventType::MouseButtonReleased) {
+				GEngine::SceneManager::SetCurrentScene("menuScene");
+			}
+
+			if (e.GetEventType() == EventType::TouchReleased) {
+				GEngine::SceneManager::SetCurrentScene("menuScene");
+			}
+
+		});
+
 		//FPSuiComponent->CreateText("Ad", font, { .84f, .94f, 1.f }, { .5 ,.5,1 }, { 0,0,0,1 });
 
-        button->SetOnMouseEndCollide([](float x, float y){
+        button2->SetOnMouseEndCollide([](float x, float y){
 			if (GEngine::AdManager::AdLoaded()) {
 				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
 					[](int state) { GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
@@ -283,7 +309,7 @@ public:
 	{
 		SetupCamera();
 
-		font = GEngine::Font::Create("Content/Fonts/arial.ttf", (float)120.f );
+		font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f );
 		font->LoadCharactersEN();
 
 	}

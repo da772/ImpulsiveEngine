@@ -27,7 +27,7 @@ public:
 	PlatformEntity(const glm::vec2 pos, const glm::vec2 scale = glm::vec2(1, 1), const float zOrder = 5, const std::string& entityTag = "Platform Entity", const float rot = 0);
 	~PlatformEntity() {};
 
-	bool debug = true;
+	bool debug = false;
 
 protected:
 	void OnBegin() override;

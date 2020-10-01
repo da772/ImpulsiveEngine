@@ -99,6 +99,7 @@ namespace GEngine {
 		void ReloadGraphics();
 
 		const Vector3 GetShapePosition(long id);
+		const Ref<Texture2D> GetShapeTexture(long id);
 		const float GetShapeRotation(long id);
 		const Vector2 GetShapeScale(long id);
 
