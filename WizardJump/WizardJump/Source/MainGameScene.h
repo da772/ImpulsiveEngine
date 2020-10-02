@@ -134,18 +134,19 @@ public:
 
 		//FPSuiComponent->CreateText("Ad", font, { .84f, .94f, 1.f }, { .5 ,.5,1 }, { 0,0,0,1 });
 
-        button2->SetOnMouseEndCollide([](float x, float y){
-			if (GEngine::AdManager::AdLoaded()) {
-				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
-					[](int state) { GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
+        button2->SetOnEvent([](const GEngine::Event& e){
+			if (e.GetEventType() == EventType::TouchReleased) {
+				if (GEngine::AdManager::AdLoaded()) {
+					GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
+						[](int state) { GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
+				}
+				else {
+					GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED");
+					GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
+						[](int state) {  GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
+						});
+				}
 			}
-			else {
-				GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); 
-				GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
-					[](int state) {  GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
-				});
-			}
-			
         });
 	
 		
