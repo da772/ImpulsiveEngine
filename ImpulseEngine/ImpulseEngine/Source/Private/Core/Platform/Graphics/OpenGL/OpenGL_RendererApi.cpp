@@ -66,6 +66,11 @@ namespace GEngine {
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
+        
+#ifdef GE_PLATFORM_IOS
+         if (m_defaultFrameBuffer == 0)
+             glGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&m_defaultFrameBuffer);
+#endif
 
 #ifdef GE_GRAPHICS_API_OPENGL_3_3
 		gltInit();
@@ -220,6 +225,10 @@ namespace GEngine {
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, id);
 	}
+
+    uint32_t OpenGL_RendererApi::GetDefaultFramebufferId() {
+        return m_defaultFrameBuffer;
+    }
 
 
 

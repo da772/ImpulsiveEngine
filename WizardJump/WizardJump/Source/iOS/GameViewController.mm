@@ -1,5 +1,5 @@
 #import "GameViewController.h"
-#import <OpenGLES/ES2/glext.h>
+#import <OpenGLES/ES3/glext.h>
 #include <GEngine.h>
 #include <EntryPoint.h>
 #include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
@@ -52,6 +52,8 @@
        
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
+    [view bindDrawable];
+
     
    
     GEngine::Mobile_Input_Callback::SetGetViewContext([view](){

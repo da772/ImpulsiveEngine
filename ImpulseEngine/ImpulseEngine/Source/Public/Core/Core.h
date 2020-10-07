@@ -34,12 +34,24 @@
 #define GE_CONSOLE_APP
 #endif
 
+#if defined(GE_PLATFORM_IOS)
+#include <TargetConditionals.h>
+#endif
+
 #if defined(GE_PLATFORM_IOS) || defined(GE_PLATFORM_ANDROID)
 #define GE_MOBILE_APP
 #define GE_WINDOW_API_MOBILE
 #define GE_GRAPHICS_API_OPENGL_ES
+#if defined(GE_PLATFORM_IOS)
+#if TARGET_OS_SIMULATOR
 #define GE_ADS_FIREBASE
 #define GE_AD_PLATFORM 1
+#endif
+#else
+#define GE_ADS_FIREBASE
+#define GE_AD_PLATFORM 1
+
+#endif
 #endif
 
 #if defined(GE_PLATFORM_WINDOWS)

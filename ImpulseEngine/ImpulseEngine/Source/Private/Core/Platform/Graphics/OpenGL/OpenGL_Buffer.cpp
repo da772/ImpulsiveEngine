@@ -149,9 +149,9 @@ namespace GEngine {
 
 	void OpenGL_FrameBuffer::UnBind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)RenderCommand::GetDefaultFrameBufferId());
 		if (Application::GetApp()->GetWindow())
-			RenderCommand::SetViewport(0, 0, Application::GetWindowWidth(), Application::GetWindowWidth());
+			RenderCommand::SetViewport(0, 0, Application::GetWindowWidth(), Application::GetWindowHeight());
 	}
 
 	void OpenGL_FrameBuffer::UpdateSize(int width, int height)

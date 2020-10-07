@@ -223,8 +223,7 @@ namespace GEngine {
         
 
         if (m_Window) {
-            m_width = m_Window->GetWidth();
-            m_height = m_Window->GetHeight();
+            m_Window->GetFrameBufferSize(&m_width, &m_height);
         }
         
         m_Window.reset();

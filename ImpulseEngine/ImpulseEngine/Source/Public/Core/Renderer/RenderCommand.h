@@ -26,7 +26,7 @@ namespace GEngine {
 		};
 
 		
-
+        inline static uint32_t GetDefaultFrameBufferId() { return RenderCommand::s_RendererAPI->GetDefaultFramebufferId(); }
 
 		inline static void DrawText3D_Billboard(const char* txt, const glm::vec4& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center) {
 			RenderCommand::s_RendererAPI->DrawText3D_Billboard(txt, color, scale, model, view, projection, center);

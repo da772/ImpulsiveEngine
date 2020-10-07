@@ -25,7 +25,10 @@ namespace GEngine {
 		
 		virtual void ClearStencil() override;
 		virtual void SetStencil(int op1, int op2, int op3, int func1, int func2, int func3, int mask) override;
-    
+        virtual uint32_t GetDefaultFramebufferId() override;
+        
+    private:
+        unsigned int m_defaultFrameBuffer = 0;
 
 	};
 

@@ -41,6 +41,7 @@ namespace GEngine {
 		const std::vector<FPipeline>& pipelines = Renderer::GetPipelines();
 		m_frameBuffer->Bind();
 		Renderer::Prepare();
+        RenderStart();
 		for (const FPipeline& p : pipelines) {
 			if (p.p.get() == this) {
 				continue;
@@ -59,9 +60,8 @@ namespace GEngine {
 			
 		}
 		m_frameBuffer->UnBind();
-		RenderCommand::SetViewport(0, 0, Application::GetWidth(), Application::GetHeight());
+        Renderer::Prepare();
 		m_shader->Bind();
-		RenderCommand::BindTexture(m_frameBuffer->GetTexture()->GetRendererID(), 0);
 		m_frameBuffer->GetTexture()->Bind();
 		m_varray->Bind();
 		RenderCommand::DrawIndexed(m_varray);
