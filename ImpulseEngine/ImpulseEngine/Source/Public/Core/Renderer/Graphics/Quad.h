@@ -29,7 +29,7 @@ namespace GEngine {
 	
 
 	private:
-
+		static Ref<BufferLayout> s_QuadBufferLayout;
 
 
 	};

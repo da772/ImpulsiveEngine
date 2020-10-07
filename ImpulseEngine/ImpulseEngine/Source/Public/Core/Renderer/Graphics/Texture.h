@@ -41,12 +41,12 @@ namespace GEngine {
 		virtual void Bind(uint32_t slot = 0) const = 0;
 		virtual void UnBind() const = 0;
 		virtual inline const std::string& GetName() { return name; }
-		inline static const std::unordered_map<std::string, Weak<Texture>>& GetLoadedTextures() { return s_TexturePool; }
+	
 		virtual void Unload() = 0;
 		virtual void Reload() = 0;
 
 	protected:
-		static std::unordered_map<std::string, Weak<Texture>> s_TexturePool;
+		
 		std::string name;
 		Weak<Texture> self;
 		u32 m_flags;
@@ -54,6 +54,7 @@ namespace GEngine {
 
 	class Texture2D : public Texture {
 	public:
+		
 		inline Texture2D() {};
 		virtual ~Texture2D();
 		static void UnloadTextures();
@@ -68,7 +69,12 @@ namespace GEngine {
 		virtual void Bind(uint32_t slot = 0) const override {};
 		virtual void UnBind() const override {};
 		static void Destroy(Weak<Texture2D> texture);
+		inline static const std::unordered_map<std::string, Weak<Texture>>& GetLoadedTextures() { return s_TexturePool; }
+		inline static std::unordered_map<std::string, Weak<Texture>>& GetLoadedTexturesRaw() { return s_TexturePool; }
 		std::mutex m_mutex;
+
+	protected:
+		static std::unordered_map<std::string, Weak<Texture>> s_TexturePool;
 
 	};
 

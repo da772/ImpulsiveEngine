@@ -6,18 +6,31 @@
 #include "Public/Core/Renderer/Renderer2D.h"
 #include "Public/Core/Renderer/Graphics/Buffer.h"
 
+#include "Public/Core/Renderer/Graphics/Texture.h"
+#include "Public/Core/Renderer/Graphics/Shader.h"
+#include "Public/Core/Renderer/Renderer.h"
+
+
 namespace GEngine {
 
-	Ref<FrameBuffer> RenderPipeline::s_frameBuffer;
+
+	RenderPipeline::RenderPipeline()
+	{
+		m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear);
+		m_shader = Shader::Create("Content/shaders/ViewportShader.glsl");
+	}
 
 	void RenderPipeline::Render()
 	{
 		std::lock_guard<std::mutex> g(renderMutex);
+		m_frameBuffer->Bind();
+		Renderer::Prepare();
 		RenderStart();
 		for (int i = 0; i < renderables.size(); i++) {
 			renderables[i]->Render();
 		}
 		RenderEnd();
+		m_frameBuffer->UnBind();
 	}
 
 	void RenderPipeline::Add(Ref<Renderable> r)
@@ -54,7 +67,17 @@ namespace GEngine {
 
 	void RenderPipeline::SetSize(const int width, const int height)
 	{
-		s_frameBuffer->UpdateSize(width, height);
+		m_frameBuffer->UpdateSize(width, height);
+	}
+
+	void RenderPipeline::Unload()
+	{
+		m_frameBuffer->Unload();
+	}
+
+	void RenderPipeline::Reload()
+	{
+		m_frameBuffer->Reload();
 	}
 
 }

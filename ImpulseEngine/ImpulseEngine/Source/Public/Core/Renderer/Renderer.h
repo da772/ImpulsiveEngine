@@ -13,6 +13,7 @@ namespace GEngine {
 	class Shader;
 	class Camera;
 	class RenderPipeline;
+	class FrameBuffer;
 
 	struct FPipeline {
 		FPipeline(Ref<RenderPipeline> p, int i) : p(p), i(i) {
@@ -55,11 +56,13 @@ namespace GEngine {
 
 		static Ref<RenderPipeline> GetPipeline(const char* id);
 
+		static const std::vector<FPipeline>& GetPipelines();
+
 		static void EndScene();
 
-		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
+		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f), bool debug = false);
 
-		static void SubmitArrays(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
+		static void SubmitArrays(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f), bool debug = false);
 
 		static void SubmitArraysLines(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
 
@@ -68,6 +71,7 @@ namespace GEngine {
 		static void DrawLine(const glm::vec3& startPos,const glm::vec3& endPos,const glm::vec4& color);
 		static void DrawLines(const std::vector<float>& lines, const glm::vec4& color);
 		static void DrawDebugLines(const std::vector<float>& lines, const glm::vec4& color);
+		static void DrawCircle(const glm::vec3& position, float rotation, const glm::vec3& scale, const glm::vec4& color);
 		
 		static void DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center = true);
 
@@ -79,7 +83,6 @@ namespace GEngine {
 
 		static void Unload();
 		static void Reload();
-
 		
 
 	private:

@@ -21,7 +21,10 @@ namespace GEngine {
 		virtual void SetDepth(bool b) override;
 		virtual int GetMaxTextureSlots() override;
 		virtual void BindTexture(int id, int slot) override;
-        
+		virtual void SetBlendMode(int sFactor, int dFactor) override;
+		
+		virtual void ClearStencil() override;
+		virtual void SetStencil(int op1, int op2, int op3, int func1, int func2, int func3, int mask) override;
     
 
 	};

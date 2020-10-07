@@ -11,10 +11,10 @@ namespace GEngine {
 		RenderPipeline_ui();
 		virtual ~RenderPipeline_ui() {};
 
+		
+		
 		virtual void RenderStart() override;
 		virtual void RenderEnd() override;
-		virtual void Unload() override;
-		virtual void Reload() override;
 
 	};
 

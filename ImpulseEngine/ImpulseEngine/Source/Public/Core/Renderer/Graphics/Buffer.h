@@ -225,6 +225,9 @@ namespace GEngine {
 		virtual void UpdateSize(int width, int height) = 0;
 		inline Ref<Texture2D> GetTexture() const { return m_texture; }
 
+		virtual void Unload() = 0;
+		virtual void Reload() = 0;
+
 		static Ref<FrameBuffer> Create(int width, int height, int format = 0);
 
 	protected:

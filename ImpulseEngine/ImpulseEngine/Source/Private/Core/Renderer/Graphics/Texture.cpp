@@ -20,12 +20,14 @@ namespace GEngine {
 		
 	}
 
-	std::unordered_map<std::string, Weak<Texture>> Texture::s_TexturePool;
+	std::unordered_map<std::string, Weak<Texture>> Texture2D::s_TexturePool;
 
 	Texture2D::~Texture2D()
 	{
-		if (s_TexturePool.size() > 1) 
+		if (s_TexturePool.size() > 0) {
 			s_TexturePool.erase(this->name);
+		}
+			
 	}
 
 	Ref<Texture2D> Texture2D::Create(const std::string& path, const u32 flags)
@@ -33,12 +35,12 @@ namespace GEngine {
 
 		Ref<Texture2D> t = nullptr;
 
-		if (Texture::s_TexturePool.count(path)) {
-			Ref<Texture> _t = Texture::s_TexturePool[path].lock();
+		if (Texture2D::s_TexturePool.count(path)) {
+			Ref<Texture> _t = Texture2D::s_TexturePool[path].lock();
 			if (_t != nullptr)
 				return std::static_pointer_cast<Texture2D>(_t);
 			else
-				Texture::s_TexturePool.erase(path);
+				Texture2D::s_TexturePool.erase(path);
 		}
 
 		switch (GraphicsContext::GetGraphicsApi()) {
@@ -60,7 +62,7 @@ namespace GEngine {
 		}
 		t->name = path;
 		t->self = t;
-		Texture::s_TexturePool[path] = t;
+		Texture2D::s_TexturePool[path] = t;
 		return t;
 
 	}
@@ -77,8 +79,8 @@ namespace GEngine {
 			}
 		}
 
-		if (Texture::s_TexturePool.count(name)) {
-			Ref<Texture> _t = Texture::s_TexturePool[name].lock();
+		if (Texture2D::s_TexturePool.count(name)) {
+			Ref<Texture> _t = Texture2D::s_TexturePool[name].lock();
 			if (_t != nullptr)
 				return std::static_pointer_cast<Texture2D>(_t);
 			else
@@ -103,7 +105,7 @@ namespace GEngine {
 
 		t->name = name;
 		t->self = t;
-		Texture::s_TexturePool[name] = t;
+		Texture2D::s_TexturePool[name] = t;
 		return t;
 	}
 
@@ -125,9 +127,9 @@ namespace GEngine {
 	void Texture2D::Destroy(Weak<Texture2D> texture)
 	{
 		if (texture.lock() == nullptr) return;
-		int count = Texture::s_TexturePool[texture.lock()->name].use_count();
+		int count = Texture2D::s_TexturePool[texture.lock()->name].use_count();
 		if (count <= 3) {
-			if (Texture::s_TexturePool.erase(texture.lock()->name)) {
+			if (Texture2D::s_TexturePool.erase(texture.lock()->name)) {
 				
 			}
 		}

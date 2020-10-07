@@ -42,8 +42,10 @@ namespace GEngine {
 		void Bind() override;
 		void UnBind() override;
 		void UpdateSize(int width, int height) override;
+		void Unload() override;
+		void Reload() override;
 	private:
-		uint32_t m_rendererId;
+		uint32_t m_rendererId = 0;
 		void Create();
 		void Invalidate();
 

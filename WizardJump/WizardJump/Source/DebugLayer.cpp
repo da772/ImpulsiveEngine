@@ -14,21 +14,17 @@ DebugLayer::DebugLayer() : Layer("DebugLayer")
 
 void DebugLayer::OnImGuiRender()
 {
+		if (DebugLayer::showLog)
+			ShowDock(&DebugLayer::showLog);
 
+		if (DebugLayer::showLog)
+			GEngine::Log::GetImGuiLog()->Draw("Console Log", &DebugLayer::showLog);
 
-	if (DebugLayer::showLog)
-		ShowDock(&DebugLayer::showLog);
-
-	if (DebugLayer::showLog)
-		GEngine::Log::GetImGuiLog()->Draw("Console Log", &DebugLayer::showLog);
-
-	if (GEngine::Application::DebugTools()) {
-		CreateViewPort();
-		CreateSceneHierarchy();
-		CreateGraphicsDebuggger();
-	}
-
-
+		if (GEngine::Application::DebugTools()) {
+			CreateViewPort();
+			CreateSceneHierarchy();
+			CreateGraphicsDebuggger();
+		}
 }
 
 void DebugLayer::OnEvent(GEngine::Event& event)
@@ -315,26 +311,26 @@ void DebugLayer::CreateViewPort()
 	}
 	
 
+	const char* pipelineId = "viewport";
 	GEngine::Application::SetInputEnabled(ImGui::IsWindowFocused());
 	ImVec2 viewPortSize = ImGui::GetContentRegionAvail();
 	glm::vec2 sz = { viewPortSize.x, viewPortSize.y };
-	glm::vec2 csz = { GEngine::RenderPipeline::GetFrameBuffer()->GetTexture()->GetWidth(), GEngine::RenderPipeline::GetFrameBuffer()->GetTexture()->GetHeight() };
+	GEngine::Ref<GEngine::RenderPipeline> pipeline = GEngine::Renderer::GetPipeline(pipelineId);
+	glm::vec2 csz = { pipeline->GetFrameBuffer()->GetTexture()->GetWidth(), pipeline->GetFrameBuffer()->GetTexture()->GetHeight() };
 	if (lastFrameSize != sz || handleResize) {
 		
 		finalSize = scaleRatio(sz.x, sz.y, originalSize.x, originalSize.y);
 		GEngine::Application::GetApp()->m_viewPortWidth = finalSize.x;
 		GEngine::Application::GetApp()->m_viewPortHeight = finalSize.y;
-		//GEngine::RenderPipeline::GetFrameBuffer()->UpdateSize(originalSize.x, originalSize.y);
 		lastFrameSize = sz;
 		/*
 		handleResize = false;
 		*/
 	}
 
-
 	ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - finalSize.x) * .5f , ImGui::GetCursorPosY() });
 	GEngine::Application::SetViewPortOffset({ ImGui::GetCursorPosX() + ImGui::GetWindowPos().x, ImGui::GetCursorPosY() + ImGui::GetWindowPos().y });
-	ImGui::Image((void*)(intptr_t)GEngine::RenderPipeline::GetFrameBuffer()->GetTexture()->GetRendererID(), { finalSize.x, finalSize.y }, { 0,1 }, { 1,0 });
+	ImGui::Image((void*)(intptr_t)pipeline->GetFrameBuffer()->GetTexture()->GetRendererID(), { finalSize.x, finalSize.y }, { 0,1 }, { 1,0 });
 
 	
 	ImGui::End();
@@ -349,9 +345,7 @@ void DebugLayer::CreateGraphicsDebuggger()
 
 	ImGui::Text("Batch Count: %d", GEngine::Batch::GetBatchCount());
 
-
-
-	auto& textures = GEngine::Texture::GetLoadedTextures();
+	auto& textures = GEngine::Texture2D::GetLoadedTextures();
 	if (ImGui::TreeNodeEx("Textures Loaded", 0,  "Textures Loaded: %d", textures.size())) {
 		for (auto& a : textures) {
 			ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;

@@ -44,6 +44,9 @@ namespace GEngine {
 
 		inline static void SetCulling(bool cull) { RenderCommand::s_RendererAPI->SetCulling(cull); }
 
+		inline static void ClearStencil() { RenderCommand::s_RendererAPI->ClearStencil(); }
+		inline static void StencilParams(int op1, int op2, int op3, int func1, int func2, int func3, int mask) { RenderCommand::s_RendererAPI->SetStencil(op1, op2, op3, func1, func2, func3, mask); }
+
 		inline static void Create() { RenderCommand::s_RendererAPI.reset(RendererApi::Create()); }
 		static void Destroy();
 	private:

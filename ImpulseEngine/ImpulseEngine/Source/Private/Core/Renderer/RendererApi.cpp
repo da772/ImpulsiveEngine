@@ -12,6 +12,8 @@
 
 namespace GEngine {
 
+	unordered_map<int, int> RendererApi::s_BlendFactors;
+
 	GEngine::RendererApi* RendererApi::Create()
 	{
 		FGraphicsApi api = GraphicsContext::GetGraphicsApi();

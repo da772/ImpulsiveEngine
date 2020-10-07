@@ -7,9 +7,8 @@
 
 namespace GEngine {
 
-	Quad::Quad()
-	{
-		m_BufferLayout = Ref<BufferLayout>(new BufferLayout({
+
+	Ref<BufferLayout> Quad::s_QuadBufferLayout = Ref<BufferLayout>(new BufferLayout({
 			{GEngine::ShaderDataName::Position },
 			{GEngine::ShaderDataName::Color },
 			{GEngine::ShaderDataName::TextureCoord},
@@ -18,6 +17,8 @@ namespace GEngine {
 			{GEngine::ShaderDataName::AlphaChannel}
 		}));
 
+	Quad::Quad() {
+		m_BufferLayout = s_QuadBufferLayout;
 		m_Indices = {
 			0,1,2,2,3,0
 		};
@@ -25,7 +26,7 @@ namespace GEngine {
 
 	Quad::~Quad()
 	{
-		m_BufferLayout = nullptr;
+		m_BufferLayout.reset();
 	}
 
 	u32 Quad::GetVerticesRows()
@@ -43,12 +44,9 @@ namespace GEngine {
 	{
 		std::vector<u32> ind = std::vector<u32>(m_Indices.size());
 		
-		ind[0] = 0 + offset;
-		ind[1] = 1 + offset;
-		ind[2] = 2 + offset;
-		ind[3] = 2 + offset;
-		ind[4] = 3 + offset;
-		ind[5] = 0 + offset;
+		for (int i = 0; i < m_Indices.size(); i++) {
+			ind[i] = m_Indices[i] + offset;
+		}
 
 		return ind;
 	}

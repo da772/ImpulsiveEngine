@@ -90,7 +90,7 @@ namespace GEngine {
 
 	void OpenGL_VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) 
 	{
-		glBindVertexArray(m_RendererID);
+		Bind();
 		indexBuffer->Bind();
 		m_IndexBuffer = indexBuffer;
 		

@@ -18,15 +18,7 @@ endif
 # Configurations
 # #############################################
 
-ifeq ($(origin CC), default)
-  CC = clang
-endif
-ifeq ($(origin CXX), default)
-  CXX = clang++
-endif
-ifeq ($(origin AR), default)
-  AR = ar
-endif
+RESCOMP = windres
 DEFINES +=
 INCLUDES +=
 FORCE_INCLUDE +=
@@ -34,7 +26,6 @@ ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
 LIBS +=
 LDDEPS +=
-ALL_LDFLAGS += $(LDFLAGS) -m64
 LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
 define PREBUILDCMDS
 endef
@@ -44,25 +35,28 @@ define POSTBUILDCMDS
 endef
 
 ifeq ($(config),debug)
-TARGETDIR = bin/Debug-macosx-x86_64/ImGui
-TARGET = $(TARGETDIR)/libImGui.a
-OBJDIR = bin-int/Debug-macosx-x86_64/ImGui
+TARGETDIR = bin/Debug-windows-x86_64/ImGui
+TARGET = $(TARGETDIR)/ImGui.lib
+OBJDIR = bin-int/Debug-windows-x86_64/ImGui
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
+ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64
 
 else ifeq ($(config),release)
-TARGETDIR = bin/Release-macosx-x86_64/ImGui
-TARGET = $(TARGETDIR)/libImGui.a
-OBJDIR = bin-int/Release-macosx-x86_64/ImGui
+TARGETDIR = bin/Release-windows-x86_64/ImGui
+TARGET = $(TARGETDIR)/ImGui.lib
+OBJDIR = bin-int/Release-windows-x86_64/ImGui
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
+ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64 -s
 
 else ifeq ($(config),dist)
-TARGETDIR = bin/Dist-macosx-x86_64/ImGui
-TARGET = $(TARGETDIR)/libImGui.a
-OBJDIR = bin-int/Dist-macosx-x86_64/ImGui
+TARGETDIR = bin/Dist-windows-x86_64/ImGui
+TARGET = $(TARGETDIR)/ImGui.lib
+OBJDIR = bin-int/Dist-windows-x86_64/ImGui
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -std=c++17
+ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64 -s
 
 else
   $(error "invalid configuration $(config)")

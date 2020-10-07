@@ -33,6 +33,7 @@ namespace GEngine {
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		m_VertexCount = size / sizeof(uint32_t);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 	}
 
@@ -102,6 +103,10 @@ namespace GEngine {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	}
+//////////////////////////////////////////////////////////////////////////////
+//// FRAME BUFFER ///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
 
 	OpenGL_FrameBuffer::OpenGL_FrameBuffer(int width, int height, int format) : FrameBuffer(width, height, format)
 	{
@@ -110,7 +115,8 @@ namespace GEngine {
 
 	OpenGL_FrameBuffer::~OpenGL_FrameBuffer()
 	{
-		glDeleteFramebuffers(1, &m_rendererId);
+		if (m_rendererId != 0)
+			glDeleteFramebuffers(1, &m_rendererId);
 		m_texture = nullptr;
 	}
 
@@ -129,7 +135,8 @@ namespace GEngine {
 	void OpenGL_FrameBuffer::Invalidate()
 	{
 		m_texture = nullptr;
-		glDeleteFramebuffers(1, &m_rendererId);
+		if (m_rendererId != 0)
+			glDeleteFramebuffers(1, &m_rendererId);
 		m_rendererId = 0;
 		UnBind();
 	}
@@ -152,8 +159,20 @@ namespace GEngine {
 		//Invalidate();
 		m_width = width;
 		m_height = height;
-		m_texture->SetData(NULL, 0, m_format, m_width, m_height);
+		m_texture->SetData(nullptr, 0, m_format, m_width, m_height);
 		
+	}
+
+	void OpenGL_FrameBuffer::Unload()
+	{
+
+		Invalidate();
+	}
+
+	void OpenGL_FrameBuffer::Reload()
+	{
+		if (m_rendererId == 0)
+			Create();
 	}
 
 }

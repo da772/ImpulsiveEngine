@@ -6,48 +6,24 @@
 #include "Public/Core/Renderer/Graphics/Texture.h"
 #include "Public/Core/Application/Application.h"
 
+#include "Public/Core/Renderer/Graphics/Renderable.h"
+
+
 namespace GEngine {
 
-	RenderPipeline_ui::RenderPipeline_ui()
+	RenderPipeline_ui::RenderPipeline_ui() : RenderPipeline()
 	{
-#if defined( GE_CONSOLE_APP)
-		if (!s_frameBuffer && Application::DebugTools())
-			s_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
-#endif
+
 	}
 
 	void RenderPipeline_ui::RenderStart()
 	{
-		Renderer::SetDepth(false);
-#if defined( GE_CONSOLE_APP)
-		if (Application::DebugTools())
-			s_frameBuffer->Bind();
-#endif
+		Renderer::SetDepth(false);	
 	}
 
 	void RenderPipeline_ui::RenderEnd()
 	{
-#if defined( GE_CONSOLE_APP)
-		if (Application::DebugTools())
-			s_frameBuffer->UnBind();
-#endif
 		Renderer::SetDepth(true);
-	}
-
-	void RenderPipeline_ui::Unload()
-	{
-#if defined( GE_CONSOLE_APP)
-		if (s_frameBuffer && Application::DebugTools())
-			s_frameBuffer = nullptr;
-#endif
-	}
-
-	void RenderPipeline_ui::Reload()
-	{
-#if defined( GE_CONSOLE_APP)
-		if (!s_frameBuffer && Application::DebugTools())
-			s_frameBuffer = FrameBuffer::Create(Application::GetWidth(), Application::GetHeight(), TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
-#endif
 	}
 
 

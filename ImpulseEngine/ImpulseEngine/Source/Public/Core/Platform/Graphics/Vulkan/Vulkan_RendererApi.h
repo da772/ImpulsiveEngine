@@ -19,6 +19,7 @@ namespace GEngine {
 		virtual void SetDepth(bool b) override {};
 		virtual void Shutdown() override {};
 		virtual int GetMaxTextureSlots() override { return 0; };
+		virtual void SetBlendMode(int sFactor, int dFactor) override {};
 
 	};
 

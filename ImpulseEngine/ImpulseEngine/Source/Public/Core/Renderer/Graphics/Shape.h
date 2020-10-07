@@ -14,7 +14,7 @@ namespace GEngine {
 		virtual u32 GetVerticesStride();
 		virtual u32 GetIndicesSize();
 		virtual int GetTextureSlotOffset();
-		inline virtual Ref<BufferLayout> GetBufferLayout() { return m_BufferLayout; }
+		inline virtual Ref<BufferLayout> GetBufferLayout() { return m_BufferLayout.lock(); }
 		virtual std::vector<u32> GetIndices(u32 offset) = 0;
 		virtual std::vector<float> GetVertices(Vector3 position, float rotation = 0.f, Vector3 scale = Vector3(1, 1, 1), Vector4 color = Vector4(1, 1, 1, 1),
 			u32 texture = 0, glm::vec2 textureScale = { 1,1 }, const Vector2* textureCoords = nullptr, float alphaChannel = 4) = 0;
@@ -25,7 +25,7 @@ namespace GEngine {
 	protected:
 		std::vector<u32> m_Indices;
 		std::vector<float> m_Vertices;
-		Ref<BufferLayout> m_BufferLayout;
+		Weak<BufferLayout> m_BufferLayout;
 
 	};
 

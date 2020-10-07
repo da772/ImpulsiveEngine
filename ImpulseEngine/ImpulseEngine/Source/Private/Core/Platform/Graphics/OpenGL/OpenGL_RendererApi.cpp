@@ -26,15 +26,42 @@
 
 
 
-
-
 namespace GEngine {
 
 	void OpenGL_RendererApi::Init()
 	{
+		s_BlendFactors.clear();
+		
+		s_BlendFactors[BLEND_SRC_COLOR] = GL_SRC_COLOR;
+		s_BlendFactors[BLEND_ONE_MINUS_SRC_COLOR] = GL_ONE_MINUS_SRC_COLOR;
+		s_BlendFactors[BLEND_SRC_ALPHA] = GL_SRC_ALPHA;
+		s_BlendFactors[BLEND_ONE_MINUS_SRC_ALPHA] = GL_ONE_MINUS_SRC_ALPHA;
+		s_BlendFactors[BLEND_DST_ALPHA] = GL_DST_ALPHA;
+		s_BlendFactors[BLEND_ONE_MINUS_DST_ALPHA] = GL_ONE_MINUS_DST_ALPHA;
+		s_BlendFactors[BLEND_DST_COLOR] = GL_DST_COLOR;
+		s_BlendFactors[BLEND_ONE_MINUS_DST_COLOR] = GL_ONE_MINUS_DST_COLOR;
+		s_BlendFactors[BLEND_SRC_APLHA_SATURATE] = GL_SRC_ALPHA_SATURATE;
+		s_BlendFactors[STENCIL_KEEP] = GL_KEEP;
+		s_BlendFactors[STENCIL_REPLACE] = GL_REPLACE;
+		s_BlendFactors[STENCIL_INCR] = GL_INCR;
+		s_BlendFactors[STENCIL_DECR] = GL_DECR;
+
+		s_BlendFactors[STENCIL_NEVER] = GL_NEVER;
+		s_BlendFactors[STENCIL_LESS] = GL_LESS;
+		s_BlendFactors[STENCIL_EQUAL] = GL_EQUAL;
+		s_BlendFactors[STENCIL_LEQUAL] = GL_LEQUAL;
+		s_BlendFactors[STENCIL_GREATER] = GL_GREATER;
+		s_BlendFactors[STENCIL_NOTEQUAL] = GL_NOTEQUAL;
+		s_BlendFactors[STENCIL_GEQUAL] = GL_GEQUAL;
+		s_BlendFactors[STENCIL_ALWAYS] = GL_ALWAYS;
+	
+		glEnable(GL_STENCIL_TEST);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		 
+		SetBlendMode(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
+		
+
+		glEnable(GL_STENCIL_TEST);
+
 		glEnable(GL_DEPTH_TEST);
 
 		glEnable(GL_CULL_FACE);
@@ -44,6 +71,26 @@ namespace GEngine {
 		gltInit();
 #endif
 
+	}
+
+	void OpenGL_RendererApi::SetBlendMode(int sFactor, int dFactor)
+	{
+		m_sFactor = sFactor;
+		m_dFactor = dFactor;
+		glBlendFunc(s_BlendFactors[sFactor], s_BlendFactors[dFactor]);
+	}
+
+	void OpenGL_RendererApi::ClearStencil()
+	{
+		glClear(GL_STENCIL_BUFFER_BIT);
+		glStencilMask(0x00);
+	}
+
+	void OpenGL_RendererApi::SetStencil(int op1, int op2, int op3, int func1, int func2, int func3, int mask)
+	{
+		glStencilOp(op1, op2, op3);
+		glStencilFunc(func1, func2, func3);
+		glStencilMask(mask);
 	}
 
 	void OpenGL_RendererApi::Shutdown()
@@ -60,7 +107,8 @@ namespace GEngine {
 
 	void OpenGL_RendererApi::Clear()
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glStencilMask(0x00);
 	}
 
 	void OpenGL_RendererApi::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
@@ -172,6 +220,8 @@ namespace GEngine {
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, id);
 	}
+
+
 
 }
 

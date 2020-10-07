@@ -7,7 +7,7 @@ namespace GEngine {
 	
 	u32 Shape::GetVerticesRows()
 	{
-		return m_Vertices.size()/m_BufferLayout->GetStride();
+		return m_Vertices.size()/m_BufferLayout.lock()->GetStride();
 	}
 
 	u32 Shape::GetVerticesSize()
@@ -17,7 +17,7 @@ namespace GEngine {
 
 	glm::u32 Shape::GetVerticesStride()
 	{
-		return m_BufferLayout->GetStride();
+		return m_BufferLayout.lock()->GetStride();
 	}
 
 	u32 Shape::GetIndicesSize()
@@ -28,7 +28,7 @@ namespace GEngine {
 
 	int Shape::GetTextureSlotOffset()
 	{
-		for (const BufferElement& b : *m_BufferLayout) {
+		for (const BufferElement& b : *m_BufferLayout.lock()) {
 			if (b.DataName == ShaderDataName::TextureSlot) {
 				return b.elemOffset;
 			}

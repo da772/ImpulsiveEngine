@@ -5,30 +5,37 @@ namespace GEngine {
 
 	class Renderable;
 	class FrameBuffer;
+	class Shader;
 
 	class RenderPipeline {
 
 	public:
 
-		RenderPipeline() {};
+		RenderPipeline();
 		virtual ~RenderPipeline() {};
 
-		void Render();
+		virtual void Render();
 		void Add(Ref<Renderable> r);
 		void Remove(Ref<Renderable> r);
 		void Sort();
 		void Clear();
 		void SetSize(const int width, const int height);
-		static Ref<FrameBuffer> GetFrameBuffer() { return s_frameBuffer; };
+		inline Ref<FrameBuffer> GetFrameBuffer() { return m_frameBuffer; };
 		virtual void RenderStart() {};
 		virtual void RenderEnd() {};
-		virtual void Unload() {};
-		virtual void Reload() {};
+		virtual void Unload();
+		virtual void Reload();
+		inline Ref<Shader> GetViewPortShader() { return m_shader; }
+		inline void SetViewPortShader(Ref<Shader> shader) { m_shader = shader; }
+		inline void SetShaderFunction(std::function<void()> shaderFunc) { m_shaderFunc = shaderFunc; }
+		inline const std::function<void()>& GetShaderFunction() { return m_shaderFunc; }
 
 	protected:
 		std::vector<Ref<Renderable>> renderables;
 		std::mutex renderMutex;
-		static Ref<FrameBuffer> s_frameBuffer;
+		std::function<void()> m_shaderFunc = nullptr;
+		Ref<FrameBuffer> m_frameBuffer;
+		Ref<Shader> m_shader;
 
 
 	};

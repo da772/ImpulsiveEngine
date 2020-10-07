@@ -8,12 +8,8 @@
 
 namespace GEngine {
 
-	RenderPipeline_2d::RenderPipeline_2d()
-	{
-#if defined( GE_CONSOLE_APP)
-		if (!s_frameBuffer && Application::DebugTools())
-			s_frameBuffer = FrameBuffer::Create(Application::GetWidth(), Application::GetHeight(), TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
-#endif
+	RenderPipeline_2d::RenderPipeline_2d() : RenderPipeline() {
+
 	}
 
 	RenderPipeline_2d::~RenderPipeline_2d()
@@ -24,35 +20,13 @@ namespace GEngine {
 	void RenderPipeline_2d::RenderStart()
 	{
 		Renderer::SetDepth(false);
-#if defined( GE_CONSOLE_APP)
-		if (Application::DebugTools())
-			s_frameBuffer->Bind();
-#endif
 	}
 
 	void RenderPipeline_2d::RenderEnd()
 	{
-#if defined( GE_CONSOLE_APP) 
-		if (Application::DebugTools())
-			s_frameBuffer->UnBind();
-#endif
 		Renderer::SetDepth(true);
 	}
 
-	void RenderPipeline_2d::Unload()
-	{
-#if defined( GE_CONSOLE_APP)
-		if (s_frameBuffer && Application::DebugTools())
-			s_frameBuffer = nullptr;
-#endif
-	}
 
-	void RenderPipeline_2d::Reload()
-	{
-#if defined( GE_CONSOLE_APP)
-		if (!s_frameBuffer && Application::DebugTools())
-			s_frameBuffer = FrameBuffer::Create(Application::GetWidth(), Application::GetHeight(), TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
-#endif
-	}
 
 }

@@ -12,8 +12,6 @@ namespace GEngine {
 		virtual void RenderStart() override;
 		virtual void RenderEnd() override;
 
-		virtual void Unload() override;
-		virtual void Reload() override;
 
 	};
 

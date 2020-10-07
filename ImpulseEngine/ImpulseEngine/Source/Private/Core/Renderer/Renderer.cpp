@@ -15,6 +15,7 @@
 
 #include "Public/Core/Renderer/Pipeline/RenderPipeline_2d.h"
 #include "Public/Core/Renderer/Pipeline/RenderPipeline_ui.h"
+#include "Public/Core/Renderer/Pipeline/RenderPipeline_viewport.h"
 
 #include "Public/Core/Renderer/Graphics/Renderable.h"
 
@@ -23,6 +24,8 @@
 
 #include "Public/Core/Application/Scene.h"
 #include "Public/Core/Application/SceneManager.h"
+
+
 
 
 
@@ -79,8 +82,9 @@ namespace GEngine {
 	void Renderer::OnInit()
 	{
 		Renderer::AddPipeline("2d", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 0);
-		Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 998);
-		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 999);
+		Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 500);
+		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 1000);
+		Renderer::AddPipeline("viewport", std::shared_ptr<RenderPipeline>(new RenderPipeline_viewport()), 1500);
 
 		s_ShapeData.reset(new ShapeData());
 
@@ -89,6 +93,7 @@ namespace GEngine {
 		s_ShapeData->empty_texture = std::shared_ptr<GEngine::Texture2D>(GEngine::Texture2D::Create("rendererEmptyTexture", 1, 1));
 		uint32_t whiteTextureData = 0xffffffff;
 		s_ShapeData->empty_texture->SetData(&whiteTextureData, sizeof(uint32_t));
+
 
 		CreateBuffers();
 	}
@@ -129,12 +134,11 @@ namespace GEngine {
 		for (u8 i = 0; i < Renderer::queue.size(); i++) {
 			Renderer::queue[i].p->Render();
 		}
-		//Renderer2D::DrawQuad({ 0,0,0 }, { 2,2 }, { 1,1,0,1 });
 	}
 
 	void Renderer::Prepare()
 	{
-		RenderCommand::SetClearColor({ 0, 0, 0, 1 });
+		RenderCommand::SetClearColor({ 0, 0, 0, 0});
 		RenderCommand::Clear();
 	}
 
@@ -166,6 +170,11 @@ namespace GEngine {
 		return nullptr;
 	}
 
+	const std::vector<GEngine::FPipeline>& Renderer::GetPipelines()
+	{
+		return queue;
+	}
+
 	void Renderer::Unload()
 	{
 		for (const FPipeline& p : queue) {
@@ -182,27 +191,58 @@ namespace GEngine {
 		}
 	}
 
+
+
 	void Renderer::EndScene()
 	{
 		Renderer::queueId["Debug2D"].p->Clear();
 		Renderer2D::EndScene();
 	}
 
-	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
+	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform, bool debug)
 	{
-		shader->Bind();
-		shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-		shader->UploadUniformMat4("u_Transform", transform);
-		vertexArray->Bind();
-		RenderCommand::DrawIndexed(vertexArray);
+		Ref<Shader> _shader = shader ? shader : s_ShapeData->shape_shader;
+
+		if (debug) {
+		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([_shader, vertexArray, transform]() {
+			_shader->Bind();
+			_shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+			_shader->UploadUniformMat4("u_Transform", transform);
+			vertexArray->Bind();
+			RenderCommand::DrawIndexed(vertexArray);
+			}));
+		}
+		else {
+			_shader->Bind();
+			_shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+			_shader->UploadUniformMat4("u_Transform", transform);
+			vertexArray->Bind();
+			RenderCommand::DrawIndexed(vertexArray);
+		}
 	}
 
-	void Renderer::SubmitArrays(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform) {
-		shader->Bind();
-		shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-		shader->UploadUniformMat4("u_Transform", transform);
-		vertexArray->Bind();
-		RenderCommand::DrawArrays(vertexArray);
+	void Renderer::SubmitArrays(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform, bool debug) {
+		if (!shader)
+			shader = s_ShapeData->shape_shader;
+	
+		if (debug) {
+
+			queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([shader, vertexArray, transform]() {
+				shader->Bind();
+				shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+				shader->UploadUniformMat4("u_Transform", transform);
+				vertexArray->Bind();
+				RenderCommand::DrawArrays(vertexArray);
+				}));
+
+		}  else {
+			shader->Bind();
+			shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+			shader->UploadUniformMat4("u_Transform", transform);
+			vertexArray->Bind();
+			RenderCommand::DrawArrays(vertexArray);
+		}
+
 	}
 
 	void Renderer::SubmitArraysLines(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform /*= glm::mat4(1.f)*/)
@@ -304,6 +344,11 @@ namespace GEngine {
 			GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
 
 			}));
+	}
+
+	void Renderer::DrawCircle(const glm::vec3& position, float rotation, const glm::vec3& scale, const glm::vec4& color)
+	{
+		
 	}
 
 	void Renderer::DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center) {

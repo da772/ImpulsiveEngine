@@ -33,7 +33,7 @@ void ExampleLayer::OnAttach()
 	GEngine::Ref<MenuScene> s3 = GEngine::CreateGameObject<MenuScene>("menuScene", nullptr);
 	GEngine::SceneManager::AddScene("mainGame", s2);
 	GEngine::SceneManager::AddScene("menuScene", s3);
-	GEngine::SceneManager::SetCurrentScene("splashScreen");
+	GEngine::SceneManager::SetCurrentScene("mainGame");
 
 
 
@@ -56,7 +56,14 @@ void ExampleLayer::OnDraw()
 
 void ExampleLayer::OnEvent(GEngine::Event& event)
 {
-
+	if (event.GetEventType() == EventType::WindowResize) {
+		if (!Application::DebugTools()) {
+			const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
+			for (const GEngine::FPipeline& p : pipelines) {
+				p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
+			}
+		}
+	}
 
 
 }
@@ -69,12 +76,11 @@ WizardJump::WizardJump()
 	this->m_height = 960;
 	this->title = "WizardJump";
 	s_debugTools = true;
+	
 	if (s_debugTools) {
 		this->m_width = 1280;
 		this->m_height = 720;
 	}
-
-
 
 #if !defined GE_DIST
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3)+"WizardJump/Content",
@@ -88,11 +94,17 @@ WizardJump::WizardJump()
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
+	GetWindow()->SetVSync(true);
 
 	if (s_debugTools) {
 		this->m_viewPortWidth = 1080;
 		this->m_viewPortHeight = 1920;
-		GEngine::RenderPipeline::GetFrameBuffer()->UpdateSize(m_viewPortWidth, m_viewPortHeight);
+		
+	}
+
+	const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
+	for (const GEngine::FPipeline& p : pipelines) {
+		p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
 	}
 
 
@@ -102,7 +114,7 @@ WizardJump::WizardJump()
 	EnableImGui(false);
 #endif
 	
-	GetWindow()->SetVSync(true);
+	
 
 #ifdef GE_MOBILE_APP
 	GEngine::AdManager::Initialize();

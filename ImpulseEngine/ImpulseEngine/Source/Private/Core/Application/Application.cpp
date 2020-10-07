@@ -310,6 +310,7 @@ namespace GEngine {
 	void Application::Shutdown()
 	{
         m_Running = false;
+        Texture2D::GetLoadedTexturesRaw().clear();
         Physics::Shutdown();
         SceneManager::End();
         AdManager::Shutdown();
@@ -457,6 +458,7 @@ namespace GEngine {
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {
         m_Running = false;
+        UnloadGraphics();
         return true;
     }
     
