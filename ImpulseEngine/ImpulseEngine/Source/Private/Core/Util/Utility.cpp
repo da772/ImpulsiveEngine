@@ -6,11 +6,15 @@
 #include "Public/Core/Controller/CameraController.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-#ifdef GE_PLATFORM_WINDOWS
+#if defined( GE_PLATFORM_WINDOWS) && !defined(GE_MINGW_)
 
 #include <locale>
 #include <codecvt>
 #include <WS2tcpip.h>
+#endif
+
+#if defined(GE_MINGW_)
+#include <arpa/inet.h>
 #endif
 
 #ifdef GE_PLATFORM_ANDROID
@@ -32,7 +36,7 @@ namespace GEngine {
 
 	std::string Utility::IPV4ToString(uint32_t ip)
 	{
-#ifdef GE_PLATFORM_WINDOWS
+#if defined( GE_PLATFORM_WINDOWS) && !defined(GE_MINGW_)
 		char ch[255];
 		inet_ntop(AF_INET, &ip, ch, 255);
 		return std::string(ch);

@@ -11,7 +11,7 @@ namespace GEngine {
 		inline uint64_t GetDataSize() const { return m_Size - 1; }
 		inline uint64_t GetStringSize() const { return m_Size; }
 		inline unsigned char* GetData() const {
-			m_Data[m_Size - 1] = NULL;
+			m_Data[m_Size - 1] = 0;
 			return m_Data;
 		};
 		inline unsigned char* GetDataAsString() const {

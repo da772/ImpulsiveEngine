@@ -3,7 +3,7 @@
 
 #define GE_FILESYSTEM_CHAR_LENGTH 1024
 
-#ifdef GE_PLATFORM_WINDOWS
+#if defined( GE_PLATFORM_WINDOWS) && !defined(GE_MINGW_)
 #include <locale>
 #include <codecvt>
 #include <WS2tcpip.h>
@@ -268,7 +268,7 @@ namespace GEngine {
 
 	std::string FileSystem::GetExecutablePath()
 	{
-#ifdef GE_PLATFORM_WINDOWS 
+#if defined(GE_PLATFORM_WINDOWS ) && !(GE_MINGW_)
 #pragma warning(push)
 #pragma warning(disable : 4996)
 		TCHAR NPath[MAX_PATH];
@@ -289,7 +289,7 @@ namespace GEngine {
 
 		return std::string(pathBuf);
 #endif
-#if defined(GE_PLATFORM_LINUX)
+#if defined(GE_PLATFORM_LINUX) || defined(GE_MINGW_)
 
 		char buff[PATH_MAX];
 		ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);

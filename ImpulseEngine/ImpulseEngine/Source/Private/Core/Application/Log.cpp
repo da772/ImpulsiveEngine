@@ -5,7 +5,7 @@
 #ifdef GE_PLATFORM_ANDROID
 #include "spdlog/sinks/android_sink.h"
 #else
-#include "spdlog/sinks/stdout_color_sinks.h""
+#include "spdlog/sinks/stdout_color_sinks.h"
 #endif
 #pragma warning(pop)
 

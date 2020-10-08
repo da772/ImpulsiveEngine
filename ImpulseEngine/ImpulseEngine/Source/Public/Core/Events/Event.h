@@ -24,7 +24,7 @@ namespace GEngine {
 		EventCategoryMouseButton = BIT(4)
 	};
 
-#ifdef GE_PLATFORM_WINDOWS
+#if defined(GE_PLATFORM_WINDOWS) && !defined(GE_MINGW_)
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
 								virtual EventType GetEventType() const override { return GetStaticType(); }\
 								virtual const char* GetName() const override { return #type; }

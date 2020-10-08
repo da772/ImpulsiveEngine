@@ -3,7 +3,7 @@
 #include "Public/Core/Platform/Graphics/OpenGL/OpenGL_GraphicsContext.h"
 
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-#ifdef GE_GRAPHICS_API_OPENGL_3_3)
+#ifdef GE_GRAPHICS_API_OPENGL_3_3
 #include <GLFW/glfw3.h>
 #include <GLFW/deps/linmath.h>
 #include <glad/glad.h>

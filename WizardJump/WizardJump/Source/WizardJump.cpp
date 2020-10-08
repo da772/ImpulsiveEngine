@@ -75,7 +75,7 @@ WizardJump::WizardJump()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
-	s_debugTools = true;
+	s_debugTools = false;
 	
 	if (s_debugTools) {
 		this->m_width = 1280;
@@ -94,7 +94,7 @@ WizardJump::WizardJump()
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
-	GetWindow()->SetVSync(true);
+	GetWindow()->SetVSync(false);
 
 	if (s_debugTools) {
 		this->m_viewPortWidth = 1080;

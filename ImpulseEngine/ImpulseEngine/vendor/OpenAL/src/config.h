@@ -20,7 +20,11 @@
 
 /* Define if we have the _aligned_malloc function */
 #ifdef _WINDOWS
+#ifdef _MSC_VER
 #define HAVE__ALIGNED_MALLOC
+#else 
+#define HAVE_STD_ALIGNED_ALLOC
+#endif
 #endif
 
 /* Define if we have the proc_pidpath function */
@@ -138,6 +142,7 @@
 
 /* Define if we have the __cpuid() intrinsic */
 #ifdef _WINDOWS
+
 #define HAVE_CPUID_INTRINSIC
 #endif
 

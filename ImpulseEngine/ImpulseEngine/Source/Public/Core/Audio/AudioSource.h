@@ -19,7 +19,7 @@ namespace GEngine {
 		uint32_t sizeConsumed = 0;
 		int format;
 		void* nativeFile;
-		int_fast32_t fileSection = 0;
+		int fileSection = 0;
 		uint32_t duration;
 		bool fromPak = true;
 		uint32_t bufferNum = AUDIO_BUFFERS_NUM;
