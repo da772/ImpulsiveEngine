@@ -13,8 +13,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+#if !TARGET_OS_SIMULATOR
     [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
     [FIRApp configure];
+#endif
     return YES;
 }
 

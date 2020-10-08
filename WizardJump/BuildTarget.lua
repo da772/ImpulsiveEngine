@@ -162,7 +162,8 @@ project "WizardJump"
 			["ARCHS"] = "$(ARCHS_STANDARD)",
 			["TARGETED_DEVICE_FAMILY"] = "1,2",
 			["IPHONEOS_DEPLOYMENT_TARGET"] = "11.0",
-			["ASSETCATALOG_COMPILER_APPICON_NAME"] = "AppIcon"
+			["ASSETCATALOG_COMPILER_APPICON_NAME"] = "AppIcon",
+			["ONLY_ACTIVE_ARCH"] = "YES"
 		}
 
 		files 
