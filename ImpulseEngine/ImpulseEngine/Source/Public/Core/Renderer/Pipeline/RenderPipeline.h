@@ -12,6 +12,7 @@ namespace GEngine {
 	public:
 
 		RenderPipeline();
+		RenderPipeline(const char* name);
 		virtual ~RenderPipeline() {};
 
 		virtual void Render();
@@ -36,6 +37,7 @@ namespace GEngine {
 		std::function<void()> m_shaderFunc = nullptr;
 		Ref<FrameBuffer> m_frameBuffer;
 		Ref<Shader> m_shader;
+		std::string m_name = "";
 
 
 	};

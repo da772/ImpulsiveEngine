@@ -29,6 +29,12 @@
 #include "Public/Core/Application/Components/Audio/AudioListenerComponent.h"
 
 
+#include "Public/Core/Renderer/Graphics/Buffer.h"
+
+#include "Public/Core/Renderer/Pipeline/RenderPipeline_2d.h"
+#include "Public/Core/Renderer/Pipeline/RenderPipeline_ui.h"
+
+
 #include "Public/Core/Events/ApplicationEvent.h"
 #include "Public/Core/Events/KeyEvent.h"
 #include "Public/Core/Events/MouseEvent.h"

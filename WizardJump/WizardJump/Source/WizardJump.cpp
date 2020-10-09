@@ -4,6 +4,8 @@
 #include "MainGameScene.h"
 #include "MenuScene.h"
 
+#include "Lighting/Lighting.hpp"
+
 ExampleLayer::ExampleLayer()
 
 : Layer("ExampleLayer"), app(GEngine::Application::GetApp())
@@ -33,7 +35,7 @@ void ExampleLayer::OnAttach()
 	GEngine::Ref<MenuScene> s3 = GEngine::CreateGameObject<MenuScene>("menuScene", nullptr);
 	GEngine::SceneManager::AddScene("mainGame", s2);
 	GEngine::SceneManager::AddScene("menuScene", s3);
-	GEngine::SceneManager::SetCurrentScene("mainGame");
+	GEngine::SceneManager::SetCurrentScene("splashScreen");
 
 
 
@@ -75,11 +77,13 @@ WizardJump::WizardJump()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
-	s_debugTools = false;
+	s_debugTools = true;
 	
 	if (s_debugTools) {
 		this->m_width = 1280;
 		this->m_height = 720;
+		this->m_viewPortWidth = 1080;
+		this->m_viewPortHeight = 1920;
 	}
 
 #if !defined GE_DIST
@@ -94,18 +98,12 @@ WizardJump::WizardJump()
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
-	GetWindow()->SetVSync(false);
+	GetWindow()->SetVSync(true);
 
-	if (s_debugTools) {
-		this->m_viewPortWidth = 1080;
-		this->m_viewPortHeight = 1920;
-		
-	}
 
-	const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
-	for (const GEngine::FPipeline& p : pipelines) {
-		p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
-	}
+
+
+
 
 
 #if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
@@ -145,6 +143,8 @@ WizardJump::WizardJump()
 	}
 	m_ExampleLayer = new ExampleLayer();
 	PushLayer(m_ExampleLayer);
+
+	Lighting::Initialize();
 }
 
 void WizardJump::OnCleanDirtyApi()

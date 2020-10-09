@@ -8,7 +8,7 @@
 
 namespace GEngine {
 
-	RenderPipeline_2d::RenderPipeline_2d() : RenderPipeline() {
+	RenderPipeline_2d::RenderPipeline_2d() : RenderPipeline("RenderPipeline_2d") {
 
 	}
 

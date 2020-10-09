@@ -75,6 +75,8 @@ protected:
 			m_debugSprite->CreateQuad({ groundPos.x,groundPos.y,11}, 0, { groundScale.x,groundScale.y,1 }, { 0,1,0,.25f });
 		}
 
+		m_quadCollider->WakeBody();
+
 	}
 
 

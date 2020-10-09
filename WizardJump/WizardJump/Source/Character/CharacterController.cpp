@@ -23,6 +23,11 @@ void CharacterController::OnBegin()
 	GetEntity()->AddComponent(jumpSound);
 	//GetEntity()->AddComponent(musicSound);
 	graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
+
+	
+
+
+	
 }
 
 

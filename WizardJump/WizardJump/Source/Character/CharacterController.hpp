@@ -87,6 +87,7 @@ protected:
 	void OnUpdate(Timestep timestep) override
 	{
 
+        
         //if (trajectory_pos.size() > 0)
           //  Renderer::DrawDebugLines(trajectory_pos, glm::vec4(1, 0, 0, 1.f));
 		const glm::vec2& vel = bodyComp->GetVelocity();

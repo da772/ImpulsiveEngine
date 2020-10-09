@@ -322,6 +322,7 @@ void DebugLayer::CreateViewPort()
 		finalSize = scaleRatio(sz.x, sz.y, originalSize.x, originalSize.y);
 		GEngine::Application::GetApp()->m_viewPortWidth = finalSize.x;
 		GEngine::Application::GetApp()->m_viewPortHeight = finalSize.y;
+		//pipeline->GetFrameBuffer()->UpdateSize(1080, 1920);
 		lastFrameSize = sz;
 		/*
 		handleResize = false;

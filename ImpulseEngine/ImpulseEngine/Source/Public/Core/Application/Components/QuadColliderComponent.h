@@ -53,6 +53,8 @@ namespace GEngine {
 
 		void SetCollisionLayers(const uint16_t category, const uint16_t mask, const int16_t index);
 
+		void WakeBody();
+
 		void SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc);
 		void SetOnCollideFunction_Script(Ref<ScriptObject> onColliderFunc);
 		void SetEndCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc);

@@ -108,7 +108,7 @@ namespace GEngine {
 ////////////////////////////////////////////////////////////////////////////
 
 
-	OpenGL_FrameBuffer::OpenGL_FrameBuffer(int width, int height, int format) : FrameBuffer(width, height, format)
+	OpenGL_FrameBuffer::OpenGL_FrameBuffer(int width, int height, int format, const char* texName) : FrameBuffer(width, height, format, texName)
 	{
 		Create();
 	}
@@ -124,7 +124,7 @@ namespace GEngine {
 	{
 		glGenFramebuffers(1, &m_rendererId);
 		Bind();
-		m_texture = Texture2D::Create("", m_width, m_height);
+		m_texture = Texture2D::Create(m_texName, m_width, m_height);
 		m_texture->SetData(NULL, 0, m_format, m_width, m_height);
 		m_texture->Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture->GetRendererID(), 0);

@@ -19,7 +19,7 @@ namespace GEngine {
 	static float vert[20] = { -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f };
 	static uint32_t sqindices[6] = { 0, 1, 2, 2, 3, 0 };
 
-	RenderPipeline_viewport::RenderPipeline_viewport() : RenderPipeline()
+	RenderPipeline_viewport::RenderPipeline_viewport() : RenderPipeline("RenderPipeline_ViewPort")
 	{
 		CreateGraphics();
 	}
@@ -59,6 +59,7 @@ namespace GEngine {
 			RenderCommand::DrawIndexed(m_varray);
 			
 		}
+		
 		m_frameBuffer->UnBind();
         Renderer::Prepare();
 		m_shader->Bind();

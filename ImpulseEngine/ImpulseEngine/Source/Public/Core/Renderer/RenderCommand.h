@@ -46,6 +46,11 @@ namespace GEngine {
 
 		inline static void ClearStencil() { RenderCommand::s_RendererAPI->ClearStencil(); }
 		inline static void StencilParams(int op1, int op2, int op3, int func1, int func2, int func3, int mask) { RenderCommand::s_RendererAPI->SetStencil(op1, op2, op3, func1, func2, func3, mask); }
+		inline static void StencilMask(int mask) { RenderCommand::s_RendererAPI->StencilMask(mask); }
+		inline static void StencilFunc(int p1, int p2, int p3) { RenderCommand::s_RendererAPI->StencilFunc(p1, p2, p3); }
+
+		inline static void BlendFuncSeparate(int p1, int p2, int p3, int p4) { RenderCommand::s_RendererAPI->BlendFuncSeparate(p1, p2, p3, p4); };
+		inline static void BlendFunc(int p1, int p2) { RenderCommand::s_RendererAPI->BlendFunc(p1, p2); };
 
 		inline static void Create() { RenderCommand::s_RendererAPI.reset(RendererApi::Create()); }
 		static void Destroy();

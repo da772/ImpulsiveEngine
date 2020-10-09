@@ -82,10 +82,13 @@ namespace GEngine {
 	void Renderer::OnInit()
 	{
 		Renderer::AddPipeline("2d", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 0);
-		Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 500);
+		//Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 500);
 		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 1000);
 		Renderer::AddPipeline("viewport", std::shared_ptr<RenderPipeline>(new RenderPipeline_viewport()), 1500);
-
+		const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
+		for (const GEngine::FPipeline& p : pipelines) {
+			p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
+		}
 		s_ShapeData.reset(new ShapeData());
 
 		s_ShapeData->shape_shader = Shader::Create("Content/shaders/TextureShader.glsl");
@@ -195,7 +198,7 @@ namespace GEngine {
 
 	void Renderer::EndScene()
 	{
-		Renderer::queueId["Debug2D"].p->Clear();
+		//Renderer::queueId["Debug2D"].p->Clear();
 		Renderer2D::EndScene();
 	}
 

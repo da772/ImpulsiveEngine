@@ -34,7 +34,7 @@ namespace GEngine {
 	class OpenGL_FrameBuffer : public FrameBuffer {
 
 	public:
-		OpenGL_FrameBuffer(int width, int height, int format);
+		OpenGL_FrameBuffer(int width, int height, int format, const char* texName = "");
 		virtual ~OpenGL_FrameBuffer();
 
 		

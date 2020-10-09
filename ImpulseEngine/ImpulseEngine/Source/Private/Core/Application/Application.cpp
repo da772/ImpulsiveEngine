@@ -140,19 +140,19 @@ namespace GEngine {
 
 	int Application::GetWidth()
 	{
-		if (!s_Instance->GetWindow())
-			return s_Instance->m_width;
 		if (s_debugTools)
 			return s_Instance->m_viewPortWidth;
+		if (!s_Instance->GetWindow())
+			return s_Instance->m_width;
         return  s_Instance->GetWindow()->GetWindowData().Width;
 	}
 
 	int Application::GetHeight()
 	{
-        if (!s_Instance->GetWindow())
-            return s_Instance->m_height;
 		if (s_debugTools)
 			return s_Instance->m_viewPortHeight;
+        if (!s_Instance->GetWindow())
+            return s_Instance->m_height;
         return  s_Instance->GetWindow()->GetWindowData().Height;
 	}
 

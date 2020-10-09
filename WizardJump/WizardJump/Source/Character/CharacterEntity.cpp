@@ -5,6 +5,9 @@
 
 	void CharacterEntity::OnBegin()
 	{
+
+		SetEntityPosition({ 0,0.795f,0 });
+
 		m_characterComponent = CreateGameObject<CharacterController>();
 		m_spriteComponent = CreateGameObject<CharacterGraphics>();
 		m_audioComponent = CreateGameObject<AudioListenerComponent>();

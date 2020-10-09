@@ -54,12 +54,12 @@ project "WizardJump"
 
 	removefiles
 	{
-		"%{prj.location}/%{prj.name}/Source/iOS/**.cpp",
-		"%{prj.location}/%{prj.name}/Source/iOS/**.c",
-		"%{prj.location}/%{prj.name}/Source/iOS/**.h",
-		"%{prj.location}/%{prj.name}/Source/Android/**.cpp",
-		"%{prj.location}/%{prj.name}/Source/Android/**.c",
-		"%{prj.location}/%{prj.name}/Source/Android/**.h"
+		"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.cpp",
+		"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.c",
+		"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.h",
+		"%{prj.location}/%{prj.name}/Source/Engine/Android/**.cpp",
+		"%{prj.location}/%{prj.name}/Source/Engine/Android/**.c",
+		"%{prj.location}/%{prj.name}/Source/Engine/Android/**.h"
 	}
 
 	includedirs 
@@ -98,7 +98,7 @@ project "WizardJump"
 
 		excludes 
 		{ 
-			"%{prj.location}/%{prj.name}/Source/iOS/**" 
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
 		}
 
 
@@ -168,20 +168,20 @@ project "WizardJump"
 
 		files 
 		{
-			"%{prj.location}/%{prj.name}/Source/iOS/**.m",
-			"%{prj.location}/%{prj.name}/Source/iOS/**.mm",
-			"%{prj.location}/%{prj.name}/Source/iOS/**.c",
-			"%{prj.location}/%{prj.name}/Source/iOS/**.h",
-			"%{prj.location}/%{prj.name}/Source/iOS/**.storyboard",
-			"%{prj.location}/%{prj.name}/Source/iOS/**.plist",
-			"%{prj.location}/%{prj.name}/Source/iOS/*.json",
-			"%{prj.location}/%{prj.name}/Source/iOS/iOSImages.xcassets",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.m",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.mm",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.c",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.h",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.storyboard",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.plist",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/*.json",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/iOSImages.xcassets",
 		}
 			
 		includedirs 
 		{
 			"%{prj.location}/%{prj.name}/Source",
-			"%{prj.location}/%{prj.name}/Source/iOS",
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS",
 	
 			"ImpulseEngine/%{IncludeDir.firebase}/include"
 		}
@@ -247,9 +247,9 @@ project "WizardJump"
 
 		files 
 		{
-			"%{prj.location}/%{prj.name}/Source/Android/**.h",
-			"%{prj.location}/%{prj.name}/Source/Android/**.c",
-			"%{prj.location}/%{prj.name}/Source/Android/**.cpp",
+			"%{prj.location}/%{prj.name}/Source/Engine/Android/**.h",
+			"%{prj.location}/%{prj.name}/Source/Engine/Android/**.c",
+			"%{prj.location}/%{prj.name}/Source/Engine/Android/**.cpp",
 		}
 
 		includedirs 
@@ -354,7 +354,7 @@ project "WizardJump"
 
 		excludes 
 		{ 
-			"%{prj.location}/%{prj.name}/Source/iOS/**" 
+			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
 		}
 
 		includedirs

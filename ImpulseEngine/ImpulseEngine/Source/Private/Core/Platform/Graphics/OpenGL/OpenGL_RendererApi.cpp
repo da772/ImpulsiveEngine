@@ -58,7 +58,6 @@ namespace GEngine {
 		glEnable(GL_STENCIL_TEST);
 		glEnable(GL_BLEND);
 		SetBlendMode(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
-		
 
 		glEnable(GL_STENCIL_TEST);
 
@@ -89,6 +88,27 @@ namespace GEngine {
 	{
 		glClear(GL_STENCIL_BUFFER_BIT);
 		glStencilMask(0x00);
+	}
+
+	void OpenGL_RendererApi::StencilMask(int mask)
+	{
+		glStencilMask(mask);
+	}
+
+	void OpenGL_RendererApi::StencilFunc(int p1, int p2, int p3)
+	{
+		glStencilFunc(p1, p2, p3);
+	}
+
+
+	void OpenGL_RendererApi::BlendFuncSeparate(int p1, int p2, int p3, int p4)
+	{
+		glBlendFuncSeparate(p1, p2, p3, p4);
+	}
+
+	void OpenGL_RendererApi::BlendFunc(int p1, int p2)
+	{
+		glBlendFunc(p1, p2);
 	}
 
 	void OpenGL_RendererApi::SetStencil(int op1, int op2, int op3, int func1, int func2, int func3, int mask)
@@ -229,6 +249,7 @@ namespace GEngine {
     uint32_t OpenGL_RendererApi::GetDefaultFramebufferId() {
         return m_defaultFrameBuffer;
     }
+
 
 
 

@@ -54,8 +54,13 @@ namespace GEngine {
 		inline virtual void BindTexture(int id, int slot = 0) {};
 		inline virtual void ClearStencil() {};
 		inline virtual void SetStencil(int op1, int op2, int op3, int func1, int func2, int func3, int mask) {};
-        virtual uint32_t GetDefaultFramebufferId() {};
+		virtual uint32_t GetDefaultFramebufferId() { return 0; };
 		virtual void Shutdown() = 0;
+		inline virtual void StencilMask(int mask) {};
+		inline virtual void StencilFunc(int p1, int p2, int p3) {};
+
+		inline virtual void BlendFuncSeparate(int p1, int p2, int p3, int p4) {};
+		inline virtual void BlendFunc(int p1, int p2) {};
 		
 		static RendererApi* Create();
 

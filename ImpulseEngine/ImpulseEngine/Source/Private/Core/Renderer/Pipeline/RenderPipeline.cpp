@@ -16,7 +16,14 @@ namespace GEngine {
 
 	RenderPipeline::RenderPipeline()
 	{
-		m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear);
+		m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear, m_name.c_str());
+		m_shader = Shader::Create("Content/shaders/ViewportShader.glsl");
+	}
+
+	RenderPipeline::RenderPipeline(const char* name)
+	{
+		m_name = name;
+		m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, m_name.c_str());
 		m_shader = Shader::Create("Content/shaders/ViewportShader.glsl");
 	}
 

@@ -110,8 +110,9 @@ namespace GEngine {
 
 				glDeleteShader(shader);
 
-				GE_CORE_ERROR("{0}", infoLog.data());
-				GE_CORE_ASSERT(false, "OpenGL: {0} Shader compilation failure!", type);
+				GE_CORE_ERROR("{0}, {1}", infoLog.data(), m_Name);
+				GE_CORE_ERROR("{0}", shSource);
+				GE_CORE_ASSERT(false, "OpenGL: {0} Shader compilation failure!", (int)type);
 
 				return;
 			}

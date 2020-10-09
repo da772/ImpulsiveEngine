@@ -197,6 +197,11 @@ namespace GEngine {
 		}
 	}
 
+	void QuadColliderComponent::WakeBody()
+	{
+		m_body->SetAwake(true);
+	}
+
 	void QuadColliderComponent::SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc)
 	{
 		m_onCollide = onCollideFunc;

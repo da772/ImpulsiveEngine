@@ -339,14 +339,11 @@ project "ImpulseEngine"
 
 	filter "system:windows"
 		systemversion "latest"
-		filter "action:gmake2"
-			cppdialect "gnu++17"
-			defines
-			{
-				"GE_MINGW_"
-			}
 		pchheader "gepch.h"
 		pchsource "ImpulseEngine/Source/gepch.cpp"
+
+
+		
 		
 		files
 		{
@@ -387,3 +384,11 @@ project "ImpulseEngine"
 			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
+		filter "action:gmake2"
+			cppdialect "gnu++17"
+			defines
+			{
+				"GE_MINGW_"
+			}
+
+	
