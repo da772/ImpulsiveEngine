@@ -148,7 +148,7 @@ namespace GEngine {
 		 }
 
 		 BatchObjectData data = { position, rotation, scale, color, texture == nullptr ? m_BlankTexture : texture, textureScale, alphaChannel,
-			 m_Shape->GetVertices(position, rotation, { scale.x, scale.y, 1 }, color, 0, textureScale, nullptr, alphaChannel) };
+             m_Shape->GetVertices(m_renderType == ERenderType::UI ? position : glm::vec3(position.x, position.y, 0), rotation, { scale.x, scale.y, 1 }, color, 0, textureScale, nullptr, alphaChannel) };
 		
 
 		 return AddShape(data);
@@ -164,7 +164,7 @@ namespace GEngine {
 		 Setup();
 
 		 BatchObjectData data = { position, rotation, scale, color, texture->GetTexture(), textureScale, alphaChannel,
-			m_Shape->GetVertices(position, rotation, { scale.x, scale.y, 1 }, color, 0 , textureScale,  texture->GetTexCoords(), alphaChannel), texture };
+			m_Shape->GetVertices(m_renderType == ERenderType::UI ? position : glm::vec3(position.x, position.y, 0), rotation, { scale.x, scale.y, 1 }, color, 0 , textureScale,  texture->GetTexCoords(), alphaChannel), texture };
 		 
 		 return AddShape(data);
 

@@ -85,10 +85,10 @@ namespace GEngine {
 		//Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 500);
 		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 1000);
 		Renderer::AddPipeline("viewport", std::shared_ptr<RenderPipeline>(new RenderPipeline_viewport()), 1500);
-		const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
-		for (const GEngine::FPipeline& p : pipelines) {
-			p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
-		}
+        const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
+        for (const GEngine::FPipeline& p : pipelines) {
+            p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
+        }
 		s_ShapeData.reset(new ShapeData());
 
 		s_ShapeData->shape_shader = Shader::Create("Content/shaders/TextureShader.glsl");
@@ -152,9 +152,9 @@ namespace GEngine {
 
 	void Renderer::AddPipeline(const char* id, Ref<RenderPipeline> p, int priority)
 	{
-		std::vector<FPipeline>::iterator it = std::find(Renderer::queue.begin(), Renderer::queue.end(), p);
-		GE_CORE_ASSERT(p != nullptr && it == Renderer::queue.end(), "INVLAID PIPELINE");
-		if (it == Renderer::queue.end()) {
+        std::unordered_map<std::string, FPipeline> ::iterator it = Renderer::queueId.find(id);
+		//GE_CORE_ASSERT(p != nullptr && it == Renderer::queue.end(), "INVLAID PIPELINE");
+		if (it == Renderer::queueId.end()) {
 			FPipeline _p(p, priority);
 			Renderer::queue.push_back(_p);
 			std::sort(Renderer::queue.begin(), Renderer::queue.end(), [](const FPipeline& p1, const FPipeline& p2) {return p1.i < p2.i; });
@@ -192,6 +192,10 @@ namespace GEngine {
 		for (const FPipeline& p : queue) {
 			p.p->Reload();
 		}
+        const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
+        for (const GEngine::FPipeline& p : pipelines) {
+            p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
+        }
 	}
 
 

@@ -3,6 +3,7 @@
 #include "GEngine.h"
 #include "Public/Core/Core.h"
 #include "Public/Core/Platform/Window/Mobile/MobileWindow.h"
+#include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
 
 extern GEngine::Application* GEngine::CreateApplication();
 
@@ -64,6 +65,7 @@ static inline void App_UnloadGraphics() {
 
 static inline void App_ReloadGraphics() {
     GE_CORE_DEBUG("RELOADING GRAPHICS");
+    GEngine::Mobile_Input_Callback::BindView();
     GEngine::Application::ReloadGraphics();
 }
 

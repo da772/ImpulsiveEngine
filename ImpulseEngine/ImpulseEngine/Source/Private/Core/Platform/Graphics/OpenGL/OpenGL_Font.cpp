@@ -1,4 +1,4 @@
-﻿#include "gepch.h"
+#include "gepch.h"
 
 #include "Public/Core/Platform/Graphics/OpenGL/OpenGL_Font.h"
 #include "Public/Core/FileSystem/FileSystem.h"
@@ -26,6 +26,7 @@ namespace GEngine {
 		ftgl::texture_atlas_delete(m_textureAtlas);
 		m_atlasData = nullptr;
 		m_Texture = nullptr;
+        Font::RemoveFont(m_path);
 	}
 
 	void OpenGL_Font::LoadCharacters(const char* string)
@@ -143,6 +144,7 @@ namespace GEngine {
 
 	void OpenGL_Font::Unload()
 	{
+        
 	}
 
 	void OpenGL_Font::Reload()

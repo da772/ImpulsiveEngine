@@ -76,6 +76,15 @@ public:
     static inline void SetGetViewContext(const std::function<ViewContext()>& f) {
         Mobile_Input_Callback::getViewContext = f;
     }
+    
+    static inline void BindView() {
+        if (Mobile_Input_Callback::setBindView)
+            Mobile_Input_Callback::setBindView();
+    }
+    
+    static inline void SetSetBindView(const std::function<void()>& f) {
+        Mobile_Input_Callback::setBindView = f;
+    }
 
 	static inline void ShowKeyboard() {
 		if (showKeyboardFunc) {
@@ -176,6 +185,7 @@ private:
 	static std::function<void()> hideKeyboardFunc;
 	static std::function<void(std::string)> setKeyboardTextFunc;
     static std::function<ViewContext()> getViewContext;
+    static std::function<void()> setBindView;
 	static std::function<std::string()> getKeyboardTextFunc;
 	static bool keyboardOpen, touchDown;
 	static int16_t xPos, yPos;

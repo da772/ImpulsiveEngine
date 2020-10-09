@@ -33,7 +33,6 @@ public:
 		textComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 		buttonsEntity->AddComponent(textComponent);
 		textComponent->CreateQuad({ 0,0,0 }, 0, { 1.5,2,1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/sky_01.png"));
-		Ref<Texture2D> buttonTexture = GEngine::Texture2D::Create("Content/Textures/play_button.png");
 		float size = max( (float)Application::GetWidth() /(float)Application::GetUIResolutionWidth(), (float) Application::GetHeight()/(float)Application::GetUIResolutionHeight());
 		float buttonY = size*((float)buttonTexture->GetHeight()/ (float)Application::GetHeight())*5.f;
 		float buttonX = size*((float)buttonTexture->GetWidth() / (float)Application::GetWidth())*5.f;
@@ -79,13 +78,14 @@ public:
 	{
 		m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
 			(float)GEngine::Application::GetApp()->GetWindow()->GetWidth() / (float)GEngine::Application::GetApp()->GetWindow()->GetHeight()));
-		
+        buttonTexture = GEngine::Texture2D::Create("Content/Textures/play_button.png");
 	}
 
 
 	inline void OnUnload() override
 	{
-		texture = nullptr;
+		
+        buttonTexture = nullptr;
 		m_CameraController = nullptr;
 	}
 
@@ -93,7 +93,7 @@ private:
 	GEngine::Ref<GEngine::Entity> buttonsEntity = nullptr;
 	GEngine::Ref<GEngine::UIComponent> textComponent = nullptr;
 	GEngine::Ref<GEngine::ButtonComponent> startButton = nullptr;
-	GEngine::Ref<GEngine::Texture2D> texture = nullptr;
+	GEngine::Ref<GEngine::Texture2D> buttonTexture = nullptr;
 	GEngine::Scope<GEngine::Orthographic_CameraController> m_CameraController;
 
 };

@@ -53,6 +53,10 @@
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     [view bindDrawable];
+    
+    GEngine::Mobile_Input_Callback::SetSetBindView([view](){
+        [view bindDrawable];
+    });
 
     
    

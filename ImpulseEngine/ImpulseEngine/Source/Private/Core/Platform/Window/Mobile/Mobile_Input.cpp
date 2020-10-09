@@ -18,6 +18,7 @@ namespace GEngine {
 	std::function<void(std::string)> Mobile_Input_Callback::setKeyboardTextFunc;
 	std::function<std::string()> Mobile_Input_Callback::getKeyboardTextFunc;
 	std::function<double()> Mobile_Input_Callback::getTimeFunc;
+    std::function<void()> Mobile_Input_Callback::setBindView;
     std::function<ViewContext()> Mobile_Input_Callback::getViewContext;
 	bool Mobile_Input_Callback::keyboardOpen = false;
 	bool Mobile_Input_Callback::touchDown = false;

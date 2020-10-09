@@ -23,7 +23,7 @@ in vec2 v_TexCoord;
 
 uniform sampler2D u_Texture;
 void main() {
-    
+    /*
 	 float Pi = 6.28318530718; // Pi*2
     ivec2 iResolution = textureSize(u_Texture, 0);
     // GAUSSIAN BLUR SETTINGS {{{
@@ -50,5 +50,6 @@ void main() {
     
     // Output to screen
     Color /= Quality * Directions - 15.0;
-    FragColor =  Color;
+    */
+    FragColor =  texture(u_Texture, v_TexCoord);;
 }

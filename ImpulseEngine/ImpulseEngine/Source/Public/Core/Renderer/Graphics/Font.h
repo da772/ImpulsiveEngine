@@ -24,6 +24,7 @@ namespace GEngine {
 
 		static void UnloadGraphics();
 		static void ReloadGraphics();
+        static void RemoveFont(const std::string& name);
 
 		virtual void Unload() = 0;
 		virtual void Reload() = 0;

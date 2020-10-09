@@ -38,10 +38,14 @@ namespace GEngine {
 
 	}
 
+    void Font::RemoveFont(const std::string &name) {
+        Font::m_FontList.erase(name);
+    }
+
 	void Font::UnloadGraphics()
 	{
 		for (std::pair<std::string, Weak<Font>> p : Font::m_FontList) {
-			p.second.lock()->Unload();
+            p.second.lock()->Unload();
 		}
 	}
 
