@@ -49,6 +49,7 @@ void RenderPipeline_Lighting::Render()
 	m_shaderColor->UploadUniformFloat4("u_Color", { 250.f/255.f,137.f/255.f,0,.4f });
 	m_varray->Bind();
 	RenderCommand::DrawIndexed(m_varray);
+
 	RenderEnd();
 	m_frameBuffer_lights->UnBind();
 	// Render Shadows

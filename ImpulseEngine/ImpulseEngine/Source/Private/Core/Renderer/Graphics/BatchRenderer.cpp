@@ -148,7 +148,7 @@ namespace GEngine {
 		 }
 
 		 BatchObjectData data = { position, rotation, scale, color, texture == nullptr ? m_BlankTexture : texture, textureScale, alphaChannel,
-             m_Shape->GetVertices(m_renderType == ERenderType::UI ? position : glm::vec3(position.x, position.y, 0), rotation, { scale.x, scale.y, 1 }, color, 0, textureScale, nullptr, alphaChannel) };
+             m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(position.x, position.y, 0) : position, rotation, { scale.x, scale.y, 1 }, color, 0, textureScale, nullptr, alphaChannel) };
 		
 
 		 return AddShape(data);
@@ -164,7 +164,7 @@ namespace GEngine {
 		 Setup();
 
 		 BatchObjectData data = { position, rotation, scale, color, texture->GetTexture(), textureScale, alphaChannel,
-			m_Shape->GetVertices(m_renderType == ERenderType::UI ? position : glm::vec3(position.x, position.y, 0), rotation, { scale.x, scale.y, 1 }, color, 0 , textureScale,  texture->GetTexCoords(), alphaChannel), texture };
+			m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(position.x, position.y, 0) : position, rotation, { scale.x, scale.y, 1 }, color, 0 , textureScale,  texture->GetTexCoords(), alphaChannel), texture };
 		 
 		 return AddShape(data);
 
@@ -210,7 +210,7 @@ namespace GEngine {
 			 it->second.texture = texture != nullptr ? texture : m_BlankTexture;
 			 it->second.textureId = tIt - textures.begin();
 
-			 it->second.vertices = m_Shape->GetVertices(it->second.position, it->second.rotation, { it->second.scale.x, it->second.scale.y, 1 }, it->second.color,
+			 it->second.vertices = m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(it->second.position.x, it->second.position.y, 0) : it->second.position, it->second.rotation, { it->second.scale.x, it->second.scale.y, 1 }, it->second.color,
 				 it->second.textureId, textureScale, nullptr, alphaChannel);
 
 			 memcpy(&vertices[(uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos], &it->second.vertices[0], it->second.vertices.size() * sizeof(float));
@@ -270,7 +270,7 @@ namespace GEngine {
 
 	 void BatchRenderer::ReCreateShapeVertices(BatchObjectData* data)
 	 {
-		 data->vertices = m_Shape->GetVertices(data->position, data->rotation, { data->scale.x, data->scale.y, 1 }, data->color, 
+		 data->vertices = m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(data->position.x, data->position.y, 0) : data->position, data->rotation, { data->scale.x, data->scale.y, 1 }, data->color,
 			 data->textureId, data->textureScale, data->subTexture == nullptr ? nullptr : data->subTexture->GetTexCoords(), data->alphaChannel);
 	 }
 

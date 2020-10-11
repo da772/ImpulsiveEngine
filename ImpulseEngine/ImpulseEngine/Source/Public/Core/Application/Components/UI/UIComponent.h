@@ -50,9 +50,10 @@ namespace GEngine {
 		virtual void UnloadGraphics() override;
 		virtual void ReloadGraphics() override;
 
+		static Ref<BatchRenderer> s_ShapeFactory;
 	private:
 		static void RemoveQuads(u32 id);
-		static Ref<BatchRenderer> s_ShapeFactory;
+		
 
 		uint32_t m_textCounter = 0;
 

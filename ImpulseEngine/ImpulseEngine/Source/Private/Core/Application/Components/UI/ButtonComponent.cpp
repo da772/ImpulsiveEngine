@@ -13,6 +13,7 @@
 #include "Public/Core/Renderer/Graphics/Quad.h"
 #include "Public/Core/Collision/Collider2D.h"
 #include "Public/Core/Collision/CollisionDetection.h"
+#include "Public/Core/Application/Components/UI/UIComponent.h"
 
 
 namespace GEngine {
@@ -27,7 +28,7 @@ namespace GEngine {
 		if (s_ShapeFactory == nullptr) {
 			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
 			m_Shader = Ref<Shader>(Shader::Create(path));
-			ButtonComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::UI, Ref<Quad>(new Quad()), 5000, m_Shader));
+			ButtonComponent::s_ShapeFactory = UIComponent::s_ShapeFactory;
 			s_ShapeFactory->SetRenderType(ERenderType::UI);
 		}
 	}
