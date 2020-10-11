@@ -82,8 +82,8 @@ namespace GEngine {
 
 	 }
 
-	 BatchRenderer::BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
-		 m_PipelineId(pipeline == ERenderType::GAME ? "2d" : "ui"), m_renderType(pipeline)
+	 BatchRenderer::BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader, const char* pipelineId) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
+		 m_PipelineId(pipelineId == nullptr ? pipeline == ERenderType::GAME ? "2d" : "ui" : pipelineId), m_renderType(pipeline)
 	 {
 		m_MaxVertices = m_MaxShapes * m_Shape->GetVerticesSize();
 		m_MaxIndices = m_MaxShapes * m_Shape->GetIndicesSize();

@@ -8,7 +8,7 @@ namespace GEngine {
 	};
 
 	enum class ShaderDataName {
-		None = 0, Position, TextureCoord, Scale, Color, TextureSlot, Rotation, Custom, TextureScale, AlphaChannel
+		None = 0, Position, TextureCoord, Scale, Color, TextureSlot, Rotation, Custom, TextureScale, AlphaChannel, Position2D
 	};
 
 
@@ -30,6 +30,8 @@ namespace GEngine {
 			return ShaderDataType::Float2;
 		case ShaderDataName::AlphaChannel:
 			return ShaderDataType::Float;
+        case ShaderDataName::Position2D:
+            return ShaderDataType::Float2;
 		default:
 			break;
 		}
@@ -57,6 +59,8 @@ namespace GEngine {
 			return "a_TexScale";
 		case ShaderDataName::AlphaChannel:
 			return "a_AlphaChannel";
+        case ShaderDataName::Position2D:
+            return "a_Position2D";
 		default:
 			break;
 

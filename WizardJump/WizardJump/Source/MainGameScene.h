@@ -11,6 +11,7 @@
 #include "Character/CharacterController.hpp"
 #include "Generation/ProceduralPlatformGeneration.hpp"
 #include "Environment/BackgroundTiledEntity.hpp"
+#include "Lighting/LightComponent.h"
 
 
 class MainGameScene : public GEngine::Scene {
@@ -100,6 +101,12 @@ public:
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
 		eFPS->m_tag = "UI Entity";
 		AddEntity(eFPS);
+        
+        Ref<LightComponent> lc = GEngine::CreateGameObject<LightComponent>();
+        eFPS->AddComponent(lc);
+        lc->AddCircleLight({-2,1.4}, 50, {2,2}, {1,0,1,1.f});
+        lc->AddCircleLight({1,1}, 50, {1,1}, {1,0,0,1.f});
+        lc->AddCircleLight({0,3}, 50, {1,1}, {0,1,1,1.f});
        
 		eFPS->AddComponent(FPSuiComponent);
 		GEngine::Ref<GEngine::Texture2D > buttonTexture = GEngine::Texture2D::Create("Content/Textures/back_button.png");

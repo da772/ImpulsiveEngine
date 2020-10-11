@@ -76,7 +76,7 @@ namespace GEngine {
 
 	class BatchRenderer {
 	public:
-		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr);
+		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr, const char* pipelineId = nullptr);
 		~BatchRenderer();
 
 		long AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture = nullptr, const glm::vec2& textureScale = { 1,1 }, float alphaChannel = 4);

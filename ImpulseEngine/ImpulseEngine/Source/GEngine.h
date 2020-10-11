@@ -28,6 +28,8 @@
 #include "Public/Core/Application/Components/TransformComponent.h"
 #include "Public/Core/Application/Components/Audio/AudioListenerComponent.h"
 
+#include "Public/Core/Renderer/Graphics/Circle.h"
+#include "Public/Core/Renderer/Graphics/Quad.h"
 
 #include "Public/Core/Renderer/Graphics/Buffer.h"
 
