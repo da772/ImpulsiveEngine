@@ -22,7 +22,7 @@ namespace GEngine {
 
 	public:
 
-		Batch(Ref<Shape> shape, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, int maxShapes, int maxTextures);
+		Batch(Ref<Shape> shape, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, int maxShapes, int maxTextures, const std::function<void()>& shaderFunction = nullptr);
 		~Batch();
 		void SetVertices(std::vector<float>& vertices, std::vector<int>& textures, int indexCount);
 
@@ -46,6 +46,7 @@ namespace GEngine {
 		Ref<Shader> m_Shader = nullptr;
 		std::vector<float> m_Vertices;
 		std::vector<int> m_TextureIds;
+		std::function<void()> m_shaderFunction;
 		int m_IndexCount = 0;
 
 
@@ -76,7 +77,7 @@ namespace GEngine {
 
 	class BatchRenderer {
 	public:
-		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr, const char* pipelineId = nullptr);
+		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr, const char* pipelineId = nullptr, const std::function<void()>& shaderFunc = nullptr);
 		~BatchRenderer();
 
 		long AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture = nullptr, const glm::vec2& textureScale = { 1,1 }, float alphaChannel = 4);
@@ -122,6 +123,7 @@ namespace GEngine {
 		Ref<Texture2D> m_BlankTexture = nullptr;
 		std::vector<u32> m_Indices;
 		int m_MaxShapes = 0;
+		std::function<void()> m_shaderfunction;
 		int m_MaxVertices = 0;
 		int m_MaxIndices = 0;
 		int m_MaxTextures = 0;

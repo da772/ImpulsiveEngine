@@ -49,14 +49,16 @@ namespace GEngine {
 			
 			Ref<Shader> shader = p.p->GetViewPortShader();
 			Ref<Texture2D> texture = p.p->GetFrameBuffer()->GetTexture();
-			const std::function<void()>& shaderFunc = p.p->GetShaderFunction();
+			const std::function<void()>& shaderStartFunc = p.p->GetShaderStartFunction();
+			const std::function<void()>& shaderEndFunc = p.p->GetShaderEndFunction();
 
 			shader->Bind();
 			RenderCommand::BindTexture(texture->GetRendererID(), 0);
+			if (shaderStartFunc != nullptr) shaderStartFunc();
 			texture->Bind();
-			if (shaderFunc != nullptr) shaderFunc();
 			m_varray->Bind();
 			RenderCommand::DrawIndexed(m_varray);
+			if (shaderEndFunc != nullptr) shaderEndFunc();
 			
 		}
 		

@@ -1,6 +1,6 @@
 #type vertex
 
-#version 330
+#version 300 es
         
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
@@ -35,8 +35,8 @@ void main() {
 }
 
 #type fragment
-#version 330
-
+#version 300 es
+precision highp float;
 layout(location = 0) out vec4 color;
 
 in vec3 v_Position;
@@ -59,18 +59,6 @@ void main() {
             case 1: texColor *= texture(u_Textures[1], v_TexCoord * v_TexScale); break;
             case 2: texColor *= texture(u_Textures[2], v_TexCoord * v_TexScale); break;
             case 3: texColor *= texture(u_Textures[3], v_TexCoord * v_TexScale); break;
-            case 4: texColor *= texture(u_Textures[4], v_TexCoord * v_TexScale); break;
-            case 5: texColor *= texture(u_Textures[5], v_TexCoord * v_TexScale); break;
-            case 6: texColor *= texture(u_Textures[6], v_TexCoord * v_TexScale); break;
-            case 7: texColor *= texture(u_Textures[7], v_TexCoord * v_TexScale); break;
-            case 8: texColor *= texture(u_Textures[8], v_TexCoord * v_TexScale); break;
-            case 9: texColor *= texture(u_Textures[9], v_TexCoord * v_TexScale); break;
-            case 10: texColor *= texture(u_Textures[10], v_TexCoord * v_TexScale); break;
-            case 11: texColor *= texture(u_Textures[11], v_TexCoord * v_TexScale); break;
-            case 12: texColor *= texture(u_Textures[12], v_TexCoord * v_TexScale); break;
-            case 13: texColor *= texture(u_Textures[13], v_TexCoord * v_TexScale); break;
-            case 14: texColor *= texture(u_Textures[14], v_TexCoord * v_TexScale); break;
-            case 15: texColor *= texture(u_Textures[15], v_TexCoord * v_TexScale); break;
         }
 
     color = vec4(texColor.xyz, texColor.w*(1.0-v_AlphaChannel));

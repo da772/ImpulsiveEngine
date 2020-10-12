@@ -5,12 +5,16 @@
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec2 a_TexCoord;
 
+uniform vec2 u_BlurDirection;
 
+out lowp vec2 v_BlurDirection;
 out highp vec2 v_TexCoord;
 
 void main() {
 	v_TexCoord = a_TexCoord;
+    v_BlurDirection = u_BlurDirection;
 	gl_Position = vec4(a_Position, 1.0);
+
 }
 
 
@@ -20,36 +24,35 @@ void main() {
 out vec4 FragColor;
 
 in vec2 v_TexCoord;
-
+in vec2 v_BlurDirection;
 
 uniform sampler2D u_Texture;
+
+float CalcGauss( float x, float sigma )
+{
+    if ( sigma <= 0.0 )
+        return 0.0;
+    return exp( -(x*x) / (2.0 * sigma) ) / (2.0 * 3.14157 * sigma);
+}
+
 void main() {
-    
-	 float Pi = 6.28318530718; // Pi*2
-    vec2 iResolution = textureSize(u_Texture, 0);
-    // GAUSSIAN BLUR SETTINGS {{{
-    float Directions = 16.0; // BLUR DIRECTIONS (Default 16.0 - More is better but slower)
-    float Quality = 4; // BLUR QUALITY (Default 4.0 - More is better but slower)
-    float Size = 8.0; // BLUR SIZE (Radius)
-    // GAUSSIAN BLUR SETTINGS }}}
-   
-    vec2 Radius = Size/iResolution.xy;
-    
-    // Normalized pixel coordinates (from 0 to 1)
-    vec2 uv = v_TexCoord;
-    // Pixel colour
-    vec4 Color = texture(u_Texture, uv);
-    
-    // Blur calculations
-    for( float d=0.0; d<Pi; d+=Pi/Directions)
+    float sigma = 1;
+    vec2 texC     = v_TexCoord;
+    vec2 texSize = textureSize(u_Texture, 0);
+    vec4 texCol   = texture2D( u_Texture, texC );
+    vec4 gaussCol = vec4( texCol.rgb, 1.0 );
+    vec2 step     = v_BlurDirection / texSize;
+    for ( int i = 1; i <= 32; ++ i )
     {
-		for(float i=1.0/Quality; i<=1.0; i+=1.0/Quality)
-        {
-			Color += texture( u_Texture, uv+vec2(cos(d),sin(d))*Radius*i);		
-        }
+        float weight = CalcGauss( float(i) / 32.0, sigma * 0.5 );
+        if ( weight < 1.0/255.0 )
+            break;
+        texCol    = texture2D( u_Texture, texC + step * float(i) );
+        gaussCol += vec4( texCol.rgb * weight, weight );
+        texCol    = texture2D( u_Texture, texC - step * float(i) );
+        gaussCol += vec4( texCol.rgb * weight, weight );
     }
-    
-    // Output to screen
-    Color /= Quality * Directions - 15.0;
-    FragColor =  Color;
+    gaussCol.rgb = clamp( gaussCol.rgb / gaussCol.w, 0.0, 1.0 );
+    FragColor = vec4( gaussCol.rgb, 1.0 );
+
 }

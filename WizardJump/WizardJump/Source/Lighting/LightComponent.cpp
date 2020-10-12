@@ -11,7 +11,9 @@ LightComponent::LightComponent() {
         std::string path = std::string("Content/shaders/CircleLight_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
         m_Shader = Ref<Shader>(Shader::Create(path));
         LightComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Circle>(new Circle()),
-            5000, m_Shader, "lighting"));
+            5000, m_Shader, "lighting", [this]() {
+                m_Shader->UploadUniformFloat2("u_WindowSize", { Application::GetWidth(), Application::GetHeight() });
+            }));
     }
 }
 
@@ -24,9 +26,21 @@ void LightComponent::OnBegin()
     
 }
 
-void LightComponent::AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color) {
-    long id = LightComponent::s_ShapeFactory->AddShape({position.x, position.y, intensity}, 0, scale, color);
+long LightComponent::AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color) {
+    Ref<Texture2D> t = nullptr;
+    long id = LightComponent::s_ShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
     m_ids.push_back(id);
+    return id;
+}
+
+void LightComponent::EditCircleColor(long id, const glm::vec4& color)
+{
+    s_ShapeFactory->SetColor(id, color);
+}
+
+void LightComponent::RemoveCircleLight(long id)
+{
+    s_ShapeFactory->RemoveShape(id);
 }
 
 void LightComponent::OnEnd()

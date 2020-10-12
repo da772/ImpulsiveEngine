@@ -48,7 +48,7 @@ in vec2 v_TexScale;
 in float v_AlphaChannel;
 in vec2 v_Position2D;
 
-uniform sampler2D u_Textures[16];
+uniform sampler2D u_Textures[32];
 
 void main() {
     vec4 texColor = v_Color;
@@ -71,7 +71,39 @@ void main() {
             case 13: texColor *= texture(u_Textures[13], v_TexCoord * v_TexScale); break;
             case 14: texColor *= texture(u_Textures[14], v_TexCoord * v_TexScale); break;
             case 15: texColor *= texture(u_Textures[15], v_TexCoord * v_TexScale); break;
+            case 16: texColor *= texture(u_Textures[16], v_TexCoord * v_TexScale); break;
+            case 17: texColor *= texture(u_Textures[17], v_TexCoord * v_TexScale); break;
+            case 18: texColor *= texture(u_Textures[18], v_TexCoord * v_TexScale); break;
+            case 19: texColor *= texture(u_Textures[19], v_TexCoord * v_TexScale); break;
+            case 20: texColor *= texture(u_Textures[20], v_TexCoord * v_TexScale); break;
+            case 21: texColor *= texture(u_Textures[21], v_TexCoord * v_TexScale); break;
+            case 22: texColor *= texture(u_Textures[22], v_TexCoord * v_TexScale); break;
+            case 23: texColor *= texture(u_Textures[23], v_TexCoord * v_TexScale); break;
+            case 24: texColor *= texture(u_Textures[24], v_TexCoord * v_TexScale); break;
+            case 25: texColor *= texture(u_Textures[25], v_TexCoord * v_TexScale); break;
+            case 26: texColor *= texture(u_Textures[26], v_TexCoord * v_TexScale); break;
+            case 27: texColor *= texture(u_Textures[27], v_TexCoord * v_TexScale); break;
+            case 28: texColor *= texture(u_Textures[28], v_TexCoord * v_TexScale); break;
+            case 29: texColor *= texture(u_Textures[29], v_TexCoord * v_TexScale); break;
+            case 30: texColor *= texture(u_Textures[30], v_TexCoord * v_TexScale); break;
+            case 31: texColor *= texture(u_Textures[31], v_TexCoord * v_TexScale); break;
         }
 
+   /*
+    float distance = length( v_Position.xy/v_TexScale - v_Position2D/v_TexScale);
+
+    float maxDistance = pow(v_TexScale.x, 0.23);
+    float quadDistance = pow(distance, 0.23);
+
+    float quadIntensit = 1.0 - (min(quadDistance, maxDistance)/maxDistance)+.2;
+
+    color = texColor * vec4(quadIntensit, quadIntensit, quadIntensit, 1);
+
+*/
+    //color = vec4(texColor.xyz, texColor.w*v_TexCoord.x);
+    //color = vec4(texColor.xyz, (texColor.w-clamp((clamp(length( v_Position.xy/v_TexScale - v_Position2D/v_TexScale),0,texColor.w)-.25),0.0,1.0)) );
+
     color = vec4(texColor.xyz, texColor.w*(1.0-v_AlphaChannel));
+
+    //color = texColor;
 }

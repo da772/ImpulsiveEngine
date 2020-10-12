@@ -13,11 +13,19 @@ RenderPipeline_Lighting::RenderPipeline_Lighting() : RenderPipeline("RenderPipel
 	// Use Gaussian Blur Shader!!
 	m_shaderColor = Shader::Create("Content/shaders/ColorShader.glsl");
 	m_shaderMask = Shader::Create("Content/shaders/MaskShader.glsl");
-	m_shader = Shader::Create("Content/shaders/GaussianBlurShader.glsl");
+	//m_shader = Shader::Create("Content/shaders/LightGlow.glsl");
+	m_shaderBlur = Shader::Create("Content/shaders/GaussianBlurShader.glsl");
+//	m_shader = Shader::Create("Content/shaders/GaussianBlurShader.glsl");
 
 	// Set Shader function to add blur parameters
-	m_shaderFunc = nullptr;
+	m_shaderStartFunc = []() {
+		//RenderCommand::BlendFunc(0x0001, 0x0001);
+	};
+	m_shaderEndFunc = []() {
+		//RenderCommand::BlendFunc(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
+	};
 	CreateGraphics();
+	m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting");
 	m_frameBuffer_shadow = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting_Shadow");
 	m_frameBuffer_shadow->UpdateSize(Application::GetWidth(), Application::GetHeight());
 	m_frameBuffer_lights = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear,
@@ -38,29 +46,21 @@ void RenderPipeline_Lighting::Render()
 	m_frameBuffer_lights->Bind();
 	Renderer::Prepare();
 	RenderStart();
+	//RenderCommand::BlendFunc(BLEND_SRC_ALPHA, BLEND_DST_COLOR);
 	for (int i = 0; i < renderables.size(); i++) {
 		renderables[i]->Render();
 	}
-	m_shaderColor->Bind();
-	glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0))
-		* glm::scale(glm::mat4(1.0), { 1.f, 1.f, 1.f });
-	m_shaderColor->UploadUniformMat4("u_Transform", transform);
-	m_shaderColor->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
-	m_shaderColor->UploadUniformFloat4("u_Color", { 250.f/255.f,137.f/255.f,0,.4f });
-	m_varray->Bind();
-	RenderCommand::DrawIndexed(m_varray);
-
-	RenderEnd();
 	m_frameBuffer_lights->UnBind();
+	//RenderCommand::BlendFunc(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
 	// Render Shadows
 	m_frameBuffer_shadow->Bind();
 	Renderer::Prepare();
 	m_shaderColor->Bind();
-	transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0))
+	glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0))
 		* glm::scale(glm::mat4(1.0), { 5000.f, 5000.f, 1.f });
 	m_shaderColor->UploadUniformMat4("u_Transform", transform);
 	m_shaderColor->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
-	m_shaderColor->UploadUniformFloat4("u_Color", { 0,0,0,.4f });
+	m_shaderColor->UploadUniformFloat4("u_Color", { 0,0,0,.6f });
 	m_varray->Bind();
 	RenderCommand::DrawIndexed(m_varray);
 	m_frameBuffer_shadow->UnBind();
@@ -69,7 +69,7 @@ void RenderPipeline_Lighting::Render()
 	RenderCommand::BlendFuncSeparate(0x0302, 0x0303, 0x01, 0x01);
 	Renderer::Prepare();
 	m_shaderMask->Bind();
-	transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0))* glm::scale(glm::mat4(1.0), { 1.f, 1.f, 1.f });
+	transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0)) * glm::scale(glm::mat4(1.0), { 1.f, 1.f, 1.f });
 	m_shaderMask->UploadUniformMat4("u_Transform", transform);
 	m_shaderMask->UploadUniformInt("u_Texture", 0);
 	m_shaderMask->UploadUniformInt("u_Texture_Mask", 1);
@@ -78,6 +78,29 @@ void RenderPipeline_Lighting::Render()
 	m_varray->Bind();
 	RenderCommand::DrawIndexed(m_varray);
 	m_frameBuffer->UnBind();
+	/*
+	m_frameBuffer_shadow->Bind();
+	Renderer::Prepare();
+	//RenderCommand::SetClearColor({0, 0, 0, .2f});
+	m_shaderBlur->Bind();
+	m_shaderBlur->UploadUniformFloat2("u_BlurDirection", { 1,0 });
+	m_frameBuffer_lights->GetTexture()->Bind();
+	m_varray->Bind();
+	RenderCommand::DrawIndexed(m_varray);
+	m_frameBuffer_shadow->UnBind();
+
+	m_frameBuffer->Bind();
+	Renderer::Prepare();
+	//RenderCommand::SetClearColor({ 0, 0, 0, .2f });
+	m_shaderBlur->UploadUniformFloat2("u_BlurDirection", { 0,1 });
+	m_frameBuffer_shadow->GetTexture()->Bind();
+	m_varray->Bind();
+	RenderCommand::DrawIndexed(m_varray);
+	m_frameBuffer->UnBind();
+	*/
+	RenderEnd();
+
+	
 }
 
 void RenderPipeline_Lighting::RenderStart()

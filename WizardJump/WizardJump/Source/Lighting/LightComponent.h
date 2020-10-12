@@ -10,7 +10,9 @@ public:
 	LightComponent();
 	virtual ~LightComponent();
     
-    void AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
+    long AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
+    void EditCircleColor(long id, const glm::vec4& color);
+    void RemoveCircleLight(long id);
 
 protected:
     std::vector<long> m_ids;

@@ -19,8 +19,8 @@ namespace GEngine {
 
 	int Batch::s_BatchCount = 0;
 
-     Batch::Batch(Ref<Shape> shape, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, int maxShapes, int maxTextures) : 
-        m_IndexBuffer(indexBuffer), m_Shader(shader) {
+	Batch::Batch(Ref<Shape> shape, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, int maxShapes, int maxTextures, const std::function<void()>& shaderFunction) :
+        m_IndexBuffer(indexBuffer), m_Shader(shader), m_shaderFunction(shaderFunction) {
 
         m_VertexBuffer = Ref<VertexBuffer>(VertexBuffer::Create(shape->GetVerticesSize()*maxShapes *sizeof(float)));
         m_VertexBuffer->SetLayout(shape->GetBufferLayout());
@@ -70,7 +70,7 @@ namespace GEngine {
 
 			 m_Shader->Bind();
 			 m_Shader->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
-
+			 if (m_shaderFunction) m_shaderFunction();
 			 for (int i = 0; i < m_TextureIds.size(); i++) {
 				 if (m_TextureIds[i] != -1)
 					 RenderCommand::BindTexture(m_TextureIds[i], i);
@@ -82,7 +82,7 @@ namespace GEngine {
 
 	 }
 
-	 BatchRenderer::BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader, const char* pipelineId) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
+	 BatchRenderer::BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader, const char* pipelineId, const std::function<void()>& shaderFunc) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
 		 m_PipelineId(pipelineId == nullptr ? pipeline == ERenderType::GAME ? "2d" : "ui" : pipelineId), m_renderType(pipeline)
 	 {
 		m_MaxVertices = m_MaxShapes * m_Shape->GetVerticesSize();
@@ -488,7 +488,7 @@ namespace GEngine {
 		 }
 
 		 if (m_Batches.size() <= 0) {
-			 Ref<Batch> batch = Ref<Batch>(new Batch(m_Shape, m_IndexBuffer, m_Shader, m_MaxShapes, m_MaxTextures));
+			 Ref<Batch> batch = Ref<Batch>(new Batch(m_Shape, m_IndexBuffer, m_Shader, m_MaxShapes, m_MaxTextures, m_shaderfunction));
 			 m_Batches.push_back(batch);
 			 m_Pipeline->Add(batch);
 		 }
@@ -524,7 +524,7 @@ namespace GEngine {
 				 batch->SetVertices(vertices, textures, objectCount * m_Shape->GetIndicesSize());
 				 i--;
 				 if (batchCount >= m_Batches.size()-1) {
-					 Ref<Batch> batch = Ref<Batch>(new Batch(m_Shape, m_IndexBuffer, m_Shader, m_MaxShapes, m_MaxTextures));
+					 Ref<Batch> batch = Ref<Batch>(new Batch(m_Shape, m_IndexBuffer, m_Shader, m_MaxShapes, m_MaxTextures, m_shaderfunction));
 					 m_Batches.push_back(batch);
 					 m_Pipeline->Add(batch);
 				 }

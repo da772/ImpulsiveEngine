@@ -102,11 +102,17 @@ Circle::~Circle()
             * glm::rotate(glm::mat4(1.f), glm::radians(rotation), { 0,0,1.f })
             * glm::scale(glm::mat4(1.0), { scale.x, scale.y, 1.f });
         
-        const Vector2 texCoordPos[] = {{0,0},{1,0},{1,1},{0,1}};
+        const Vector2 texCoordPos[] = { {0,0},{1,0},{1,1},{0,1} };
         uint32_t quadLen = GetVerticesRows();
-        for (int i = 0; i < quadLen; i++) {
+        {
+			Vector4 _p = transform * quadPos[0];
+			Vector4 _sp = transform * glm::vec4(quadPos[0].x, quadPos[0].y, 0, 1);
+			vert.push_back({ Vector3(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2(textureCoords[0]) : texCoordPos[0]), (float)texture, textureScale,0, glm::vec2(_sp.x,_sp.y) });
+        }
+        for (int i = 1; i < quadLen; i++) {
             Vector4 _p = transform * quadPos[i];
-            vert.push_back({ Vector3(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2(textureCoords[i]) : texCoordPos[i%4]), (float)texture, textureScale,alphaChannel, glm::vec2(position.x,position.y) });
+            Vector4 _sp = transform * glm::vec4(quadPos[0].x, quadPos[0].y, 0, 1);
+            vert.push_back({ Vector3(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2(textureCoords[i]) : texCoordPos[i%4]), (float)texture, textureScale,1, glm::vec2(_sp.x,_sp.y) });
         }
 
         std::vector<float> _f((float*)&vert[0], (float*)&vert[0]+GetVerticesSize());

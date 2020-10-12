@@ -26,9 +26,11 @@ private:
 	Ref<VertexBuffer> m_vb;
 	Ref<IndexBuffer> m_ib;
 	Ref<FrameBuffer> m_frameBuffer_shadow;
+	Ref<FrameBuffer> m_frameBuffer_combine;
 	Ref<FrameBuffer> m_frameBuffer_lights;
 	Ref<Shader> m_shaderMask;
 	Ref<Shader> m_shaderColor;
+	Ref<Shader> m_shaderBlur;
 	void CreateGraphics();
 
 };
