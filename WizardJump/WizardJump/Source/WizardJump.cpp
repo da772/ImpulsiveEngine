@@ -77,7 +77,7 @@ WizardJump::WizardJump()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
-	s_debugTools = true;
+	s_debugTools = false;
 	
 	if (s_debugTools) {
 		this->m_width = 1280;
@@ -98,7 +98,7 @@ WizardJump::WizardJump()
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
-	GetWindow()->SetVSync(true);
+	GetWindow()->SetVSync(false);
 
 
 
@@ -107,7 +107,7 @@ WizardJump::WizardJump()
 
 
 #if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
-	EnableImGui(true);
+	EnableImGui(s_debugTools);
 #else
 	EnableImGui(false);
 #endif

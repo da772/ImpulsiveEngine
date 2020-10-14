@@ -127,6 +127,7 @@ namespace GEngine {
 		int m_MaxVertices = 0;
 		int m_MaxIndices = 0;
 		int m_MaxTextures = 0;
+		std::queue<u32> m_reuseId;
 		std::vector<Ref<Batch>> m_Batches;
 		Ref<RenderPipeline> m_Pipeline = nullptr;
 		const char* m_PipelineId;
@@ -134,7 +135,7 @@ namespace GEngine {
 		int m_RefCount = 0;
 		bool m_Sort = true;
 
-		int counter = 0;
+		u32 counter = 0;
 
 		
 

@@ -207,5 +207,11 @@ project "OpenAL"
         filter "configurations:Release"
             runtime "Release"
             optimize "On"
-
+        
+        filter "action:gmake2"
+			cppdialect "gnu++17"
+			defines
+			{
+				"GE_MINGW_"
+			}
         

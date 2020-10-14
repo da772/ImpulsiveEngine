@@ -65,6 +65,7 @@ namespace GEngine {
 
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
+
         
 #ifdef GE_PLATFORM_IOS
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&m_defaultFrameBuffer);

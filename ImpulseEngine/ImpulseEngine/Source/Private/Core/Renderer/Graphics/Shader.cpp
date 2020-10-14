@@ -60,7 +60,10 @@ namespace GEngine {
 		Ref<Shader> s = nullptr;
 
 		if (Shader::s_ShaderPool.find(filePath) != Shader::s_ShaderPool.end()) {
-			return Shader::s_ShaderPool[filePath].lock();
+			if (Shader::s_ShaderPool[filePath].expired()) {
+				Shader::s_ShaderPool.erase(filePath);
+			} else 
+				return Shader::s_ShaderPool[filePath].lock();
 		}
 
 		switch (GraphicsContext::GetGraphicsApi()) {

@@ -46,7 +46,7 @@ void RenderPipeline_Lighting::Render()
 	m_frameBuffer_lights->Bind();
 	Renderer::Prepare();
 	RenderStart();
-	//RenderCommand::BlendFunc(BLEND_SRC_ALPHA, BLEND_DST_COLOR);
+	//RenderCommand::BlendFunc(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_DST_ALPHA);
 	for (int i = 0; i < renderables.size(); i++) {
 		renderables[i]->Render();
 	}
@@ -60,7 +60,7 @@ void RenderPipeline_Lighting::Render()
 		* glm::scale(glm::mat4(1.0), { 5000.f, 5000.f, 1.f });
 	m_shaderColor->UploadUniformMat4("u_Transform", transform);
 	m_shaderColor->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
-	m_shaderColor->UploadUniformFloat4("u_Color", { 0,0,0,.6f });
+	m_shaderColor->UploadUniformFloat4("u_Color", { 0,0,0,.5f });
 	m_varray->Bind();
 	RenderCommand::DrawIndexed(m_varray);
 	m_frameBuffer_shadow->UnBind();

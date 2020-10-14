@@ -91,6 +91,8 @@ project "WizardJump"
 		systemversion "latest"
 		kind "WindowedApp"
 
+		
+
 		postbuildcommands
 		{
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"$(TargetDir)Data\""
@@ -145,6 +147,12 @@ project "WizardJump"
 				runtime "Release"
 				optimize "On"
 		end
+		filter "action:gmake2"
+			cppdialect "gnu++17"
+			defines
+			{
+				"GE_MINGW_"
+			}
 
 	filter "system:ios"
 		architecture "ARM"

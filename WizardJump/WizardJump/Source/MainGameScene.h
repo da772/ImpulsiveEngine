@@ -104,11 +104,38 @@ public:
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
 		eFPS->m_tag = "UI Entity";
 		AddEntity(eFPS);
-        
-        Ref<LightComponent> lc = GEngine::CreateGameObject<LightComponent>();
-        eFPS->AddComponent(lc);
+
+		Ref<LightComponent> lc = GEngine::CreateGameObject<LightComponent>();
+		eFPS->AddComponent(lc);
+		Ref<SpriteComponent> sp = GEngine::CreateGameObject<SpriteComponent>();
+		eFPS->AddComponent(sp);
+
+		sp->CreateQuad({ -3,4,9 }, 0, { 1.5,2, 1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/bigWindow.png"));
+
+		
+		lc->AddPolygonLight({
+
+			  0.f , .0f   , 0    , 0,0,0.f, // 0
+			-.75f , 1.f   , 0    , 0,0,1.f , // 1
+			0.75f , 1.f   , 0    , 0,0,1.f, // 2
+			1.25f , .5f   , 0    , 0,0,1.f, // 3
+			1.25f , -1.f  , 0.f  , 0,0,1.f, // 4
+			1.f   , -4.f  ,	0.f  , 0,0,1.f, //5
+			-3.f  , -4.f  ,	0.f  , 0,0,1.f // 6
+			}, { 
+			0, 2,1,
+			0,3,2,
+			0, 4, 3,
+			0,5, 4,
+			0, 6, 5,
+			0, 1, 6}, Ref<BufferLayout>(new BufferLayout({
+			{GEngine::ShaderDataName::Position },
+			{GEngine::ShaderDataName::TextureCoord}, {GEngine::ShaderDataName::AlphaChannel} })));
+
+		
+		
         long l1 = lc->AddCircleLight({3,1}, 50, {1,1}, {1,0,0,.6f});
-        long l2 = lc->AddCircleLight({3,3}, 50, {1,1}, {1,1,1,.5f});
+       // long l2 = lc->AddCircleLight({3,3}, 50, {1,1}, {1,1,1,.5f});
        
 		eFPS->AddComponent(FPSuiComponent);
 		GEngine::Ref<GEngine::Texture2D > buttonTexture = GEngine::Texture2D::Create("Content/Textures/back_button.png");

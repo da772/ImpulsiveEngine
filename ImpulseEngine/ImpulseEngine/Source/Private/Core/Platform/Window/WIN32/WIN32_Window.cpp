@@ -1,7 +1,7 @@
 #include "gepch.h"
 #include "Core/Platform/Window/WIN32/WIN32_Window.h"
 
-#ifdef GE_WINDOW_API_WIN32
+#if defined( GE_WINDOW_API_WIN32) && !defined(GE_MINGW_)
 #include <windows.h>
 
 namespace GEngine {

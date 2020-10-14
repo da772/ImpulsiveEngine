@@ -173,7 +173,15 @@ namespace GEngine {
 	 long BatchRenderer::AddShape(BatchObjectData& data)
 	 {
 		 data.time = Time::GetEpochTimeNS();
-		 long id = ++counter;
+		 long id;
+
+		 if (m_reuseId.size() > 0) {
+			 id = m_reuseId.front();
+			 m_reuseId.pop();
+		 } else {
+			id = ++counter;
+		 }
+		 
 
 		 m_SortedObjects.push_back({ id, data });
 
@@ -436,8 +444,18 @@ namespace GEngine {
 	 void BatchRenderer::RemoveShape(long id)
 	 {
 		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
-			 return e.first == id;
+			 return e.first == (u32)id;
 			});
+
+		 if (it->first == counter)
+			 counter--;
+		 else if (m_SortedObjects.size() <= 0) {
+			 counter = 0;
+			 m_reuseId = std::queue<u32>();
+		 }
+		else
+			m_reuseId.push((u32)id);
+
 
 		 m_SortedObjects.erase(it);
 		 ReCreateBatches();

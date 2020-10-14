@@ -1,7 +1,7 @@
 #include "Lighting/LightComponent.h"
 
 
-
+#include <glm/gtc/matrix_transform.hpp>
 Ref < BatchRenderer >LightComponent::s_ShapeFactory = nullptr;
 
 
@@ -17,9 +17,51 @@ LightComponent::LightComponent() {
     }
 }
 
+
 LightComponent::~LightComponent() {
     
 }
+
+
+PolygonLightRendererable::PolygonLightRendererable(const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout)
+{
+    vertices = _vertices;
+    indices = _indices;
+    m_vertexBuffer = Ref<VertexBuffer>(VertexBuffer::Create((float*)vertices.data(), (uint32_t)vertices.size()*sizeof(float)));
+    m_indexBuffer = Ref<IndexBuffer>(IndexBuffer::Create((uint32_t*)indices.data(), (uint32_t)indices.size()));
+
+    m_vertexBuffer->SetLayout(layout);
+
+    m_vertexArray = Ref<VertexArray>(VertexArray::Create());
+
+    m_vertexArray->AddVertexBuffer(m_vertexBuffer);
+    m_vertexArray->SetIndexBuffer(m_indexBuffer);
+
+    m_Priority = 10;
+
+    m_Shader = Shader::Create("Content/shaders/PolygonLight.glsl");
+}
+
+PolygonLightRendererable::~PolygonLightRendererable()
+{
+    m_vertexArray = nullptr;
+    m_vertexBuffer = nullptr;
+    m_indexBuffer = nullptr;
+}
+
+void PolygonLightRendererable::Render()
+{
+    m_Shader->Bind();
+    m_Shader->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
+    glm::mat4 pos = glm::translate(glm::mat4(1.f), { -3,4,10 });
+    m_Shader->UploadUniformMat4("u_Transform", pos);
+    m_Shader->UploadUniformInt("u_Texture", 0);
+    Texture2D::Create("batchBlank")->Bind();
+    m_Shader->UploadUniformFloat4("u_Color", { 175.f/255.f,204.f/255.f,225.f/255.f,.5f });
+    m_vertexArray->Bind();
+    RenderCommand::DrawIndexed(m_vertexArray);
+}
+
 
 void LightComponent::OnBegin()
 {
@@ -38,6 +80,21 @@ void LightComponent::EditCircleColor(long id, const glm::vec4& color)
     s_ShapeFactory->SetColor(id, color);
 }
 
+void LightComponent::EditCircleSize(long id, const glm::vec2& size)
+{
+    s_ShapeFactory->SetScale(id, size);
+}
+
+long LightComponent::AddPolygonLight(const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout)
+{
+    Ref<PolygonLightRendererable> l = make_shared<PolygonLightRendererable>(vertices, indices, layout);
+    m_polygonLights.push_back(l);
+
+    Renderer::GetPipeline("lighting")->Add(l);
+
+    return 0;
+}
+
 void LightComponent::RemoveCircleLight(long id)
 {
     s_ShapeFactory->RemoveShape(id);
@@ -48,6 +105,13 @@ void LightComponent::OnEnd()
     
     for (long id : m_ids)
         LightComponent::s_ShapeFactory->RemoveShape(id);
+
+    Ref<RenderPipeline> pipeline = Renderer::GetPipeline("lighting");
+    for (Ref<PolygonLightRendererable> p : m_polygonLights) {
+        pipeline->Remove(p);
+    }
+
+    m_polygonLights.end();
     
     
 }
@@ -91,3 +155,4 @@ static const float circleVertices20[] = { 0, 0, 1, 1, 0.408082, 0.912945, 1, 1, 
 
 static const int circleIndices20[] = { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 7, 0, 7, 8, 0, 8, 1, 0 };
 */
+
