@@ -3,7 +3,7 @@
 #include "Public/Core/Platform/Window/GLFW/GLFW_Input.h"
 
 
-#include "Public/COre/Collision/CollisionDetection.h"
+#include "Public/Core/Collision/CollisionDetection.h"
 #include "Public/Core/Application/Application.h"
 #include <GLFW/glfw3.h>
 #include "Public/Core/Events/MouseEvent.h"

@@ -103,4 +103,21 @@ project "freetype-gl"
             runtime "Release"
             optimize "On"
 
+
+    
+    filter "system:linux"
+        systemversion "latest"
+        cppdialect "gnu++17"
+        defines 
+        {
+            "GL_WITH_GLAD"
+        }
+
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"
+
         

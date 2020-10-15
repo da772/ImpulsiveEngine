@@ -5,7 +5,8 @@
 #include "Public/Core/Util/ThreadPool.h"
 
 #define AL_LIBTYPE_STATIC
-#include <Al/al.h>
+
+#include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/efx.h>
 #include <vorbis/vorbisfile.h>

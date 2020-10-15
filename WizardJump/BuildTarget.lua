@@ -103,12 +103,6 @@ project "WizardJump"
 			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
 		}
 
-
-		includedirs
-		{
-			"ImpulseEngine/%{IncludeDir.duktape}/src/win32/"
-		}
-
 		defines
 		{
 			"GE_PLATFORM_WINDOWS"
@@ -153,6 +147,81 @@ project "WizardJump"
 			{
 				"GE_MINGW_"
 			}
+
+		filter "system:linux"
+			linkgroups 'on'
+			systemversion "latest"
+			kind "ConsoleApp"
+			cppdialect "gnu++17"
+	
+			postbuildcommands
+			{
+			--	"cp -rf \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}/Data\\"""
+			}
+
+			links 
+			{
+				"ImGui",
+				"Enet",
+				"miniupnpc",
+				"freetype",
+				"freetype-gl",
+				"box2d",
+				"Vorbis",
+				"GL",
+				"Glad",
+				"GLFW",
+				"dl",
+				"pthread",
+				"X11",
+				"vulkan",
+				"openal",
+				"stdc++fs"
+			}
+	
+			excludes 
+			{ 
+				"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
+			}
+	
+			defines
+			{
+				"GE_PLATFORM_LINUX"
+			}
+	
+			
+	
+			if _OPTIONS['with-hot-reload'] then
+				filter "configurations:Debug"
+					defines "GE_DEBUG"
+					runtime "Debug"
+					symbols "On"
+					kind "SharedLib"
+				filter "configurations:Release"
+					defines "GE_RELEASE"
+					runtime "Release"
+					optimize "On"
+					kind "SharedLib"
+				filter "configurations:Dist"
+					defines "GE_DIST"
+					runtime "Release"
+					optimize "On"
+					kind "WindowedApp"
+			else 
+				filter "configurations:Debug"
+					defines "GE_DEBUG"
+					runtime "Debug"
+					symbols "On"
+					kind "ConsoleApp"
+				filter "configurations:Release"
+					defines "GE_RELEASE"
+					runtime "Release"
+					optimize "On"
+				filter "configurations:Dist"
+					defines "GE_DIST"
+					runtime "Release"
+					optimize "On"
+			end
 
 	filter "system:ios"
 		architecture "ARM"

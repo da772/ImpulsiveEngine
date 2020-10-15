@@ -5,6 +5,9 @@
 #ifdef GE_PLATFORM_WINDOWS
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif
+#ifdef GE_PLATFORM_LINUX
+#define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
+#endif
 #ifdef GE_PLATFORM_MACOSX
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif

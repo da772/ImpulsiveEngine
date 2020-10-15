@@ -54,6 +54,7 @@ namespace GEngine {
 		static std::mt19937 s_Random;
 		static std::uniform_int_distribution<std::mt19937::result_type> s_Dist;
 		static bool s_bInit;
+		
 
 	};
 

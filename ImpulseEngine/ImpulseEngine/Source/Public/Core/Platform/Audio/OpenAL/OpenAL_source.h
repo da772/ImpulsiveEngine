@@ -2,7 +2,7 @@
 
 #include "Public/Core/Audio/AudioSource.h"
 #if defined (GE_AUDIO_OPENAL)
-#include "Vorbis/vorbisfile.h"
+#include "vorbis/vorbisfile.h"
 #else
 struct OggVorbis_File {
 

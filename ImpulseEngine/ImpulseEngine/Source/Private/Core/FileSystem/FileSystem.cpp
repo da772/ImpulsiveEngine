@@ -341,7 +341,8 @@ namespace GEngine {
 	{
 		std::string exePath = GetExecutableDir();
 		std::string dirPath = exePath;
-#ifdef GE_PLATFORM_MACOSX
+
+#if defined( GE_PLATFORM_MACOSX)
         levelsUp+=3;
 #endif
 		for (int i = 0; i < levelsUp; i++) {

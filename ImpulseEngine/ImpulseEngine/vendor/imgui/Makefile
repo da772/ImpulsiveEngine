@@ -35,31 +35,29 @@ define POSTBUILDCMDS
 endef
 
 ifeq ($(config),debug)
-TARGETDIR = bin/Debug-windows-x86_64/ImGui
-TARGET = $(TARGETDIR)/ImGui.lib
-OBJDIR = bin-int/Debug-windows-x86_64/ImGui
+TARGETDIR = bin/Debug-linux-x86_64/ImGui
+TARGET = $(TARGETDIR)/libImGui.a
+OBJDIR = bin-int/Debug-linux-x86_64/ImGui
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
 ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64
 
 else ifeq ($(config),release)
-TARGETDIR = bin/Release-windows-x86_64/ImGui
-TARGET = $(TARGETDIR)/ImGui.lib
-OBJDIR = bin-int/Release-windows-x86_64/ImGui
+TARGETDIR = bin/Release-linux-x86_64/ImGui
+TARGET = $(TARGETDIR)/libImGui.a
+OBJDIR = bin-int/Release-linux-x86_64/ImGui
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
 ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64 -s
 
 else ifeq ($(config),dist)
-TARGETDIR = bin/Dist-windows-x86_64/ImGui
-TARGET = $(TARGETDIR)/ImGui.lib
-OBJDIR = bin-int/Dist-windows-x86_64/ImGui
+TARGETDIR = bin/Dist-linux-x86_64/ImGui
+TARGET = $(TARGETDIR)/libImGui.a
+OBJDIR = bin-int/Dist-linux-x86_64/ImGui
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -std=c++17
 ALL_LDFLAGS += $(LDFLAGS) -L/usr/lib64 -m64 -s
 
-else
-  $(error "invalid configuration $(config)")
 endif
 
 # Per File Configurations
@@ -69,8 +67,13 @@ endif
 # File sets
 # #############################################
 
+GENERATED :=
 OBJECTS :=
 
+GENERATED += $(OBJDIR)/imgui.o
+GENERATED += $(OBJDIR)/imgui_demo.o
+GENERATED += $(OBJDIR)/imgui_draw.o
+GENERATED += $(OBJDIR)/imgui_widgets.o
 OBJECTS += $(OBJDIR)/imgui.o
 OBJECTS += $(OBJDIR)/imgui_demo.o
 OBJECTS += $(OBJDIR)/imgui_draw.o
@@ -82,7 +85,7 @@ OBJECTS += $(OBJDIR)/imgui_widgets.o
 all: $(TARGET)
 	@:
 
-$(TARGET): $(OBJECTS) $(LDDEPS) | $(TARGETDIR)
+$(TARGET): $(GENERATED) $(OBJECTS) $(LDDEPS) | $(TARGETDIR)
 	$(PRELINKCMDS)
 	@echo Linking ImGui
 	$(SILENT) $(LINKCMD)
@@ -108,9 +111,11 @@ clean:
 	@echo Cleaning ImGui
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
+	$(SILENT) rm -rf $(GENERATED)
 	$(SILENT) rm -rf $(OBJDIR)
 else
 	$(SILENT) if exist $(subst /,\\,$(TARGET)) del $(subst /,\\,$(TARGET))
+	$(SILENT) if exist $(subst /,\\,$(GENERATED)) rmdir /s /q $(subst /,\\,$(GENERATED))
 	$(SILENT) if exist $(subst /,\\,$(OBJDIR)) rmdir /s /q $(subst /,\\,$(OBJDIR))
 endif
 

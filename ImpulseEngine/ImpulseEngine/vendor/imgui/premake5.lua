@@ -83,3 +83,13 @@ project "ImGui"
         filter "configurations:Release"
             runtime "Release"
             optimize "On"
+
+    filter "system:linux"
+        systemversion "latest"
+
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"

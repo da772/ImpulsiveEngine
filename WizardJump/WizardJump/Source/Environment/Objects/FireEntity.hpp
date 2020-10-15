@@ -48,7 +48,8 @@ protected:
 			spriteComp->SetSubTexture(id, spriteSheet);
 
 			if (frame % 2 == 0) {
-				float op = Random::FloatRange(.7f, .75f);
+				float op = Random::IntRange(1, 5);
+				GE_CORE_DEBUG("RANDOM N: {0}", (op-.7f)*10.f);
 				lightComp->EditCircleColor(id2, { 1.f,.5f, 0.f, op });
 				lightComp->EditCircleSize(id2, { 4 + 10.f* (op - .7f), 4.f + 10.f* (op - .7f )});
 			}

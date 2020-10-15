@@ -4,7 +4,7 @@
 #include "Public/Core/Audio/AudioManager.h"
 
 #define AL_LIBTYPE_STATIC
-#include <Al/al.h>
+#include <AL/al.h>
 #include <AL/alc.h>
 
 

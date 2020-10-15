@@ -77,7 +77,7 @@ WizardJump::WizardJump()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
-	s_debugTools = false;
+	s_debugTools = true;
 	
 	if (s_debugTools) {
 		this->m_width = 1280;
@@ -86,10 +86,8 @@ WizardJump::WizardJump()
 		this->m_viewPortHeight = 1920;
 	}
 
-#if !defined GE_DIST
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3)+"WizardJump/Content",
 		GEngine::FileSystem::FilePath("Data/Content.pak"), false);
-#endif
 #endif
 	GEngine::FileSystem::LoadPak("Data/Content.pak");
 	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"), 
@@ -106,7 +104,7 @@ WizardJump::WizardJump()
 
 
 
-#if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
+#if defined(GE_CONSOLE_APP)
 	EnableImGui(s_debugTools);
 #else
 	EnableImGui(false);

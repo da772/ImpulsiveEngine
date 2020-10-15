@@ -167,7 +167,7 @@ namespace GEngine {
 		GLFWwindow* window = static_cast<GLFWwindow*>(app->GetApp()->GetWindow()->GetNativeWindow());
 
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init("#version 410");
+		ImGui_ImplOpenGL3_Init("#version 330");
 #endif
 	}
 

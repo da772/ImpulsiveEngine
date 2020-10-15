@@ -1,7 +1,7 @@
 #include "gepch.h"
 
 #include "Public/Core/Scripting/ScriptApi.h"
-#include "Public/COre/Scripting/ScriptManager.h"
+#include "Public/Core/Scripting/ScriptManager.h"
 
 
 
@@ -12,6 +12,8 @@ namespace GEngine {
 	{
 		Ref<ScriptApi> api;
 		switch (ScriptManager::GetType()) {
+	
+
 	
 		default:
 		case ScriptApiType::SCRIPT_NONE:

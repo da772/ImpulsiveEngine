@@ -342,9 +342,6 @@ project "ImpulseEngine"
 		pchheader "gepch.h"
 		pchsource "ImpulseEngine/Source/gepch.cpp"
 
-
-		
-		
 		files
 		{
 		}
@@ -390,5 +387,50 @@ project "ImpulseEngine"
 			{
 				"GE_MINGW_"
 			}
+
+	filter "system:linux"
+		linkgroups 'on'
+		systemversion "latest"
+		pchheader "gepch.h"
+		pchsource "ImpulseEngine/Source/gepch.cpp"
+		cppdialect "gnu++17"
+		files
+		{
+		}
+		
+		
+		includedirs
+		{
+		}
+
+		defines
+		{
+			"GLFW_INCLUDE_NONE",
+			"GE_WINDOW_GLFW",
+			"GE_PLATFORM_LINUX",
+			"GL_WITH_GLAD"
+		}
+		
+
+		links 
+		{
+			"GL",
+			"Glad",
+			"GLFW",
+			"X11"
+		}
+
+		filter "configurations:Debug"
+			defines "GE_DEBUG"
+			runtime "Debug"
+			symbols "On"
+		filter "configurations:Release"
+			defines "GE_RELEASE"
+			runtime "Release"
+			optimize "On"
+		filter "configurations:Dist"
+			defines "GE_DIST"
+			runtime "Release"
+			optimize "On"
 
 	
