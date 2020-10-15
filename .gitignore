@@ -28,7 +28,7 @@ build/
 *.ini
 *.recipe
 *.so
-**/Makefile
+Makefile
 ./Podfile
 
 Podfile.lock
