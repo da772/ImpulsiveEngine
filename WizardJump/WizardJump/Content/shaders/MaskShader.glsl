@@ -27,6 +27,9 @@ uniform sampler2D u_Texture_Mask;
 void main() {
 	vec4 color = texture(u_Texture,v_TexCoord);
     vec4 mask  = texture(u_Texture_Mask,v_TexCoord);
+	float alpha = color.w;
+	if (mask.a > 0)
+		alpha = mask.w;
 	FragColor = vec4(color.xyz + mask.xyz, max(color.w, mask.w));
 	return;
     if (mask.a > 0) {

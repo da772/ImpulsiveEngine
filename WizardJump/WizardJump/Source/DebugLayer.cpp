@@ -1,6 +1,7 @@
 #include "DebugLayer.h"
 #include "imgui/imgui_internal.h"
 
+
 bool DebugLayer::showLog = true;
 
 bool handleResize = false;
@@ -27,6 +28,22 @@ void DebugLayer::OnImGuiRender()
 		}
 }
 
+
+static void RefreshAssets() {
+	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Content",
+		GEngine::FileSystem::FilePath("Data/Content.pak"), false);
+	GEngine::FileSystem::LoadPak("Data/Content.pak");
+	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"),
+		GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);
+	GE_LOG_DEBUG("Refreshing Pak File");
+}
+
+static void ReCreateGraphics() {
+	GEngine::Application::UnloadGraphics();
+	GEngine::Application::ReloadGraphics();
+}
+
+
 void DebugLayer::OnEvent(GEngine::Event& event)
 {
 	if (event.GetEventType() == GEngine::EventType::KeyPressed) {
@@ -36,13 +53,8 @@ void DebugLayer::OnEvent(GEngine::Event& event)
 		}
 		if (e.GetKeyCode() == GE_KEY_R) {
 			if (GEngine::Input::IsKeyPressed(GE_KEY_LEFT_CONTROL)) {
-				GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Content",
-					GEngine::FileSystem::FilePath("Data/Content.pak"), false);
-				GEngine::FileSystem::LoadPak("Data/Content.pak");
-				GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"),
-					GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);
-				GE_LOG_DEBUG("Refreshing Pak File");
-				GEngine::SceneManager::SetCurrentScene("splashScreen");
+				RefreshAssets();
+				ReCreateGraphics();
 			}
 		}
 	
@@ -51,6 +63,8 @@ void DebugLayer::OnEvent(GEngine::Event& event)
 		//handleResize = true;
 	}
 }
+
+
 
 void DebugLayer::ShowDock(bool p_open)
 {
@@ -133,13 +147,8 @@ void DebugLayer::ShowDock(bool p_open)
 		{
 
 			if (ImGui::MenuItem("Refresh Assets", "CTRL-R", false)) {
-				GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Content",
-					GEngine::FileSystem::FilePath("Data/Content.pak"), false);
-				GEngine::FileSystem::LoadPak("Data/Content.pak");
-				GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"),
-					GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);
-				GE_LOG_DEBUG("Refreshing Pak File");
-				GEngine::SceneManager::SetCurrentScene("splashScreen");
+				RefreshAssets();
+				ReCreateGraphics();
 			}
 			
 			if (ImGui::MenuItem("Hide Console", "", DebugLayer::showLog == 0))

@@ -12,6 +12,7 @@
 #include "Generation/ProceduralPlatformGeneration.hpp"
 #include "Environment/BackgroundTiledEntity.hpp"
 
+#include "Environment/WindowEntity.hpp"
 
 
 #include "Lighting/LightComponent.h"
@@ -110,31 +111,15 @@ public:
 		Ref<SpriteComponent> sp = GEngine::CreateGameObject<SpriteComponent>();
 		eFPS->AddComponent(sp);
 
-		sp->CreateQuad({ -3,4,9 }, 0, { 1.5,2, 1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/bigWindow.png"));
 
+		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(0, 5, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
+		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(-4, 5, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
 		
-		lc->AddPolygonLight({
 
-			  0.f , .0f   , 0    , 0,0,0.f, // 0
-			-.75f , 1.f   , 0    , 0,0,1.f , // 1
-			0.75f , 1.f   , 0    , 0,0,1.f, // 2
-			1.25f , .5f   , 0    , 0,0,1.f, // 3
-			1.25f , -1.f  , 0.f  , 0,0,1.f, // 4
-			1.f   , -4.f  ,	0.f  , 0,0,1.f, //5
-			-3.f  , -4.f  ,	0.f  , 0,0,1.f // 6
-			}, { 
-			0, 2,1,
-			0,3,2,
-			0, 4, 3,
-			0,5, 4,
-			0, 6, 5,
-			0, 1, 6}, Ref<BufferLayout>(new BufferLayout({
-			{GEngine::ShaderDataName::Position },
-			{GEngine::ShaderDataName::TextureCoord}, {GEngine::ShaderDataName::AlphaChannel} })));
-
+		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(0, 10, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
+		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(-4, 10, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
 		
-		
-        long l1 = lc->AddCircleLight({3,1}, 50, {1,1}, {1,0,0,.6f});
+       // long l1 = lc->AddCircleLight({-3,3}, 50, {4,4}, { 175.f / 255.f,204.f / 255.f,225.f / 255.f,.8f });
        // long l2 = lc->AddCircleLight({3,3}, 50, {1,1}, {1,1,1,.5f});
        
 		eFPS->AddComponent(FPSuiComponent);
@@ -197,8 +182,12 @@ public:
 		
 		*/
 
-		auto fireEnt = GEngine::CreateGameObject<FireEntity>();
-		AddEntity(fireEnt);
+		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(2.f, 1.5f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
+		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(6.7f, 4.5f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
+		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(3.25f, 7.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
+		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(7.f, 9.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1), true));
+		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(3.5f, 13.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
+		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(7.f, 15.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
 
 
 		/* test fire

@@ -23,23 +23,19 @@ LightComponent::~LightComponent() {
 }
 
 
-PolygonLightRendererable::PolygonLightRendererable(const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout)
+PolygonLightRendererable::PolygonLightRendererable(const glm::vec3& position, const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout, const glm::vec4& color)
 {
     vertices = _vertices;
     indices = _indices;
-    m_vertexBuffer = Ref<VertexBuffer>(VertexBuffer::Create((float*)vertices.data(), (uint32_t)vertices.size()*sizeof(float)));
-    m_indexBuffer = Ref<IndexBuffer>(IndexBuffer::Create((uint32_t*)indices.data(), (uint32_t)indices.size()));
-
-    m_vertexBuffer->SetLayout(layout);
-
-    m_vertexArray = Ref<VertexArray>(VertexArray::Create());
-
-    m_vertexArray->AddVertexBuffer(m_vertexBuffer);
-    m_vertexArray->SetIndexBuffer(m_indexBuffer);
-
+    m_bufferLayout = layout;
+    m_color = color;
+    m_position = position;
+    
     m_Priority = 10;
 
     m_Shader = Shader::Create("Content/shaders/PolygonLight.glsl");
+
+    CreateGraphics();
 }
 
 PolygonLightRendererable::~PolygonLightRendererable()
@@ -51,17 +47,42 @@ PolygonLightRendererable::~PolygonLightRendererable()
 
 void PolygonLightRendererable::Render()
 {
+    //RenderCommand::BlendEquationSeparate(0x8006, 0x8007); // GL_FUNC_ADD, GL_MIN
     m_Shader->Bind();
     m_Shader->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
-    glm::mat4 pos = glm::translate(glm::mat4(1.f), { -3,4,10 });
+    glm::mat4 pos = glm::translate(glm::mat4(1.f), m_position);
     m_Shader->UploadUniformMat4("u_Transform", pos);
-    m_Shader->UploadUniformInt("u_Texture", 0);
-    Texture2D::Create("batchBlank")->Bind();
-    m_Shader->UploadUniformFloat4("u_Color", { 175.f/255.f,204.f/255.f,225.f/255.f,.5f });
+    m_Shader->UploadUniformFloat4("u_Color", m_color);
     m_vertexArray->Bind();
     RenderCommand::DrawIndexed(m_vertexArray);
+    //RenderCommand::BlendEquationSeparate(0x8006, 0x8006); // GL_FUNC_ADD, GL_MIN
 }
 
+
+void PolygonLightRendererable::Unload()
+{
+	m_vertexArray = nullptr;
+	m_indexBuffer = nullptr;
+	m_vertexBuffer = nullptr;
+}
+
+void PolygonLightRendererable::Reload()
+{
+    CreateGraphics();
+}
+
+void PolygonLightRendererable::CreateGraphics()
+{
+	m_vertexBuffer = Ref<VertexBuffer>(VertexBuffer::Create((float*)vertices.data(), (uint32_t)vertices.size() * sizeof(float)));
+	m_indexBuffer = Ref<IndexBuffer>(IndexBuffer::Create((uint32_t*)indices.data(), (uint32_t)indices.size()));
+	m_vertexBuffer->SetLayout(m_bufferLayout);
+
+	m_vertexArray = Ref<VertexArray>(VertexArray::Create());
+
+	m_vertexArray->AddVertexBuffer(m_vertexBuffer);
+	m_vertexArray->SetIndexBuffer(m_indexBuffer);
+
+}
 
 void LightComponent::OnBegin()
 {
@@ -85,14 +106,28 @@ void LightComponent::EditCircleSize(long id, const glm::vec2& size)
     s_ShapeFactory->SetScale(id, size);
 }
 
-long LightComponent::AddPolygonLight(const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout)
+long LightComponent::AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color)
 {
-    Ref<PolygonLightRendererable> l = make_shared<PolygonLightRendererable>(vertices, indices, layout);
+    Ref<PolygonLightRendererable> l = make_shared<PolygonLightRendererable>(GetEntityPosition()+position, vertices, indices, layout, color);
     m_polygonLights.push_back(l);
 
     Renderer::GetPipeline("lighting")->Add(l);
+    long id = ++m_polygonLightCounter;
+    m_polygonLightMap[id] = l;
+    return id;
+}
 
-    return 0;
+void LightComponent::RemovePolygonLight(long id)
+{
+    Ref<PolygonLightRendererable> l = m_polygonLightMap[id].lock();
+    m_polygonLightMap.erase(id);
+
+    if (l) {
+        m_polygonLights.erase(std::find(m_polygonLights.begin(), m_polygonLights.end(), l));
+    }
+
+    if (m_polygonLights.size() == 0)
+        m_polygonLightCounter = 0;
 }
 
 void LightComponent::RemoveCircleLight(long id)
@@ -121,6 +156,35 @@ void LightComponent::OnUpdate(Timestep timestep)
 	
 }
 
+void LightComponent::OnAttached(Ref<Entity> entity)
+{
+	entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
+		if (IsInitialized()) {
+			for (long id : m_ids) {
+				Vector3 pos = s_ShapeFactory->GetShapePosition(id);
+				Vector3 nPos = pos - transData.position + transform->GetPosition();
+				if (pos != nPos)
+					s_ShapeFactory->SetPosition(id, nPos);
+				float rot = s_ShapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
+				if (rot != nRot)
+					s_ShapeFactory->SetRotation(id, nRot);
+				Vector2 _scale = s_ShapeFactory->GetShapeScale(id);
+				Vector3 scale(_scale.x, _scale.y, 1);
+				Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
+				if (scale != nScale)
+					s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
+			}
+		}
+		});
+}
+
+void LightComponent::DeAttached(Ref<Entity> entity)
+{
+	entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
+}
+
+
 void LightComponent::CreateGraphics() {
     
 }
@@ -129,12 +193,18 @@ void LightComponent::ReloadGraphics() {
     if (s_ShapeFactory) {
         s_ShapeFactory->ReloadGraphics();
     }
-        
+	for (const Ref<PolygonLightRendererable>& p : m_polygonLights) {
+		p->Reload();
+	}
 }
 
 void LightComponent::UnloadGraphics() {
     if (s_ShapeFactory) {
         s_ShapeFactory->UnloadGraphics();
+    }
+
+    for (const Ref<PolygonLightRendererable>& p : m_polygonLights) {
+        p->Unload();
     }
 }
 

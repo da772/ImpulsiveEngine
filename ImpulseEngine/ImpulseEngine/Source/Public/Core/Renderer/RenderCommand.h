@@ -42,6 +42,8 @@ namespace GEngine {
 			RenderCommand::s_RendererAPI->BindTexture(id, slot);
 		};
 
+		inline static void BlendEquationSeparate(int rbg, int alpha) { RenderCommand::s_RendererAPI->BlendEquationSeparate(rbg, alpha); }
+
 		inline static void SetCulling(bool cull) { RenderCommand::s_RendererAPI->SetCulling(cull); }
 
 		inline static void ClearStencil() { RenderCommand::s_RendererAPI->ClearStencil(); }

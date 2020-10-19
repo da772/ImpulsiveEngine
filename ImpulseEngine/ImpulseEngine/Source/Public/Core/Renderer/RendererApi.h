@@ -59,6 +59,8 @@ namespace GEngine {
 		inline virtual void StencilMask(int mask) {};
 		inline virtual void StencilFunc(int p1, int p2, int p3) {};
 
+		inline virtual void BlendEquationSeparate(int rgb, int alpha) {};
+
 		inline virtual void BlendFuncSeparate(int p1, int p2, int p3, int p4) {};
 		inline virtual void BlendFunc(int p1, int p2) {};
 		

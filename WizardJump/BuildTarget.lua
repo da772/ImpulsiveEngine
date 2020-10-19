@@ -298,6 +298,7 @@ project "WizardJump"
 			optimize "On"
 	
 	filter "system:android"
+		architecture "ARM"
 		toolset "clang"
 		cppdialect "gnu++17"
 		kind "SharedLib"

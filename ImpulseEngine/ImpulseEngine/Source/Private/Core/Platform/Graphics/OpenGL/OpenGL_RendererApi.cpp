@@ -58,7 +58,6 @@ namespace GEngine {
 		glEnable(GL_STENCIL_TEST);
 		glEnable(GL_BLEND);
 		SetBlendMode(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
-
 		glEnable(GL_STENCIL_TEST);
 
 		glEnable(GL_DEPTH_TEST);
@@ -252,6 +251,11 @@ namespace GEngine {
 
 
 
+
+	void OpenGL_RendererApi::BlendEquationSeparate(int rgb, int alpha)
+	{
+		glBlendEquationSeparate(rgb, alpha);
+	}
 
 }
 

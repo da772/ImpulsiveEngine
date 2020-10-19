@@ -5,7 +5,7 @@ using namespace GEngine;
 
 class FireEntity : public Entity {
 public:
-	FireEntity() {};
+	FireEntity(const glm::vec3 position, const glm::vec2& scale, const glm::vec2& lightScale = glm::vec2(1,1), bool sound = false) : m_position(position), m_scale(scale), m_lightScale(lightScale), m_bsound(sound) {m_tag = "Fire Entity"; };
 	~FireEntity() {};
 
 protected:
@@ -19,39 +19,45 @@ protected:
 	long id = 0;
 	long id2 = 0;
 
-	std::string m_tag = "Fire Entity";
+	bool m_bsound = false;
+
+	glm::vec3 m_position;
+	glm::vec2 m_lightScale;
+	glm::vec2 m_scale;
 
 	inline void OnBegin() override
 	{
-		SetEntityScale({ 1,1,1 });
-		SetEntityPosition({ 7.f, 8.4f, 1 });
+		
+		SetEntityScale({ m_scale.x, m_scale.y, 1 });
+		SetEntityPosition(m_position);
 		spriteComp = CreateGameObject<SpriteComponent>();
 		animComp = CreateGameObject<SpriteAnimationComponent>();
-		audioComp = CreateGameObject<AudioComponent>("Content/Audio/fireSound.ogg", true, true, false, .2f);
+		if (m_bsound) {
+			audioComp = CreateGameObject<AudioComponent>("Content/Audio/fireSound.ogg", true, true, false, .2f);
+			AddComponent(audioComp);
+		}
 		lightComp = CreateGameObject<LightComponent>();
 		AddComponent(spriteComp);
 		AddComponent(animComp);
-		AddComponent(audioComp);
+		
 		AddComponent(lightComp);
 
 
-		spriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/fireAnim.png"),
-			{ 3,0 }, { 64,128 }, { 1,1 });
-		id = spriteComp->CreateSubTexturedQuad({ 0,0,10 }, 0.f, { 2,4,1 }, { 1,1,1,1 }, spriteSheet);
-		id2 = lightComp->AddCircleLight({0,0}, 0, { 4,4 }, { 1.f,.5f, 0.f,.5f });
+		spriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/torch-01.png"),
+			{ 0,0 }, { 32,32 }, { 1,1 });
+		id = spriteComp->CreateSubTexturedQuad({ 0,0,0 }, 0.f, { 1,1,1 }, { 1,1,1,1 }, spriteSheet);
+		id2 = lightComp->AddCircleLight({0,0}, 0, { m_lightScale.x,m_lightScale.y }, { 1.f,.5f, 0.f,.5f });
 
 		
-		animComp->SetFrameAnimation(16, 8, true, [this](int frame) {
-			int p1 = (frame-1) % 8;
-			//int p2 = 3-floor(frame / 8);
-			spriteSheet->SetCoords({ p1, 0 }, { 64,128 });
+		animComp->SetFrameAnimation(8, 4, true, [this](int frame) {
+			
+			spriteSheet->SetCoords({ frame-1, 0 }, { 32,32});
 			spriteComp->SetSubTexture(id, spriteSheet);
 
 			if (frame % 2 == 0) {
-				float op = Random::IntRange(1, 5);
-				GE_CORE_DEBUG("RANDOM N: {0}", (op-.7f)*10.f);
-				lightComp->EditCircleColor(id2, { 1.f,.5f, 0.f, op });
-				lightComp->EditCircleSize(id2, { 4 + 10.f* (op - .7f), 4.f + 10.f* (op - .7f )});
+				float op = Random::FloatRange(.1f, .3f);
+				lightComp->EditCircleColor(id2, { 1.f,.5f, 0.f, .5f+op/10.f });
+				lightComp->EditCircleSize(id2, { m_lightScale.x +op, m_lightScale.y +op});
 			}
 
 		});

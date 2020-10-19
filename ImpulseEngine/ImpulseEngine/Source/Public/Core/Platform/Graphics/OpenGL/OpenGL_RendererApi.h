@@ -26,7 +26,7 @@ namespace GEngine {
 		virtual void ClearStencil() override;
 		virtual void SetStencil(int op1, int op2, int op3, int func1, int func2, int func3, int mask) override;
         virtual uint32_t GetDefaultFramebufferId() override;
-
+		virtual void BlendEquationSeparate(int rgb, int alpha) override;
 		virtual void StencilMask(int mask) override;
 		virtual void StencilFunc(int p1, int p2, int p3) override;
 		virtual void BlendFuncSeparate(int p1, int p2, int p3, int p4) override;
