@@ -47,10 +47,11 @@ void PlatformEntity::OnBegin()
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < columns; x++) {
 			EPlatformType e = GetPlatformType(x, y);
+			/*
 			m_sprite->CreateSubTexturedQuad({ (x * columnSize+(columnSize)/2.f )-(scale.x/2.f), -y * rowSize + (scale.y / 2.f) - (rowSize) / 2.f, zOrder }, 0, {columnSize / (float)scale.x,  rowSize / (float)scale.y , 1 }
 				, { 1.f, 1.f, 1.f,1 },
 				SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/bricks-spritesheet.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest), platformPositions[e], { 16,16 }, { 1,1 }));
-
+				*/
 		}
 	}
 

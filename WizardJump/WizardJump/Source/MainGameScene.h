@@ -12,6 +12,8 @@
 #include "Generation/ProceduralPlatformGeneration.hpp"
 #include "Environment/BackgroundTiledEntity.hpp"
 
+#include "Environment/SpriteEntity.hpp"
+
 #include "Environment/WindowEntity.hpp"
 
 
@@ -106,19 +108,10 @@ public:
 		eFPS->m_tag = "UI Entity";
 		AddEntity(eFPS);
 
-		Ref<LightComponent> lc = GEngine::CreateGameObject<LightComponent>();
-		eFPS->AddComponent(lc);
 		Ref<SpriteComponent> sp = GEngine::CreateGameObject<SpriteComponent>();
 		eFPS->AddComponent(sp);
 
 
-		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(0, 5, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
-		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(-4, 5, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
-		
-
-		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(0, 10, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
-		AddEntity(GEngine::CreateGameObject<WindowEntity>(glm::vec3(-4, 10, 9), glm::vec2(1.5, 2), glm::vec4(1, 1, 1, .7f)));
-		
        // long l1 = lc->AddCircleLight({-3,3}, 50, {4,4}, { 175.f / 255.f,204.f / 255.f,225.f / 255.f,.8f });
        // long l2 = lc->AddCircleLight({3,3}, 50, {1,1}, {1,1,1,.5f});
        
@@ -171,7 +164,7 @@ public:
         });
 	
 		
-		AddEntity(GEngine::CreateGameObject<BackgroundEntity>());
+		//AddEntity(GEngine::CreateGameObject<BackgroundEntity>());
 		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
 		characterEntity = GEngine::CreateGameObject<CharacterEntity>();
 		AddEntity(characterEntity);
@@ -182,13 +175,15 @@ public:
 		
 		*/
 
+
+		/*
 		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(2.f, 1.5f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
 		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(6.7f, 4.5f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
 		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(3.25f, 7.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
 		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(7.f, 9.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1), true));
 		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(3.5f, 13.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
 		AddEntity(GEngine::CreateGameObject<FireEntity>(glm::vec3(7.f, 15.0f, 9), glm::vec2(1, 1), glm::vec2(1, 1)));
-
+		*/
 
 		/* test fire
 
@@ -220,9 +215,6 @@ public:
 		}
 		*/
 
-
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(10, 10), glm::vec2(5, 20)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-10, 10), glm::vec2(5, 20)));
 		
 
 		/*
@@ -235,30 +227,36 @@ public:
 		
 
 		*/
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0, -5.f), glm::vec2(25, 10)) );
-		
-		
-		
-		// Castle Wall
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.5f, 16.7f), glm::vec2(4.f, 1.f), 5.f, "CastleTop01"));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.f, 9.3f), glm::vec2(1.f, 14.f),  5.f, "CastleWall01"));
 
-		// Inside Castle
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(6.7f, 2.2f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle01"));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.3f, 4.4f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle02"));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(7.2f, 6.6f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle03"));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.3f, 10.f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle04"));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(7.2f, 13.f), glm::vec2(2.f, 1.f), 4.f, "Platform_Castle05"));
 
-		/*
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.f, 11.f), glm::vec2(3.f, 2.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-2.5f, 14.f), glm::vec2(2.f, 2.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-7.f, 15.f), glm::vec2(1.f, 2.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(-1.5f, 18.f), glm::vec2(3.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(3.f, 18.f), glm::vec2(3.f, 1.f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(2.5f, 21.5f), glm::vec2(1.f, .5f)));
-		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(1.f, 22.f), glm::vec2(2.f, 1.f)));
-		*/
+		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0, -12.4f), glm::vec2(25, 10)) );
+
+
+		Ref<BackgroundEntity> bg = CreateGameObject<BackgroundEntity>();
+
+		AddEntity(bg);
+		bg->AddParalaxBackground("back", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .7, -5, { 0, -5});
+		bg->AddParalaxBackground("middle", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .5f, -4, { 0,-5 });
+		bg->AddParalaxBackground("front", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { 0,-5 });
+		bg->AddParalaxBackground("frontRight", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { 10, -5 });
+		bg->AddParalaxBackground("frontLeft", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { -10, -5 });
+
+		Ref<LightComponent> lc = CreateGameObject<LightComponent>();
+		bg->AddComponent(lc);
+		lc->AddQuadLight({ -98,0 }, 0, { 200,200 }, { 1,1,1,300.f });
+		lc->AddQuadLight({  111,0 }, 0, { 200,200 }, { 1,1,1,300.f });
+		lc->AddQuadLight({ 0,107 }, 0, { 200,200 }, { 1,1,1,300.f });
+		lc->AddQuadLight({ 0,-108 }, 0, { 200,200 }, { 1,1,1,300.f });
+		
+		AddEntity(CreateGameObject<FireEntity>(glm::vec3(5,6,6)));
+
+		Ref<SpriteEntity> spriteEntity = CreateGameObject<SpriteEntity>(glm::vec3(0, 0, 0), glm::vec2(1, 1), 0.0f, "Level01_Background");
+		AddEntity(spriteEntity);
+		Ref<SpriteComponent> comp = spriteEntity->GetSpriteComponent();
+		long id=  comp->CreateQuad({ 0,0,2 }, 0, { 25,17,0 }, { 1,1,1,300.f }, Texture2D::Create("Content/Textures/level_01.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge) );
+		comp->CreateQuad({ 0,105,0 }, 0, { 200.f, 200.f ,1.f}, {104.f/255.f,181.f/255.f,223.f/255.f,1});
+		comp->CreateQuad({ 0,-110,0 }, 0, { 200.f, 200.f ,1.f }, { 119.f / 255.f,112.f / 255.f,111.f / 255.f,1 });
+
 
 
 		/**

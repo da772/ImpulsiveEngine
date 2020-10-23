@@ -40,10 +40,13 @@ public:
 	virtual ~LightComponent();
     
     long AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
+    long AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
     void EditCircleColor(long id, const glm::vec4& color);
     void EditCircleSize(long id, const glm::vec2& size);
 
     long AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
+
+    void RemoveQuadLight(long id);
 
     void RemovePolygonLight(long id);
     void RemoveCircleLight(long id);
@@ -52,14 +55,16 @@ public:
 	virtual void DeAttached(Ref<Entity> entity) override;
 
 protected:
-    std::vector<long> m_ids;
+    std::vector<long> m_Circleids;
+    std::vector<long> m_Quadids;
 	void OnBegin() override;
 	void OnEnd() override;
 	void OnUpdate(Timestep timestep) override;
     virtual void UnloadGraphics() override;
     virtual void ReloadGraphics() override;
     Ref<Shader> m_Shader;
-    static Ref<BatchRenderer> s_ShapeFactory;
+    static Ref<BatchRenderer> s_CircleShapeFactory;
+    static Ref<BatchRenderer> s_QuadShapeFactory;
     std::vector<Ref<PolygonLightRendererable>> m_polygonLights;
     void CreateGraphics();
     uint32_t m_polygonLightCounter = 0;

@@ -2,18 +2,20 @@
 
 
 #include <glm/gtc/matrix_transform.hpp>
-Ref < BatchRenderer >LightComponent::s_ShapeFactory = nullptr;
+Ref < BatchRenderer >LightComponent::s_CircleShapeFactory = nullptr;
+Ref < BatchRenderer >LightComponent::s_QuadShapeFactory = nullptr;
 
 
 LightComponent::LightComponent() {
     bUpdates = false;
-    if (s_ShapeFactory == nullptr) {
+    if (s_CircleShapeFactory == nullptr) {
         std::string path = std::string("Content/shaders/CircleLight_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
         m_Shader = Ref<Shader>(Shader::Create(path));
-        LightComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Circle>(new Circle()),
-            5000, m_Shader, "lighting", [this]() {
-                m_Shader->UploadUniformFloat2("u_WindowSize", { Application::GetWidth(), Application::GetHeight() });
-            }));
+        LightComponent::s_CircleShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Circle>(new Circle()),
+            5000, m_Shader, "lighting"));
+
+		LightComponent::s_QuadShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
+			5000, Shader::Create("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots()) + "Batch.glsl") , "lighting"));
     }
 }
 
@@ -91,19 +93,27 @@ void LightComponent::OnBegin()
 
 long LightComponent::AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color) {
     Ref<Texture2D> t = nullptr;
-    long id = LightComponent::s_ShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
-    m_ids.push_back(id);
+    long id = LightComponent::s_CircleShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
+    m_Circleids.push_back(id);
+    return id;
+}
+
+long LightComponent::AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color)
+{
+    long id = s_QuadShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y + position.y, intensity
+        }, 0, scale, color);
+    m_Quadids.push_back(id);
     return id;
 }
 
 void LightComponent::EditCircleColor(long id, const glm::vec4& color)
 {
-    s_ShapeFactory->SetColor(id, color);
+    s_CircleShapeFactory->SetColor(id, color);
 }
 
 void LightComponent::EditCircleSize(long id, const glm::vec2& size)
 {
-    s_ShapeFactory->SetScale(id, size);
+    s_CircleShapeFactory->SetScale(id, size);
 }
 
 long LightComponent::AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color)
@@ -115,6 +125,12 @@ long LightComponent::AddPolygonLight(const glm::vec3& position, const std::vecto
     long id = ++m_polygonLightCounter;
     m_polygonLightMap[id] = l;
     return id;
+}
+
+void LightComponent::RemoveQuadLight(long id)
+{
+    m_Quadids.erase(std::find(m_Quadids.begin(), m_Quadids.end(), id));
+    s_QuadShapeFactory->RemoveShape(id);
 }
 
 void LightComponent::RemovePolygonLight(long id)
@@ -132,14 +148,18 @@ void LightComponent::RemovePolygonLight(long id)
 
 void LightComponent::RemoveCircleLight(long id)
 {
-    s_ShapeFactory->RemoveShape(id);
+    m_Circleids.erase(std::find (m_Circleids.begin(), m_Circleids.end(), id));
+    s_CircleShapeFactory->RemoveShape(id);
 }
 
 void LightComponent::OnEnd()
 {
     
-    for (long id : m_ids)
-        LightComponent::s_ShapeFactory->RemoveShape(id);
+    for (long id : m_Circleids)
+        LightComponent::s_CircleShapeFactory->RemoveShape(id);
+
+    for (long id : m_Quadids)
+        s_QuadShapeFactory->RemoveShape(id);
 
     Ref<RenderPipeline> pipeline = Renderer::GetPipeline("lighting");
     for (Ref<PolygonLightRendererable> p : m_polygonLights) {
@@ -160,20 +180,35 @@ void LightComponent::OnAttached(Ref<Entity> entity)
 {
 	entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
 		if (IsInitialized()) {
-			for (long id : m_ids) {
-				Vector3 pos = s_ShapeFactory->GetShapePosition(id);
+			for (long id : m_Circleids) {
+				Vector3 pos = s_CircleShapeFactory->GetShapePosition(id);
 				Vector3 nPos = pos - transData.position + transform->GetPosition();
 				if (pos != nPos)
-					s_ShapeFactory->SetPosition(id, nPos);
-				float rot = s_ShapeFactory->GetShapeRotation(id);
+                    s_CircleShapeFactory->SetPosition(id, nPos);
+				float rot = s_CircleShapeFactory->GetShapeRotation(id);
 				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
 				if (rot != nRot)
-					s_ShapeFactory->SetRotation(id, nRot);
-				Vector2 _scale = s_ShapeFactory->GetShapeScale(id);
+                    s_CircleShapeFactory->SetRotation(id, nRot);
+				Vector2 _scale = s_CircleShapeFactory->GetShapeScale(id);
 				Vector3 scale(_scale.x, _scale.y, 1);
 				Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
 				if (scale != nScale)
-					s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
+                    s_CircleShapeFactory->SetScale(id, { nScale.x, nScale.y });
+			}
+			for (long id : m_Quadids) {
+				Vector3 pos = s_QuadShapeFactory->GetShapePosition(id);
+				Vector3 nPos = pos - transData.position + transform->GetPosition();
+				if (pos != nPos)
+                    s_QuadShapeFactory->SetPosition(id, nPos);
+				float rot = s_QuadShapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
+				if (rot != nRot)
+                    s_QuadShapeFactory->SetRotation(id, nRot);
+				Vector2 _scale = s_QuadShapeFactory->GetShapeScale(id);
+				Vector3 scale(_scale.x, _scale.y, 1);
+				Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
+				if (scale != nScale)
+                    s_QuadShapeFactory->SetScale(id, { nScale.x, nScale.y });
 			}
 		}
 		});
@@ -190,8 +225,11 @@ void LightComponent::CreateGraphics() {
 }
 
 void LightComponent::ReloadGraphics() {
-    if (s_ShapeFactory) {
-        s_ShapeFactory->ReloadGraphics();
+    if (s_CircleShapeFactory) {
+        s_CircleShapeFactory->ReloadGraphics();
+    }
+    if (s_QuadShapeFactory) {
+        s_QuadShapeFactory->ReloadGraphics();
     }
 	for (const Ref<PolygonLightRendererable>& p : m_polygonLights) {
 		p->Reload();
@@ -199,9 +237,13 @@ void LightComponent::ReloadGraphics() {
 }
 
 void LightComponent::UnloadGraphics() {
-    if (s_ShapeFactory) {
-        s_ShapeFactory->UnloadGraphics();
+    if (s_CircleShapeFactory) {
+        s_CircleShapeFactory->UnloadGraphics();
     }
+
+	if (s_QuadShapeFactory) {
+        s_QuadShapeFactory->UnloadGraphics();
+	}
 
     for (const Ref<PolygonLightRendererable>& p : m_polygonLights) {
         p->Unload();
