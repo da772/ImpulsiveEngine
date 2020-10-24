@@ -16,8 +16,8 @@ protected:
 	Ref<SpriteAnimationComponent> animComp;
 	Ref<LightComponent> lightComp;
 
-	long id = 0;
-	long id2 = 0;
+	ShapeID id = 0;
+	ShapeID id2 = 0;
 
 	bool m_bsound = false;
 

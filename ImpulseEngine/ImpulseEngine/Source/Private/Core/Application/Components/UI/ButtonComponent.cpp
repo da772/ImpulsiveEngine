@@ -41,7 +41,7 @@ namespace GEngine {
 	void ButtonComponent::SetImageSubTexture(Ref<SubTexture2D> texture)
 	{
 		m_subTexture = texture;
-		if (m_ids[0] != -1) {
+		if (m_ids[0] != 0) {
 			s_ShapeFactory->SetSubTexture(m_ids[0], m_subTexture);
 		}
 	}
@@ -49,7 +49,7 @@ namespace GEngine {
 	void ButtonComponent::SetImageTexture(Ref<Texture2D> texture)
 	{
 		m_texture = texture;
-		if (m_ids[0] != -1) {
+		if (m_ids[0] != 0) {
 			s_ShapeFactory->SetTexture(m_ids[0], m_texture);
 		}
 	}
@@ -138,7 +138,7 @@ namespace GEngine {
 		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
 			if (IsInitialized()) {
 				for (int i = 0; i < m_debug; i++) {
-					long id = m_ids[i];
+					ShapeID id = m_ids[i];
 					Vector3 pos = s_ShapeFactory->GetShapePosition(id);
 					Vector3 nPos = pos - transData.position + transform->GetPosition();
 					if (pos != nPos)

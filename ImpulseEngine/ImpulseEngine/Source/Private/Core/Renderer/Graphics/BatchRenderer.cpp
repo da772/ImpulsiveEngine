@@ -51,6 +51,7 @@ namespace GEngine {
 
 	 void Batch::SetVertices(std::vector<float>& vertices, std::vector<int>& textures, int indexCount)
 	 {
+		 
          m_Vertices = std::vector<float>(std::move(vertices));
 		 m_TextureIds = std::vector<int>(std::move(textures));
 		 m_IndexCount = indexCount;
@@ -137,7 +138,7 @@ namespace GEngine {
 
 
 
-	 long BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
+	 const uint64_t BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 Setup();
 
@@ -154,7 +155,7 @@ namespace GEngine {
 		 return AddShape(data);
 	 }
 
-	 long BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
+	 const uint64_t BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 if (m_renderType == ERenderType::UI) {
 			 position.y = GEMath::MapRange(position.y, -1.f, 1.f, Application::GetSafeBottomUI() - 1.f, 1.f - Application::GetSafeTopUI());
@@ -170,24 +171,16 @@ namespace GEngine {
 
 	 }
 
-	 long BatchRenderer::AddShape(BatchObjectData& data)
+	 const uint64_t BatchRenderer::AddShape(BatchObjectData& data)
 	 {
 		 data.time = Time::GetEpochTimeNS();
-		 long id;
-
-		 if (m_reuseId.size() > 0) {
-			 id = m_reuseId.front();
-			 m_reuseId.pop();
-		 } else {
-			id = ++counter;
-		 }
-		 
+		 uint64_t id = data.time;
 
 		 m_SortedObjects.push_back({ id, data });
 
 
 		 if (m_Sort) {
-			 std::sort(m_SortedObjects.begin(), m_SortedObjects.end(), [](const std::pair<u32, BatchObjectData>& l, const std::pair<u32, BatchObjectData>& r) {
+			 std::sort(m_SortedObjects.begin(), m_SortedObjects.end(), [](const std::pair<u64, BatchObjectData>& l, const std::pair<u64, BatchObjectData>& r) {
 				 return l.second.position == r.second.position ? l.second.time < r.second.time : l.second.position.z < r.second.position.z;
 				 });
 		 }
@@ -197,9 +190,9 @@ namespace GEngine {
 		 return id;
 	 }
 
-	 void BatchRenderer::EditShape(long id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
+	 void BatchRenderer::EditShape(const uint64_t id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -227,10 +220,10 @@ namespace GEngine {
 		 }
 	 }
 
-	 void BatchRenderer::EditShape(long id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, 
+	 void BatchRenderer::EditShape(const uint64_t id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture,
 		 const glm::vec2& textureScale, float alphaChannel /*= 4*/)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -259,9 +252,9 @@ namespace GEngine {
 	 }
 
 
-	 void BatchRenderer::SetColor(long id, glm::vec4 color)
+	 void BatchRenderer::SetColor(const uint64_t id, glm::vec4 color)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -282,9 +275,9 @@ namespace GEngine {
 			 data->textureId, data->textureScale, data->subTexture == nullptr ? nullptr : data->subTexture->GetTexCoords(), data->alphaChannel);
 	 }
 
-	 void BatchRenderer::SetPosition(long id, glm::vec2 position)
+	 void BatchRenderer::SetPosition(const uint64_t id, glm::vec2 position)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -297,9 +290,9 @@ namespace GEngine {
 		 batch->RefreshVertices();
 	 }
 
-	 void BatchRenderer::SetZOrder(long id, float zOrder)
+	 void BatchRenderer::SetZOrder(const uint64_t id, float zOrder)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 		 float _zOrder = it->second.position.z;
@@ -308,9 +301,9 @@ namespace GEngine {
 		 ReCreateBatches();
 	 }
 
-	 void BatchRenderer::SetSubTexture(long id, Ref<SubTexture2D> texture)
+	 void BatchRenderer::SetSubTexture(const uint64_t id, Ref<SubTexture2D> texture)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -340,9 +333,9 @@ namespace GEngine {
 	 }
 
 
-	 void BatchRenderer::SetTexture(long id, Ref<Texture2D> texture)
+	 void BatchRenderer::SetTexture(const uint64_t id, Ref<Texture2D> texture)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -371,9 +364,9 @@ namespace GEngine {
 		 }
 	 }
 
-	 void BatchRenderer::SetRotation(long id, float rotation)
+	 void BatchRenderer::SetRotation(const uint64_t id, float rotation)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -386,9 +379,9 @@ namespace GEngine {
 		 batch->RefreshVertices();
 	 }
 
-	 void BatchRenderer::SetScale(long id, glm::vec2 scale)
+	 void BatchRenderer::SetScale(const uint64_t id, glm::vec2 scale)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
@@ -405,57 +398,47 @@ namespace GEngine {
 
 
 
-	 const GEngine::Vector3 BatchRenderer::GetShapePosition(long id)
+	 const GEngine::Vector3 BatchRenderer::GetShapePosition(const uint64_t id)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.position;
 	 }
 
-	 const GEngine::Ref<GEngine::Texture2D> BatchRenderer::GetShapeTexture(long id)
+	 const GEngine::Ref<GEngine::Texture2D> BatchRenderer::GetShapeTexture(const uint64_t id)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.texture;
 	 }
 
-	 const float BatchRenderer::GetShapeRotation(long id)
+	 const float BatchRenderer::GetShapeRotation(const uint64_t id)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.rotation;
 	 }
 
-	 const GEngine::Vector2 BatchRenderer::GetShapeScale(long id)
+	 const GEngine::Vector2 BatchRenderer::GetShapeScale(const uint64_t id)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.scale;
 	 }
 
-	 void BatchRenderer::RemoveShape(long id)
+	 void BatchRenderer::RemoveShape(const uint64_t id)
 	 {
-		 std::vector<std::pair<uint32_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u32, BatchObjectData>& e) {
-			 return e.first == (u32)id;
-			});
-
-		 if (it->first == counter)
-			 counter--;
-		 else if (m_SortedObjects.size() <= 0) {
-			 counter = 0;
-			 m_reuseId = std::queue<u32>();
-		 }
-		else
-			m_reuseId.push((u32)id);
-
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
 
 		 m_SortedObjects.erase(it);
 		 ReCreateBatches();
@@ -521,7 +504,7 @@ namespace GEngine {
 
 			 std::vector<int>::iterator it = std::find(textures.begin(), textures.end(), m_SortedObjects[i].second.texture->GetRendererID());
 			 if  (objectCount +1 < m_MaxShapes && (textures.size() < m_MaxTextures || it != textures.end())) {
-				 std::pair<uint32_t, BatchObjectData>& data = m_SortedObjects[i];
+				 std::pair<uint64_t, BatchObjectData>& data = m_SortedObjects[i];
 				 if (objectCount == 0) {
 					 batch->SetPriority(floor(data.second.position.z));
 					 batch->SetTime(Time::GetEpochTimeNS());

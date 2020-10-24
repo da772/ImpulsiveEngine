@@ -116,6 +116,9 @@ namespace GEngine {
     using Vector4 = glm::vec4;
     using Mat4 = glm::mat4;
 
+	using ShapeID = uint64_t;
+	using ColliderID = uint64_t;
+
 
 }
 

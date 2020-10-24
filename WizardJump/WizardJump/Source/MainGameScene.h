@@ -4,13 +4,12 @@
 #include "Game/GameManager.hpp"
 #include "Character/CharacterEntity.h"
 #include "Environment/BackgroundEntity.hpp"
-#include "Environment/GroundEntity.hpp"
+#include "Environment/ColliderEntity.hpp"
 #include "Environment/WallEntity.hpp"
 #include "Environment/PlatformEntity.hpp"
 #include "Environment/Objects/FireEntity.hpp"
 #include "Character/CharacterController.hpp"
 #include "Generation/ProceduralPlatformGeneration.hpp"
-#include "Environment/BackgroundTiledEntity.hpp"
 
 #include "Environment/SpriteEntity.hpp"
 
@@ -233,20 +232,35 @@ public:
 
 
 		Ref<BackgroundEntity> bg = CreateGameObject<BackgroundEntity>();
-
 		AddEntity(bg);
+
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(0,-7.9, 3), glm::vec2(25, 1), 0.f,"ground"));
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(-11.6f, -5, 3), glm::vec2(1.f, 25),.5f, "wall"));
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(2.f, 7, 3), glm::vec2(1.f, 25),.5f, "wall2"));
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(11.25f, 5, 3), glm::vec2(1.f, 25),.5f, "wall3"));
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(6.5f, 8.0, 3), glm::vec2(9.f, 1), .5f, "wall4"));
+
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(10.f, -4.5f, 3), glm::vec2(2.f, .25f), .0f, "ground"));
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(6.5f, -1.f, 3), glm::vec2(2.f, .25f), .0f, "ground"));
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(10.f, 2.f, 3), glm::vec2(2.f, .25f), .0f, "ground"));
+		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(3.5f, 4.f, 3), glm::vec2(2.f, .25f), .0f, "ground"));
+
 		bg->AddParalaxBackground("back", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .7, -5, { 0, -5});
+		bg->AddParalaxBackground("backL", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .7, -5, { -10, -5 });
+		bg->AddParalaxBackground("backR", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .7, -5, { 10, -5 });
 		bg->AddParalaxBackground("middle", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .5f, -4, { 0,-5 });
+		bg->AddParalaxBackground("middleL", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .5f, -4, { -10,-5 });
+		bg->AddParalaxBackground("middleR", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .5f, -4, { 10,-5 });
 		bg->AddParalaxBackground("front", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { 0,-5 });
-		bg->AddParalaxBackground("frontRight", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { 10, -5 });
-		bg->AddParalaxBackground("frontLeft", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { -10, -5 });
+		bg->AddParalaxBackground("frontL", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { -10,-5 });
+		bg->AddParalaxBackground("frontR", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Wrap_ClampToEdge), { 20,20 }, .3f, -3, { 10,-5 });
 
 		Ref<LightComponent> lc = CreateGameObject<LightComponent>();
 		bg->AddComponent(lc);
-		lc->AddQuadLight({ -98,0 }, 0, { 200,200 }, { 1,1,1,300.f });
-		lc->AddQuadLight({  111,0 }, 0, { 200,200 }, { 1,1,1,300.f });
-		lc->AddQuadLight({ 0,107 }, 0, { 200,200 }, { 1,1,1,300.f });
-		lc->AddQuadLight({ 0,-108 }, 0, { 200,200 }, { 1,1,1,300.f });
+		lc->AddQuadLight({ -98,0 }, 0, { 200,200 }, { 0,0,0,300.f });
+		lc->AddQuadLight({  111,0 }, 0, { 200,200 }, { 0,0,0,300.f });
+		lc->AddQuadLight({ 0,107 }, 0, { 200,200 }, { 0,0,0,300.f });
+		lc->AddQuadLight({ 0,-108 }, 0, { 200,200 }, { 0,0,0,300.f });
 		
 		AddEntity(CreateGameObject<FireEntity>(glm::vec3(5,6,6)));
 

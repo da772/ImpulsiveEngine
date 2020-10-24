@@ -61,7 +61,7 @@ void PlatformEntity::OnBegin()
 
 	*/
 
-
+	/*
 	m_colliderWall = CreateGameObject<QuadColliderComponent>(false, true,bottomPos, bottomScale, rot, 0.f);
 	m_colliderWall->SetTag("wall");
 	AddComponent(m_colliderWall);
@@ -72,7 +72,7 @@ void PlatformEntity::OnBegin()
 	m_colliderFloor = CreateGameObject<QuadColliderComponent>(false, true, topPos, topScale, rot, 0.f);
 	m_colliderFloor->SetTag("ground");
 	AddComponent(m_colliderFloor);
-
+	*/
 
 }
 

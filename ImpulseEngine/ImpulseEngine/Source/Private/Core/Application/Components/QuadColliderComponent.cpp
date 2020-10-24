@@ -16,9 +16,9 @@
 
 namespace GEngine {
 
-	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const glm::vec2& position, const glm::vec2& scale, const float rotation, const float mass) : Component(),
-		m_position(position), m_scale(scale), m_rotation(rotation),
-		m_dynamic(dynamic), m_mass(mass), m_physics(physics)
+	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const glm::vec2& position) : Component(),
+		m_position(position),
+		m_dynamic(dynamic),m_physics(physics)
 	{
 		if (dynamic)
 			bUpdates = true;
@@ -27,8 +27,6 @@ namespace GEngine {
 
 	QuadColliderComponent::~QuadColliderComponent()
 	{
-		m_endCollide = nullptr;
-		m_onCollide = nullptr;
 		m_body = nullptr;
 	}
 
@@ -46,23 +44,43 @@ namespace GEngine {
 		info.fixedRotation = true;
 		m_body = Physics::CreateBody(info);
 		m_body->SetComponent(std::static_pointer_cast<Component>(self.lock()));
-		m_body->SetSensor(!m_physics);
-		m_body->SetGroupIndex(m_groupIndex);
-		m_body->SetCategory(m_category);
-		m_body->SetMask(m_mask);
-		m_body->SetQuad(m_worldScale, m_position, m_mass, m_rotation);
 
 		
-		m_body->SetOnCollideStartFunction([this](Ref < PhysicsBody> c) {
-			if (m_onCollide != nullptr) {
-				m_onCollide(static_pointer_cast<QuadColliderComponent>(c->GetComponent()));
-			}
-		});
-		m_body->SetOnCollideEndFunction([this](Ref < PhysicsBody> c) {
-			if (m_endCollide != nullptr) {
-				m_endCollide(static_pointer_cast<QuadColliderComponent>(c->GetComponent()));
-			}
-			});
+
+		
+	}
+
+
+	const GEngine::ColliderID QuadColliderComponent::CreateQuad(const glm::vec2& position, const glm::vec2& scale, float mass, float rotation, const std::string& tag)
+	{
+		const ColliderID id = m_body->CreateQuad(scale, position, mass, rotation, tag);
+		const FColliderQuad quad = { id, position, scale, mass, rotation };
+		m_body->SetSensor(id, !m_physics);
+		m_body->SetGroupIndex(id, m_groupIndex);
+		m_body->SetCategory(id, m_category);
+		m_body->SetMask(id, m_mask);
+		m_quads[id] = quad;
+
+		return id;
+	}
+
+	const GEngine::ColliderID QuadColliderComponent::CreateCircle(const glm::vec2& position, const glm::vec2& scale, float mass, float rotation /*= 0*/, const std::string& tag /*= ""*/)
+	{
+		const ColliderID id = m_body->CreateCircle(scale, position, mass, rotation, tag);
+		const FColliderQuad quad = { id, position, scale, mass, rotation };
+		m_body->SetSensor(id, !m_physics);
+		m_body->SetGroupIndex(id, m_groupIndex);
+		m_body->SetCategory(id, m_category);
+		m_body->SetMask(id, m_mask);
+		m_quads[id] = quad;
+
+		return id;
+	}
+
+	void QuadColliderComponent::DestroyQuad(const ColliderID id)
+	{
+		m_body->DestroyQuad(id);
+		m_quads.erase(id);
 	}
 
 	void QuadColliderComponent::OnEnd()
@@ -86,8 +104,6 @@ namespace GEngine {
 	{
 		Ref<Entity> e = entity.lock();
 		m_position = glm::vec2(x + e->GetEntityPosition().x, y + e->GetEntityPosition().y);
-		//m_collider->SetPosition(glm::vec3(m_position.x, m_position.y, 1));
-		//m_body->SetPosition(glm::vec2(x, y));
 	}
 
 	void QuadColliderComponent::SetScale(const float x, const float y)
@@ -97,6 +113,8 @@ namespace GEngine {
 		
 		//m_collider->SetScale(glm::vec3(m_scale.x, m_scale.y,1));
 	}
+
+
 
 	const glm::vec2 QuadColliderComponent::GetPosition()
 	{
@@ -137,22 +155,27 @@ namespace GEngine {
 		return make_unique<ScriptVector2>(GetScale());
 	}
 
-	void QuadColliderComponent::SetBounce(const float bounce)
+	void QuadColliderComponent::SetBounce(const ColliderID id,const float bounce)
 	{
 		if (m_physics)
-			m_body->SetBounce(bounce);
+			m_body->SetBounce(id, bounce);
 	}
 
-	const float QuadColliderComponent::GetBounce()
+	const float QuadColliderComponent::GetBounce(const ColliderID id)
 	{
 		if (m_physics)
-			return m_body->GetBounce();
+			return m_body->GetBounce(id);
 		return 0;
 	}
 
 	void QuadColliderComponent::SetDynamic(bool b)
 	{
 		m_dynamic = b;
+	}
+
+	const GEngine::FColliderQuad& QuadColliderComponent::GetQuadCollider(const ColliderID id)
+	{
+		return m_quads[id];
 	}
 
 	void QuadColliderComponent::IncreaseLinearVelocity(float x, float y)
@@ -185,15 +208,15 @@ namespace GEngine {
 		m_body->SetLinearVelocity({ x, y });
 	}
 
-	void QuadColliderComponent::SetCollisionLayers(const uint16_t category, const uint16_t mask, const int16_t index)
+	void QuadColliderComponent::SetCollisionLayers(const ColliderID id, const uint16_t category, const uint16_t mask, const int16_t index)
 	{
 		m_mask = mask;
 		m_category = category;
 		m_groupIndex = index;
 		if (m_body) {
-			m_body->SetCategory(category);
-			m_body->SetMask(mask);
-			m_body->SetGroupIndex(index);
+			m_body->SetCategory(id, category);
+			m_body->SetMask(id, mask);
+			m_body->SetGroupIndex(id, index);
 		}
 	}
 
@@ -202,41 +225,16 @@ namespace GEngine {
 		m_body->SetAwake(true);
 	}
 
-	void QuadColliderComponent::SetOnCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc)
+	void QuadColliderComponent::SetOnCollideFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> onCollideFunc)
 	{
-		m_onCollide = onCollideFunc;
+		m_body->SetOnCollideStartFunction(id, onCollideFunc);
 	}
 
-	void QuadColliderComponent::SetOnCollideFunction_Script(Ref<ScriptObject> onColliderFunc)
+	void QuadColliderComponent::SetEndCollideFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> onCollideFunc)
 	{
-		SetOnCollideFunction([onColliderFunc](Ref<QuadColliderComponent> collider) { onColliderFunc->CallSelf(collider); if (ScriptObject::HasError()) { GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(onColliderFunc->GetPath())); }  });
+		m_body->SetOnCollideEndFunction(id, onCollideFunc);
 	}
 
-	void QuadColliderComponent::SetEndCollideFunction(std::function<void(Ref<QuadColliderComponent>)> onCollideFunc)
-	{
-		m_endCollide = onCollideFunc;
-	}
-
-	void QuadColliderComponent::SetEndCollideFunction_Script(Ref<ScriptObject> onCollideFunc)
-	{
-		SetEndCollideFunction([onCollideFunc](Ref<QuadColliderComponent> collider) {
-			onCollideFunc->CallSelf(collider);
-			if (ScriptObject::HasError())
-			{
-				GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(onCollideFunc->GetPath()));
-			}
-			});
-	}
-
-	void QuadColliderComponent::RemoveOnCollideFunction()
-	{
-		m_onCollide = nullptr;
-	}
-
-	void QuadColliderComponent::RemoveEndCollideFunction()
-	{
-		m_endCollide = nullptr;
-	}
 
 	void QuadColliderComponent::OnAttached(Ref<Entity> entity)
 	{

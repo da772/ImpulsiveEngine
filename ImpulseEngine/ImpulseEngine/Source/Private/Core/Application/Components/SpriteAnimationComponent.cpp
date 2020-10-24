@@ -99,7 +99,7 @@ namespace GEngine {
 
 	void SpriteAnimationComponent::OnUpdate(Timestep timestep)
 	{
-		long long time = Time::GetEpochTimeMS();
+		uint64_t time = Time::GetEpochTimeMS();
 
 		//if (m_startTime == -1)
 		//	m_startTime = time;

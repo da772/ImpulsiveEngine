@@ -20,23 +20,23 @@ namespace GEngine {
 		UIComponent();
 		UIComponent(Ref<Shader> shader);
 		virtual ~UIComponent();
-		const long CreateQuad(const  Vector3& _pos, const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, const glm::vec2& textureScale = glm::vec2(1, 1), const float alphaChannel = 4);
+		const ShapeID CreateQuad(const  Vector3& _pos, const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, const glm::vec2& textureScale = glm::vec2(1, 1), const float alphaChannel = 4);
 
-		const long CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture );
+		const ShapeID CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture );
 		
 
-		const long CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const glm::vec2& textureScale = glm::vec2(1,1), const float alphaChannel = 4);
+		const ShapeID CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const glm::vec2& textureScale = glm::vec2(1,1), const float alphaChannel = 4);
 		const std::string CreateText(const std::string& string, Ref<Font> font, const Vector3& pos, const Vector3& scale, const Vector4& color);
 		void RemoveText(const std::string& id);
 
-		void SetPosition(const long id, const glm::vec2& position);
-		void SetPositionScript(const long id, Ref<ScriptVector2> position);
-		void SetZOrder(const long id, const float zOrder);
+		void SetPosition(const ShapeID id, const glm::vec2& position);
+		void SetPositionScript(const ShapeID id, Ref<ScriptVector2> position);
+		void SetZOrder(const ShapeID id, const float zOrder);
 
 
-		void SetColor(const long id, const glm::vec4& color);
+		void SetColor(const ShapeID id, const glm::vec4& color);
 
-		void Remove(const long id);
+		void Remove(const ShapeID id);
 		void Remove(const std::string& hash);
 		void ClearQuads();
 
@@ -52,14 +52,14 @@ namespace GEngine {
 
 		static Ref<BatchRenderer> s_ShapeFactory;
 	private:
-		static void RemoveQuads(u32 id);
+		static void RemoveQuads(ShapeID id);
 		
 
 		uint32_t m_textCounter = 0;
 
 		Ref<Shader> m_Shader;
-		std::unordered_map<std::string, std::vector<long>> m_text;
-		std::vector<long> m_ids;
+		std::unordered_map<std::string, std::vector<ShapeID>> m_text;
+		std::vector<ShapeID> m_ids;
 
 
 	};

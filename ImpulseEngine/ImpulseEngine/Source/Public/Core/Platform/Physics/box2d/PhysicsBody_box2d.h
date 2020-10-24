@@ -30,26 +30,34 @@ namespace GEngine {
 		virtual void SetAwake(bool b) override;
 
 
-		virtual void SetMask(const uint16_t bits) override;
-		virtual void SetCategory(const uint16_t bits) override;
-		virtual void SetGroupIndex(const int16_t index) override;
+		virtual void SetMask(const ColliderID id, uint16_t bits) override;
+		virtual void SetCategory(const ColliderID id, const uint16_t bits) override;
+		virtual void SetGroupIndex(const ColliderID id, const int16_t index) override;
 
 
-		virtual void SetSensor(const bool b) override;
+		virtual void SetSensor(const ColliderID id, const bool b) override;
 
-		virtual void SetBounce(const float f) override;
+		virtual void SetBounce(const ColliderID id, const float f) override;
 
 		const float GetAngularVelocity() override;
 		const glm::vec2& GetPosition() override;
 		const float GetRotation() override;
 		const glm::vec2& GetLinearVelocity() override;
-		const float virtual GetBounce() override;
+		const float virtual GetBounce(const ColliderID id) override;
 
-		virtual void SetQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0) override;
+		virtual const ColliderID CreateQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0, const std::string& tag = "") override;
+		virtual const ColliderID CreateCircle(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0, const std::string& tag = "") override;
+		virtual void DestroyQuad(const ColliderID) override;
+
+		virtual void SetOnCollideStartFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) override;
+		virtual void SetOnCollideEndFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) override;
+
 
 	protected:
 		b2Body* m_body = nullptr;
-		b2Fixture* m_fixture = nullptr;
+
+		std::unordered_map<ColliderID, b2Fixture*> m_fixtures;
+		std::unordered_map<ColliderID, PhysicsParent> m_fixtureData;
 
 
 

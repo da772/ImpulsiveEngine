@@ -16,9 +16,23 @@ namespace GEngine {
 	};
 
 
+
+	class PhysicsCollision {
+	public:
+		PhysicsCollision(Ref<PhysicsBody> b, const std::string& t) : body(b), tag(t) {};
+		virtual ~PhysicsCollision() {};
+		Ref<PhysicsBody> body;
+		std::string tag;
+	};
+
 	struct PhysicsParent {
 		Weak<PhysicsBody> parent;
+		std::function<void(Ref<PhysicsCollision>)> onStartCollide = nullptr;
+		std::function<void(Ref<PhysicsCollision>)> onEndCollide = nullptr;
+		std::string tag;
 	};
+
+
 
 
 	struct PhysicsInfo {

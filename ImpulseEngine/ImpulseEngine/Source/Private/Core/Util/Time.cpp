@@ -5,17 +5,17 @@
 
 namespace GEngine {
 
-	long long Time::GetEpochTimeNS()
+	const uint64_t Time::GetEpochTimeNS()
 	{
-		return  std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();;
+		return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();;
 	}
 
-	long long Time::GetEpochTimeMS()
+	const uint64_t Time::GetEpochTimeMS()
 	{
 		return  std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();;
 	}
 
-	double Time::GetEpochTimeSec()
+	const uint64_t  Time::GetEpochTimeSec()
 	{
 		return  std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count() /1e9f;
 	}

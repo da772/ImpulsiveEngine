@@ -39,24 +39,24 @@ public:
 	LightComponent();
 	virtual ~LightComponent();
     
-    long AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
-    long AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
-    void EditCircleColor(long id, const glm::vec4& color);
-    void EditCircleSize(long id, const glm::vec2& size);
+    const ShapeID AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
+    const ShapeID AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
+    void EditCircleColor(const ShapeID id, const glm::vec4& color);
+    void EditCircleSize(const ShapeID id, const glm::vec2& size);
 
-    long AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
+    const ShapeID AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
 
-    void RemoveQuadLight(long id);
+    void RemoveQuadLight(const ShapeID id);
 
-    void RemovePolygonLight(long id);
-    void RemoveCircleLight(long id);
+    void RemovePolygonLight(const ShapeID id);
+    void RemoveCircleLight(const ShapeID id);
 
 	virtual void OnAttached(Ref<Entity> entity) override;
 	virtual void DeAttached(Ref<Entity> entity) override;
 
 protected:
-    std::vector<long> m_Circleids;
-    std::vector<long> m_Quadids;
+    std::vector<ShapeID> m_Circleids;
+    std::vector<ShapeID> m_Quadids;
 	void OnBegin() override;
 	void OnEnd() override;
 	void OnUpdate(Timestep timestep) override;
@@ -68,6 +68,6 @@ protected:
     std::vector<Ref<PolygonLightRendererable>> m_polygonLights;
     void CreateGraphics();
     uint32_t m_polygonLightCounter = 0;
-    std::unordered_map<long, Weak<PolygonLightRendererable>> m_polygonLightMap;
+    std::unordered_map<ShapeID, Weak<PolygonLightRendererable>> m_polygonLightMap;
   
 };

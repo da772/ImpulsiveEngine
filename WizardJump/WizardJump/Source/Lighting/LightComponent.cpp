@@ -91,49 +91,49 @@ void LightComponent::OnBegin()
     
 }
 
-long LightComponent::AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color) {
+const ShapeID LightComponent::AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color) {
     Ref<Texture2D> t = nullptr;
-    long id = LightComponent::s_CircleShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
+    const ShapeID id = LightComponent::s_CircleShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
     m_Circleids.push_back(id);
     return id;
 }
 
-long LightComponent::AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color)
+const ShapeID LightComponent::AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color)
 {
-    long id = s_QuadShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y + position.y, intensity
+    const ShapeID id = s_QuadShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y + position.y, intensity
         }, 0, scale, color);
     m_Quadids.push_back(id);
     return id;
 }
 
-void LightComponent::EditCircleColor(long id, const glm::vec4& color)
+void LightComponent::EditCircleColor(const ShapeID id, const glm::vec4& color)
 {
     s_CircleShapeFactory->SetColor(id, color);
 }
 
-void LightComponent::EditCircleSize(long id, const glm::vec2& size)
+void LightComponent::EditCircleSize(const ShapeID id, const glm::vec2& size)
 {
     s_CircleShapeFactory->SetScale(id, size);
 }
 
-long LightComponent::AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color)
+const ShapeID LightComponent::AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color)
 {
     Ref<PolygonLightRendererable> l = make_shared<PolygonLightRendererable>(GetEntityPosition()+position, vertices, indices, layout, color);
     m_polygonLights.push_back(l);
 
     Renderer::GetPipeline("lighting")->Add(l);
-    long id = ++m_polygonLightCounter;
+    const ShapeID id = ++m_polygonLightCounter;
     m_polygonLightMap[id] = l;
     return id;
 }
 
-void LightComponent::RemoveQuadLight(long id)
+void LightComponent::RemoveQuadLight(const ShapeID id)
 {
     m_Quadids.erase(std::find(m_Quadids.begin(), m_Quadids.end(), id));
     s_QuadShapeFactory->RemoveShape(id);
 }
 
-void LightComponent::RemovePolygonLight(long id)
+void LightComponent::RemovePolygonLight(const ShapeID id)
 {
     Ref<PolygonLightRendererable> l = m_polygonLightMap[id].lock();
     m_polygonLightMap.erase(id);
@@ -146,7 +146,7 @@ void LightComponent::RemovePolygonLight(long id)
         m_polygonLightCounter = 0;
 }
 
-void LightComponent::RemoveCircleLight(long id)
+void LightComponent::RemoveCircleLight(const ShapeID id)
 {
     m_Circleids.erase(std::find (m_Circleids.begin(), m_Circleids.end(), id));
     s_CircleShapeFactory->RemoveShape(id);
@@ -155,10 +155,10 @@ void LightComponent::RemoveCircleLight(long id)
 void LightComponent::OnEnd()
 {
     
-    for (long id : m_Circleids)
+    for (const ShapeID id : m_Circleids)
         LightComponent::s_CircleShapeFactory->RemoveShape(id);
 
-    for (long id : m_Quadids)
+    for (const ShapeID id : m_Quadids)
         s_QuadShapeFactory->RemoveShape(id);
 
     Ref<RenderPipeline> pipeline = Renderer::GetPipeline("lighting");
@@ -180,7 +180,7 @@ void LightComponent::OnAttached(Ref<Entity> entity)
 {
 	entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
 		if (IsInitialized()) {
-			for (long id : m_Circleids) {
+			for (const ShapeID id : m_Circleids) {
 				Vector3 pos = s_CircleShapeFactory->GetShapePosition(id);
 				Vector3 nPos = pos - transData.position + transform->GetPosition();
 				if (pos != nPos)
@@ -195,7 +195,7 @@ void LightComponent::OnAttached(Ref<Entity> entity)
 				if (scale != nScale)
                     s_CircleShapeFactory->SetScale(id, { nScale.x, nScale.y });
 			}
-			for (long id : m_Quadids) {
+			for (const ShapeID id : m_Quadids) {
 				Vector3 pos = s_QuadShapeFactory->GetShapePosition(id);
 				Vector3 nPos = pos - transData.position + transform->GetPosition();
 				if (pos != nPos)

@@ -2,7 +2,7 @@
 
 void BackgroundEntity::AddParalaxBackground(const std::string& name, Ref<Texture2D> texture, const glm::vec2& scale, float speed, float zOrder, const glm::vec2& offset)
 {
-	m_backgrounds[name] = {bInit ? m_backgroundSprite->CreateQuad({ offset.x, offset.y,zOrder }, 0, { scale.x, scale.y, 1 }, { 1,1,1,1 }, texture) : -1, texture, speed, scale, zOrder, offset , bInit };
+	m_backgrounds[name] = { bInit ? m_backgroundSprite->CreateQuad({ offset.x, offset.y,zOrder }, 0, { scale.x, scale.y, 1 }, { 1,1,1,1 }, texture) : -1, texture, speed, scale, zOrder, offset , {0,0}, bInit };
 }
 
 void BackgroundEntity::RemoveParalaxBackground(const std::string& name) {
@@ -37,14 +37,19 @@ void BackgroundEntity::OnEnd()
 
 void BackgroundEntity::OnUpdate(Timestep timestep)
 {
-	const glm::vec3& camPos = m_camera->GetPosition();
-	for (const std::pair<std::string, FParalaxBackground>& p : m_backgrounds) {
-		float temp = camPos.x * (1.f - p.second.speed);
-		float dist = camPos.x* p.second.speed;
-		m_backgroundSprite->SetPosition(p.second.id, { p.second.offset.x + dist,p.second.offset.y});
 
-		if (temp > p.second.offset.x + p.second.scale.x/2.f) m_backgrounds[p.first].offset.x += p.second.scale.x/2.f;
-		else if (temp < p.second.offset.x - p.second.scale.x/2.f) m_backgrounds[p.first].offset.x -= p.second.scale.x/2.f;
+	for (const std::pair<std::string, FParalaxBackground>& p : m_backgrounds) {
+		
+		float dist = m_camera->GetPosition().x* p.second.speed;
+		float xPos = p.second.pos.x + p.second.offset.x + dist;
+		m_backgroundSprite->SetPosition(p.second.id, { xPos,p.second.offset.y});
+
+		if (m_camera->GetPosition().x > xPos + p.second.scale.x) {
+			m_backgrounds[p.first].offset.x += p.second.scale.x*2;
+		}
+		else if (m_camera->GetPosition().x < xPos - (p.second.scale.x)) {
+			m_backgrounds[p.first].offset.x -= p.second.scale.x*2;
+		}
 
 	}
 }

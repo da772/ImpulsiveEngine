@@ -44,29 +44,30 @@ protected:
 		glm::vec2 pos = glm::vec2(0, -.05);
 		glm::vec2 scale = glm::vec2(.4f, 1.65f);
 
-		glm::vec2 groundPos = glm::vec2(0, -.75f);
-		glm::vec2 groundScale = glm::vec2(.4f, .3f);
-		m_quadCollider = CreateGameObject<QuadColliderComponent>(true, true, pos, scale, 0.f, 1.f);
-		m_groundCollider = CreateGameObject<QuadColliderComponent>(true, false, groundPos, groundScale, 0.f, 1.f);
+		glm::vec2 groundPos = glm::vec2(0, -.85f);
+		glm::vec2 groundScale = glm::vec2(.4f, .1f);
+		m_quadCollider = CreateGameObject<QuadColliderComponent>(true, true, pos);
+		m_groundCollider = CreateGameObject<QuadColliderComponent>(true, false, glm::vec2(0,0));
 
-		m_groundCollider->SetOnCollideFunction([this](Ref<QuadColliderComponent> other) {
-			GE_CORE_DEBUG("COLLISION: {0}", other->GetTag());
-			if (other->GetTag() == "ground") {
+		
+		GetEntity()->AddComponent(m_quadCollider);
+		GetEntity()->AddComponent(m_groundCollider);
+		ColliderID id = m_quadCollider->CreateQuad({ 0,0 }, scale, 1, 0, "characterBody");
+		ColliderID id1 = m_groundCollider->CreateQuad(groundPos, groundScale, 1, 0, "characterBodyGround");
+
+		m_groundCollider->SetOnCollideFunction(id1, [this](Ref<PhysicsCollision> other) {
+			GE_CORE_DEBUG("COLLISION: {0}", other->tag);
+			if (other->tag == "ground") {
 				groundedCount++;;
 			}
 			});
 
-		m_groundCollider->SetEndCollideFunction([this](Ref<QuadColliderComponent> other) {
-			GE_CORE_DEBUG("COLLISION End: {0}", other->GetTag());
-			if (other->GetTag() == "ground") {
+		m_groundCollider->SetEndCollideFunction(id1, [this](Ref<PhysicsCollision> other) {
+			GE_CORE_DEBUG("COLLISION End: {0}", other->tag);
+			if (other->tag == "ground") {
 				groundedCount--;;
 			}
 			});
-		
-		GetEntity()->AddComponent(m_quadCollider);
-		GetEntity()->AddComponent(m_groundCollider);
-
-
 
 		if (debug) {
 			m_debugSprite = CreateGameObject<SpriteComponent>();

@@ -6,12 +6,13 @@ using namespace GEngine;
 
 struct FParalaxBackground {
 
-	long id;
+	ShapeID id;
 	Weak<Texture2D> texture;
 	float speed;
 	glm::vec2 scale;
 	float zOrder;
 	glm::vec2 offset = glm::vec2(0, 0);
+	glm::vec2 pos = glm::vec2(0, 0);
 	bool bInit = false;
 };
 

@@ -5,10 +5,12 @@
 #include "Public/Core/Platform/Physics/box2d/PhysicsContext_box2d.h"
 #endif
 
+#include "Public/Core/Util/Time.h"
+
 namespace GEngine {
 
 	Ref<PhysicsContext> Physics::m_context;
-	long long Physics::m_lastUpdate;
+	uint64_t Physics::m_lastUpdate;
 
 	void Physics::Initalize()
 	{
@@ -69,6 +71,14 @@ namespace GEngine {
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		m_context->Simulate(dt);
+		/*uint64_t ct = Time::GetEpochTimeMS();
+		if (ct - m_lastUpdate >= 16) {
+		
+			m_lastUpdate = Time::GetEpochTimeMS();
+		}
+		*/
+
+		
 	}
 
 	glm::vec2 Physics::GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos)

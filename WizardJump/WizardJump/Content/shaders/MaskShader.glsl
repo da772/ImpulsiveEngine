@@ -28,7 +28,7 @@ void main() {
 	vec4 color = texture(u_Texture,v_TexCoord);
     vec4 mask  = texture(u_Texture_Mask,v_TexCoord);
 	float alpha = color.w;
-	if (mask.a >= .990) {
+	if (mask.w >= .990) {
 		FragColor = vec4(0.0,0.0,0.0,0.0);
 		return;
 	}

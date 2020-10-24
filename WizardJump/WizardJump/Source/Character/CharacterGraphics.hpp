@@ -242,9 +242,9 @@ public:
 
 protected:
 
-	long directionIndicator = -1;
+	ShapeID directionIndicator = -1;
 	float indicatorDirection = 0;
-	long powerIndicator = -1;
+	ShapeID powerIndicator = -1;
 	glm::vec3 powerIndicatorPos = glm::vec3(.45f, .45f, 5.f);
 	glm::vec3 powerIndicatorScale = glm::vec3(.5f, .5f, 1.f);
 	glm::vec4 powerIndicatorColor = glm::vec4(1, 1, 1, 1.f);
@@ -294,6 +294,6 @@ protected:
 
 	Ref<SpriteAnimationComponent> m_animationComp;
 	Ref<SubTexture2D> m_characterSpriteSheet;
-	long quad = -1;
+	ShapeID quad = -1;
 	
 };

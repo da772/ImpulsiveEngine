@@ -4,9 +4,9 @@ namespace GEngine {
 
 	class Time {
 	public:		
-		static long long GetEpochTimeNS();
-		static long long GetEpochTimeMS();
-		static double GetEpochTimeSec();
+		static const uint64_t GetEpochTimeMS();
+		static const uint64_t GetEpochTimeNS();
+		static const uint64_t  GetEpochTimeSec();
 	};
 	
 

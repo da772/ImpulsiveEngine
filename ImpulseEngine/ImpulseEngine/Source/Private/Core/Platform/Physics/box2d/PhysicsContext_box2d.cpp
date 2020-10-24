@@ -27,24 +27,26 @@ namespace GEngine {
 				Ref<PhysicsBody> c1 = (p1)->parent.lock();
 				Ref<PhysicsBody> c2 = (p2)->parent.lock();
 				if (c1 && c2) {
-					c1->CollideStart(c2);
-					c2->CollideStart(c1);
+					if (p1->onStartCollide)
+						p1->onStartCollide(make_shared<PhysicsCollision>( c2, p2->tag ));
+					if (p2->onStartCollide)
+						p2->onStartCollide(make_shared<PhysicsCollision>(c1, p1->tag));
 				}
 			}
 			
 		}
 
 		void EndContact(b2Contact* contact) {
-
-			
 			PhysicsParent* p1 = (PhysicsParent*)(contact->GetFixtureA()->GetUserData());
 			PhysicsParent* p2 = (PhysicsParent*)(contact->GetFixtureB()->GetUserData());
 			if (p1 && p2) {
 				Ref<PhysicsBody> c1 = (p1)->parent.lock();
 				Ref<PhysicsBody> c2 = (p2)->parent.lock();
 				if (c1 && c2) {
-					c1->CollideEnd(c2);
-					c2->CollideEnd(c1);
+					if (p1->onEndCollide)
+						p1->onEndCollide(make_shared<PhysicsCollision>(c2, p2->tag));
+					if (p2->onEndCollide)
+						p2->onEndCollide(make_shared<PhysicsCollision>(c1, p1->tag));
 				}
 			}
 			

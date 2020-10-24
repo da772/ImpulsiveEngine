@@ -7,13 +7,16 @@
 #include <box2d/b2_body.h>
 #include <box2d/b2_world.h>
 #include <box2d/b2_polygon_shape.h>
+#include <box2d/b2_circle_shape.h>
 #include <box2d/b2_fixture.h>
+
+#include "Public/Core/Util/Time.h"
 
 
 
 namespace GEngine {
 
-	PhysicsBody_box2d::PhysicsBody_box2d(void* nativeBody) : m_fixture(nullptr), m_body((b2Body*)nativeBody)
+	PhysicsBody_box2d::PhysicsBody_box2d(void* nativeBody) : m_body((b2Body*)nativeBody)
 	{
 		const b2Vec2& pos = m_body->GetPosition();
 		m_position = { pos.x* GE_PHYSICS_SCALAR, pos.y* GE_PHYSICS_SCALAR };
@@ -25,7 +28,9 @@ namespace GEngine {
 	{
 		b2World* world = (b2World*)Physics::GetWorld();
 		if (world != nullptr) {
-			m_body->DestroyFixture(m_fixture);
+			for (const std::pair<ColliderID, b2Fixture*>& f : m_fixtures) {
+				m_body->DestroyFixture(f.second);
+			}
 			world->DestroyBody(m_body);
 		}
 	}
@@ -58,9 +63,6 @@ namespace GEngine {
 	{
 		PhysicsBody::SetAngularDamping(angularDamping);
 		m_body->SetAngularDamping(angularDamping);
-
-		
-
 	}
 
 	void PhysicsBody_box2d::SetEnabled(const bool b)
@@ -105,29 +107,71 @@ namespace GEngine {
 		return m_linearVelocity;
 	}
 
-	const float PhysicsBody_box2d::GetBounce()
+	const float PhysicsBody_box2d::GetBounce(const ColliderID id)
 	{
-		return m_fixture->GetRestitution();
+		return m_fixtures[id]->GetRestitution();
 	}
 
 #define PI 3.14159265358979323846
 
-	void PhysicsBody_box2d::SetQuad(const glm::vec2& size, const glm::vec2& offset, float mass, float rotation)
+	const ColliderID PhysicsBody_box2d::CreateQuad(const glm::vec2& size, const glm::vec2& offset, float mass, float rotation, const std::string& tag)
 	{
-		GE_CORE_ASSERT(!m_fixture, "FIXTURE ALREADY CREATED");
+		const ColliderID id = Time::GetEpochTimeNS();
+		
 		b2PolygonShape shape;
 		shape.SetAsBox(size.x * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, size.y * GE_PHYSICS_SCALAR * 0.5f - shape.m_radius, 
 			b2Vec2(offset.x, offset.y), (float) ((PI / 180.f) * rotation) );
-		m_fixture = m_body->CreateFixture(&shape, mass);
-		m_fixture->SetUserData((void*)&m_self);
-		m_fixture->SetSensor(m_sensor);
-		m_fixture->SetDensity(0);
+		m_fixtures[id] = m_body->CreateFixture(&shape, mass);
+		m_fixtureData[id].parent = m_self.parent;
+		m_fixtureData[id].tag = tag;
+		m_fixtures[id]->SetUserData((void*)&m_fixtureData[id]);
+		m_fixtures[id]->SetSensor(m_sensor);
+		m_fixtures[id]->SetDensity(0);
 		b2Filter filter;
 		filter.categoryBits = m_categoryBits;
 		filter.groupIndex = m_groupIndex;
 		filter.maskBits = m_maskBits;
-		m_fixture->SetFilterData(filter);
+		m_fixtures[id]->SetFilterData(filter);
+		return id;
+	}
 
+
+	const GEngine::ColliderID PhysicsBody_box2d::CreateCircle(const glm::vec2& size, const glm::vec2& offset /*= glm::vec2(0)*/, float mass /*= 0*/, float rotation /*= 0*/, const std::string& tag /*= ""*/)
+	{
+		const ColliderID id = Time::GetEpochTimeNS();
+
+		b2CircleShape shape;
+		shape.m_p = b2Vec2(offset.x, offset.y);
+		shape.m_radius = size.x;
+		m_fixtures[id] = m_body->CreateFixture(&shape, mass);
+		m_fixtureData[id].parent = m_self.parent;
+		m_fixtureData[id].tag = tag;
+		m_fixtures[id]->SetUserData((void*)&m_fixtureData[id]);
+		m_fixtures[id]->SetSensor(m_sensor);
+		m_fixtures[id]->SetDensity(0);
+		b2Filter filter;
+		filter.categoryBits = m_categoryBits;
+		filter.groupIndex = m_groupIndex;
+		filter.maskBits = m_maskBits;
+		m_fixtures[id]->SetFilterData(filter);
+		return id;
+	}
+
+	void PhysicsBody_box2d::DestroyQuad(const ColliderID id)
+	{
+		m_body->DestroyFixture(m_fixtures[id]);
+		m_fixtureData.erase(id);
+		m_fixtures.erase(id);
+	}
+
+	void PhysicsBody_box2d::SetOnCollideStartFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f)
+	{
+		m_fixtureData[id].onStartCollide = f;
+	}
+
+	void PhysicsBody_box2d::SetOnCollideEndFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f)
+	{
+		m_fixtureData[id].onEndCollide = f;
 	}
 
 
@@ -143,54 +187,56 @@ namespace GEngine {
 		m_body->SetAwake(b);
 	}
 
-	void PhysicsBody_box2d::SetMask(const uint16_t bits)
+	void PhysicsBody_box2d::SetMask(const ColliderID id, const uint16_t bits)
 	{
-		PhysicsBody::SetMask(bits);
-		if (m_fixture) {
-			b2Filter filter = m_fixture->GetFilterData();
+		PhysicsBody::SetMask(id, bits);
+		if (m_fixtures[id]) {
+			b2Filter filter = m_fixtures[id]->GetFilterData();
 			filter.maskBits = bits;
-			m_fixture->SetFilterData(filter);
+			m_fixtures[id]->SetFilterData(filter);
 		}
 
 	}
 
-	void PhysicsBody_box2d::SetCategory(const uint16_t bits)
+	void PhysicsBody_box2d::SetCategory(const ColliderID id, const uint16_t bits)
 	{
-		PhysicsBody::SetCategory(bits);
-		if (m_fixture) {
-			b2Filter filter = m_fixture->GetFilterData();
+		PhysicsBody::SetCategory(id, bits);
+		if (m_fixtures[id]) {
+			b2Filter filter = m_fixtures[id]->GetFilterData();
 			filter.categoryBits = bits;
-			m_fixture->SetFilterData(filter);
+			m_fixtures[id]->SetFilterData(filter);
 		}
 	}
 
-	void PhysicsBody_box2d::SetGroupIndex(const int16_t index)
+	void PhysicsBody_box2d::SetGroupIndex(const ColliderID id, const int16_t index)
 	{
-		PhysicsBody::SetGroupIndex(index);
-		if (m_fixture) {
-			b2Filter filter = m_fixture->GetFilterData();
+		PhysicsBody::SetGroupIndex(id, index);
+		if (m_fixtures[id]) {
+			b2Filter filter = m_fixtures[id]->GetFilterData();
 			filter.groupIndex = index;
-			m_fixture->SetFilterData(filter);
+			m_fixtures[id]->SetFilterData(filter);
 		}
 	}
 
-	void PhysicsBody_box2d::SetSensor(const bool b)
+	void PhysicsBody_box2d::SetSensor(const ColliderID id, const bool b)
 	{
-		PhysicsBody::SetSensor(b);
-		if (m_fixture)
-			m_fixture->SetSensor(m_sensor);
+		PhysicsBody::SetSensor(id, b);
+		if (m_fixtures[id])
+			m_fixtures[id]->SetSensor(m_sensor);
 	}
 
-	void PhysicsBody_box2d::SetBounce(const float f)
+	void PhysicsBody_box2d::SetBounce(const ColliderID id, const float f)
 	{
-		PhysicsBody::SetBounce(f);
-		m_fixture->SetRestitution(f);
+		PhysicsBody::SetBounce(id, f);
+		m_fixtures[id]->SetRestitution(f);
 	}
 
 	const float PhysicsBody_box2d::GetAngularVelocity()
 	{
 		return m_body->GetAngularVelocity();
 	}
+
+
 
 }
 #endif

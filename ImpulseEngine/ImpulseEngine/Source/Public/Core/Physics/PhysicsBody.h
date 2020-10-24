@@ -24,8 +24,6 @@ namespace GEngine {
 		PhysicsBody();
 		virtual ~PhysicsBody();
 
-		inline virtual void SetQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0) = 0;
-
 		inline virtual void SetPosition(const glm::vec2& position) { m_position = position; }
 		inline virtual void SetRotation(const float rot) { m_rotation = rot; }
 
@@ -39,10 +37,10 @@ namespace GEngine {
 		inline virtual void SetGravityScale(const float f) { m_gravityScale = f; }
 		inline virtual void SetAngularVelocity(const float f) { m_angluarVelocity = f; }
 
-		inline virtual void SetBounce(const float f) { m_bounce = f; };
+		inline virtual void SetBounce(const ColliderID id, const float f) { m_bounce = f; };
 		inline virtual void SetScale(const glm::vec2& scale) { m_scale = scale; }
 
-		inline virtual void SetSensor(const bool b) { m_sensor = b; }
+		inline virtual void SetSensor(const ColliderID id, const bool b) { m_sensor = b; }
 
 		inline virtual const glm::vec2& GetPosition() { return m_position; }
 		inline virtual const float GetRotation() { return m_rotation; }
@@ -59,27 +57,27 @@ namespace GEngine {
 		inline virtual const float GetGravityScale() { return m_gravityScale; }
 		inline virtual const PhysicsInfoType& GetPhysicsType() { return m_type; }
 		inline virtual const float GetAngularVelocity() { return m_angluarVelocity; };
-		inline virtual const float GetBounce() { return m_bounce; }
+		inline virtual const float GetBounce(const ColliderID id) { return m_bounce; }
 
-		inline virtual void SetMask(const uint16_t bits) { m_maskBits = bits; }
-		inline virtual void SetCategory(const uint16_t bits) { m_categoryBits = bits; }
-		inline virtual void SetGroupIndex(const int16_t index) { m_groupIndex = index; }
+		inline virtual void SetMask(const ColliderID id,  uint16_t bits) { m_maskBits = bits; }
+		inline virtual void SetCategory(const ColliderID id, const uint16_t bits) { m_categoryBits = bits; }
+		inline virtual void SetGroupIndex(const ColliderID id, const int16_t index) { m_groupIndex = index; }
 
 		inline virtual void SetComponent(Weak<Component> c) { m_component = c; }
 		inline virtual void SetSelf(Weak<PhysicsBody> self) { m_self.parent = self; }
 
 		inline virtual Ref<Component> GetComponent() { return m_component.lock(); }
 
-		inline virtual void SetOnCollideStartFunction(std::function<void(Ref<PhysicsBody>)> f) { m_onCollideStartFunc = f; }
-		inline virtual void SetOnCollideEndFunction(std::function<void(Ref<PhysicsBody>)> f) { m_onCollideEndFunc = f; }
+		virtual void SetOnCollideStartFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) = 0;
+		virtual void SetOnCollideEndFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) = 0;
 
-		virtual void CollideStart(Ref<PhysicsBody> other);
-		virtual void CollideEnd(Ref<PhysicsBody> other);
+
+		virtual const ColliderID CreateQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
+		virtual const ColliderID CreateCircle(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
+		virtual void DestroyQuad(const ColliderID id) = 0;
 
 
 	protected:
-		std::function<void(Ref<PhysicsBody>)> m_onCollideStartFunc;
-		std::function<void(Ref<PhysicsBody>)> m_onCollideEndFunc;
 
 		PhysicsInfoType m_type = PhysicsInfoType::PHYSICS_Static;
 		glm::vec2 m_position = glm::vec2(0);;
