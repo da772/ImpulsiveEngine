@@ -179,9 +179,9 @@ namespace GEngine {
 
 	void CollisionDetection::OnEvent(const Event& e)
 	{
-		if (s_lastUICollision.lock())
+		if (s_lastCollider && s_lastUICollision.lock())
 			s_lastUICollision.lock()->UIOnEvent(e);
-		else if (s_lastCollider) {
+		else if (!s_lastCollider) {
 			s_lastUICollision.reset();
 			s_lastCollider = false;
 		}

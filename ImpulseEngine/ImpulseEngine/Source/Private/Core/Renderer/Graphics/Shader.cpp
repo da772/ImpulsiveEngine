@@ -17,10 +17,9 @@ namespace GEngine {
 
 
 	std::unordered_map<std::string, Weak<Shader>> Shader::s_ShaderPool;
+	uint32_t Shader::s_shaderID = 0;
 
 	Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, const bool files) {
-
-
 
 		Ref<Shader> s = nullptr;
 
@@ -137,5 +136,15 @@ namespace GEngine {
 		return std::string(filestr);
 	}
 
+
+	void Shader::SetShaderID(const uint32_t id)
+	{
+		s_shaderID = id;
+	}
+
+	const uint32_t Shader::GetShaderID() 
+	{
+		return s_shaderID;
+	}
 
 }

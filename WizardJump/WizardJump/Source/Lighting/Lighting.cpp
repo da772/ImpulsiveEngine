@@ -6,6 +6,6 @@ Ref<RenderPipeline> Lighting::m_pipeline;
 
 void Lighting::Initialize()
 {
-	m_pipeline = make_shared<RenderPipeline_Lighting>();
+	m_pipeline = make_shared<RenderPipeline_Lighting>(Renderer::GetRenderScale());
 	Renderer::AddPipeline("lighting", m_pipeline, 499);
 }

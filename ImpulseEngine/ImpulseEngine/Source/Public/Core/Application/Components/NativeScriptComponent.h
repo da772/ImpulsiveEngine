@@ -7,7 +7,6 @@ namespace GEngine{
 	public:
 		inline NativeScriptComponent() {};
 		inline virtual ~NativeScriptComponent() {};
-
 	};
 
 

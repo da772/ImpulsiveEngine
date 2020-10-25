@@ -51,6 +51,7 @@ namespace GEngine {
 
 
 	Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData;
+	float Renderer::renderScale = 1.f;
 	Scope<Renderer::ShapeData> Renderer::s_ShapeData;
 	std::vector<FPipeline> Renderer::queue;
 	std::unordered_map<std::string, FPipeline> Renderer::queueId;
@@ -81,13 +82,13 @@ namespace GEngine {
 
 	void Renderer::OnInit()
 	{
-		Renderer::AddPipeline("2d", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 0);
+		Renderer::AddPipeline("2d", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d(Renderer::GetRenderScale())), 0);
 		//Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 500);
 		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 1000);
 		Renderer::AddPipeline("viewport", std::shared_ptr<RenderPipeline>(new RenderPipeline_viewport()), 1500);
         const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
         for (const GEngine::FPipeline& p : pipelines) {
-            p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
+            p.p->SetSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
         }
 		s_ShapeData.reset(new ShapeData());
 
@@ -380,6 +381,11 @@ namespace GEngine {
 		};
 
 		RenderCommand::DrawText3D(txt, color, scale, model, Renderer::s_SceneData->ViewMatrix, Renderer::s_SceneData->ProjectionMatrix, center);
+	}
+
+	const float Renderer::GetRenderScale()
+	{
+		return renderScale; 
 	}
 
 	int Renderer::GetMaxTextureSlots()

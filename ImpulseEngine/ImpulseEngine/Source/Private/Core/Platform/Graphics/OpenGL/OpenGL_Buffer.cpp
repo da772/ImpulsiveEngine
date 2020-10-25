@@ -108,7 +108,7 @@ namespace GEngine {
 ////////////////////////////////////////////////////////////////////////////
 
 
-	OpenGL_FrameBuffer::OpenGL_FrameBuffer(int width, int height, int format, const char* texName) : FrameBuffer(width, height, format, texName)
+	OpenGL_FrameBuffer::OpenGL_FrameBuffer(int width, int height, int format, const char* texName,const float renderScale) : FrameBuffer(width, height, format, texName, renderScale)
 	{
 		Create();
 	}
@@ -157,8 +157,8 @@ namespace GEngine {
 	void OpenGL_FrameBuffer::UpdateSize(int width, int height)
 	{
 		//Invalidate();
-		m_width = width;
-		m_height = height;
+		m_width = width * m_renderScale;
+		m_height = height * m_renderScale;
 		m_texture->SetData(nullptr, 0, m_format, m_width, m_height);
 		
 	}

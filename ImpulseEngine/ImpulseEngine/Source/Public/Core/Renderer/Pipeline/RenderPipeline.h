@@ -12,7 +12,7 @@ namespace GEngine {
 	public:
 
 		RenderPipeline();
-		RenderPipeline(const char* name);
+		RenderPipeline(const char* name, const float renderScale = 1.f, uint32_t textureFlags = 1161);
 		virtual ~RenderPipeline() {};
 
 		virtual void Render();
@@ -20,7 +20,7 @@ namespace GEngine {
 		void Remove(Ref<Renderable> r);
 		void Sort();
 		void Clear();
-		void SetSize(const int width, const int height);
+		virtual void SetSize(const int width, const int height);
 		inline Ref<FrameBuffer> GetFrameBuffer() { return m_frameBuffer; };
 		virtual void RenderStart() {};
 		virtual void RenderEnd() {};
@@ -41,7 +41,8 @@ namespace GEngine {
 		Ref<FrameBuffer> m_frameBuffer;
 		Ref<Shader> m_shader;
 		std::string m_name = "";
-
+		float m_renderScale = 1.f;
+		uint32_t m_textureFlags = 1161;//TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear;
 
 	};
 

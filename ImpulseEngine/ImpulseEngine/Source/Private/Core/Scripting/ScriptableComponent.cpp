@@ -26,17 +26,5 @@ namespace GEngine {
 		m_parentComponent = c;
 	}
 
-	GEngine::Ref<GEngine::Component> ScriptableComponent::GetParentComponent()
-	{
-		return m_parentComponent.lock();
-	}
-
-	void ScriptableComponent::SetTag(const std::string& tag)
-	{
-		m_tag = tag;
-		Ref<Component> c = m_parentComponent.lock();
-		if (c != nullptr)
-			c->SetTag(tag);
-	}
 
 }

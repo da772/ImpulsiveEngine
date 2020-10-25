@@ -45,11 +45,15 @@ namespace GEngine {
 	protected:
 		Shader() {};
 		Shader(const std::string& vertexSrc, const std::string& fragmentSrc) {};
+
+		static void SetShaderID(const uint32_t id);
+		static const uint32_t GetShaderID();
 		
 		std::string m_Name;
 	private:
 		//static Scope<ObjectPool<Shader, std::string>> ShaderPool;
 		static std::unordered_map<std::string, Weak<Shader>> s_ShaderPool;
+		static uint32_t s_shaderID;
 
 
 	};

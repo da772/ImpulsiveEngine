@@ -61,47 +61,7 @@ namespace GEngine {
 		m_api = nullptr;
 	}
 
-	void ScriptComponent::SetEntity(Weak<Entity> e)
-	{
-		Component::SetEntity(e);
-		if (m_scriptableComponent != nullptr) {
-			m_scriptableComponent->SetParent(entity.lock().get());
-			m_scriptableComponent->SetParentComponent(std::static_pointer_cast<Component>(self.lock()));
-		}
-
-
-	}
-
-	void ScriptComponent::SetScriptInt(std::string name, int v)
-	{
-		if (m_obj)
-			m_obj->SetProperty<int>(name.c_str(), v);
-	}
-
-	void ScriptComponent::SetScriptFloat(std::string name, int v)
-	{
-		if (m_obj)
-			m_obj->SetProperty<float>(name.c_str(), v);
-	}
-
-	void ScriptComponent::SetScriptString(std::string name, std::string v)
-	{
-		if (m_obj)
-			m_obj->SetProperty<std::string>(name.c_str(), v);
-	}
-
-	void ScriptComponent::SetScriptBool(std::string name, bool v)
-	{
-		if (m_obj)
-			m_obj->SetProperty<bool>(name.c_str(), v);
-	}
-
-
-	void ScriptComponent::SetScriptValue(std::string name, Ref<ScriptObject> obj)
-	{
-		if (m_obj)
-			m_obj->SetPropertyNative(name.c_str(), obj);
-	}
+	
 
 	void ScriptComponent::OnBegin()
 	{

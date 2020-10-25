@@ -7,7 +7,7 @@ using namespace GEngine;
 static float vert[20] = { -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f, 1.0f, 1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f };
 static uint32_t sqindices[6] = { 0, 1, 2, 2, 3, 0 };
 
-RenderPipeline_Lighting::RenderPipeline_Lighting() : RenderPipeline("RenderPipeline_Lighting")
+RenderPipeline_Lighting::RenderPipeline_Lighting(const float renderScale) : RenderPipeline("RenderPipeline_Lighting", renderScale)
 {
 	
 	// Use Gaussian Blur Shader!!
@@ -25,11 +25,11 @@ RenderPipeline_Lighting::RenderPipeline_Lighting() : RenderPipeline("RenderPipel
 		//RenderCommand::BlendFunc(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
 	};
 	CreateGraphics();
-	m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting");
-	m_frameBuffer_shadow = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting_Shadow");
+	m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting", renderScale);
+	m_frameBuffer_shadow = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting_Shadow", renderScale);
 	m_frameBuffer_shadow->UpdateSize(Application::GetWidth(), Application::GetHeight());
 	m_frameBuffer_lights = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear,
-		"RenderPipeline_Lighting_Lights");
+		"RenderPipeline_Lighting_Lights", renderScale);
 	m_frameBuffer_lights->UpdateSize(Application::GetWidth(), Application::GetHeight());
 	m_frameBuffer->UpdateSize(Application::GetWidth(), Application::GetHeight());
 }

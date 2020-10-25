@@ -148,6 +148,7 @@ public:
 		//FPSuiComponent->CreateText("Ad", font, { .84f, .94f, 1.f }, { .5 ,.5,1 }, { 0,0,0,1 });
 
         button2->SetOnEvent([](const GEngine::Event& e){
+			GE_CORE_DEBUG("TOUCH RELEASED!");
 			if (e.GetEventType() == EventType::TouchReleased) {
 				if (GEngine::AdManager::AdLoaded()) {
 					GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
@@ -226,7 +227,7 @@ public:
 		
 
 		*/
-
+		
 
 		AddEntity(GEngine::CreateGameObject<PlatformEntity>(glm::vec2(0, -12.4f), glm::vec2(25, 10)) );
 

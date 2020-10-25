@@ -7,7 +7,7 @@ class RenderPipeline_Lighting : public GEngine::RenderPipeline {
 
 public:
 
-	RenderPipeline_Lighting();
+	RenderPipeline_Lighting(const float renderScale = 1.f);
 	virtual ~RenderPipeline_Lighting();
 
 	void Render() override;

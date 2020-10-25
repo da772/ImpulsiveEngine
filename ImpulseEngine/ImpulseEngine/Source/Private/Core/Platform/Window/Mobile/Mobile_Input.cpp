@@ -76,6 +76,7 @@ namespace GEngine {
 	{
 		int width, height;
 		Application::GetApp()->GetWindow()->GetFrameBufferSize(&width, &height);
+		
 		if (e.GetEventType() == EventType::TouchPressed) {
 			const TouchPressedEvent& event = (TouchPressedEvent&)e;
 			
@@ -85,7 +86,7 @@ namespace GEngine {
 					-GEMath::MapRange(event.GetY() / (float)height, 0, 1, -1, 1));
 			}
 		}
-
+		CollisionDetection::OnEvent(e);
 		if (e.GetEventType() == EventType::TouchReleased) {
 			const TouchReleasedEvent& event = (TouchReleasedEvent&)e;
 			if (GetTouchCount() <= 1) {
@@ -94,7 +95,7 @@ namespace GEngine {
 					-GEMath::MapRange(event.GetY() / (float)height, 0, 1, -1, 1));
 			}
 		}
-		CollisionDetection::OnEvent(e);
+		
 	}
 
 void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, float force)

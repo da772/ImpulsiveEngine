@@ -153,17 +153,26 @@ namespace GEngine {
 
 	OpenGL_Shader::~OpenGL_Shader()
 	{
+		if (GetShaderID() == m_RendererID)
+			SetShaderID(0);
+
 		glDeleteProgram(m_RendererID);
 	}
 
 	void OpenGL_Shader::Bind() const
 	{
+		if (GetShaderID() == m_RendererID)
+			return;
 		glUseProgram(m_RendererID);
+		SetShaderID(m_RendererID);
 	}
 
 	void OpenGL_Shader::UnBind() const
 	{
+		if (GetShaderID() == 0)
+			return;
 		glUseProgram(0);
+		SetShaderID(0);
 	}
 
 	void OpenGL_Shader::UploadUniformIntArray(const std::string& name, int* values, u32 count)

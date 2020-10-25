@@ -33,36 +33,36 @@ namespace GEngine {
 			return bUpdates && bInit;
 		}
 
-		inline virtual Ref<Entity> GetEntity() {
+		Ref<Entity> GetEntity() {
 			return entity.lock();
 		}
-		virtual void SetEntity(Weak<Entity>  e);
+		void SetEntity(Weak<Entity>  e);
 
-		inline virtual Entity* GetEntityPtr() {
+		Entity* GetEntityPtr() {
 			return entity.lock().get();
 		}
-		virtual void SetEntityPtr(Entity*  e);
+		void SetEntityPtr(Entity*  e);
 
 
 
 
 		Vector3 GetEntityPosition();
 
-		inline virtual void OnAttached(Ref<Entity> entity) { };
-		inline virtual void DeAttached(Ref<Entity> entity) { };
+		virtual void OnAttached(Ref<Entity> entity) { };
+		virtual void DeAttached(Ref<Entity> entity) { };
 
-		virtual Ref<Component> GetParentComponent() { return nullptr; };
+		Ref<Component> GetParentComponent() { return nullptr; };
 
-		virtual Component* GetSelf() { return static_pointer_cast<Component>(self.lock()).get(); }
-		virtual void SetSelf(Ref<Component> r) { }
+		Component* GetSelf() { return static_pointer_cast<Component>(self.lock()).get(); }
+		void SetSelf(Ref<Component> r) { }
 
 		Component();
 		virtual ~Component();
 		bool m_hasComponentParent = false;
 		static int refCount;
 		
-		inline virtual const std::string& GetTag() { return m_tag; }
-		inline virtual void SetTag(const std::string& tag) { m_tag = tag; }
+		const std::string& GetTag() { return m_tag; }
+		void SetTag(const std::string& tag) { m_tag = tag; }
 		std::string m_tag = "Component";
 		void Destroy();
 

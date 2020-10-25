@@ -15,19 +15,30 @@
 
 namespace GEngine {
 
-	Texture::~Texture()
-	{
-		
-	}
 
 	std::unordered_map<std::string, Weak<Texture>> Texture2D::s_TexturePool;
+	uint32_t Texture::s_textureID = 0;
+
+	const uint32_t Texture::GetTextureID()
+	{
+		return s_textureID;
+	}
+
+	void Texture::SetTextureID(const uint32_t id)
+	{
+		s_textureID = id;
+	}
 
 	Texture2D::~Texture2D()
 	{
 		if (s_TexturePool.size() > 0) {
 			s_TexturePool.erase(this->name);
-		}
-			
+		}		
+	}
+
+	Texture::~Texture()
+	{
+
 	}
 
 	Ref<Texture2D> Texture2D::Create(const std::string& path, const u32 flags)

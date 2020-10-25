@@ -50,6 +50,11 @@ namespace GEngine {
 		std::string name;
 		Weak<Texture> self;
 		u32 m_flags;
+		static uint32_t s_textureID;
+
+		static const uint32_t GetTextureID();
+		static void SetTextureID(const uint32_t id);
+
 	};
 
 	class Texture2D : public Texture {

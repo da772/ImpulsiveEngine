@@ -232,12 +232,13 @@ namespace GEngine {
 		virtual void Unload() = 0;
 		virtual void Reload() = 0;
 
-		static Ref<FrameBuffer> Create(int width, int height, int format = 0, const char* texName = "");
+		static Ref<FrameBuffer> Create(int width, int height, int format = 0, const char* texName = "", const float renderScale = 1.f);
 
 	protected:
-		inline FrameBuffer(int width, int height, uint32_t format, const char* texName) :m_width(width), m_height(height), m_format(format), m_texName(texName){};
+		inline FrameBuffer(int width, int height, uint32_t format, const char* texName, const float renderScale) :m_width(width), m_height(height), m_format(format), m_texName(texName), m_renderScale(renderScale) {};
 		uint32_t m_format;
 		int m_width, m_height;
+		float m_renderScale = 1.f;
 		Ref<Texture2D> m_texture;
 		std::string m_texName;
 	};

@@ -12,13 +12,9 @@ namespace GEngine {
 	public:
 		ScriptComponent(const char* script);
 		virtual ~ScriptComponent();
-		virtual void SetEntity(Weak<Entity>  e) override;
 		
-		void SetScriptInt(std::string name, int v);
-		void SetScriptFloat(std::string name, int v);
-		void SetScriptString(std::string name, std::string v);
-		void SetScriptBool(std::string name, bool v);
-		void SetScriptValue(std::string name, Ref<ScriptObject> obj);
+		
+		
 
 	protected:
 		void OnBegin() override;

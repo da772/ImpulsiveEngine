@@ -214,21 +214,28 @@ namespace GEngine {
 
 	OpenGL_Texture2D::~OpenGL_Texture2D()
 	{
+		if (GetTextureID() == m_RendererID)
+			SetTextureID(0);
 		glDeleteTextures(1, (unsigned int*)&m_RendererID);
-		
 	}
 
 	void OpenGL_Texture2D::Bind(uint32_t slot) const
 	{
 		
 		glActiveTexture(GL_TEXTURE0 + slot);
+		if (GetTextureID() == m_RendererID)
+			return;
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		SetTextureID(m_RendererID);
 	}
 
 	void OpenGL_Texture2D::UnBind() const
 	{
 		glActiveTexture(GL_TEXTURE0);
+		if (GetTextureID() == 0)
+			return;
 		glBindTexture(GL_TEXTURE_2D, 0);
+		SetTextureID(0);
 	}
 
 	void OpenGL_Texture2D::Unload() {

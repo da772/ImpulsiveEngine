@@ -18,7 +18,6 @@ namespace GEngine {
 
 		void SetParentComponent(Ref<Component> c);
 
-		virtual Ref<Component> GetParentComponent() override;
 
 		bool DoesUpdate() {
 			return m_doesUpdate;
@@ -27,12 +26,6 @@ namespace GEngine {
 		void SetDoesUpdate(bool b) {
 			m_doesUpdate = b;
 		}
-
-
-		virtual void SetTag(const std::string& tag) override;
-
-		virtual Component* GetSelf() override { return static_pointer_cast<Component>(m_parentComponent.lock()).get(); }
-		virtual void SetSelf(Ref<Component> r) { }
 
 
 		operator Ref<Component>() { return m_parentComponent.lock(); };

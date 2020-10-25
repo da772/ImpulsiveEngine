@@ -8,7 +8,7 @@
 
 namespace GEngine {
 
-	RenderPipeline_2d::RenderPipeline_2d() : RenderPipeline("RenderPipeline_2d") {
+	RenderPipeline_2d::RenderPipeline_2d(const float renderScale) : RenderPipeline("RenderPipeline_2d", renderScale, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest) {
 
 	}
 
@@ -28,5 +28,10 @@ namespace GEngine {
 	}
 
 
+
+	void RenderPipeline_2d::SetSize(const int width, const int height)
+	{
+		RenderPipeline::SetSize(width * Renderer::GetRenderScale(), height * Renderer::GetRenderScale());
+	}
 
 }
