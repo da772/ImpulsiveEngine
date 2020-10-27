@@ -79,7 +79,7 @@ WizardJump::WizardJump()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
-	s_debugTools = true;
+	s_debugTools = false;
 	Renderer::SetRenderScale(1.f);
 	
 	if (s_debugTools) {
