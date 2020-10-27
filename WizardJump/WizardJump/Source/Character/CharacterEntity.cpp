@@ -3,10 +3,15 @@
 #include "Character/CharacterGraphics.hpp"
 #include "Character/CharacterBody.hpp"
 
-	void CharacterEntity::OnBegin()
+CharacterEntity::CharacterEntity(const glm::vec2& position) : m_position(position)
+{
+
+}
+
+void CharacterEntity::OnBegin()
 	{
 
-		SetEntityPosition({ 0,0.795f,0 });
+		SetEntityPosition({ m_position.x, m_position.y,0 });
 
 		m_characterComponent = CreateGameObject<CharacterController>();
 		m_spriteComponent = CreateGameObject<CharacterGraphics>();

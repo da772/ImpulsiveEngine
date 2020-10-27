@@ -173,9 +173,11 @@ void CharacterController::OnUpdate(Timestep timestep) {
             graphicsComp->dir = vel.x > .01f ? 1 : vel.x < -.01f ? -1 : graphicsComp->dir;
             if (ground) {
                 if (bFalling) {
-                    bodyComp->SetVelocityX(0);
-                    landSound->SetPlaying(true);
-                    graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
+                    if (vel.y <= 0.f) {
+                        bodyComp->SetVelocityX(0);
+                        landSound->SetPlaying(true);
+                        graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
+                    }
                 }
                 else {
                     if (graphicsComp->animState != MovementAnim::Walk) {

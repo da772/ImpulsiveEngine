@@ -40,7 +40,7 @@ public:
 	virtual ~LightComponent();
     
     const ShapeID AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
-    const ShapeID AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
+    const ShapeID AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color, Ref<Texture2D> texture = nullptr);
     void EditCircleColor(const ShapeID id, const glm::vec4& color);
     void EditCircleSize(const ShapeID id, const glm::vec2& size);
 

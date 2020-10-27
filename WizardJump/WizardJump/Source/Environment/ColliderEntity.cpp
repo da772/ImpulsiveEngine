@@ -14,7 +14,7 @@ void ColliderEntity::OnBegin()
 	if (debug) {
 		m_debugSprite = CreateGameObject<SpriteComponent>();
 		AddComponent(m_debugSprite);
-		m_debugSprite->CreateQuad({ 0,0,m_pos.z }, 0, { 1,1,1 }, { 1.f,0.f,0.f,.5f });
+		m_debugSprite->CreateQuad({ 0,0,20 }, 0, { 1,1,1 }, { 1.f,0.f,0.f,.5f });
 	}
 
 	m_collider = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(m_pos.x, m_pos.y));

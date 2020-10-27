@@ -98,10 +98,10 @@ const ShapeID LightComponent::AddCircleLight(const glm::vec2& position, float in
     return id;
 }
 
-const ShapeID LightComponent::AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color)
+const ShapeID LightComponent::AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color, Ref<Texture2D> texture)
 {
     const ShapeID id = s_QuadShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y + position.y, intensity
-        }, 0, scale, color);
+        }, 0, scale, color, texture);
     m_Quadids.push_back(id);
     return id;
 }

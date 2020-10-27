@@ -111,8 +111,8 @@ void WindowEntity::OnBegin()
 	AddComponent(m_spriteComponent);
 
 
-	m_spriteComponent->CreateQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/bigWindow.png"));
-	m_lightId = m_lightComponent->AddPolygonLight({0,.75f,0}, lightVert, lightIndices, lightLayout, m_lightColor);
+	//m_spriteComponent->CreateQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/bigWindow.png"));
+	m_lightId = m_lightComponent->AddQuadLight({ 0.f,0.f }, 0, { 4.4f,4.5625f }, {1,1,1,1}, Texture2D::Create("Content/Textures/windowLight01.png"));
 
 
 }
