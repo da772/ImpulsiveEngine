@@ -106,14 +106,14 @@ namespace GEngine {
 				}
 				
 				firebase::admob::Initialize(*m_app, m_adId.c_str());
-				double ct = Time::GetEpochTimeSec();
+				auto ct = Time::GetEpochTimeSec();
 				{
 					std::lock_guard<std::mutex> guard(m_initMutex);
 					if (!m_rewardAdInit) {
 						firebase::admob::rewarded_video::Initialize();
 
 						while (firebase::admob::rewarded_video::InitializeLastResult().status() == 1) {
-							if (Time::GetEpochTimeSec() - ct > 30.0f) {
+							if (Time::GetEpochTimeSec() - ct > m_timeout) {
 								GE_CORE_ERROR("Firebase: Failed to initialize reward video");
 								return;
 							}
@@ -160,7 +160,7 @@ namespace GEngine {
 	{
 #ifdef GE_ADS_FIREBASE
 		ThreadPool::AddJob([this, f1]() {
-			double ct = Time::GetEpochTimeSec();
+			auto ct = Time::GetEpochTimeSec();
 			
 			bool bInit = false;
 			{
@@ -172,7 +172,7 @@ namespace GEngine {
 				if (bInit) {
 					while (bInit) {
 						{
-							if (Time::GetEpochTimeSec() - ct > 30.0) {
+							if (Time::GetEpochTimeSec() - ct > m_timeout) {
 								break;
 							}
 							std::lock_guard<std::mutex> guard(m_initMutex);
@@ -191,9 +191,20 @@ namespace GEngine {
 				if (m_rewardAdLoaded)
 					return;
 			}
-
+            {
+                ct = Time::GetEpochTimeSec();
+                bool b = false;
+                while(!b) {
+                    if (Time::GetEpochTimeSec() - ct > m_timeout) {
+                        GE_CORE_ERROR("Firebase: Failed to initialize reward video");
+                        return;
+                    }
+                    std::lock_guard<std::mutex> guard(m_initMutex);
+                    b = m_rewardAdInit;
+                }
+                
+            }
 			GE_CORE_INFO("Firebase App Reward Video Initialized!");
-			
 			firebase::admob::rewarded_video::SetListener(rewarded_video_listener);
 			
 			const char* devices[] = { "TEST_EMULATOR" };
@@ -209,7 +220,7 @@ namespace GEngine {
 			}
 
 			while ((status = firebase::admob::rewarded_video::LoadAdLastResult().status()) == firebase::kFutureStatusPending) {
-				if (Time::GetEpochTimeSec() - ct > 30.0) {
+				if (Time::GetEpochTimeSec() - ct > m_timeout) {
 					GE_CORE_ERROR("Firebase: Failed to load reward video");
 					return;
 				}
@@ -261,7 +272,7 @@ namespace GEngine {
 				return;
 
 			}
-			long long ct = Time::GetEpochTimeMS();
+			auto ct = Time::GetEpochTimeMS();
 			while (Time::GetEpochTimeMS() - ct < 500) {
 				continue;
 			}

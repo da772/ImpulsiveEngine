@@ -105,7 +105,7 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 #ifdef GE_MOBILE_APP
 		GEngine::MobileWindow* mb = static_cast<GEngine::MobileWindow*>(GEngine::Application::GetApp()->GetWindow());
         if (mb) {
-			GE_CORE_DEBUG("TOUCH: {0} - {1}", id, state);
+			//GE_CORE_DEBUG("TOUCH: {0} - {1}", id, state);
 			switch (state) {
 				// Touch begin
 				case 0: {

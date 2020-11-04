@@ -116,6 +116,7 @@ WizardJump::WizardJump()
 	
 
 #ifdef GE_MOBILE_APP
+    GEngine::AdManager::SetTimeout(5.f);
 	GEngine::AdManager::Initialize();
 	GEngine::AdManager::SetUserId("This Is My User ID!");
 #ifdef GE_PLATFORM_ANDROID

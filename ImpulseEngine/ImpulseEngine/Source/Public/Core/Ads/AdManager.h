@@ -14,6 +14,7 @@ namespace GEngine {
 		static void SetUserId(const char* id);
 		static bool AdPlaying();
 		static void Shutdown();
+        static void SetTimeout(float f);
 		static bool AdLoaded();
 
 	private:

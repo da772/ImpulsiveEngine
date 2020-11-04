@@ -23,11 +23,10 @@ namespace GEngine {
 		inline virtual void SetUserId(const std::string id) { m_userId = id; }
 		inline virtual void SetAdId(const std::string id) { m_adId = id; }
 		inline virtual void SetRewardAdId(const std::string id) { m_rewardAdId = id; }
-
-
+        inline virtual void SetTimeout(float f) {m_timeout = f; };
 	protected:
 		Ad() {};
-		
+        float m_timeout = 30.f;
 		std::string m_adId = "";
 		std::string m_rewardAdId = "";
 		std::string m_userId = "";

@@ -28,6 +28,13 @@ namespace GEngine {
 		}
 	}
 
+    void AdManager::SetTimeout(float f) {
+        if (m_ad)
+        {
+            m_ad->SetTimeout(f);
+        }
+    }
+
 	void AdManager::SetRewardAdId(const char* id)
 	{
 		if (m_ad)
