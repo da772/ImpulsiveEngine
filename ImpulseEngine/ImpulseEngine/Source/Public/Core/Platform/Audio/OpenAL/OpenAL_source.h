@@ -30,7 +30,7 @@ namespace GEngine {
 		virtual void MaxDistance(const float f) override;
         virtual void Unload() override;
         virtual void Reload() override;
-
+		virtual bool IsPlaying() override;
 		OggVorbis_File oggFile;
 
 	};

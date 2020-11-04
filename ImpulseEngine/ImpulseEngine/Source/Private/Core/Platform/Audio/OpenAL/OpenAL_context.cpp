@@ -21,7 +21,7 @@ namespace GEngine {
 	void check_al_errors(const std::string& filename, const std::uint_fast32_t line);
 
 	template<typename alFunction, typename... Params>
-	auto alCallImpl(const char* filename, const std::uint_fast32_t line, alFunction function, Params... params)
+	static auto alCallImpl(const char* filename, const std::uint_fast32_t line, alFunction function, Params... params)
 		->typename std::enable_if<std::is_same<void, decltype(function(params...))>::value, decltype(function(params...))>::type
 	{
 		function(std::forward<Params>(params)...);
@@ -29,7 +29,7 @@ namespace GEngine {
 	}
 
 	template<typename alFunction, typename... Params>
-	auto alCallImpl(const char* filename, const std::uint_fast32_t line, alFunction function, Params... params)
+	static auto alCallImpl(const char* filename, const std::uint_fast32_t line, alFunction function, Params... params)
 		->typename std::enable_if<!std::is_same<void, decltype(function(params...))>::value, decltype(function(params...))>::type
 	{
 		auto ret = function(std::forward<Params>(params)...);
@@ -41,10 +41,10 @@ namespace GEngine {
 #define alCall(function, ...) alCallImpl(__FILE__, __LINE__, function, __VA_ARGS__)
 #define alcCall(function, device, ...) alcCallImpl(__FILE__, __LINE__, function, device, __VA_ARGS__)
 
-	std::size_t read_ogg_callback(void* destination, std::size_t size1, std::size_t size2, void* fileHandle);
-	int32_t seek_ogg_callback(void* fileHandle, ogg_int64_t to, std::int32_t type);
-	long int tell_ogg_callback(void* fileHandle);
-	int close_ogg_callback(void* fileHandle);
+	static std::size_t read_ogg_callback(void* destination, std::size_t size1, std::size_t size2, void* fileHandle);
+	static int32_t seek_ogg_callback(void* fileHandle, ogg_int64_t to, std::int32_t type);
+	static long int tell_ogg_callback(void* fileHandle);
+	static int close_ogg_callback(void* fileHandle);
 
 	OpenAL_Context::OpenAL_Context()
 	{
@@ -200,7 +200,7 @@ namespace GEngine {
 	{
 		for (Ref<AudioSource> s : m_sources) {
 			if (s->IsPlaying()) {
-				UpdateStream(s);
+				//UpdateStream(s);
 			}
 		}
 	}
@@ -257,7 +257,7 @@ namespace GEngine {
 		ALint buffersProcessed = 0;
 
 		alCall(alGetSourcei, audioData->source, AL_BUFFERS_PROCESSED, &buffersProcessed);
-		
+
 		char* data = new char[AUDIO_BUFFER_SIZE];
 		memset(data, 0, AUDIO_BUFFER_SIZE);
 		ov_raw_seek(&oggFile, 0);
@@ -295,7 +295,7 @@ namespace GEngine {
 				alCall(alSourceUnqueueBuffers, audioData->source, 1, &buffer);
 				audioData->queued = false;
 			}
-				
+
 			if (dataSoFar > 0) {
 				alCall(alBufferData, buffer, audioData->format, data, dataSoFar, audioData->sampleRate);
 			}
@@ -333,13 +333,35 @@ namespace GEngine {
 		}
 
 		audioData->nativeFile = (void*)&oggFile;
-	
+
 		vorbis_info* vorbisInfo = ov_info(&oggFile, -1);
 		audioData->channels = vorbisInfo->channels;
 		audioData->bitsPerSample = 16;
 		audioData->sampleRate = vorbisInfo->rate;
 		audioData->duration = ov_time_total(&oggFile, -1);
-		alCall(alGenSources, 1, &audioData->source);
+		if (audioData->channels == 1 && audioData->bitsPerSample == 8)
+			audioData->format = AL_FORMAT_MONO8;
+		else if (audioData->channels == 1 && audioData->bitsPerSample == 16)
+			audioData->format = AL_FORMAT_MONO16;
+		else if (audioData->channels == 2 && audioData->bitsPerSample == 8)
+			audioData->format = AL_FORMAT_STEREO8;
+		else if (audioData->channels == 2 && audioData->bitsPerSample == 16)
+			audioData->format = AL_FORMAT_STEREO16;
+
+
+		size_t data_len = ov_pcm_total(&oggFile, -1) * audioData->channels * 2;
+		char* pcmout = (char*)malloc(data_len);
+
+		for (size_t size = 0, offset = 0, sel = 0; (size = ov_read(&oggFile, pcmout + offset, 4096, 0, 2, 1, (int*)&sel)) != 0; offset += size) {
+			if (size < 0) {
+				GE_CORE_ERROR("OpenAL: InCorrect OGG FILE");
+			}
+		}
+
+
+
+		alCall(alGenSources, (ALsizei)1, (ALuint*)&audioData->source);
+		
 		alCall(alSourcef, audioData->source, AL_PITCH, 1.f);
 		alCall(alSourcef, audioData->source, AL_GAIN, .5f);
 		alCall(alSource3f, audioData->source, AL_POSITION, 0, 0, 0);
@@ -350,8 +372,16 @@ namespace GEngine {
 		
 
 		alCall(alGenBuffers, AUDIO_BUFFERS_NUM, &audioData->buffers[0]);
-		int bufferNum = AUDIO_BUFFERS_NUM;
+		int bufferNum = 1;
 
+		alCall(alBufferData, audioData->buffers[0], audioData->format, pcmout, data_len, audioData->sampleRate);
+		alCall(alSourcei, audioData->source, AL_BUFFER, audioData->buffers[0]);
+		//alCall(alSourceQueueBuffers, audioData->source, audioData->bufferNum, &audioData->buffers[0]);
+		alCall(alSourcePlay, s->GetData().source);
+		free(pcmout);
+
+
+		/*
 		char* data = new char[AUDIO_BUFFER_SIZE];
 
 		for (std::uint8_t i = 0; i < AUDIO_BUFFERS_NUM; ++i)
@@ -410,7 +440,7 @@ namespace GEngine {
 		audioData->queued = true;
 		
 		delete[] data;
-		
+		*/
 		s->SetSelf(s);
 		s->oggFile = std::move(oggFile);
 		m_sources.insert(s);

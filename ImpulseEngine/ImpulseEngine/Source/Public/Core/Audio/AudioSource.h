@@ -58,7 +58,7 @@ namespace GEngine {
 
 		void SetSelf(Weak<AudioSource> s) { self = s; }
 
-		bool IsPlaying();
+		virtual bool IsPlaying();
 
 		inline virtual void __stopPlay() { b_isPlaying = false; };
 

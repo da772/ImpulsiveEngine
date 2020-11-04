@@ -61,12 +61,14 @@ namespace GEngine {
 		glm::vec2 pen = { 0,0 };
 		float maxHeight = 0.f;
 		float lastAdvance = 0.f;
+		int lastSpace = 0;
 		for (int i = 0; i < s.size(); i++) {
 			Ref<SubTexture2D> texture = SubTexture2D::CreateFromCoords(m_Texture, { 0, 0 }, { 0, 0 });
 			char character = s[i];
 
 			if (character == ' ') {
 				pen.x += (float)m_size/2.f/viewWidth;
+				lastSpace = i;
 				continue;
 			}
 			else if (character == '\n') {
@@ -93,7 +95,7 @@ namespace GEngine {
 
 				float kerning = 0.f;
 
-				float h = (float)glyph->height / viewHeight;
+				float h = ((float)glyph->height / viewHeight) + (m_size/2.f/viewHeight);
 
 				if (h > maxHeight)
 					maxHeight = h;
@@ -117,13 +119,11 @@ namespace GEngine {
 				if (pos.x > maxWidth) {
 					pen.x = 0;
 					pen.y -= maxHeight;
-					x0 = pen.x + ((float)glyph->offset_x / viewWidth);
-					y0 = pen.y + ((float)glyph->offset_y / viewHeight);
-					x1 = x0 + ((float)glyph->width / viewWidth);
-					y1 = y0 + ((float)glyph->height / viewHeight);
-					pos = { (x1 + x0) / 2.f , y0 - (y1 - y0) / 2.f };
-					scale = { x1 - x0, y1 - y0 };
 					maxHeight = h;
+					for (int j = 0; j < i-lastSpace-1; j++)
+						charData.erase(charData.end() - 1);
+					i = lastSpace;
+					continue;
 				}
 
 				pen.x += (float)glyph->advance_x/viewWidth;//(float)glyph->advance_x / viewWidth;

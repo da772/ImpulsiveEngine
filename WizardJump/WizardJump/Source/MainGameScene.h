@@ -55,7 +55,7 @@ public:
 			}
             
 			textId = FPSuiComponent->CreateText(std::to_string((int)
-				GEngine::Application::GetApp()->profile["FPS"]) + " FPS", font, { -1, .9f,1 },
+				GEngine::Application::GetApp()->profile["FPS"]) + " fps", font, { -1, .9f,1 },
 				{ 1,1,1 }, { 1,1,1,1 });
 		}
 
@@ -108,6 +108,9 @@ public:
 		eFPS->m_tag = "UI Entity";
 		AddEntity(eFPS);
 
+
+		
+
 		Ref<SpriteComponent> sp = GEngine::CreateGameObject<SpriteComponent>();
 		eFPS->AddComponent(sp);
 
@@ -117,9 +120,12 @@ public:
        
 		eFPS->AddComponent(FPSuiComponent);
 		GEngine::Ref<GEngine::Texture2D > buttonTexture = GEngine::Texture2D::Create("Content/Textures/back_button.png");
-		float size = max((float)Application::GetWidth() / (float)Application::GetUIResolutionWidth(), (float)Application::GetHeight() / (float)Application::GetUIResolutionHeight());
-		float buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 6.25f;
-		float buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 6.25f;
+		float sizeX = (float)Application::GetWidth() / (float)Application::GetUIResolutionWidth();
+		float sizeY = (float)Application::GetHeight() / (float)Application::GetUIResolutionHeight();
+
+		
+		float buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 6.25f;
+		float buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 6.25f;
 		GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
 			glm::vec3(.85, .90, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
 		eFPS->AddComponent(button);
@@ -127,12 +133,27 @@ public:
 		float lastButtonX = buttonX;
 		float lastButtonY = buttonY;
 		buttonTexture = GEngine::Texture2D::Create("Content/Textures/videoLife_button_7.png");
-		buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
-		buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
+		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
+		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
 		GEngine::Ref<GEngine::ButtonComponent> button2 = GEngine::CreateGameObject<GEngine::ButtonComponent>(
 			glm::vec3(.8 - (lastButtonX / 2.f) - buttonX/2.f, .90, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
 		eFPS->AddComponent(button2);
 		button2->SetImageTexture(buttonTexture);
+
+		buttonTexture = Texture2D::Create("Content/Textures/dialogFrame.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
+		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight())*1.79f;
+		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth())*1.79f;
+		buttonX = GEMath::MapRange(buttonTexture->GetWidth(), 0, GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight()), 0, 1);
+		buttonY = GEMath::MapRange(buttonTexture->GetHeight(), 0, GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight()), 0, 1);
+		FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { buttonX*1.125f, buttonY*1.125f, 1 }, { 1,1,1,1 }, buttonTexture);
+
+		buttonTexture = Texture2D::Create("Content/Textures/wiz10_face.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
+		buttonY = GEMath::MapRange(buttonTexture->GetWidth(), 0, GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight()), 0, 1);
+		buttonX = GEMath::MapRange(buttonTexture->GetHeight(), 0, GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight()), 0, 1);
+		FPSuiComponent->CreateQuad({ -.735f,.5f,4 }, 0, { buttonX*.275f, buttonY*.275f, 1 }, { 1,1,1,1 }, buttonTexture);
+
+		FPSuiComponent->CreateText("Wizard", font, { -.45f, .55f, 6.f }, { .5f, .5f, 2.f }, { 1,1,1,1 });
+		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here!", font, { -.45f, .5f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
 
 		button->SetOnEvent([](const GEngine::Event& e) {
 
@@ -170,6 +191,9 @@ public:
 
 		Ref<BackgroundEntity> bg = CreateGameObject<BackgroundEntity>();
 		AddEntity(bg);
+
+		//Ref<AudioComponent> audioS = CreateGameObject<AudioComponent>("Content/Audio/countdown.ogg", true, true, true);
+		//bg->AddComponent(audioS);
 
 		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(0,-7.9, 3), glm::vec2(25, 1), 0.f,"ground"));
 		AddEntity(CreateGameObject<ColliderEntity>(glm::vec3(-11.6f, -5, 3), glm::vec2(1.f, 25),.5f, "wall"));
@@ -313,7 +337,7 @@ public:
 	{
 		SetupCamera();
 
-		font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f );
+		font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f );
 		font->LoadCharactersEN();
 
 	}

@@ -20,9 +20,17 @@ namespace GEngine {
 		GE_CORE_DEBUG("DESTROYING SOURCE");
 	}
 
+
+	static bool isPlaying(uint32_t source) {
+		ALenum state;
+		alGetSourcei(source, AL_SOURCE_STATE, &state);
+		return state == AL_PLAYING;
+
+	}
+
 	void OpenAL_source::Play()
 	{
-		if (!b_isPlaying) {
+		if (!IsPlaying()) {
 			b_isPlaying = true;
 			alSourcePlay(m_audioData.source);
 		}
@@ -30,21 +38,25 @@ namespace GEngine {
 
 	void OpenAL_source::Pause()
 	{
-		if (b_isPlaying) {
-			b_isPlaying = false;
-			alSourceStop(m_audioData.source);
-		}
+		b_isPlaying = false;
+		alSourceStop(m_audioData.source);	
 	}
 
     void OpenAL_source::Unload() {
-        if (b_isPlaying)
+        if (IsPlaying())
             alSourceStop(m_audioData.source);
     }
 
     void OpenAL_source::Reload() {
-        if (b_isPlaying)
+        if (IsPlaying())
             alSourcePlay(m_audioData.source);
     }
+
+	bool OpenAL_source::IsPlaying()
+	{
+		b_isPlaying = isPlaying(m_audioData.source);
+		return b_isPlaying;
+	}
 
 	void OpenAL_source::SetStatic(bool b)
 	{
@@ -55,6 +67,7 @@ namespace GEngine {
 	void OpenAL_source::SetLoop(bool b)
 	{
 		b_loop = b;
+		alSourcei(m_audioData.source, AL_LOOPING, b);
 	}
 
 	void OpenAL_source::Destroy()
@@ -74,7 +87,9 @@ namespace GEngine {
 
 	void OpenAL_source::Seek(float time)
 	{
-		AudioManager::ResetBuffers(self.lock());
+		int tot = 0;
+		alGetBufferi(m_audioData.buffers[0], AL_SIZE, &tot);
+		alSourcei(m_audioData.source, AL_BYTE_OFFSET, tot * time);
 	}
 
 	void OpenAL_source::SetPosition(const glm::vec3& pos)

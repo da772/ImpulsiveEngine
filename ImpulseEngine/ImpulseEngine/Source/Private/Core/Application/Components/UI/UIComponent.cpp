@@ -86,8 +86,8 @@ namespace GEngine {
 
 		/* Should use Framebuffer size of pipeline */
 		int width, height;
-		width = 1080;//GEngine::Application::GetApp()->GetWindow()->GetWidth();
-		height = 1920;//GEngine::Application::GetApp()->GetWindow()->GetHeight();
+		width = GEngine::Application::GetApp()->GetUIResolutionWidth();
+		height = GEngine::Application::GetApp()->GetUIResolutionHeight();
 
 		char hash[16];
 		Utility::GenerateHash(hash, 16);
@@ -95,7 +95,7 @@ namespace GEngine {
 			Utility::GenerateHash(hash, 16);
 		}
 		
-		std::vector<CharacterData> data = font->DrawString(string, 2, width, height);
+		std::vector<CharacterData> data = font->DrawString(string,  scale.z/scale.x, width, height);
 		std::vector<ShapeID> ids;
         
 		for (CharacterData& d : data) {

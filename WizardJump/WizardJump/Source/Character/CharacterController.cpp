@@ -15,7 +15,7 @@ void CharacterController::OnBegin()
 	startTime = Time::GetEpochTimeNS();
 	bodyComp = CreateGameObject<CharacterBody>();
 	GetEntity()->AddComponent(bodyComp);
-	jumpSound = CreateGameObject<AudioComponent>("Content/Audio/testJump01.ogg", false, false, true);
+	jumpSound = CreateGameObject<AudioComponent>("Content/Audio/testJump01.ogg", false, false, false, .75f);
 	landSound = CreateGameObject<AudioComponent>("Content/Audio/dink.ogg", false, false, true);
 	//musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
 
