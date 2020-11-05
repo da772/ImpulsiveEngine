@@ -4,8 +4,8 @@ namespace GEngine {
 
 	class FileData {
 	public:
-		inline FileData(uint64_t size, unsigned char* data);
-		inline ~FileData();
+		FileData(uint64_t size, unsigned char* data);
+		~FileData();
 
 
 		inline uint64_t GetDataSize() const { return m_Size - 1; }
@@ -19,6 +19,12 @@ namespace GEngine {
 			return m_Data;
 		};
 
+		inline void Clear() {
+			if (m_Data != nullptr)
+				free(m_Data);
+			m_Size = 0;
+			m_Data = nullptr;
+		}
 
 
 	private:
@@ -32,11 +38,11 @@ namespace GEngine {
 		
 		static void PakDirectory(std::string src, std::string out, bool srcRelative = true);
 		static void Copy(std::string src, std::string out, bool srcRelative = true);
-		static void LoadPak(std::string path, bool setDefault = true);
-		static Ref<FileData> LoadFileFromPak(std::string path, std::string pak = "");
+		static void LoadPak(const std::string path, bool setDefault = true);
+		static Ref<FileData> LoadFileFromPak(const std::string& path, std::string pak = "");
 		static void UnloadPak();
-		static void SetDefaultPak(std::string pak);
-		static std::string FilePath(std::string path);
+		static void SetDefaultPak(const std::string& pak);
+		static std::string FilePath(const std::string& path);
 		static std::string GetExecutablePath();
 		static std::string GetExecutableDir();
 		static std::string GetParentExecuteableDir(int levelsUp);
@@ -45,7 +51,7 @@ namespace GEngine {
 
 	private:
 		static std::unordered_map<std::string, Ref<FileData>> s_fileMap;
-		static Ref<FileData> LoadFileFromPakFile(std::string file, std::string pak);
+		static Ref<FileData> LoadFileFromPakFile(const std::string& file, const std::string pak);
 		static std::string s_pakDir;
 
 	};

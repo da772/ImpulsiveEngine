@@ -383,6 +383,14 @@ namespace GEngine {
 		RenderCommand::DrawText3D(txt, color, scale, model, Renderer::s_SceneData->ViewMatrix, Renderer::s_SceneData->ProjectionMatrix, center);
 	}
 
+	void Renderer::SetRenderScale(const float f)
+	{
+		renderScale = f;
+		for (const FPipeline p : queue) {
+			p.p->SetSize(p.p->GetWidth(), p.p->GetHeight());
+		}
+	}
+
 	const float Renderer::GetRenderScale()
 	{
 		return renderScale; 

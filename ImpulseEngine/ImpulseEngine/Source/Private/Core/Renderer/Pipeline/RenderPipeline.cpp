@@ -76,7 +76,9 @@ namespace GEngine {
 
 	void RenderPipeline::SetSize(const int width, const int height)
 	{
-		m_frameBuffer->UpdateSize(width, height);
+		m_width = width;
+		m_height = height;
+		m_frameBuffer->UpdateSize(width*m_renderScale, height * m_renderScale);
 	}
 
 	void RenderPipeline::Unload()

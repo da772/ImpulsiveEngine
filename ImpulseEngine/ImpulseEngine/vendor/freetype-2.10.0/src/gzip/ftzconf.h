@@ -12,6 +12,7 @@
  * If you *really* need a unique prefix for all types and library functions,
  * compile with -DZ_PREFIX. The "standard" zlib should be compiled without it.
  */
+#define Z_PREFIX
 #ifdef Z_PREFIX
 #  define deflateInit_         z_deflateInit_
 #  define deflate              z_deflate

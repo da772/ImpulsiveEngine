@@ -33,6 +33,9 @@ namespace GEngine {
 		inline const std::function<void()>& GetShaderStartFunction() { return m_shaderStartFunc; }
 		inline const std::function<void()>& GetShaderEndFunction() { return m_shaderEndFunc; }
 
+		inline const uint32_t GetWidth() const { return m_width; }
+		inline const uint32_t GetHeight () const { return m_height; }
+
 	protected:
 		std::vector<Ref<Renderable>> renderables;
 		std::mutex renderMutex;
@@ -42,6 +45,7 @@ namespace GEngine {
 		Ref<Shader> m_shader;
 		std::string m_name = "";
 		float m_renderScale = 1.f;
+		uint32_t m_width = 0, m_height = 0;
 		uint32_t m_textureFlags = 1161;//TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear;
 
 	};

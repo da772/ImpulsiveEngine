@@ -84,5 +84,8 @@
 
 #include "Public/Core/Renderer/Graphics/BatchRenderer.h"
 
+
+#include "Public/Core/Hardware/DeviceInfo.h"
+
 #endif
 

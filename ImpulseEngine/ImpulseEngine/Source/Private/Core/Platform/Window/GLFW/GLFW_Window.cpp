@@ -6,6 +6,7 @@
 #include "Public/Core/Events/KeyEvent.h"
 #include "Public/Core/Renderer/RenderCommand.h"
 #include "Public/Core/Renderer/Renderer.h"
+#include "Public/Core/Application/Application.h"
 
 #ifdef GE_WINDOW_API_GLFW
 #include <GLFW/glfw3.h>
@@ -52,12 +53,11 @@ namespace GEngine {
 			if (GraphicsContext::GetGraphicsApi() == FGraphicsApi::OPENGL) {
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 				glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, 1);
-				glfwWindowHint(GLFW_SAMPLES, 4);
+				const uint8_t samples = Application::GetRenderSettings().samples;
+				if (samples)
+					glfwWindowHint(GLFW_SAMPLES, samples);
 			}
 
-
-
-			
 			s_GLFWInitialized = true;
 		}
 

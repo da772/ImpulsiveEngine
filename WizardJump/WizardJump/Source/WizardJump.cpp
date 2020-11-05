@@ -80,7 +80,7 @@ WizardJump::WizardJump()
 	this->m_height = 960;
 	this->title = "WizardJump";
 	s_debugTools = false;
-	Renderer::SetRenderScale(1.f);
+	
 	
 	if (s_debugTools) {
 		this->m_width = 1280;
@@ -95,7 +95,9 @@ WizardJump::WizardJump()
 	GEngine::FileSystem::LoadPak("Data/Content.pak");
 	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"), 
 		GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);
-
+	GE_LOG_INFO("Cores: {0}, Freq: {1}", DeviceInfo::GetCpuCount(), DeviceInfo::GetCpuFreq());
+	SetRenderScale(1.f);
+	SetRenderSamples(0);
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());

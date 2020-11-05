@@ -76,7 +76,7 @@ namespace GEngine {
 		static void DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center = true);
 
 		static void DrawText3D_Billboard(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center = true);
-		inline static void SetRenderScale(const float f) { renderScale = f; }
+		static void SetRenderScale(const float f);
 		static const float GetRenderScale();
 		static int GetMaxTextureSlots();
 

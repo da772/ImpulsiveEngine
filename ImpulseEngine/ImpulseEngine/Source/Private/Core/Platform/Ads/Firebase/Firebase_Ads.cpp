@@ -120,18 +120,16 @@ namespace GEngine {
 						}
 						m_rewardAdInit = true;
 						GE_CORE_DEBUG("Reward Video Initalized!");
-					}
-					if (m_userId.size() > 0) {
-						ThreadPool::AddMainThreadFunction([this]() {
+						if (m_userId.size() > 0) {
 #ifdef GE_PLATFORM_ANDROID
 							AndroidUtil::SetRewardUserId_Google(m_userId);
 #endif
-							std::lock_guard<std::mutex> guard(m_initMutex);
-							m_initalizing = false;
+#ifdef GE_PLATFORM_IOS
+							//@TODO Implement iOS Reward User ID
+#endif
+						}
 
-							});
 					}
-					
 				}
 
 				GE_CORE_INFO("Firebase App Initialized!");

@@ -16,6 +16,7 @@
 #include "Public/Core/Renderer/RenderCommand.h"
 
 #include "Public/Core/Renderer/Camera.h"
+#include "Public/Core/Renderer/RenderSettings.h"
 
 
 
@@ -25,7 +26,8 @@ namespace GEngine {
 	class Shader;
 	class Timestep;
 	class CameraController;
-	
+
+
 	class GE_API Application
 	{
 	public:
@@ -113,6 +115,12 @@ namespace GEngine {
 		static bool InputEnabled();
 		static void SetInputEnabled(bool b);
 
+		static inline const struct RenderSettings& GetRenderSettings() { return s_Instance->m_renderSettings; }
+
+		inline void SetRenderScale(const float i) { m_renderSettings.renderScale = i; Renderer::SetRenderScale(m_renderSettings.renderScale); }
+		inline void SetRenderSamples(uint8_t i) { m_renderSettings.samples = i; }
+		
+
 	protected:
 		void SetWindowApi(const FWindowApi& windowApi);
 		void SetGraphicsApi(const FGraphicsApi& graphicsApi);
@@ -125,7 +133,7 @@ namespace GEngine {
 		FGraphicsApi GetDefaultGraphicsApi();
 
 		inline void SetUIResolution(const int width, const int height) { m_uiResolutionWidth = width; m_uiResolutionHeight = height;};
-
+		struct RenderSettings m_renderSettings;
 		bool m_pause = false;
 
 		double m_LastFrameTime = 0;

@@ -22,6 +22,7 @@ IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
 IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
 IncludeDir["OpenAL"] = "ImpulseEngine/vendor/OpenAL/include"
 IncludeDir["Vorbis"] = "ImpulseEngine/vendor/Vorbis/include"
+IncludeDir["zlib"] = "ImpulseEngine/vendor/zlib/include"
 
 
 group "Dependencies"
@@ -30,6 +31,7 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/imgui"
 	include "ImpulseEngine/ImpulseEngine/vendor/Enet"
 	include "ImpulseEngine/ImpulseEngine/vendor/miniupnpc"
+	include "ImpulseEngine/ImpulseEngine/vendor/zlib"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
 	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
@@ -37,6 +39,7 @@ group "Dependencies"
 		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
 	end
 	include "ImpulseEngine/ImpulseEngine/vendor/Vorbis"
+	
 
 group ""
 
@@ -90,6 +93,7 @@ project "ImpulseEngine"
 		"%{IncludeDir.box2d}",
 		"%{IncludeDir.OpenAL}",
 		"%{IncludeDir.Vorbis}",
+		"%{IncludeDir.zlib}",
 
 	}
 
@@ -105,9 +109,11 @@ project "ImpulseEngine"
 		"ImGui",
 		"Enet",
 		"miniupnpc",
+		"zlib",
 		"freetype-gl",
 		"box2d",
-		"Vorbis"
+		"Vorbis",
+		
 	}
 	if _OPTIONS['build-openal'] then	
 	links
@@ -366,7 +372,7 @@ project "ImpulseEngine"
 			"opengl32.lib",
 			"vulkan-1.lib",
 			"Glad",
-			"GLFW"
+			"GLFW",
 		}
 
 		filter "configurations:Debug"
