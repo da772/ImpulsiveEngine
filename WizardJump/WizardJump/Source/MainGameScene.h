@@ -172,11 +172,14 @@ public:
         button2->SetOnEvent([](const GEngine::Event& e){
 			GE_CORE_DEBUG("TOUCH RELEASED!");
 			if (e.GetEventType() == EventType::TouchReleased) {
+				GE_CORE_DEBUG("AD REQUESTED!");
 				if (GEngine::AdManager::AdLoaded()) {
+					GE_CORE_DEBUG("AD LOADED!");
 					GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
 						[](int state) { GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });
 				}
 				else {
+					GE_CORE_DEBUG("AD LOADING!");
 					GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED");
 					GEngine::AdManager::ShowRewardAd([](int amt, std::string type) { GE_LOG_INFO("Reward user with {0}, {1}", amt, type); },
 						[](int state) {  GE_LOG_DEBUG("Loading AD: "); GEngine::AdManager::LoadRewardAd([]() {GE_LOG_INFO("Ad Loaded!"); }); });

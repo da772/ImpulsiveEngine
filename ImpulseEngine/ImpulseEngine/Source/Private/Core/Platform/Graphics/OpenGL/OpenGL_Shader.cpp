@@ -138,7 +138,7 @@ namespace GEngine {
 			}
 
 
-			GE_CORE_ERROR("{0}", infoLog.data());
+			GE_CORE_ERROR("{0}, {1}", infoLog.data(), m_Name);
 			GE_CORE_ASSERT(false, "OpenGL: Shader Link compilation failure!");
 			return;
 		}

@@ -167,22 +167,22 @@ namespace GEngine {
 			}
 			{
 				
-				if (bInit) {
-					while (bInit) {
-						{
-							if (Time::GetEpochTimeSec() - ct > m_timeout) {
-								break;
-							}
-							std::lock_guard<std::mutex> guard(m_initMutex);
-							bInit = m_initalizing;
+				
+				while (!bInit) {
+					{
+						if (Time::GetEpochTimeSec() - ct > m_timeout) {
+							break;
 						}
+						std::lock_guard<std::mutex> guard(m_initMutex);
+						bInit = m_initalizing;
 					}
-					if (bInit) {
-						GE_CORE_ERROR("FAILED TO INITALIZE REWARD AD");
-						return;
-					}
-					
 				}
+				if (!bInit) {
+					GE_CORE_ERROR("FAILED TO INITALIZE REWARD AD");
+					return;
+				}
+					
+				
 			}
 			{
 				std::lock_guard<std::mutex> guard(m_initMutex);

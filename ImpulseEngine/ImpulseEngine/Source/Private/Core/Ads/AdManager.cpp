@@ -13,8 +13,6 @@ namespace GEngine {
 	{
 		if (m_ad == nullptr) {
 			m_ad = Ad::Create(static_cast<EAdPlatforms>(GE_AD_PLATFORM));
-            if (m_ad)
-                m_ad->Initialize();
 			return;
 		}
 		GE_CORE_ASSERT(false, "ADS ALREADY CREATED");

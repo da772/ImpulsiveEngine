@@ -14,44 +14,36 @@ out vec3 v_Position;
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
-out float v_TexSlot;
+out int v_TexSlot;
 out vec2 v_TexScale;
-out vec2 v_Position2D;
-out vec2 r_Position;
 out float v_AlphaChannel;
 
 uniform mat4 u_ViewProjection;
         
 void main() {
-    v_Position = a_Position;
     v_Color = a_Color;
-    v_TexSlot = a_TexSlot;
+    v_TexSlot = int(a_TexSlot);
     v_AlphaChannel = a_AlphaChannel;
     v_TexCoord = a_TexCoord;
     v_TexScale = a_TexScale;
-    v_Position2D = a_Position2D;
     gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
-    r_Position =  gl_Position.xy;
 }
 
 #type fragment
 #version 300 es
-precision highp float;
-layout(location = 0) out vec4 color;
+precision mediump float;
+layout(location = 0) out lowp vec4 color;
 
-in vec3 v_Position;
-in vec2 r_Position; 
-in vec4 v_Color;
-in vec2 v_TexCoord;
-in float v_TexSlot;
-in vec2 v_TexScale;
-in float v_AlphaChannel;
-in vec2 v_Position2D;
+in lowp vec4 v_Color;
+in lowp vec2 v_TexCoord;
+in lowp int v_TexSlot;
+in mediump vec2 v_TexScale;
+in lowp float v_AlphaChannel;
 
 uniform sampler2D u_Textures[32];
 
 void main() {
-    vec4 texColor = v_Color;
+    lowp vec4 texColor = v_Color;
     switch(int(v_TexSlot))
         {
             default:
@@ -89,21 +81,5 @@ void main() {
             case 31: texColor *= texture(u_Textures[31], v_TexCoord * v_TexScale); break;
         }
 
-   /*
-    float distance = length( v_Position.xy/v_TexScale - v_Position2D/v_TexScale);
-
-    float maxDistance = pow(v_TexScale.x, 0.23);
-    float quadDistance = pow(distance, 0.23);
-
-    float quadIntensit = 1.0 - (min(quadDistance, maxDistance)/maxDistance)+.2;
-
-    color = texColor * vec4(quadIntensit, quadIntensit, quadIntensit, 1);
-
-*/
-    //color = vec4(texColor.xyz, texColor.w*v_TexCoord.x);
-    //color = vec4(texColor.xyz, (texColor.w-clamp((clamp(length( v_Position.xy/v_TexScale - v_Position2D/v_TexScale),0,texColor.w)-.25),0.0,1.0)) );
-
     color = vec4(texColor.xyz, texColor.w*(1.0-v_AlphaChannel));
-
-    //color = texColor;
 }

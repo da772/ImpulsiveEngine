@@ -10,48 +10,39 @@ layout(location = 4) in vec2 a_TexScale;
 layout(location = 5) in float a_AlphaChannel;
 layout(location = 6) in vec2 a_Position2D;
 
-out vec3 v_Position;
-
-out vec4 v_Color;
-out vec2 v_TexCoord;
-out float v_TexSlot;
-out vec2 v_TexScale;
-out vec2 v_Position2D;
-out vec2 r_Position;
-out float v_AlphaChannel;
+out lowp vec4 v_Color;
+out lowp vec2 v_TexCoord;
+flat out lowp int v_TexSlot;
+flat out mediump vec2 v_TexScale;
+out lowp float v_AlphaChannel;
 
 uniform mat4 u_ViewProjection;
         
 void main() {
-    v_Position = a_Position;
     v_Color = a_Color;
-    v_TexSlot = a_TexSlot;
+    v_TexSlot = int(a_TexSlot);
     v_AlphaChannel = a_AlphaChannel;
     v_TexCoord = a_TexCoord;
     v_TexScale = a_TexScale;
-    v_Position2D = a_Position2D;
     gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
-    r_Position =  gl_Position.xy;
 }
 
 #type fragment
 #version 300 es
-precision highp float;
-layout(location = 0) out vec4 color;
+precision mediump float;
 
-in vec3 v_Position;
-in vec2 r_Position; 
-in vec4 v_Color;
-in vec2 v_TexCoord;
-in float v_TexSlot;
-in vec2 v_TexScale;
-in float v_AlphaChannel;
-in vec2 v_Position2D;
+layout(location = 0) out lowp vec4 color;
+
+in lowp vec4 v_Color;
+in lowp vec2 v_TexCoord;
+flat in lowp int v_TexSlot;
+flat in mediump vec2 v_TexScale;
+in lowp float v_AlphaChannel;
 
 uniform sampler2D u_Textures[16];
 
 void main() {
-    vec4 texColor = v_Color;
+    lowp vec4 texColor = v_Color;
     switch(int(v_TexSlot))
         {
             default:
