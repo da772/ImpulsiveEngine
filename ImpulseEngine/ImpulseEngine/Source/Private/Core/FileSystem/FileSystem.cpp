@@ -152,7 +152,7 @@ namespace GEngine {
 		infstream.opaque = Z_NULL;
 
 		// Uncompress from
-		infstream.avail_in = (uInt)((char*)fd->GetDataSize());
+		infstream.avail_in = (uInt)fd->GetDataSize();
 		infstream.next_in = (Bytef*)fd->GetDataAsString();
 		// Uncompress to
 		infstream.avail_out = (uInt)fd->GetDataSize();
@@ -365,7 +365,7 @@ namespace GEngine {
 		pid = getpid();
 		ret = proc_pidpath(pid, pathBuf, sizeof(pathBuf));
 
-		return const std::string&(pathBuf);
+		return std::string(pathBuf);
 #endif
 #if defined(GE_PLATFORM_LINUX) || defined(GE_MINGW_)
 
@@ -373,7 +373,7 @@ namespace GEngine {
 		ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);
 		if (len != -1) {
 			buff[len] = '\0';
-			return const std::string&(buff);
+			return std::string(buff);
 		}
 
 #endif
@@ -393,7 +393,7 @@ namespace GEngine {
 		// Convert the string reference into a C string
 		const char* path = CFStringGetCStringPtr(dirSTR, encodingMethod);
 		// GE_CORE_DEBUG("{0}", path);
-        const std::string& rPath =const std::string&(path) + const std::string&("/");
+        const std::string& rPath =  std::string(path) +  std::string("/");
         free((void*)dirSTR);
         return rPath;
 #endif

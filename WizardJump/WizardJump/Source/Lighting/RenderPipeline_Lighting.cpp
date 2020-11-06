@@ -14,7 +14,7 @@ RenderPipeline_Lighting::RenderPipeline_Lighting(const float renderScale) : Rend
 	m_shaderColor = Shader::Create("Content/shaders/ColorShader.glsl");
 	m_shaderMask = Shader::Create("Content/shaders/MaskShader.glsl");
 	//m_shader = Shader::Create("Content/shaders/LightGlow.glsl");
-	m_shaderBlur = Shader::Create("Content/shaders/GaussianBlurShader.glsl");
+	//m_shaderBlur = Shader::Create("Content/shaders/GaussianBlurShader.glsl");
 //	m_shader = Shader::Create("Content/shaders/GaussianBlurShader.glsl");
 
 	// Set Shader function to add blur parameters
