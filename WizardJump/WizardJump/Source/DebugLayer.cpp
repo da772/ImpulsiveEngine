@@ -277,7 +277,7 @@ glm::vec2 lastFrameSize;
 glm::vec2 finalSize = { 0, 0 };
 glm::vec2 originalSize = { 0,0 };
 
-glm::vec2 scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHeight) {
+static glm::vec2 scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHeight) {
 
 
 	// calc
