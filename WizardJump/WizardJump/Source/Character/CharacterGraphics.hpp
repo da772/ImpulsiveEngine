@@ -36,7 +36,13 @@ public:
 		if (animState == MovementAnim::Walk) return;
 		animState = MovementAnim::Walk;
 		m_animationComp->SetFrameAnimation(8, 8, true, [this, f](int frame) {
-			if (frame == 8) {
+			if (frame == 2) {
+				FootDown(0);
+			}
+			else if (frame == 6) {
+				FootDown(1);
+			}
+			else if (frame == 8) {
 				if (f) {
 					bAnimating = false;
 					ThreadPool::AddMainThreadFunction([f]() {
@@ -49,15 +55,6 @@ public:
 			bIsWalking = true;
 			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame-1 : frame, 1), glm::vec2(74, 74), glm::vec2(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
-			if (frame == 8) {
-				bAnimating = false;
-				if (f) {
-					ThreadPool::AddMainThreadFunction([f]() {
-						if (f)
-							f();
-						});
-				}
-			}
 			
 		});
 	}
@@ -111,7 +108,9 @@ public:
 		bAnimating = true;
 		animState = MovementAnim::Landing;
 		m_animationComp->SetFrameAnimation(8, 4, false, [this, f](int frame) {
-			if (frame == 4) {
+			if (frame == 1) {
+				FootDown(2);
+			} else if(frame == 4) {
 				if (f) {
 					bAnimating = false;
 					ThreadPool::AddMainThreadFunction([f]() {
@@ -133,7 +132,9 @@ public:
         bAnimating = true;
         animState = MovementAnim::Landing;
         m_animationComp->SetFrameAnimation(8, 3, false, [this, f](int frame) {
-            if (frame == 3) {
+			if (frame == 1) {
+				FootDown(2);
+			} else if (frame == 3) {
                 if (f) {
                     bAnimating = false;
                     ThreadPool::AddMainThreadFunction([f]() {
@@ -143,8 +144,9 @@ public:
                     return;
                 }
                 return;
-            }
+            } 
             bIsWalking = false;
+			
             m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame+5 - 1 : frame+5, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
             SetSubTexture(quad, m_characterSpriteSheet);
             });
@@ -154,8 +156,8 @@ public:
 		if (animState == MovementAnim::Jump) return;
 		bAnimating = true;
 		animState = MovementAnim::Jump;
-		m_animationComp->SetFrameAnimation(8, 3, false, [this, f](int frame) {
-			if (frame == 3) {
+		m_animationComp->SetFrameAnimation(8, 2, false, [this, f](int frame) {
+			if (frame == 2) {
 				bAnimating = false;
 				if (f) {
 					ThreadPool::AddMainThreadFunction([f]() {
@@ -224,7 +226,8 @@ public:
 	}
 
 	void SetPowerBar(float amt) {
-		int frame = GEMath::clamp((int)GEMath::MapRange(amt, 0.f, 1.f, 0, 11),0 , 11);
+
+		int frame = amt >= .08f ? GEMath::clamp((int)GEMath::MapRange(amt, 0.f, 1.f, 0, 11), 0, 11) : 0;
 		powerIndicatorTexture->SetCoords({ frame,0 }, { 32,32 });
 		SetSubTexture(powerIndicator, powerIndicatorTexture);
 	}
@@ -240,6 +243,19 @@ public:
 		}
 	}
 
+	// called when foot touches ground (0 - left, 1 - right, 2 - both)
+	void FootDown(uint8_t foot) {
+		if (footDownCallback != nullptr) {
+			const std::function<void(const uint8_t)>& cb = footDownCallback;
+			ThreadPool::AddMainThreadFunction([cb, foot]() {
+				cb(foot);
+			});
+		}
+			
+	}
+
+	std::function<void(const uint8_t)> footDownCallback = nullptr;
+
 protected:
 
 	ShapeID directionIndicator = -1;
@@ -248,6 +264,8 @@ protected:
 	glm::vec3 powerIndicatorPos = glm::vec3(.45f, .45f, 5.f);
 	glm::vec3 powerIndicatorScale = glm::vec3(.5f, .5f, 1.f);
 	glm::vec4 powerIndicatorColor = glm::vec4(1, 1, 1, 0.f);
+
+	
 
 	glm::vec3 directionIndicatorPos = glm::vec3(0, .45f, 5.f);
 	glm::vec3 directionIndicatorScale = glm::vec3(.75f, .75f, 1.f);

@@ -17,7 +17,8 @@ public:
 
 	Ref<CharacterBody> bodyComp;
     Ref<AudioComponent> jumpSound;
-    Ref<AudioComponent> landSound;
+    Ref<AudioComponent> leftFootSound;
+	Ref<AudioComponent> rightFootSound;
     Ref<AudioComponent> musicSound;
     long long startTime;
 
@@ -30,13 +31,15 @@ protected:
 		bodyComp = nullptr;
 		graphicsComp = nullptr;
         jumpSound = nullptr;
-        landSound = nullptr;
+		leftFootSound = nullptr;
+		rightFootSound = nullptr;
 
 	}
 public:
 	bool bFalling = false;
 	bool bJumping = false;
 	bool bWalking = false;
+	bool bEnableInput = true;
 	const float walkAnimThreshold = .03f;
 	const float maxWalkSpeed = 2.5f;
     const int walkDelay = 125;

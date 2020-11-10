@@ -15,18 +15,48 @@ void CharacterController::OnBegin()
 	startTime = Time::GetEpochTimeNS();
 	bodyComp = CreateGameObject<CharacterBody>();
 	GetEntity()->AddComponent(bodyComp);
-	jumpSound = CreateGameObject<AudioComponent>("Content/Audio/testJump01.ogg", false, false, false, .75f);
-	landSound = CreateGameObject<AudioComponent>("Content/Audio/dink.ogg", false, false, true);
+	jumpSound = CreateGameObject<AudioComponent>("Content/Audio/jumpRustling.ogg", false, false, true, .75f);
+    leftFootSound = CreateGameObject<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
+    rightFootSound = CreateGameObject<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
 	//musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
 
-	GetEntity()->AddComponent(landSound);
+	GetEntity()->AddComponent(leftFootSound);
+	GetEntity()->AddComponent(rightFootSound);
 	GetEntity()->AddComponent(jumpSound);
 	//GetEntity()->AddComponent(musicSound);
 	graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
 
-	
-
-
+    graphicsComp->footDownCallback = [this](uint8_t foot) {
+        switch (foot) {
+        default:
+        case 0:
+        {
+            if (!leftFootSound->IsPlaying()) {
+                leftFootSound->SetPitch(1.f + Random::FloatRange(0.f, 0.15f));
+                leftFootSound->SetPlaying(true);
+            }
+            break;
+        }
+        case 1: 
+        {
+            if (!rightFootSound->IsPlaying()) {
+                rightFootSound->SetPitch(1.f + Random::FloatRange(0.f, 0.15f));
+                rightFootSound->SetPlaying(true);
+            }
+            break;
+        }
+        case 2:
+        {
+            if (!rightFootSound->IsPlaying() && !leftFootSound->IsPlaying()) {
+                leftFootSound->SetPitch(1.f + Random::FloatRange(0.f, .15f));
+                rightFootSound->SetPitch(1.f + Random::FloatRange(0.f, .15f));
+                rightFootSound->SetPlaying(true);
+                leftFootSound->SetPlaying(true);
+            }
+            break;
+        }
+        }
+    };
 	
 }
 
@@ -160,11 +190,14 @@ void CharacterController::OnUpdate(Timestep timestep) {
             if (graphicsComp->dir != nDir) {
                 graphicsComp->dir = nDir;
                 graphicsComp->animState = MovementAnim::None;
-                graphicsComp->Falling();
+                if (graphicsComp->animState != MovementAnim::Jump)
+                    graphicsComp->Falling();
             }
         }
-        bFalling = true;
-        graphicsComp->Falling();
+        if (graphicsComp->animState != MovementAnim::Jump) {
+            bFalling = true;
+            graphicsComp->Falling();
+        }
     }
 
 
@@ -173,28 +206,28 @@ void CharacterController::OnUpdate(Timestep timestep) {
             graphicsComp->dir = vel.x > .01f ? 1 : vel.x < -.01f ? -1 : graphicsComp->dir;
             if (ground) {
                 if (bFalling) {
-                    if (vel.y <= 0.f) {
+                    if (abs(vel.y) <= 0.001f) {
                         bodyComp->SetVelocityX(0);
-                        landSound->SetPlaying(true);
                         graphicsComp->LandIdle([this]() { bFalling = false;  graphicsComp->Idle(); });
                     }
                 }
                 else {
-                    if (graphicsComp->animState != MovementAnim::Walk) {
+                    if (graphicsComp->animState != MovementAnim::Walk && graphicsComp->animState != MovementAnim::Falling && graphicsComp->animState != MovementAnim::Jump) {
                         graphicsComp->Walk();
                     }
                 }
             }
         }
         else if (vel.x <= walkAnimThreshold && vel.x >= -walkAnimThreshold) {
-            //graphicsComp->dir = vel.x > 0.f ? 1 : -1;
             if (ground) {
                 if (bFalling) {
-                    landSound->SetPlaying(true);
-                    graphicsComp->LandIdle([this]() { if (!graphicsComp) return; bFalling = false;  graphicsComp->Idle(); });
+                    if (abs(vel.y) <= 0.001f) {
+                        graphicsComp->LandIdle([this]() { if (!graphicsComp) return; bFalling = false;  graphicsComp->Idle(); });
+                    }
                 }
                 else {
-                    graphicsComp->Idle();
+                    if (graphicsComp->animState != MovementAnim::Jump)
+                        graphicsComp->Idle();
                 }
             }
         }
@@ -202,6 +235,8 @@ void CharacterController::OnUpdate(Timestep timestep) {
 }
 
 void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Timestep timestep) {
+    if (!bEnableInput)
+        return;
     const glm::vec2& vel = bodyComp->GetVelocity();
     const bool ground = bodyComp->isGrounded();
     for (const FTouchInfo& touch : m) {
@@ -248,18 +283,19 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
                 float yDistance = (touch.y - startyPos + Application::GetHeight() * jumpThreshold) / Application::GetHeight();
 
                 float xDistance = 2.f * -(lastxpos - (float)Application::GetWidth() / 2.f) / (float)Application::GetWidth();
-                GE_CORE_DEBUG("Last Pos: {0}, Current Pos: {1}, Width: {2}, xDistance: {3}", lastxpos, touch.x, Application::GetWidth(), xDistance);
-                if (yDistance < .001f) {
+                GE_CORE_DEBUG("Last Pos: {0}, Current Pos: {1}, Width: {2}, xDistance: {3}, yDistance: {4}", lastxpos, touch.x, Application::GetWidth(), xDistance, yDistance);
+                if (yDistance < .08f) {
                     SetJumping(false);
                     graphicsComp->Idle();
                 }
                 else {
-                    graphicsComp->ShowDirectionIndicator(false);
-                    graphicsComp->JumpStart([this, xDistance, yDistance]() {
-                        SetJumping(false);
-                        jumpSound->SetPlaying(true);
+					graphicsComp->JumpStart([this, xDistance, yDistance]() {
+						graphicsComp->animState = MovementAnim::None;
                         bodyComp->SetVelocity(CalculateJumpVelocity(xDistance, yDistance));
-                        });
+						jumpSound->SetPlaying(true);
+						graphicsComp->ShowDirectionIndicator(false);
+						SetJumping(false);
+						});
                 }
             }
             if (bWalking) {
