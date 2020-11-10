@@ -142,19 +142,21 @@ public:
 		button2->SetImageTexture(buttonTexture);
 
 		buttonTexture = Texture2D::Create("Content/Textures/dialogFrame.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight())*1.79f;
-		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth())*1.79f;
-		buttonX = (float)buttonTexture->GetWidth() / (float)GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight());
-		buttonY = (float)buttonTexture->GetHeight() / (float)GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight());
-		
-		float ___scale = 1.125f;
-		FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { ___scale*(buttonX *Application::GetWidth()/(float)Application::GetWidth()), ___scale * (buttonY * (float)Application::GetHeight())/(float)Application::GetHeight(), 1 }, { 1,1,1,1 }, buttonTexture);
-
-		___scale = .275f;
+        bool wMax = Application::GetWidth() > Application::GetHeight();
+        bool twMax = buttonTexture->GetWidth() > buttonTexture->GetHeight();
+        
+        buttonX = (float)buttonTexture->GetWidth() / (float)Application::GetWidth();
+        buttonY = ((float)buttonTexture->GetHeight() / (float) Application::GetHeight()) * ((float)buttonTexture->GetWidth() / (float)buttonTexture->GetHeight()) * ((float)Application::GetWidth() / (float)Application::GetHeight());
+        float ___scale = 1.125f/buttonX ;
+		FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { (___scale*buttonX ), (___scale*buttonY), 1 }, { 1,1,1,1 }, buttonTexture);
+        ___scale = .25f;
 		buttonTexture = Texture2D::Create("Content/Textures/wiz10_face.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-		buttonX = (float)buttonTexture->GetWidth() / (float)GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight());
-		buttonY = (float)buttonTexture->GetHeight() / (float)GEMath::max(buttonTexture->GetWidth(), buttonTexture->GetHeight());
-		FPSuiComponent->CreateQuad({ -.735f,.5f,4 }, 0, { ___scale * (buttonX * Application::GetWidth() / (float)Application::GetWidth()), ___scale * (buttonY * (float)Application::GetHeight()) / (float)Application::GetHeight(), 1 }, { 1,1,1,1 }, buttonTexture);
+        buttonX = .275f;
+        buttonY = .235f;
+        ___scale = 1.f;
+        GE_CORE_DEBUG("PORTRAIT: {0}, {1}", buttonX, buttonY);
+        FPSuiComponent->CreateQuad({ -.745f,.5f, 6 }, 0, { ___scale * (buttonX), ___scale * (buttonY ), 1 }, { 1,1,1,1 }, buttonTexture);
+
 
 		FPSuiComponent->CreateText("Wizard", font, { -.45f, .55f, 6.f }, { .5f, .5f, 2.f }, { 1,1,1,1 });
 		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here!", font, { -.45f, .5f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
