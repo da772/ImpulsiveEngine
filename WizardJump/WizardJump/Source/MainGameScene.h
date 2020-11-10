@@ -158,8 +158,8 @@ public:
         FPSuiComponent->CreateQuad({ -.745f,.5f, 4 }, 0, { ___scale * (buttonX), ___scale * (buttonY ), 1 }, { 1,1,1,1 }, buttonTexture);
 
 
-		FPSuiComponent->CreateText("Wizard", font, { -.45f, .55f, 6.f }, { .5f, .5f, 2.f }, { 1,1,1,1 });
-		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here!", font, { -.45f, .5f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
+		FPSuiComponent->CreateText("Wizard", font, { -.45f, .545f, 6.f }, { .45f, .45f, 2.f }, { 1,1,1,1 });
+		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai", font, { -.45f, .49f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
 
 		button->SetOnEvent([](const GEngine::Event& e) {
 
