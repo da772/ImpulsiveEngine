@@ -79,8 +79,7 @@ namespace GEngine {
 	OpenAL_Context::~OpenAL_Context()
 	{
 		for (Ref<AudioSource> s : m_sources) {
-			alDeleteSources(1, &s->GetData().source);
-			alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
+			Destroy(s);
 		}
 
 		alcDestroyContext((ALCcontext*)ctx);
@@ -198,21 +197,25 @@ namespace GEngine {
 	
 	void OpenAL_Context::Update()
 	{
+		/*
 		for (Ref<AudioSource> s : m_sources) {
 			if (s->IsPlaying()) {
 				//UpdateStream(s);
 			}
 		}
+		*/
 	}
 
 
 	void OpenAL_Context::Destroy(Ref<AudioSource> s)
 	{
+		if (m_sources.find(s) == m_sources.end())
+			return;
 		m_sources.erase(s);
         alSourceStop(s->GetData().source);
+		alSourcei(s->GetData().source, AL_BUFFER, AL_NONE);
 		alDeleteSources(1, &s->GetData().source);
 		alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
-        alSourcei(s->GetData().source, AL_BUFFER, AL_NONE);
 		ov_clear(&dynamic_pointer_cast<OpenAL_source>(s)->oggFile);
 	}
 
@@ -378,7 +381,7 @@ namespace GEngine {
 		alCall(alSourcei, audioData->source, AL_BUFFER, audioData->buffers[0]);
 		//alCall(alSourceQueueBuffers, audioData->source, audioData->bufferNum, &audioData->buffers[0]);
 		alCall(alSourcePlay, s->GetData().source);
-		free(pcmout);
+		free((void*)pcmout);
 
 
 		/*

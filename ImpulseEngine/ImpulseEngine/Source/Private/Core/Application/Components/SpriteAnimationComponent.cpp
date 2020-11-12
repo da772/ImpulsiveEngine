@@ -15,10 +15,11 @@ namespace GEngine {
 	{
 		m_MaxFrames = maxFrames;
 		m_FPS = fps;
-		m_framePerMs = 1000.0 / fps;
+		m_framePerMs = 1000.0f / fps;
 		b_animateFrame = true;
 		b_loop = loop;
 		m_startTime = -1;
+		m_currentFrame = 0;
 		if (animateFrameFunction != nullptr) {
 			m_animateFrameFunction = animateFrameFunction;
 		}
@@ -33,7 +34,7 @@ namespace GEngine {
 	void SpriteAnimationComponent::SetFrameAnimationFPS(uint8_t fps)
 	{
 		m_FPS = fps;
-		m_framePerMs = 1000.0 / fps;
+		m_framePerMs = 1000.0f / fps;
 	}
 
 	void SpriteAnimationComponent::RemoveFrameAnimation()
@@ -60,12 +61,14 @@ namespace GEngine {
 			m_startTime = time;
 			int frameInc = 1;
 			if (frameInc >= m_MaxFrames) {
+				m_currentFrame = m_MaxFrames;
 				m_animateFrameFunction(m_MaxFrames);
 				m_startTime = time;
 				if (!b_loop)
 					b_animateFrame = false;
 				return;
 			}
+			m_currentFrame = frameInc;
 			m_animateFrameFunction(frameInc);
 			return;
 		}
@@ -80,6 +83,9 @@ namespace GEngine {
 					b_animateFrame = false;
 				return;
 			}
+			if (m_currentFrame == frameInc)
+				return;
+			m_currentFrame = frameInc;
 			m_animateFrameFunction(frameInc);
 			return;
 		}

@@ -17,7 +17,7 @@ namespace GEngine {
 
 	OpenAL_source::~OpenAL_source()
 	{
-		GE_CORE_DEBUG("DESTROYING SOURCE");
+
 	}
 
 
