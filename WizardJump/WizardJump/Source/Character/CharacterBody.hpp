@@ -11,27 +11,27 @@ public:
 	};
 	~CharacterBody() {};
 
-	void AddVelocity(glm::vec2 v) {
+	inline void AddVelocity(glm::vec2 v) {
 		m_quadCollider->IncreaseLinearVelocity(v.x, v.y);
 	}
 
-	void SetVelocityX(float x) {
+	inline void SetVelocityX(float x) {
 		m_quadCollider->SetVelocityX(x);
 	}
 	
-	void SetVelocityY(float y) {
+	inline void SetVelocityY(float y) {
 		m_quadCollider->SetVelocityY(y);
 	}
 
-	void SetVelocity(glm::vec2 v) {
+	inline void SetVelocity(glm::vec2 v) {
 		m_quadCollider->SetVelocity(v.x, v.y);
 	}
 
-	glm::vec2 GetVelocity() {
+	inline glm::vec2 GetVelocity() {
 		return m_quadCollider->GetLinearVelocity();
 	}
 
-	bool debug = true;
+	bool debug = false;
 	int groundedCount = 0;
 
 	bool isGrounded() { return groundedCount > 0; };
@@ -39,7 +39,7 @@ public:
 	Ref<QuadColliderComponent> m_quadCollider;
 	Ref<QuadColliderComponent> m_groundCollider;
 protected:
-	void OnBegin() override
+	inline void OnBegin() override
 	{
 		glm::vec2 pos = glm::vec2(0, .075f);
 		glm::vec2 scale = glm::vec2(.4f, 1.3f);
@@ -79,11 +79,10 @@ protected:
 		}
 
 		m_quadCollider->WakeBody();
-
 	}
 
 
-	void OnEnd() override
+	inline void OnEnd() override
 	{
 		m_quadCollider = nullptr;
 		m_debugSprite = nullptr;

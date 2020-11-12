@@ -6,7 +6,7 @@ namespace GEngine {
 	class RenderPipeline_2d : public RenderPipeline {
 
 	public:
-		RenderPipeline_2d(const float renderScale = 1.f);
+		RenderPipeline_2d(const float renderScale = 1.f, const char* name = "Renderpipeline_2d");
 		virtual ~RenderPipeline_2d();
 
 		virtual void RenderStart() override;

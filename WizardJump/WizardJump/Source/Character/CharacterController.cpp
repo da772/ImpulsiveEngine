@@ -65,7 +65,7 @@ void CharacterController::OnUpdate(Timestep timestep) {
 
 
     //if (trajectory_pos.size() > 0)
-      //  Renderer::DrawDebugLines(trajectory_pos, glm::vec4(1, 0, 0, 1.f));
+        //Renderer::DrawDebugLines(trajectory_pos, glm::vec4(1, 0, 0, 1.f));
     const glm::vec2& vel = bodyComp->GetVelocity();
     const bool ground = bodyComp->isGrounded();
     m = Mobile_Input::GetTouches();

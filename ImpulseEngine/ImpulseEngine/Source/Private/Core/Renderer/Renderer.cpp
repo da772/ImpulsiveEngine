@@ -83,7 +83,7 @@ namespace GEngine {
 	void Renderer::OnInit()
 	{
 		Renderer::AddPipeline("2d", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d(Renderer::GetRenderScale())), 0);
-		//Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d()), 500);
+		Renderer::AddPipeline("Debug2D", std::shared_ptr<RenderPipeline>(new RenderPipeline_2d(Renderer::GetRenderScale(), "Renderpipeline_Debug2D")), 498);
 		Renderer::AddPipeline("ui", std::shared_ptr<RenderPipeline>(new RenderPipeline_ui()), 1000);
 		Renderer::AddPipeline("viewport", std::shared_ptr<RenderPipeline>(new RenderPipeline_viewport()), 1500);
         const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
@@ -203,7 +203,7 @@ namespace GEngine {
 
 	void Renderer::EndScene()
 	{
-		//Renderer::queueId["Debug2D"].p->Clear();
+		Renderer::queueId["Debug2D"].p->Clear();
 		Renderer2D::EndScene();
 	}
 

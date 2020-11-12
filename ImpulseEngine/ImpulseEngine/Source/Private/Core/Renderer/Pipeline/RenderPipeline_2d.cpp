@@ -8,7 +8,7 @@
 
 namespace GEngine {
 
-	RenderPipeline_2d::RenderPipeline_2d(const float renderScale) : RenderPipeline("RenderPipeline_2d", renderScale, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest) {
+	RenderPipeline_2d::RenderPipeline_2d(const float renderScale, const char* name) : RenderPipeline(name, renderScale, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest) {
 
 	}
 

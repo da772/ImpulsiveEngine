@@ -147,13 +147,16 @@ public:
         
         buttonX = (float)buttonTexture->GetWidth() / (float)Application::GetWidth();
         buttonY = ((float)buttonTexture->GetHeight() / (float) Application::GetHeight()) * ((float)buttonTexture->GetWidth() / (float)buttonTexture->GetHeight()) * (1.f-((float)Application::GetWidth() / (float)Application::GetHeight()));
+
+		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight())*1.75f;
+		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth());
         float ___scale = 1.125f/buttonX ;
 		FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { (___scale*buttonX ), (___scale*buttonY), 1 }, { 1,1,1,1 }, buttonTexture);
         ___scale = .25f;
 		buttonTexture = Texture2D::Create("Content/Textures/wiz10_face.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-        buttonX = .275f;
-        buttonY = .625f*(1.f - ((float)Application::GetWidth() / (float)Application::GetHeight()));;
-        ___scale = 1.f;
+		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight())*1.7f;
+		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth());
+        ___scale = 2.3f;
         GE_CORE_DEBUG("PORTRAIT: {0}, {1}", buttonX, buttonY);
         FPSuiComponent->CreateQuad({ -.745f,.5f, 4 }, 0, { ___scale * (buttonX), ___scale * (buttonY ), 1 }, { 1,1,1,1 }, buttonTexture);
 
