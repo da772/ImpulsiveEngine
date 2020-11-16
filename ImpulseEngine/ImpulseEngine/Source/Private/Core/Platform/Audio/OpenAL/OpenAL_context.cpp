@@ -70,9 +70,9 @@ namespace GEngine {
 		alcGetIntegerv((ALCdevice*)device, ALC_MINOR_VERSION, sizeof(int), &minor);
 		GE_CORE_INFO("Initalized: {0} - v{1}.{2} ", alcGetString((ALCdevice*)device, ALC_DEVICE_SPECIFIER), major, minor);
 
-		alGetListener3f(AL_POSITION, &m_listenerPos.x, &m_listenerPos.y, &m_listenerPos.z);
-		alGetListenerf(AL_PITCH, &m_listenerPitch);
-		alGetListenerf(AL_GAIN, &m_listenerVolume);
+		alCall(alGetListener3f, AL_POSITION, &m_listenerPos.x, &m_listenerPos.y, &m_listenerPos.z);
+		//alCall(alGetListenerf, AL_PITCH, &m_listenerPitch);
+		alCall(alGetListenerf, AL_GAIN, &m_listenerVolume);
 
 	}
 

@@ -14,6 +14,8 @@
 #include "Public/Core/Scripting/ScriptObject.h"
 #include "Public/Core/Util/Utility.h"
 
+#include "Public/Core/Renderer/Graphics/Texture.h"
+
 namespace GEngine {
 
 	Ref<BatchRenderer> UIComponent::s_ShapeFactory = nullptr;
@@ -47,20 +49,27 @@ namespace GEngine {
 		
 	}
 
-	const ShapeID UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, const glm::vec2& textureScale /*= 1*/, const float alphaChannel)
+	const ShapeID UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, bool aspectRatio, const glm::vec2& textureScale /*= 1*/, const float alphaChannel)
 	{
 
-		glm::vec3 _scale = scale;;
-		int w = GEngine::Application::GetUIResolutionWidth();
-		int h = GEngine::Application::GetUIResolutionHeight();
-		if (w != 0 && h != 0) {
+		glm::vec3 _scale = scale * GetEntity()->GetEntityTransformComponent()->GetScale();
+
+		
+			const glm::vec3 __scale = _scale;
+			float tWidth = texture ? texture->GetWidth() : 1.f;
+			float tHeight = texture ? texture->GetHeight() : 1.f;
+
+			float twMax = tWidth > tHeight ? tWidth : tHeight;
+			float wMax = Application::GetWidth() > Application::GetHeight() ? Application::GetWidth() : Application::GetHeight();
+			float buttonX = ((float)tWidth / twMax) / (wMax != (float)Application::GetWidth() ? (Application::GetWidth() / wMax) : 1.f);
+			float buttonY = ((float)tHeight / twMax) / (wMax != (float)Application::GetHeight() ? (Application::GetHeight() / wMax) : 1.f);
 			
-			if (w > h) {
-				_scale.y = (w * scale.y) / (float)h;
-			}
-			else {
-				_scale.x = (h * scale.x) / (float)w;
-			}
+
+			float _s = __scale.x > __scale.y ? __scale.x : __scale.y;
+			float _b = __scale.x > __scale.y ? buttonX : buttonY;
+		if (aspectRatio) {
+			_scale.x = buttonX * (_s / _b);
+			_scale.y = buttonY * (_s / _b);
 		}
 
 		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale, _color, texture, textureScale, alphaChannel);

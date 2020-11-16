@@ -20,7 +20,7 @@ namespace GEngine {
 		UIComponent();
 		UIComponent(Ref<Shader> shader);
 		virtual ~UIComponent();
-		const ShapeID CreateQuad(const  Vector3& _pos, const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, const glm::vec2& textureScale = glm::vec2(1, 1), const float alphaChannel = 4);
+		const ShapeID CreateQuad(const  Vector3& _pos, const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, bool aspectRatio = true, const glm::vec2& textureScale = glm::vec2(1, 1), const float alphaChannel = 4);
 
 		const ShapeID CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture );
 		

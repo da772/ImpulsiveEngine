@@ -109,12 +109,8 @@ public:
 		eFPS->m_tag = "UI Entity";
 		AddEntity(eFPS);
 
-
-		
-
 		Ref<SpriteComponent> sp = GEngine::CreateGameObject<SpriteComponent>();
 		eFPS->AddComponent(sp);
-
 
        // long l1 = lc->AddCircleLight({-3,3}, 50, {4,4}, { 175.f / 255.f,204.f / 255.f,225.f / 255.f,.8f });
        // long l2 = lc->AddCircleLight({3,3}, 50, {1,1}, {1,1,1,.5f});
@@ -141,27 +137,15 @@ public:
 		eFPS->AddComponent(button2);
 		button2->SetImageTexture(buttonTexture);
 
+
+
 		buttonTexture = Texture2D::Create("Content/Textures/dialogFrame.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-        bool wMax = Application::GetWidth() > Application::GetHeight();
-        bool twMax = buttonTexture->GetWidth() > buttonTexture->GetHeight();
-        
-        buttonX = (float)buttonTexture->GetWidth() / (float)Application::GetWidth();
-        buttonY = ((float)buttonTexture->GetHeight() / (float) Application::GetHeight()) * ((float)buttonTexture->GetWidth() / (float)buttonTexture->GetHeight()) * (1.f-((float)Application::GetWidth() / (float)Application::GetHeight()));
-
-		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight())*1.75f;
-		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth());
-        float ___scale = 1.125f/buttonX ;
-		FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { (___scale*buttonX ), (___scale*buttonY), 1 }, { 1,1,1,1 }, buttonTexture);
-        ___scale = .25f;
+		FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { 2.f, 0.f, 1 }, { 1,1,1,1 }, buttonTexture, true );
 		buttonTexture = Texture2D::Create("Content/Textures/wiz10_face.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight())*1.7f;
-		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth());
-        ___scale = 2.3f;
-        GE_CORE_DEBUG("PORTRAIT: {0}, {1}", buttonX, buttonY);
-        FPSuiComponent->CreateQuad({ -.745f,.5f, 4 }, 0, { ___scale * (buttonX), ___scale * (buttonY ), 1 }, { 1,1,1,1 }, buttonTexture);
+      
+        FPSuiComponent->CreateQuad({ -.745f,.5f, 4 }, 0, { .5f, 0.f, 1 }, { 1,1,1,1 }, buttonTexture);
 
-
-		FPSuiComponent->CreateText("Wizard", font, { -.45f, .545f, 6.f }, { .45f, .45f, 2.f }, { 1,1,1,1 });
+		FPSuiComponent->CreateText("Wizard", font, { -.45f, .55f, 6.f }, { .45f, .45f, 2.f }, { 1,1,1,1 });
 		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai", font, { -.45f, .49f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
 
 		button->SetOnEvent([](const GEngine::Event& e) {

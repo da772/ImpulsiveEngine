@@ -59,12 +59,9 @@ public:
 		logoEntity->AddComponent(logoComponent);
 		logoEntity->AddComponent(logoAnimation);
 
-        float size = max( (float)GEngine::Application::GetWidth() /(float)GEngine::Application::GetUIResolutionWidth(), (float) GEngine::Application::GetHeight()/(float)GEngine::Application::GetUIResolutionHeight());
-        float buttonY = size*((float)texture->GetHeight()/ (float)GEngine::Application::GetHeight())*.5f;
-        float buttonX = size*((float)texture->GetWidth() / (float)GEngine::Application::GetWidth())*.45f;
         
-        
-		GEngine::ShapeID id = logoComponent->CreateQuad({ 0,0,0 }, 0.f, { buttonX,buttonY,1 }, { 1,1,1,0.f }, texture);
+     
+		GEngine::ShapeID id = logoComponent->CreateQuad({ 0,0,0 }, 0.f, { 1.f,0,1 }, { 1,1,1,0.f }, texture);
 		logoComponent->CreateQuad({ 0,0,-1 }, 0.f, { 2,2,1 }, { .05f,.05f,.05f,1 });
 		
 		logoAnimation->SetFrameAnimation(30, 150, false, [this, id](int frame) {

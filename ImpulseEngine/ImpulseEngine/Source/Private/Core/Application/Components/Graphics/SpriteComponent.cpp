@@ -10,6 +10,11 @@
 #include "Public/Core/Application/Components/TransformComponent.h"
 #include "Public/Core/Application/Entity.h"
 
+
+#include "Public/Core/Application/Application.h"
+
+#include "Public/Core/Renderer/Graphics/Texture.h"
+
 namespace GEngine {
 
 	Ref < BatchRenderer >SpriteComponent::s_ShapeFactory = nullptr;
@@ -72,11 +77,13 @@ namespace GEngine {
 		
 	}
 
-	ShapeID SpriteComponent::CreateQuad(const Vector3& _pos, const float rotation, const Vector3& scale, const Vector4& _color,
+	const ShapeID SpriteComponent::CreateQuad(const Vector3& _pos, const float rotation, const Vector3& scale, const Vector4& _color,
 		const Ref<Texture2D> texture, const glm::vec2& textureScale)
 	{
 		Ref<Entity> e = entity.lock();
-		ShapeID id = s_ShapeFactory->AddShape(_pos+e->GetEntityPosition(), rotation+e->GetEntityRotation().z, scale* e->GetEntityScale(), _color, texture, textureScale);
+		glm::vec3 _scale = scale * e->GetEntityScale();
+
+		ShapeID id = s_ShapeFactory->AddShape(_pos + e->GetEntityPosition(), rotation + e->GetEntityRotation().z, _scale, _color, texture, textureScale);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -84,7 +91,7 @@ namespace GEngine {
 	ShapeID SpriteComponent::CreateQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale, const Ref<ScriptVector4>& _color,
 		const Ref<Texture2D>& texture, const glm::vec2& textureScale)
 	{
-		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture, textureScale);
+		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture,textureScale);
 	}
 
 	ShapeID SpriteComponent::CreateSubTexturedQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale,
