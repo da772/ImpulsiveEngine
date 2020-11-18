@@ -137,7 +137,7 @@ int testxmlparser(const char * xml, int size)
 	free(evtlist.events);
 	return r;
 }
-
+#if 0
 int main(int argc, char * * argv)
 {
 	int r;
@@ -146,4 +146,4 @@ int main(int argc, char * * argv)
 		printf("minixml validation test failed\n");
 	return r;
 }
-
+#endif

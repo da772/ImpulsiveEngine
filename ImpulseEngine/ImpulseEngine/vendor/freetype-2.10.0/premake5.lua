@@ -1,6 +1,8 @@
 project "freetype"
     kind "StaticLib"
+    architecture "x64"
     language "C++"
+    cppdialect "C++17"
     staticruntime "On"
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -72,7 +74,12 @@ project "freetype"
         "src/base/ftsystem.c",
         "src/base/fttype1.c",
         "src/base/ftotval.c",
-        "src/base/ftdebug.c"
+        "src/base/ftdebug.c",
+
+
+        "src/freetype-gl/**.c",
+        "src/freetype-gl/**.h",
+
 
     }
 
@@ -81,7 +88,9 @@ project "freetype"
         "include/",
         "include/freetype",
         "include/freetype/config",
-        "include/freetype/internal"
+        "include/freetype/internal",
+        "include/freetype/freetype-gl",
+        "../../../%{IncludeDir.Glad}"
     }
 
     disablewarnings 
@@ -93,7 +102,8 @@ project "freetype"
 
     defines 
     {
-        "FT2_BUILD_LIBRARY"
+        "FT2_BUILD_LIBRARY",
+        "FREETYPE_GL_ES_VERSION_3_0"
     }
     
     configuration "debug"
@@ -116,7 +126,10 @@ project "freetype"
 
     filter "system:macosx"
         systemversion "latest"
-
+        defines 
+        {
+            "GL_WITH_GLAD"
+        }
         xcodebuildsettings
         { 
             ["ALWAYS_SEARCH_USER_PATHS"] = "YES",
@@ -171,6 +184,12 @@ project "freetype"
 
     filter "system:windows"
         systemversion "latest"
+        defines 
+        {
+            "GL_WITH_GLAD"
+        }
+        filter "action:gmake2"
+            cppdialect "gnu++17"
 
         filter "configurations:Debug"
             runtime "Debug"
@@ -181,6 +200,10 @@ project "freetype"
 
     filter "system:linux"
         systemversion "latest"
+        defines 
+        {
+            "GL_WITH_GLAD"
+        }
 
         filter "configurations:Debug"
             runtime "Debug"

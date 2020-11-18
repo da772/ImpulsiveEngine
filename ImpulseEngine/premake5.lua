@@ -15,8 +15,8 @@ IncludeDir["stb_image"] = "ImpulseEngine/vendor/stbimage"
 IncludeDir["gltext"] = "ImpulseEngine/vendor/glText/include"
 IncludeDir["httplib"] = "ImpulseEngine/vendor/httplib/include"
 IncludeDir["miniupnpc"] = "ImpulseEngine/vendor/miniupnpc/include"
-IncludeDir["freetypegl"] = "ImpulseEngine/vendor/freetype-gl/src"
 IncludeDir["freetype"] = "ImpulseEngine/vendor/freetype-2.10.0/include"
+IncludeDir["freetypegl"] = "ImpulseEngine/vendor/freetype-2.10.0/include/freetype-gl"
 IncludeDir["entt"] = "ImpulseEngine/vendor/entt/include"
 IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
 IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
@@ -33,7 +33,7 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/miniupnpc"
 	include "ImpulseEngine/ImpulseEngine/vendor/zlib"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
-	include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
+	--include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
 	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
 	if _OPTIONS['build-openal'] then
 		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
@@ -110,7 +110,7 @@ project "ImpulseEngine"
 		"Enet",
 		"miniupnpc",
 		"zlib",
-		"freetype-gl",
+		"freetype",
 		"box2d",
 		"Vorbis",
 		
@@ -391,7 +391,16 @@ project "ImpulseEngine"
 			cppdialect "gnu++17"
 			defines
 			{
-				"GE_MINGW_"
+				"GE_MINGW_",
+				"GE_BUILD_DLL",
+				"GLFW_INCLUDE_NONE",
+				"GE_WINDOW_GLFW",
+				"GE_PLATFORM_WINDOWS",
+				"GL_WITH_GLAD"
+			}
+			links
+			{
+				"openal"
 			}
 
 	filter "system:linux"

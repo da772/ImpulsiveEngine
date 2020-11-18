@@ -38,18 +38,19 @@ void BackgroundEntity::OnEnd()
 void BackgroundEntity::OnUpdate(Timestep timestep)
 {
 
-	for (const std::pair<std::string, FParalaxBackground>& p : m_backgrounds) {
-		
-		float dist = m_camera->GetPosition().x* p.second.speed;
-		float xPos = p.second.pos.x + p.second.offset.x + dist;
-		m_backgroundSprite->SetPosition(p.second.id, { xPos,p.second.offset.y});
 
-		if (m_camera->GetPosition().x > xPos + p.second.scale.x) {
-			m_backgrounds[p.first].offset.x += p.second.scale.x*2;
-		}
-		else if (m_camera->GetPosition().x < xPos - (p.second.scale.x)) {
-			m_backgrounds[p.first].offset.x -= p.second.scale.x*2;
-		}
+		for (const std::pair<std::string, FParalaxBackground>& p : m_backgrounds) {
 
-	}
+			float dist = m_camera->GetPosition().x * p.second.speed;
+			float xPos = p.second.pos.x + p.second.offset.x + dist;
+			m_backgroundSprite->SetPosition(p.second.id, { xPos,p.second.offset.y });
+
+			if (m_camera->GetPosition().x > xPos + p.second.scale.x) {
+				m_backgrounds[p.first].offset.x += p.second.scale.x * 2;
+			}
+			else if (m_camera->GetPosition().x < xPos - (p.second.scale.x)) {
+				m_backgrounds[p.first].offset.x -= p.second.scale.x * 2;
+			}
+
+		}
 }

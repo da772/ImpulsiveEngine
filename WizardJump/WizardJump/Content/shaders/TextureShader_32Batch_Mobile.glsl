@@ -2,16 +2,16 @@
 
 #version 300 es
         
-layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec4 a_Color;
-layout(location = 2) in vec2 a_TexCoord;
-layout(location = 3) in float a_TexSlot;
-layout(location = 4) in vec2 a_TexScale;
+layout(location = 0) in highp vec3 a_Position;
+layout(location = 1) in lowp vec4 a_Color;
+layout(location = 2) in lowp vec2 a_TexCoord;
+layout(location = 3) in lowp float a_TexSlot;
+layout(location = 4) in mediump vec2 a_TexScale;
 
-out vec4 v_Color;
-out vec2 v_TexCoord;
-out int v_TexSlot;
-out vec2 v_TexScale;
+out lowp vec4 v_Color;
+out lowp vec2 v_TexCoord;
+flat out lowp int v_TexSlot;
+flat out mediump vec2 v_TexScale;
 
 uniform mat4 u_ViewProjection;
         
@@ -26,15 +26,15 @@ void main() {
 #type fragment
 #version 300 es
 
-precision mediump float;
+precision lowp float;
 layout(location = 0) out lowp vec4 color;
 
 in lowp vec4 v_Color;
 in lowp vec2 v_TexCoord;
-in lowp int v_TexSlot;
-in mediump vec2 v_TexScale;
+flat in lowp int v_TexSlot;
+flat in mediump vec2 v_TexScale;
 
-uniform sampler2D u_Textures[32];
+uniform lowp sampler2D u_Textures[32];
 
 void main() {
 

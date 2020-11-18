@@ -13,7 +13,7 @@ project "freetype-gl"
         "../../../%{IncludeDir.freetype}",
         "../../../%{IncludeDir.Glad}"
     }
-
+    
     files
     {
         "src/**.h",

@@ -22,6 +22,13 @@ workspace "WizardJump"
 			"ARM64",
 			"x64"
 		}
+
+	filter "system:windows"
+		filter "action:gmake2"
+			makesettings [[
+				CXX = x86_64-pc-cygwin-g++
+			]]
+			
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -91,13 +98,6 @@ project "WizardJump"
 		systemversion "latest"
 		kind "WindowedApp"
 
-		
-
-		postbuildcommands
-		{
-			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"$(TargetDir)Data\""
-		}
-
 		excludes 
 		{ 
 			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
@@ -107,8 +107,10 @@ project "WizardJump"
 		{
 			"GE_PLATFORM_WINDOWS"
 		}
-
-		
+		postbuildcommands
+		{
+			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"$(TargetDir)Data\""
+		}
 
 		if _OPTIONS['with-hot-reload'] then
 			filter "configurations:Debug"
@@ -145,22 +147,38 @@ project "WizardJump"
 			cppdialect "gnu++17"
 			defines
 			{
-				"GE_MINGW_"
+				"GE_MINGW_",
+				"GE_PLATFORM_WINDOWS"
 			}
+			
+			
 			links 
 			{
+				"ImGui",
 				"Enet",
 				"miniupnpc",
 				"freetype",
-				"freetype-gl",
 				"box2d",
 				"Vorbis",
-				"GL",
+				"opengl32",
 				"Glad",
 				"GLFW",
 				"pthread",
-				"vulkan",
+				"vulkan-1",
 				"openal",
+				"gdi32",
+				"zlib",
+				"user32",
+				"kernel32",
+				"winspool",
+				"comdlg32",
+				"advapi32",
+				"shell32",
+				"ole32",
+				"oleaut32",
+				"uuid",
+				"odbc32",
+				"odbccp32"
 			}
 
 		filter "system:linux"
@@ -180,7 +198,6 @@ project "WizardJump"
 				"Enet",
 				"miniupnpc",
 				"freetype",
-				"freetype-gl",
 				"box2d",
 				"Vorbis",
 				"GL",

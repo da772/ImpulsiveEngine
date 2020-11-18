@@ -1,53 +1,49 @@
 #type vertex
 
 #version 300 es
-precision highp float;
+precision lowp float;
         
-layout(location = 0) in vec3 a_Position;
-layout(location = 1) in vec4 a_Color;
-layout(location = 2) in vec2 a_TexCoord;
-layout(location = 3) in float a_TexSlot;
-layout(location = 4) in vec2 a_TexScale;
-layout(location = 5) in float a_AlphaChannel;
+layout(location = 0) in highp vec3 a_Position;
+layout(location = 1) in lowp vec4 a_Color;
+layout(location = 2) in lowp vec2 a_TexCoord;
+layout(location = 3) in mediump float a_TexSlot;
+layout(location = 4) in mediump vec2 a_TexScale;
+layout(location = 5) in mediump float a_AlphaChannel;
 
-out vec3 v_Position;
-
-out vec4 v_Color;
-out vec2 v_TexCoord;
-out float v_TexSlot;
-out vec2 v_TexScale;
-out float v_AlphaChannel;
+out lowp vec4 v_Color;
+out lowp vec2 v_TexCoord;
+flat out lowp int v_TexSlot;
+flat out mediump vec2 v_TexScale;
+flat out lowp int v_AlphaChannel;
 
 uniform mat4 u_ViewProjection;
         
 void main() {
-    v_Position = a_Position;
     v_Color = a_Color;
-    v_TexSlot = a_TexSlot;
+    v_TexSlot = int(v_TexSlot);
     v_TexCoord = a_TexCoord;
     v_TexScale = a_TexScale;
-    v_AlphaChannel = a_AlphaChannel;
+    v_AlphaChannel = int(a_AlphaChannel);
     gl_Position = vec4(a_Position, 1.0);
 }
 
 #type fragment
 #version 300 es
-precision highp float;
+precision lowp float;
 
-layout(location = 0) out vec4 color;
+layout(location = 0) out lowp vec4 color;
 
-in vec3 v_Position;
-in vec4 v_Color;
-in vec2 v_TexCoord;
-in float v_TexSlot;
-in vec2 v_TexScale;
-in float v_AlphaChannel;
+in lowp vec4 v_Color;
+in lowp vec2 v_TexCoord;
+flat in lowp int v_TexSlot;
+flat in mediump vec2 v_TexScale;
+flat in lowp int v_AlphaChannel;
 
-uniform sampler2D u_Textures[32];
+uniform lowp sampler2D u_Textures[32];
 
 void main() {
-    vec4 texColor = vec4(1.0,1.0,1.0, 1.0);
-    switch(int(v_TexSlot))
+    lowp vec4 texColor = vec4(1.0,1.0,1.0, 1.0);
+    switch(v_TexSlot)
         {
             default:
             case 0: texColor *= texture(u_Textures[0], v_TexCoord * v_TexScale) ; break;

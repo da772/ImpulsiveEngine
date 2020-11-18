@@ -21,7 +21,7 @@ precision highp float;
 layout(location = 0) out vec4 FragColor;
 in vec2 v_TexCoord;
 
-uniform sampler2D u_Texture;
+uniform lowp sampler2D u_Texture;
 void main() {
     vec4 c = texture(u_Texture, v_TexCoord);
     FragColor = c;

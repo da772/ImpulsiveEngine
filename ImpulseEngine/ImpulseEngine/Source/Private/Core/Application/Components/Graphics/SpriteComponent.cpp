@@ -55,7 +55,7 @@ namespace GEngine {
 			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
 			m_Shader = Ref<Shader>(Shader::Create(path));
 			SpriteComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
-				5000, m_Shader));
+				1000, m_Shader));
 		}	
 	}
 

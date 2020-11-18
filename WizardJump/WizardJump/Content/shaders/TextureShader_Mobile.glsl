@@ -26,7 +26,7 @@ out vec4 FragColor;
 
 in vec2 v_TexCoord;
 
-uniform sampler2D u_Texture;
+uniform lowp sampler2D u_Texture;
 uniform vec4 u_Color;
 uniform vec2 u_UV;
 uniform float u_alphaTolerance;

@@ -196,9 +196,9 @@ project "OpenAL"
         
         links
         {
-            "dsound.lib",
-            "dxguid.lib",
-            "winmm.lib"
+            "dsound",
+            "dxguid",
+            "winmm"
         }
 
         filter "configurations:Debug"
@@ -212,6 +212,6 @@ project "OpenAL"
 			cppdialect "gnu++17"
 			defines
 			{
-				"GE_MINGW_"
+                "GE_MINGW_",
 			}
         

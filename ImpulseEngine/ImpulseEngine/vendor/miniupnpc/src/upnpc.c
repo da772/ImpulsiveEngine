@@ -209,7 +209,7 @@ RemoveRedirect(struct UPNPUrls * urls,
 	printf("UPNP_DeletePortMapping() returned : %d\n", r);
 }
 
-
+#if 0
 /* sample upnp client program */
 int main(int argc, char ** argv)
 {
@@ -372,3 +372,4 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
+#endif

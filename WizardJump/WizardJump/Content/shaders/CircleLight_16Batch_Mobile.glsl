@@ -29,7 +29,7 @@ void main() {
 
 #type fragment
 #version 300 es
-precision mediump float;
+precision lowp float;
 
 layout(location = 0) out lowp vec4 color;
 
@@ -39,7 +39,7 @@ flat in lowp int v_TexSlot;
 flat in mediump vec2 v_TexScale;
 in lowp float v_AlphaChannel;
 
-uniform sampler2D u_Textures[16];
+uniform lowp sampler2D u_Textures[16];
 
 void main() {
     lowp vec4 texColor = v_Color;

@@ -55,8 +55,8 @@
 #endif
 
 #if defined(GE_PLATFORM_WINDOWS)
-#define GE_GRAPHICS_API_D3D12
-#define GE_WINDOW_API_WIN32
+//#define GE_GRAPHICS_API_D3D12
+//#define GE_WINDOW_API_WIN32
 #endif
 
 #if defined(GE_DEBUG)
