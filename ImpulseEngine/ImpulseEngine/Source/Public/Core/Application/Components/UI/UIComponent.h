@@ -33,6 +33,8 @@ namespace GEngine {
 		void SetPositionScript(const ShapeID id, Ref<ScriptVector2> position);
 		void SetZOrder(const ShapeID id, const float zOrder);
 
+        
+        glm::vec2 GetQuadScale(const ShapeID& id);
 
 		void SetColor(const ShapeID id, const glm::vec4& color);
 

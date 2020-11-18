@@ -186,6 +186,10 @@ namespace GEngine {
 		SetPosition(id, position->GetGlm());
 	}
 
+    glm::vec2 UIComponent::GetQuadScale(const ShapeID& id) {
+        return s_ShapeFactory->GetShapeScale(id);
+    }
+
 	void UIComponent::SetZOrder(ShapeID id, float zOrder)
 	{
 		if (id >= 0) {
