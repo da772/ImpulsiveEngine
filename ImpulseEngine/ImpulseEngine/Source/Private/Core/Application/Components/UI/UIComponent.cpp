@@ -40,13 +40,60 @@ namespace GEngine {
 			UIComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::UI, Ref<Quad>(new Quad()), 5000, m_Shader));
 			s_ShapeFactory->SetRenderType(ERenderType::UI);
 		}
-		
+
 	}
 
 	UIComponent::~UIComponent()
 	{
 
-		
+
+	}
+
+
+	static glm::vec3 GetTextureAspectScale(const glm::vec3& scale, const float& textureWidth, const float& textureHeight, const bool aspectRatio = true) {
+
+		glm::vec3 _scale = scale;
+		const glm::vec3 __scale = scale;
+		float tWidth = textureWidth;
+		float tHeight = textureHeight;
+
+		float twMax = tWidth > tHeight ? tWidth : tHeight;
+		float wMax = Application::GetWidth() > Application::GetHeight() ? Application::GetWidth() : Application::GetHeight();
+		float buttonX = ((float)tWidth / twMax) / (wMax != (float)Application::GetWidth() ? (Application::GetWidth() / wMax) : 1.f);
+		float buttonY = ((float)tHeight / twMax) / (wMax != (float)Application::GetHeight() ? (Application::GetHeight() / wMax) : 1.f);
+
+
+		float _s = __scale.x > __scale.y ? __scale.x : __scale.y;
+		float _b = __scale.x > __scale.y ? buttonX : buttonY;
+		if (aspectRatio) {
+			_scale.x = buttonX * (_s / _b);
+			_scale.y = buttonY * (_s / _b);
+		}
+
+		return _scale;
+	}
+
+
+	static glm::vec3 GetAspectScale(const glm::vec3& aspect, const glm::vec3& scale) 
+	{
+
+		glm::vec3 _scale;
+
+		float tWidth = aspect.x;
+		float tHeight = aspect.y;
+
+		float twMax = tWidth > tHeight ? tWidth : tHeight;
+		float wMax = Application::GetWidth() > Application::GetHeight() ? Application::GetWidth() : Application::GetHeight();
+		float buttonX = ((float)tWidth) / (wMax != (float)Application::GetWidth() ? (Application::GetWidth() / wMax) : 1.f);
+		float buttonY = ((float)tHeight) / (wMax != (float)Application::GetHeight() ? (Application::GetHeight() / wMax) : 1.f);
+
+		float _s = scale.x > scale.y ? scale.x : scale.y;
+		float _b = scale.x > scale.y ? buttonX : buttonY;
+		_scale.x = buttonX * (_s / _b);
+		_scale.y = buttonY * (_s / _b);
+		_scale.z = 1;
+
+		return _scale;
 	}
 
 	const ShapeID UIComponent::CreateQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/, const Vector4& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, bool aspectRatio, const glm::vec2& textureScale /*= 1*/, const float alphaChannel)
@@ -54,23 +101,10 @@ namespace GEngine {
 
 		glm::vec3 _scale = scale * GetEntity()->GetEntityTransformComponent()->GetScale();
 
-		
-			const glm::vec3 __scale = _scale;
-			float tWidth = texture ? texture->GetWidth() : 1.f;
-			float tHeight = texture ? texture->GetHeight() : 1.f;
+		float tWidth = texture ? texture->GetWidth() : 1.f;
+		float tHeight = texture ? texture->GetHeight() : 1.f;
 
-			float twMax = tWidth > tHeight ? tWidth : tHeight;
-			float wMax = Application::GetWidth() > Application::GetHeight() ? Application::GetWidth() : Application::GetHeight();
-			float buttonX = ((float)tWidth / twMax) / (wMax != (float)Application::GetWidth() ? (Application::GetWidth() / wMax) : 1.f);
-			float buttonY = ((float)tHeight / twMax) / (wMax != (float)Application::GetHeight() ? (Application::GetHeight() / wMax) : 1.f);
-			
-
-			float _s = __scale.x > __scale.y ? __scale.x : __scale.y;
-			float _b = __scale.x > __scale.y ? buttonX : buttonY;
-		if (aspectRatio) {
-			_scale.x = buttonX * (_s / _b);
-			_scale.y = buttonY * (_s / _b);
-		}
+		_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
 
 		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale, _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
@@ -103,12 +137,12 @@ namespace GEngine {
 		while (m_text.find(hash) != m_text.end()) {
 			Utility::GenerateHash(hash, 16);
 		}
-		
-		std::vector<CharacterData> data = font->DrawString(string,  scale.z/scale.x, width, height);
+
+		std::vector<CharacterData> data = font->DrawString(string, scale.z / scale.x, width, height);
 		std::vector<ShapeID> ids;
-        
+
 		for (CharacterData& d : data) {
-			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x*scale.x + pos.x, d.position.y*scale.y + pos.y, pos.z), 0, { d.scale.x*scale.x , d.scale.y*scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
 		m_text[hash] = ids;

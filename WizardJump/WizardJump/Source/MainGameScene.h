@@ -140,13 +140,13 @@ public:
 
 
 		buttonTexture = Texture2D::Create("Content/Textures/dialogFrame.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-		FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { 2.f, 0.f, 1 }, { 1,1,1,1 }, buttonTexture, true );
+		ShapeID dialog = FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { 2.f, 0.f, 1 }, { 1,1,1,1 }, buttonTexture, true );
 		buttonTexture = Texture2D::Create("Content/Textures/wiz10_face.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
       
         FPSuiComponent->CreateQuad({ -.745f,.5f, 4 }, 0, { .5f, 0.f, 1 }, { 1,1,1,1 }, buttonTexture);
 
-		FPSuiComponent->CreateText("Wizard", font, { -.45f, .55f, 6.f }, { .45f, .45f, 2.f }, { 1,1,1,1 });
-		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai", font, { -.45f, .49f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
+		FPSuiComponent->CreateText("Wizard", font, { -.45f, .555f, 6.f }, { .45f, .45f, 2.f }, { 1,1,1,1 });
+		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai", font, { -.46f, .5f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
 
 		button->SetOnEvent([](const GEngine::Event& e) {
 
@@ -333,7 +333,7 @@ public:
 	{
 		SetupCamera();
 
-		font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f );
+		font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", Application::GetWidth() * .175f);
 		font->LoadCharactersEN();
 
 	}

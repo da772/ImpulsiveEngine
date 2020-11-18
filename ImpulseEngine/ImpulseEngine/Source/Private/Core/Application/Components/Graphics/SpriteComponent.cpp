@@ -162,6 +162,11 @@ namespace GEngine {
 		m_ids.clear();
 	}
 
+	glm::vec2 SpriteComponent::GetQuadScale(const ShapeID& id)
+	{
+		return s_ShapeFactory->GetShapeScale(id);
+	}
+
 	void SpriteComponent::OnBegin()
 	{
 	

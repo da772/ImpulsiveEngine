@@ -147,6 +147,21 @@ project "WizardJump"
 			{
 				"GE_MINGW_"
 			}
+			links 
+			{
+				"Enet",
+				"miniupnpc",
+				"freetype",
+				"freetype-gl",
+				"box2d",
+				"Vorbis",
+				"GL",
+				"Glad",
+				"GLFW",
+				"pthread",
+				"vulkan",
+				"openal",
+			}
 
 		filter "system:linux"
 			linkgroups 'on'

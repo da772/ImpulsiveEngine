@@ -55,6 +55,29 @@ namespace GEngine {
 		return tex;
 	}
 
+	static glm::vec3 GetTextureAspectScale(const glm::vec3& scale, const float& textureWidth, const float& textureHeight, const float& appWidth, const float& appHeight, const bool aspectRatio = true) {
+
+		glm::vec3 _scale = scale;
+		const glm::vec3 __scale = scale;
+		float tWidth = textureWidth;
+		float tHeight = textureHeight;
+
+		float twMax = tWidth > tHeight ? tWidth : tHeight;
+		float wMax = appWidth > appHeight ? appWidth : appHeight;
+		float buttonX = ((float)tWidth / twMax) / (wMax != (float)appWidth ? (appWidth / wMax) : 1.f);
+		float buttonY = ((float)tHeight / twMax) / (wMax != (float)appHeight ? (appHeight / wMax) : 1.f);
+
+
+		float _s = __scale.x > __scale.y ? __scale.x : __scale.y;
+		float _b = __scale.x > __scale.y ? buttonX : buttonY;
+		if (aspectRatio) {
+			_scale.x = buttonX * (_s / _b);
+			_scale.y = buttonY * (_s / _b);
+		}
+
+		return _scale;
+	}
+
 	std::vector<GEngine::CharacterData> OpenGL_Font::DrawString(std::string s, float maxWidth, int viewWidth, int viewHeight)
 	{
 		std::vector<CharacterData> charData;

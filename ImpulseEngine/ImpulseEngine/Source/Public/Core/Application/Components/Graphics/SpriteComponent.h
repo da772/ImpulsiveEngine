@@ -53,6 +53,8 @@ namespace GEngine {
 		void RemoveQuad(const ShapeID id);
 		void ClearQuads();
 
+		glm::vec2 GetQuadScale(const ShapeID& id);
+
 		virtual void OnBegin() override;
 		virtual void OnEnd() override;
 
