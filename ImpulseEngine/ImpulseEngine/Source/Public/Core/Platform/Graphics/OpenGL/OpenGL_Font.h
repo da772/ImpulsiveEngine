@@ -16,7 +16,8 @@ namespace GEngine {
 		virtual ~OpenGL_Font();
 		virtual void LoadCharacters(const char*) override;
 		virtual Ref<SubTexture2D> GetCharacterCoords(uint64_t c) override;
-		std::vector<CharacterData> DrawString(std::string s, float maxWidth, int viewWidth, int viewHeight) override;
+		virtual Ref<StringInfo> DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight) override;
+		virtual Ref<StringInfo> AppendString(Ref<StringInfo> info, const std::string& text, float maxWidth, int viewWidth, int viewHeight) override;
 		virtual void Unload() override;
 		virtual void Reload() override;
 

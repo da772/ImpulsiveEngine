@@ -13,12 +13,25 @@ namespace GEngine {
 		Ref<SubTexture2D> texture;
 	};
 
+	struct StringData {
+		glm::vec2 pen = { 0,0 };
+		float maxHeight = 0.f;
+		float lastAdvance = 0.f;
+		int lastSpace = 0;
+	};
+
+	struct StringInfo {
+		StringData data;
+		std::vector<CharacterData> charData;
+	};
+
 	class Font {
 
 	public:
 		static Ref<Font> Create(std::string path, int size);
 		virtual void LoadCharacters(const char* string) = 0;
-		virtual std::vector<CharacterData> DrawString(std::string s, float maxWidth, int viewWidth, int viewHeight) = 0;
+		virtual Ref<StringInfo> DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight) = 0;
+		virtual Ref<StringInfo> AppendString(Ref<StringInfo> info, const std::string& text, float maxWidth, int viewWidth, int viewHeight) = 0;
 		inline Ref<Texture2D> GetTexture() { return m_Texture; };
 		virtual Ref<SubTexture2D> GetCharacterCoords(uint64_t c) = 0;
 

@@ -13,6 +13,14 @@ namespace GEngine {
 	struct ScriptVector2;
 	struct ScriptVector3;
 	struct ScriptVector4;
+	struct StringInfo;
+
+
+	struct UI_TextInfo {
+		Ref<StringInfo> info;
+		std::vector<ShapeID> shapes;
+		Ref<Font> font;
+	};
 
 	class UIComponent : public Component {
 
@@ -27,7 +35,11 @@ namespace GEngine {
 
 		const ShapeID CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const glm::vec2& textureScale = glm::vec2(1,1), const float alphaChannel = 4);
 		const std::string CreateText(const std::string& string, Ref<Font> font, const Vector3& pos, const Vector3& scale, const Vector4& color);
+		const void AddText(const std::string& id, const std::string& text, const Vector3& pos, const Vector3& scale, const Vector4& color);
 		void RemoveText(const std::string& id);
+		void SetTextColor(const std::string& id, const glm::vec4& color, int index, int count = 1);
+
+		uint32_t GetTextSize(const std::string& id);
 
 		void SetPosition(const ShapeID id, const glm::vec2& position);
 		void SetPositionScript(const ShapeID id, Ref<ScriptVector2> position);
@@ -60,7 +72,7 @@ namespace GEngine {
 		uint32_t m_textCounter = 0;
 
 		Ref<Shader> m_Shader;
-		std::unordered_map<std::string, std::vector<ShapeID>> m_text;
+		std::unordered_map<std::string, UI_TextInfo> m_text;
 		std::vector<ShapeID> m_ids;
 
 

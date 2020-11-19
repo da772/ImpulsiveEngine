@@ -138,26 +138,59 @@ namespace GEngine {
 			Utility::GenerateHash(hash, 16);
 		}
 
-		std::vector<CharacterData> data = font->DrawString(string, scale.z / scale.x, width, height);
+		Ref<StringInfo> data = font->DrawString(string, scale.z / scale.x, width, height);
 		std::vector<ShapeID> ids;
 
-		for (CharacterData& d : data) {
+		for (CharacterData& d : data->charData) {
 			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
-		m_text[hash] = ids;
+		m_text[hash] = { data,std::move(ids), font };
 		return hash;
+	}
+
+	const void UIComponent::AddText(const std::string& id, const std::string& text, const Vector3& pos, const Vector3& scale, const Vector4& color)
+	{
+		int width, height;
+		width = GEngine::Application::GetApp()->GetUIResolutionWidth();
+		height = GEngine::Application::GetApp()->GetUIResolutionHeight();
+		UI_TextInfo& ids = m_text[id];
+		int lastSize = ids.info->charData.size();
+		Ref<StringInfo> data = ids.font->AppendString(ids.info, text, scale.z / scale.x, width, height);
+		ids.info = data;
+		int newSize = ids.info->charData.size();
+		for (int i = lastSize; i < newSize; i++) {
+			const CharacterData& d = ids.info->charData[i];
+			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + glm::vec3(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ids.shapes.push_back(id);
+		}
+
 	}
 
 	void UIComponent::RemoveText(const std::string& id)
 	{
-		std::vector<ShapeID> ids = m_text[id];
-		for (ShapeID l : ids) {
-			s_ShapeFactory->RemoveShape(l);
-			m_ids.erase(std::find(m_ids.begin(), m_ids.end(), l));
+		UI_TextInfo& ids = m_text[id];
+		for (ShapeID l : ids.shapes) {
+			Remove(l);
 		}
+
+		ids.shapes.clear();
 		
 		m_text.erase(id);
+	}
+
+	void UIComponent::SetTextColor(const std::string& id, const glm::vec4& color, int index, int count /*= 1*/)
+	{
+		UI_TextInfo& info = m_text[id];
+		for (int i = index; i < index + count; i++) {
+			SetColor(info.shapes[i], color);
+		}
+		
+	}
+
+	uint32_t UIComponent::GetTextSize(const std::string& id)
+	{
+		return m_text[id].shapes.size();
 	}
 
 	void UIComponent::UnloadGraphics() {
@@ -220,12 +253,10 @@ namespace GEngine {
 		for (ShapeID id : m_ids) {
 			s_ShapeFactory->RemoveShape(id);
 		}
-		for (std::pair<std::string, std::vector<ShapeID>> p : m_text) {
-			for (ShapeID id : p.second) {
-				s_ShapeFactory->RemoveShape(id);
-			}
-		}
+		
+		m_text.clear();
 		m_ids.clear();
+	
 	}
 
 	void UIComponent::OnUpdate(Timestep ts)
@@ -240,10 +271,7 @@ namespace GEngine {
 
 	void UIComponent::OnEnd()
 	{
-		for (ShapeID id : m_ids) {
-			s_ShapeFactory->RemoveShape(id);
-		}
-		m_ids.clear();
+		ClearQuads();
 	}
 
 	void UIComponent::OnAttached(Ref<Entity> entity)

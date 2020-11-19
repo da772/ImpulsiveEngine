@@ -78,26 +78,26 @@ namespace GEngine {
 		return _scale;
 	}
 
-	std::vector<GEngine::CharacterData> OpenGL_Font::DrawString(std::string s, float maxWidth, int viewWidth, int viewHeight)
+	Ref<StringInfo> OpenGL_Font::DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight)
 	{
-		std::vector<CharacterData> charData;
-		glm::vec2 pen = { 0,0 };
-		float maxHeight = 0.f;
-		float lastAdvance = 0.f;
-		int lastSpace = 0;
+		return AppendString(make_shared<StringInfo>(), s, maxWidth, viewWidth, viewHeight);
+	}
+
+	GEngine::Ref<GEngine::StringInfo> OpenGL_Font::AppendString(Ref<StringInfo> info, const std::string& s, float maxWidth, int viewWidth, int viewHeight)
+	{
 		for (int i = 0; i < s.size(); i++) {
 			Ref<SubTexture2D> texture = SubTexture2D::CreateFromCoords(m_Texture, { 0, 0 }, { 0, 0 });
 			char character = s[i];
 
 			if (character == ' ') {
-				pen.x += (float)m_size/2.f/viewWidth;
-				lastSpace = i;
+				info->data.pen.x += (float)m_size / 2.f / viewWidth;
+				info->data.lastSpace = i;
 				continue;
 			}
 			else if (character == '\n') {
-				pen.y -= maxHeight > 0 ? maxHeight : (float)m_size / viewHeight;
-				maxHeight = 0;
-				pen.x = 0;
+				info->data.pen.y -= info->data.maxHeight > 0 ? info->data.maxHeight : (float)m_size / viewHeight;
+				info->data.maxHeight = 0;
+				info->data.pen.x = 0;
 				continue;
 			}
 
@@ -118,51 +118,53 @@ namespace GEngine {
 
 				float kerning = 0.f;
 
-				float h = ((float)glyph->height / viewHeight) + (m_size/2.f/viewHeight);
+				float h = ((float)glyph->height / viewHeight) + (m_size / 2.f / viewHeight);
 
-				if (h > maxHeight)
-					maxHeight = h;
+				if (h > info->data.maxHeight)
+					info->data.maxHeight = h;
 
 				if (i > 0) {
 					char _s = s[i - 1];
 					kerning = texture_glyph_get_kerning(glyph, &_s);
 				}
+				else if (info->charData.size() > 0) {
+					char _s = info->charData[info->charData.size() - 1].character;
+					kerning = texture_glyph_get_kerning(glyph, &_s);
+				}
 
-				pen.x += kerning/ (float)viewWidth;
+				info->data.pen.x += kerning / (float)viewWidth;
 
-				float x0 = pen.x + ((float)glyph->offset_x / viewWidth);
-				float y0 = pen.y + ((float)glyph->offset_y / viewHeight);
+				float x0 = info->data.pen.x + ((float)glyph->offset_x / viewWidth);
+				float y0 = info->data.pen.y + ((float)glyph->offset_y / viewHeight);
 				float x1 = x0 + ((float)glyph->width / viewWidth);
 				float y1 = y0 + ((float)glyph->height / viewHeight);
 
 
-				Vector2 pos = { (x1+x0)/2.f , y0-(y1-y0)/2.f };
-				Vector2 scale = { x1-x0, y1-y0};
+				Vector2 pos = { (x1 + x0) / 2.f , y0 - (y1 - y0) / 2.f };
+				Vector2 scale = { x1 - x0, y1 - y0 };
 
 				if (pos.x > maxWidth) {
-					pen.x = 0;
-					pen.y -= maxHeight;
-					maxHeight = h;
-					for (int j = 0; j < i-lastSpace-1; j++)
-						charData.erase(charData.end() - 1);
-					i = lastSpace;
+					info->data.pen.x = 0;
+					info->data.pen.y -= info->data.maxHeight;
+					info->data.maxHeight = h;
+					for (int j = 0; j < i - info->data.lastSpace - 1; j++)
+						info->charData.erase(info->charData.end() - 1);
+					i = info->data.lastSpace;
 					continue;
 				}
 
-				pen.x += (float)glyph->advance_x/viewWidth;//(float)glyph->advance_x / viewWidth;
-				
-				lastAdvance = (float)glyph->advance_x / viewWidth;
+				info->data.pen.x += (float)glyph->advance_x / viewWidth;//(float)glyph->advance_x / viewWidth;
 
-				charData.push_back({ character, pos,scale, texture });
+				info->data.lastAdvance = (float)glyph->advance_x / viewWidth;
+
+				info->charData.push_back({ character, pos,scale, texture });
 			}
 			else {
 				GE_CORE_ERROR("INVALID CHARACTER: {0}", s[i]);
 			}
 		}
-
-		return charData;
-
-
+		info->data.lastSpace = 0;
+		return info;
 	}
 
 	void OpenGL_Font::Unload()
