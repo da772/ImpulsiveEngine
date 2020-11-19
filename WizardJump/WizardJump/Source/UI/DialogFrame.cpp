@@ -20,7 +20,7 @@ void DialogFrame::OnBegin()
 {
 	m_uiComponent = CreateGameObject<UIComponent>();
 	m_spriteAnimComponent = CreateGameObject<SpriteAnimationComponent>();
-	m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/dink.ogg", false, false, true, 1.f, 1.f);
+	m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/keyPress.ogg", false, false, true, 1.f, 1.f);
 	AddComponent(m_spriteAnimComponent);
 	AddComponent(m_uiComponent);
 	AddComponent(m_audioComponent);
