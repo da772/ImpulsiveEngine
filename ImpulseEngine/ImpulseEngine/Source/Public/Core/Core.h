@@ -30,7 +30,6 @@
 #if defined(GE_PLATFORM_WINDOWS) || defined(GE_PLATFORM_MACOSX) || defined(GE_PLATFORM_LINUX)
 #define GE_GRAPHICS_API_OPENGL_3_3
 #define GE_WINDOW_API_GLFW
-#define GE_GRAPHICS_API_VULKAN
 #define GE_CONSOLE_APP
 #endif
 

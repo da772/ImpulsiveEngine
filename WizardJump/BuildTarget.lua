@@ -210,7 +210,6 @@ project "WizardJump"
 				"dl",
 				"pthread",
 				"X11",
-				"vulkan",
 				"openal",
 				"stdc++fs",
 				"zlib"
