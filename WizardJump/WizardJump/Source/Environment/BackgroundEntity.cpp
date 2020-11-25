@@ -18,6 +18,13 @@ void BackgroundEntity::RemoveParalaxBackground(const std::string& name) {
 
 void BackgroundEntity::OnBegin()
 {
+
+	if (Renderer::GetPipeline("background") == nullptr) {
+		Ref<RenderPipeline> pipeline = std::shared_ptr<RenderPipeline>(new RenderPipeline_2d(Renderer::GetRenderScale(), "Renderpipeline_2d_Background"));
+		Renderer::AddPipeline("background", pipeline, 0);
+		pipeline->SetSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
+	}
+
 	m_camera = SceneManager::GetCurrentScene()->GetCamera();
 	m_backgroundSprite = CreateGameObject<SpriteComponent>();
 	AddComponent(m_backgroundSprite);
@@ -27,6 +34,9 @@ void BackgroundEntity::OnBegin()
 			m_backgrounds[p.first].id = m_backgroundSprite->CreateQuad({ p.second.offset.x,p.second.offset.y,p.second.zOrder }, 0, { p.second.scale.x, p.second.scale.y, 1 }, { 1,1,1,1 }, p.second.texture.lock());
 		
 	}
+
+	m_backgroundSprite->CreateQuad({ 0,102.f,-15 }, 0, { 200.f, 200.f ,1.f }, { 102.f / 255.f,190.f / 255.f,239.f / 255.f,1 });
+	m_backgroundSprite->CreateQuad({ 0,-110,-15 }, 0, { 200.f, 200.f ,1.f }, { 119.f / 255.f,112.f / 255.f,111.f / 255.f,1 });
 
 }
 

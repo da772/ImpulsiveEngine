@@ -16,7 +16,7 @@ namespace GEngine {
 	class SpriteComponent : public Component {
 
 	public:
-		SpriteComponent();
+		SpriteComponent(Ref<Shader> shader = nullptr, const std::function<void()>& func = nullptr, const std::string& pipeline = "");
 		virtual ~SpriteComponent();
 
 		const ShapeID CreateQuad(const Vector3& _pos, const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f },
@@ -44,6 +44,8 @@ namespace GEngine {
 		void SetQuadColorScript(const ShapeID id, const Ref<ScriptVector4>& color);
 		void SetRotation(const ShapeID id, const float rotation);
 
+		void SetTextureScale(const ShapeID id, const glm::vec2& scale);
+
 		virtual void OnAttached(Ref<Entity> entity) override;
 		virtual void DeAttached(Ref<Entity> entity) override;
 
@@ -58,7 +60,11 @@ namespace GEngine {
 		virtual void OnBegin() override;
 		virtual void OnEnd() override;
 
+
+		
+
 	private:
+		Ref<BatchRenderer> m_shapeFactory;
 		static Ref<BatchRenderer> s_ShapeFactory;
 		Ref<Shader> m_Shader;
 		std::vector<ShapeID> m_ids;

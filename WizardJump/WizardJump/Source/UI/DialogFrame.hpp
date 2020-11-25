@@ -25,6 +25,8 @@ protected:
 	Ref<Font> m_font;
 	int m_textPos = 0;
 
+	bool m_isTyping = false;
+
 	ShapeID m_dialogId, m_iconId;
 
 	

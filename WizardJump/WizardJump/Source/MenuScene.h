@@ -48,14 +48,16 @@ public:
 
 		startButton->SetOnEvent([](const Event& e) {
 
-			GE_LOG_DEBUG("EVENT: {0}", e.GetName());
+			
 
 			if (e.GetEventType() == EventType::MouseButtonReleased) {
+				GE_LOG_DEBUG("EVENT: {0}", e.GetName());
 				GEngine::SceneManager::SetCurrentScene("mainGame");
 			}
 
 			if (e.GetEventType() == EventType::TouchReleased) {
 
+				GE_LOG_DEBUG("EVENT: {0}", e.GetName());
 				GEngine::SceneManager::SetCurrentScene("mainGame");
 
 

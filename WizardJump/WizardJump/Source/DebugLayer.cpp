@@ -57,6 +57,15 @@ void DebugLayer::OnEvent(GEngine::Event& event)
 				ReCreateGraphics();
 			}
 		}
+
+		if (e.GetKeyCode() == GE_KEY_P) {
+			if (GEngine::Application::IsGamePaused()) {
+				GEngine::Application::ResumeGame();
+			}
+			else {
+				GEngine::Application::PauseGame();
+			}
+		}
 	
 	}	
 	if (event.GetEventType() == GEngine::EventType::WindowResize) {
@@ -311,6 +320,11 @@ void DebugLayer::CreateViewPort()
 
 		if (ImGui::Button(">")) {
 			GEngine::Application::ResumeGame();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button(">>")) {
+			GEngine::Application::ResumeGame();
+			GEngine::ThreadPool::AddEndFrameFunction([]() {GEngine::Application::PauseGame(); });
 		}
 	}
 	else {

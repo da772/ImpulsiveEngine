@@ -84,7 +84,7 @@ namespace GEngine {
 	 }
 
 	 BatchRenderer::BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader, const char* pipelineId, const std::function<void()>& shaderFunc) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
-		 m_PipelineId(pipelineId == nullptr ? pipeline == ERenderType::GAME ? "2d" : "ui" : pipelineId), m_renderType(pipeline)
+		 m_PipelineId(pipelineId == nullptr ? pipeline == ERenderType::GAME ? "2d" : "ui" : pipelineId), m_renderType(pipeline), m_shaderfunction(shaderFunc)
 	 {
 		m_MaxVertices = m_MaxShapes * m_Shape->GetVerticesSize();
 		m_MaxIndices = m_MaxShapes * m_Shape->GetIndicesSize();
@@ -132,7 +132,7 @@ namespace GEngine {
 		 }
 
 		 if (m_Pipeline == nullptr) {
-			 m_Pipeline = Renderer::GetPipeline(m_PipelineId);
+			 m_Pipeline = Renderer::GetPipeline(m_PipelineId.c_str());
 		 }
 	 }
 
@@ -290,6 +290,21 @@ namespace GEngine {
 		 batch->RefreshVertices();
 	 }
 
+	 void BatchRenderer::SetTextureScale(const uint64_t id, const glm::vec2& scale)
+	 {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 Ref<Batch> batch = m_Batches[it->second.batchId];
+		 std::vector<float>& vertices = batch->GetVertices();
+		 it->second.textureScale = scale;
+
+		 ReCreateShapeVertices(&it->second);
+		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
+		 batch->RefreshVertices();
+	 }
+
 	 void BatchRenderer::SetZOrder(const uint64_t id, float zOrder)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
@@ -363,6 +378,8 @@ namespace GEngine {
 			 ReCreateBatches();
 		 }
 	 }
+
+
 
 	 void BatchRenderer::SetRotation(const uint64_t id, float rotation)
 	 {

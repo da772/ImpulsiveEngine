@@ -41,7 +41,7 @@ namespace GEngine {
 	{
 		Ref<SubTexture2D> tex = SubTexture2D::CreateFromCoords(m_Texture, { 0, 0 }, { 0, 0 });
 		texture_glyph_t* glyph = texture_font_get_glyph(m_textureFont, (const char*)&c);
-
+		
 		float s0 = glyph->s0;
 		float t0 = glyph->t0;
 		float s1 = glyph->s1;

@@ -7,7 +7,7 @@ DialogFrame::DialogFrame(const glm::vec3& position, float textSpeed, const std::
 {
 	bUpdates = true;
 	m_font = Font::Create("Content/Fonts/Wizard.ttf", 120.f);
-
+	m_font->LoadCharactersEN();
 	
 }
 
@@ -18,12 +18,14 @@ DialogFrame::~DialogFrame()
 
 void DialogFrame::OnBegin()
 {
+
 	m_uiComponent = CreateGameObject<UIComponent>();
 	m_spriteAnimComponent = CreateGameObject<SpriteAnimationComponent>();
 	m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/keyPress.ogg", false, false, true, 1.f, 1.f);
 	AddComponent(m_spriteAnimComponent);
 	AddComponent(m_uiComponent);
 	AddComponent(m_audioComponent);
+	m_audioComponent->SetPitch(2.f);
 
 
 	Ref<Texture2D> dialogTexture = Texture2D::Create("Content/Textures/dialogFrame.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
@@ -39,14 +41,15 @@ void DialogFrame::OnBegin()
 	m_audioComponent->SetLooping(true);
 	m_audioComponent->SetPlaying(true);
 	
-	m_spriteAnimComponent->SetFrameAnimation(m_characterPerSecond, m_uiComponent->GetTextSize(m_textId)-1, false, [this](int frame) {
+	m_isTyping  = true;
+
+	m_spriteAnimComponent->SetFrameAnimation(m_characterPerSecond, m_uiComponent->GetTextSize(m_textId), false, [this](int frame) {
 	
 		
 		m_uiComponent->SetTextColor(m_textId, { 1,1,1,1 }, m_textPos, frame - m_textPos);
 		m_textPos++;
 		
-		if ( frame == m_uiComponent->GetTextSize(m_textId) - 1) {
-			// play sound
+		if ( frame == m_uiComponent->GetTextSize(m_textId) ) {
 			m_audioComponent->SetLooping(false);
 		}	
 		

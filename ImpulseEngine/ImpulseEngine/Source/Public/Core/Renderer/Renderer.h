@@ -54,6 +54,8 @@ namespace GEngine {
 
 		static void AddPipeline(const char* id, Ref<RenderPipeline> p, int priority);
 
+		static void SortPipelines();
+
 		static Ref<RenderPipeline> GetPipeline(const char* id);
 
 		static const std::vector<FPipeline>& GetPipelines();

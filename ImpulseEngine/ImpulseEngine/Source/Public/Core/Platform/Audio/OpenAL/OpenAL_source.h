@@ -33,6 +33,10 @@ namespace GEngine {
 		virtual bool IsPlaying() override;
 		OggVorbis_File oggFile;
 
+	private:
+		bool m_unloaded = false;
+		int m_loadPos = 0;
+
 	};
 
 

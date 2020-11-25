@@ -21,7 +21,9 @@ namespace GEngine {
 	}
 
 
-	static bool isPlaying(uint32_t source) {
+	static bool isPlaying(uint32_t source, bool m_unloaded = false) {
+		if (m_unloaded)
+			return true;
 		ALenum state;
 		alGetSourcei(source, AL_SOURCE_STATE, &state);
 		return state == AL_PLAYING;
@@ -43,18 +45,27 @@ namespace GEngine {
 	}
 
     void OpenAL_source::Unload() {
-        if (IsPlaying())
-            alSourceStop(m_audioData.source);
+		if (IsPlaying()) {
+			m_unloaded = true;
+			alGetSourcei(m_audioData.source, AL_SAMPLE_OFFSET, &m_loadPos);
+			alSourceStop(m_audioData.source);
+		}
     }
 
     void OpenAL_source::Reload() {
-        if (IsPlaying())
-            alSourcePlay(m_audioData.source);
+		if (IsPlaying()) {
+			if (m_unloaded) {
+				alSourcei(m_audioData.source, AL_SAMPLE_OFFSET, m_loadPos);
+				m_loadPos = 0;
+				m_unloaded = false;
+			}
+			alSourcePlay(m_audioData.source);
+		}
     }
 
 	bool OpenAL_source::IsPlaying()
 	{
-		b_isPlaying = isPlaying(m_audioData.source);
+		b_isPlaying = isPlaying(m_audioData.source, m_unloaded);
 		return b_isPlaying;
 	}
 

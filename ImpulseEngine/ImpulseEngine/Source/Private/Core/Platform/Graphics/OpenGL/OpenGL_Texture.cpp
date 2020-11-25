@@ -63,7 +63,10 @@ namespace GEngine {
 		if (m_RendererID == 0)
 			glGenTextures(1, (unsigned int*)&m_RendererID);
         
+		
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
 
 		uint64_t channel = GL_RGBA;
 

@@ -36,6 +36,7 @@ namespace GEngine {
 
 		virtual void Render() override;
 
+
 		static inline const int GetBatchCount() { return s_BatchCount; }
 
 
@@ -94,6 +95,7 @@ namespace GEngine {
 		void SetRotation(const uint64_t id, float rotation);
 		void SetScale(const uint64_t id, glm::vec2 scale);
 		void SetTexture(const uint64_t id, Ref<Texture2D>);
+		void SetTextureScale(const uint64_t id, const glm::vec2& scale);
 
 
 		void UnloadGraphics();
@@ -129,7 +131,7 @@ namespace GEngine {
 		int m_MaxTextures = 0;
 		std::vector<Ref<Batch>> m_Batches;
 		Ref<RenderPipeline> m_Pipeline = nullptr;
-		const char* m_PipelineId;
+		std::string m_PipelineId;
 
 		int m_RefCount = 0;
 		bool m_Sort = true;

@@ -11,6 +11,7 @@
 #include "Character/CharacterController.hpp"
 #include "Generation/ProceduralPlatformGeneration.hpp"
 #include "Environment/Objects/LightGlowEntity.hpp"
+#include "Environment/FogEntity.h"
 
 #include "UI/DialogFrame.hpp"
 
@@ -89,6 +90,8 @@ public:
 	}
 
 
+	
+
 
 
 	inline void OnBegin() override
@@ -134,19 +137,11 @@ public:
 		eFPS->AddComponent(button2);
 		button2->SetImageTexture(buttonTexture);
 
+		fog = CreateGameObject<FogEntity>();
+		AddEntity(fog);
 
-		/*
-		buttonTexture = Texture2D::Create("Content/Textures/dialogFrame.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-		ShapeID dialog = FPSuiComponent->CreateQuad({ 0,.5f,5 }, 0, { 2.f, 0.f, 1 }, { 1,1,1,1 }, buttonTexture, true );
-		buttonTexture = Texture2D::Create("Content/Textures/wiz10_face.png", TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap);
-		
-        FPSuiComponent->CreateQuad({ -.745f,.5f, 4 }, 0, { .5f, 0.f, 1 }, { 1,1,1,1 }, buttonTexture);
-        
-        FPSuiComponent->CreateText("Wizard", font, { -.45f, .5f+FPSuiComponent->GetQuadScale(dialog).y/5.75f, 6.f }, { .45f, .45f, 2.f }, { 1,1,1,1 });
-		FPSuiComponent->CreateText("This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai", font, { -.46f, .5f, 6.f }, { .35f, .35f, 1.4f }, { 1,1,1,1 });
-		*/
 
-		AddEntity(CreateGameObject<DialogFrame>(glm::vec3(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd"));
+		//AddEntity(CreateGameObject<DialogFrame>(glm::vec3(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 
 
 		button->SetOnEvent([](const GEngine::Event& e) {
@@ -164,8 +159,9 @@ public:
 		//FPSuiComponent->CreateText("Ad", font, { .84f, .94f, 1.f }, { .5 ,.5,1 }, { 0,0,0,1 });
 
         button2->SetOnEvent([](const GEngine::Event& e){
-			GE_CORE_DEBUG("TOUCH RELEASED!");
+			
 			if (e.GetEventType() == EventType::TouchReleased) {
+				GE_CORE_DEBUG("TOUCH RELEASED!");
 				GE_CORE_DEBUG("AD REQUESTED!");
 				if (GEngine::AdManager::AdLoaded()) {
 					GE_CORE_DEBUG("AD LOADED!");
@@ -212,15 +208,15 @@ public:
 		AddEntity(CreateGameObject<PlatformEntity>(glm::vec2(2.7f, 4.f), glm::vec2(7.f, 1)));
 		
 		
-		bg->AddParalaxBackground("back", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest| TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .7, -5, { 0, 0.f});
-		bg->AddParalaxBackground("backL", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .7, -5, { -8, 0.f });
-		bg->AddParalaxBackground("backR", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .7, -5, { 8, 0.f });
-		bg->AddParalaxBackground("middle", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .5f, -4, { 0,-5 });
-		bg->AddParalaxBackground("middleL", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .5f, -4, { -8,-5 });
-		bg->AddParalaxBackground("middleR", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .5f, -4, { 8,-5 });
-		bg->AddParalaxBackground("front", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -3, { 0,-6 });
-		bg->AddParalaxBackground("frontL", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -3, { -8,-6 });
-		bg->AddParalaxBackground("frontR", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -3, { 8,-6 });
+		bg->AddParalaxBackground("back", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest| TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .7, -14, { 0, 0.f});
+		bg->AddParalaxBackground("backL", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .7, -14, { -8, 0.f });
+		bg->AddParalaxBackground("backR", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .7, -14, { 8, 0.f });
+		bg->AddParalaxBackground("middle", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .5f, -13, { 0,-5 });
+		bg->AddParalaxBackground("middleL", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .5f, -13, { -8,-5 });
+		bg->AddParalaxBackground("middleR", Texture2D::Create("Content/Textures/MountainBackground/background2.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .5f, -13, { 8,-5 });
+		bg->AddParalaxBackground("front", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -12, { 0,-6 });
+		bg->AddParalaxBackground("frontL", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -12, { -8,-6 });
+		bg->AddParalaxBackground("frontR", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -12, { 8,-6 });
 
 		Ref<LightComponent> lc = CreateGameObject<LightComponent>();
 		bg->AddComponent(lc);
@@ -249,8 +245,7 @@ public:
 		AddEntity(spriteEntity);
 		Ref<SpriteComponent> comp = spriteEntity->GetSpriteComponent();
 		long id=  comp->CreateQuad({ 0,0,2 }, 0, { 25,17,0 }, { 1,1,1,300.f }, Texture2D::Create("Content/Textures/level_01.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge) );
-		comp->CreateQuad({ 0,102.f,0 }, 0, { 200.f, 200.f ,1.f}, {102.f/255.f,190.f/255.f,239.f/255.f,1});
-		comp->CreateQuad({ 0,-110,-15 }, 0, { 200.f, 200.f ,1.f }, { 119.f / 255.f,112.f / 255.f,111.f / 255.f,1 });
+		
 		comp->CreateQuad({ 6.7f,-13.8f,3 }, 0, { 10.21f,11.78f,0 }, { .4f,.4f,.4f,1.f}, Texture2D::Create("Content/Textures/towerUnder.png", TEXTUREFLAGS_Wrap_ClampToEdge));
 
 		comp->CreateQuad({ -6.95f,-13.8f,3 }, 0, { 9.25f,11.78f,0 }, { .4f,.4f,.4f,1.f }, Texture2D::Create("Content/Textures/towerUnder.png", TEXTUREFLAGS_Wrap_ClampToEdge));
@@ -277,11 +272,48 @@ public:
 
 	}
 
+
+	Ref<FogEntity> fog;
+
 	inline void OnImGuiRender() override {
 
 #if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
 
 		if (!DebugLayer::showLog) return;
+
+		ImGui::Begin("Fog Debug", &DebugLayer::showLog);
+		
+		float lacunarity = fog->m_lacunarity, frequency = fog->m_frequency, gain = fog->m_gain;
+		int octaves = fog->m_octaves, seed = fog->m_seed;
+
+		ImGui::DragInt("Seed", &seed);
+		ImGui::DragInt("Octaves", (int*)&octaves);
+		ImGui::DragFloat("Lacunarity", &lacunarity, .25f);
+		ImGui::DragFloat("Frequency", &frequency, .01f);
+		ImGui::DragFloat("Gain", &gain, .25f);
+
+		ImGui::End();
+
+		if (fog->m_lacunarity != lacunarity) {
+			fog->SetFractalLacunarity(lacunarity);
+		}
+
+		if (fog->m_octaves != octaves) {
+			fog->SetOctaves(octaves);
+		}
+
+		if (fog->m_gain != gain) {
+			fog->SetFractalGain(gain);
+		}
+
+		if (fog->m_frequency != frequency) {
+			fog->SetFrequency(frequency);
+		}
+
+		if (fog->m_seed != seed) {
+			fog->SetSeed(seed);
+		}
+
 		ImGui::Begin("Debug Info", &DebugLayer::showLog);
 		ImGui::Separator();
 		ImGui::Text("Character: ");
