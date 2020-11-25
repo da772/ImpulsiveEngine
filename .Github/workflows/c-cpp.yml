@@ -1,0 +1,19 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ WizardJump ]
+  pull_request:
+    branches: [ WizardJump ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      run: ./WizardJump/GenerateProjectGNU.sh
+    - name: make
+      run: make
