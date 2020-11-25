@@ -14,6 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: configure
-      run: sudo apt-get update && sudo apt-get install xorg-dev && ./WizardJump/GenerateProjectGNU.sh
+      run: sudo apt-get update && sudo apt-get install xorg-dev && apt-get install -y gcc-8 && ./WizardJump/GenerateProjectGNU.sh
     - name: make
       run: make
