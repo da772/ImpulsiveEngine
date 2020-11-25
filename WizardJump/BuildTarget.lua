@@ -28,7 +28,7 @@ workspace "WizardJump"
 			CXX = x86_64-pc-cygwin-g++
 		]]
 
-	filter "system:windows"
+	filter "system:linux"
 		makesettings [[
 			CXX = g++-8
 		]]
