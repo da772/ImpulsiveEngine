@@ -16,4 +16,4 @@ jobs:
     - name: configure
       run: sudo apt-get update && sudo apt-get install xorg-dev && sudo apt-get install -y gcc-8 && ./WizardJump/GenerateProjectGNU.sh
     - name: make
-      run: make -n && make
+      run: g++ -v
