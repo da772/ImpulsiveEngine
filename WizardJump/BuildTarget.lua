@@ -24,10 +24,9 @@ workspace "WizardJump"
 		}
 
 	filter "system:windows"
-		filter "action:gmake2"
-			makesettings [[
-				CXX = x86_64-pc-cygwin-g++
-			]]
+		makesettings [[
+			CXX = x86_64-pc-cygwin-g++
+		]]
 			
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -143,7 +142,7 @@ project "WizardJump"
 				runtime "Release"
 				optimize "On"
 		end
-		filter "action:gmake2"
+		filter { "system:windows", "action:gmake2" }
 			cppdialect "gnu++17"
 			defines
 			{
@@ -208,7 +207,8 @@ project "WizardJump"
 				"X11",
 				"vulkan",
 				"openal",
-				"stdc++fs"
+				"stdc++fs",
+				"zlib"
 			}
 	
 			excludes 

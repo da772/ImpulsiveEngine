@@ -28,7 +28,7 @@ public:
 
 protected:
 	FastNoiseLite noise;
-	float noiseDataSize = 128;
+	uint16_t noiseDataSize = 128;
 	inline void OnBegin();
 	Ref<Shader> m_shader;
 	float m_time = 0;

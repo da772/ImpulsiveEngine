@@ -13,7 +13,7 @@
 #include <WS2tcpip.h>
 #endif
 
-#if defined(GE_MINGW_)
+#if defined(GE_MINGW_) || defined (GE_PLATFORM_LINUX)
 #include <arpa/inet.h>
 #endif
 

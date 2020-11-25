@@ -387,7 +387,7 @@ project "ImpulseEngine"
 			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
-		filter "action:gmake2"
+		filter { "system:windows", "action:gmake2" }
 			cppdialect "gnu++17"
 			defines
 			{
