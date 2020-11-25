@@ -28,6 +28,7 @@ build/
 *.ini
 *.recipe
 *.so
+*.a
 Makefile
 ./Podfile
 
