@@ -27,6 +27,11 @@ workspace "WizardJump"
 		makesettings [[
 			CXX = x86_64-pc-cygwin-g++
 		]]
+
+	filter "system:windows"
+		makesettings [[
+			CXX = g++-8
+		]]
 			
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
