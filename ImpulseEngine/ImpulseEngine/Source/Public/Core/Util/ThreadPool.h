@@ -17,6 +17,9 @@ namespace GEngine {
 
 		static void AddEndFrameFunction(std::function<void()> func);
 
+		static void UnpauseThreads();
+		static void PauseThreads();
+
 		static std::function<void()> GetMainThreadFunction();
 		static std::queue<std::function<void()>>&  GetEndThreadFunction();
 		static std::queue<std::function<void()>>& GetMainThreadFunctions();
@@ -24,8 +27,12 @@ namespace GEngine {
 		static std::mutex& GetMainFunctionsMutex();
 		static std::mutex& GetEndThreadFunctionsMutex();
 
+
+		static std::mutex& GetPauseMutex();
+
 		static std::vector < std::thread> threads;
 		static std::queue <std::function<void()>> jobQueue;
+		
 		static std::mutex queueMutex;
 		static std::condition_variable condition;
 		static bool terminateThreads;
@@ -35,6 +42,7 @@ namespace GEngine {
 		static std::thread::id MAIN_THREAD_ID;
 		static std::mutex m_MainthreadMutex;
 		static std::mutex m_EndthreadMutex;
+		static std::mutex m_PauseMutex;
 		
 
 	};

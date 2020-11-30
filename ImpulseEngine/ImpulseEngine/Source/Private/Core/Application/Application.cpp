@@ -319,22 +319,26 @@ namespace GEngine {
 
     void Application::Pause() {
             m_loaded = false;
+            if (!Application::GetApp()->m_pause) ThreadPool::PauseThreads();
     }
 
     void Application::Resume() {
         m_loaded = true;
+        if (!Application::GetApp()->m_pause) ThreadPool::UnpauseThreads();
         m_LastFrameTime = Time::GetEpochTimeMS();
     }
 
 	void Application::PauseGame()
 	{
         Application::GetApp()->m_pause = true;
+        ThreadPool::PauseThreads();
         AudioManager::Pause();
 	}
 
 	void Application::ResumeGame()
 	{
         Application::GetApp()->m_pause = false;
+        ThreadPool::UnpauseThreads();
         AudioManager::Resume();
 	}
 
@@ -457,6 +461,7 @@ namespace GEngine {
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {
         m_Running = false;
+        if (Application::GetApp()->m_pause) ResumeGame();
         UnloadGraphics();
         return true;
     }

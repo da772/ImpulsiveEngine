@@ -54,7 +54,7 @@ protected:
 	uint64_t m_frameProcessed = 0;
 	uint8_t m_threadCount = 0;
 	uint64_t m_frameProccesedTime = 0;
-	uint8_t m_numberofThreads = 3;
+	uint8_t m_numberofThreads = 1;
 	bool m_ending = false;
 
 

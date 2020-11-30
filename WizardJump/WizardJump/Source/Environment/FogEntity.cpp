@@ -108,6 +108,11 @@ void FogEntity::OnUpdate(Timestep timestep)
 			m_threadCount++;
 		}
 		ThreadPool::AddJob([this]() {
+
+
+			ThreadPool::GetPauseMutex().lock();
+			ThreadPool::GetPauseMutex().unlock();
+
 			unsigned char* noiseData = new unsigned char[noiseDataSize * noiseDataSize * 4];
 			int frame = 0;
 			{
@@ -170,6 +175,9 @@ void FogEntity::OnUpdate(Timestep timestep)
 			}
 
 
+			ThreadPool::GetPauseMutex().lock();
+			ThreadPool::GetPauseMutex().unlock();
+			
 			ThreadPool::AddMainThreadFunction([this, frame, noiseData]() {
 				std::lock_guard<std::mutex> guard(m_mutex);
 				m_texture->SetData(noiseData, noiseDataSize * noiseDataSize * 4, TEXTUREFLAGS_Mag_Linear_MipMap | TEXTUREFLAGS_Min_Linear_MipMap |  TEXTUREFLAGS_Wrap_ClampToEdge);

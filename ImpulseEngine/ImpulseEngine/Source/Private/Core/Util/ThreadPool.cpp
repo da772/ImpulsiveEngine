@@ -28,6 +28,8 @@ namespace GEngine {
 				while (true) {
 					{
 						{
+							m_PauseMutex.lock();
+							m_PauseMutex.unlock();
 							std::unique_lock<std::mutex> lock(ThreadPool::queueMutex);
 							condition.wait(lock, [] {return !ThreadPool::jobQueue.empty() || ThreadPool::terminateThreads; });
 							if (ThreadPool::jobQueue.empty()) break;
@@ -89,6 +91,16 @@ namespace GEngine {
 
 
 
+	void ThreadPool::UnpauseThreads()
+	{
+		m_PauseMutex.unlock();
+	}
+
+	void ThreadPool::PauseThreads()
+	{
+		m_PauseMutex.lock();
+	}
+
 	std::function<void()> ThreadPool::GetMainThreadFunction()
 	{
 		std::lock_guard<std::mutex> guard(m_MainthreadMutex);
@@ -122,6 +134,11 @@ namespace GEngine {
 		return m_EndthreadMutex;
 	}
 
+	std::mutex& ThreadPool::GetPauseMutex()
+	{
+		return m_PauseMutex;
+	}
+
 	std::vector < std::thread > ThreadPool::threads;
 	std::queue <std::function<void()>> ThreadPool::jobQueue;
 	std::mutex ThreadPool::queueMutex;
@@ -133,4 +150,5 @@ namespace GEngine {
 	std::queue<std::function<void()>> ThreadPool::m_EndthreadQueue;
 	std::mutex ThreadPool::m_MainthreadMutex;
 	std::mutex ThreadPool::m_EndthreadMutex;
+	std::mutex ThreadPool::m_PauseMutex;
 }
