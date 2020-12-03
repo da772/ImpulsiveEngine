@@ -35,8 +35,13 @@ protected:
 	Ref<Texture2D> m_texture = nullptr;
 	Ref<SpriteComponent> m_spriteComponent;
 	Ref<AudioComponent> m_audioComponent;
+    
+    virtual void OnUnloadGraphics() override;
+    virtual void OnReloadGraphics() override;
 
 	float m_alpha = 1.f;
+    
+    uint64_t m_textureIds[3];
 
 	float m_speed = 40; //MS
 
@@ -61,6 +66,8 @@ protected:
 	const char* m_pipelineId = "background";
 
 	inline void OnEnd();
+    
+    unsigned char* m_lastNoiseData = nullptr;;
 
 
 	void OnUpdate(Timestep timestep);

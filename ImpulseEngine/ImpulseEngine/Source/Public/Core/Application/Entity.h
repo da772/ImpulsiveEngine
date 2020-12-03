@@ -38,6 +38,9 @@ namespace GEngine {
 
 		void UnloadGraphics();
 		void ReloadGraphics();
+        
+        virtual void OnUnloadGraphics() {};
+        virtual void OnReloadGraphics() {};
 
 		bool AddComponent_ptr(Component* component);
 		bool RemoveComponent_ptr(Component* component);

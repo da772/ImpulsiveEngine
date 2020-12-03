@@ -107,12 +107,14 @@ namespace GEngine {
 	}
 
 	void Entity::UnloadGraphics() {
+        OnUnloadGraphics();
 		for (std::pair<uint64_t, Ref<Component>> c : components) {
 			c.second->UnloadGraphics();
 		}
 	}
 
 	void Entity::ReloadGraphics() {
+        OnReloadGraphics();
 		for (std::pair<uint64_t, Ref<Component>> c : components) {
 			c.second->ReloadGraphics();
 		}

@@ -155,6 +155,7 @@ namespace GEngine {
 		GE_CORE_ASSERT(data && _size > 0, "Failed to load image!");
 		m_Width = width;
 		m_Height = height;
+        m_size = _size;
 
 		GLenum internalFormat = 0, dataFormat = 0;
 
@@ -249,7 +250,7 @@ namespace GEngine {
 	void OpenGL_Texture2D::Reload() {
 		if (m_data != nullptr) {
 			SetData(m_data, m_size, m_flags);
-		} else {
+		} else if (m_size > 0){
 			Ref<FileData> _data = GEngine::FileSystem::FileDataFromPath(m_Path);
 			UploadDataSTBI(_data->GetData(), _data->GetDataSize());		
 		}
