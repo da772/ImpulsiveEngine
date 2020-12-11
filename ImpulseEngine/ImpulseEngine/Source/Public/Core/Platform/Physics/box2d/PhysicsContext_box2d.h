@@ -18,18 +18,18 @@ namespace GEngine {
 		Ref<PhysicsBody> CreateBody(const PhysicsInfo& info) override;
 
 		void* GetNativeWorld() override;
-		void SetGravity(const glm::vec2& gravity) override;
-		virtual const glm::vec2 GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step) override;
+		void SetGravity(const Vector2f& gravity) override;
+		virtual const Vector2f GetTrajectoryPoint2D(const Vector2f& startPos, const Vector2f& startVel, float step) override;
 
-		virtual Ref<RayCastInfo> RayCast2D(const glm::vec2& start, const glm::vec2& end, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
-		virtual std::vector<Weak<PhysicsBody>> QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
+		virtual Ref<RayCastInfo> RayCast2D(const Vector2f& start, const Vector2f& end, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
+		virtual std::vector<Weak<PhysicsBody>> QueryCollision(const Vector2f& position, const Vector2f& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
 		void Simulate(float timeStep, int velIteration = 2, int posIteration = 3) override;
-		virtual float GetVelocityMaxHeight(const glm::vec2& velocity) override;
-		virtual glm::vec2 GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos) override;
+		virtual float GetVelocityMaxHeight(const Vector2f& velocity) override;
+		virtual Vector2f GetVelocityToPosition(const Vector2f& startPos, const Vector2f& endPos) override;
 		float CalculateVerticalVelocityForHeight(float height);
-		float TimeToTop(const glm::vec2& velocity);
-		virtual float GetMaxVelocityTime(const glm::vec2& velocity) override;
-		virtual float GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel) override;
+		float TimeToTop(const Vector2f& velocity);
+		virtual float GetMaxVelocityTime(const Vector2f& velocity) override;
+		virtual float GetMaxHeight(const Vector2f& startPos, const Vector2f& startVel) override;
 
 	private:
 		b2World* m_world;

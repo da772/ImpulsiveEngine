@@ -8,13 +8,13 @@ namespace GEngine {
 
 	struct CharacterData {
 		char character;
-		glm::vec2 position;
-		glm::vec2 scale;
+		Vector2f position;
+		Vector2f scale;
 		Ref<SubTexture2D> texture;
 	};
 
 	struct StringData {
-		glm::vec2 pen = { 0,0 };
+		Vector2f pen = { 0,0 };
 		float maxHeight = 0.f;
 		float lastAdvance = 0.f;
 		int lastSpace = 0;

@@ -40,7 +40,7 @@ namespace GEngine {
 	public:
 #ifdef GE_GRAPHICS_API_VULKAN
 		inline static VkDevice GetDevice() { return Vulkan_GraphicsContext::device; };
-		inline static void SetClearColor(const glm::vec4& color) { Vulkan_GraphicsContext::Get()->m_ClearColor = color; }
+		inline static void SetClearColor(const Vector4f& color) { Vulkan_GraphicsContext::Get()->m_ClearColor = color; }
 		inline static void SetPresentMode(VkPresentModeKHR mode) { m_presentMode = mode; Get()->recreateSwapChain(); }
 		//inline static void Clear() { Vulkan_GraphicsContext::Get()->recreateSwapChain(); }
 		inline virtual void SetVSync(bool vsync) override { if (vsync) SetPresentMode(VK_PRESENT_MODE_FIFO_KHR); else SetPresentMode(VK_PRESENT_MODE_MAILBOX_KHR); };
@@ -180,8 +180,8 @@ namespace GEngine {
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 		struct Vertex {
-			glm::vec3 pos;
-			glm::vec3 color;
+			Vector3f pos;
+			Vector3f color;
 
 			static VkVertexInputBindingDescription getBindingDescription() {
 				VkVertexInputBindingDescription bindingDescription = {};
@@ -254,7 +254,7 @@ namespace GEngine {
 		std::vector<VkFence> inFlightFences;
 		std::vector<VkFence> imagesInFlight;
 		size_t currentFrame = 0;
-		glm::vec4 m_ClearColor = { 0,0,0, 1.f };
+		Vector4f m_ClearColor = { 0,0,0, 1.f };
 		const std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
 		};

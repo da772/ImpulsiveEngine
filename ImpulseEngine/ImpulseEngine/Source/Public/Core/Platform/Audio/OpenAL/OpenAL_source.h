@@ -26,7 +26,7 @@ namespace GEngine {
 		virtual void SetVolume(float f) override;
 		virtual void SetPitch(float f) override;
 		virtual void Seek(float time) override;
-		virtual void SetPosition(const glm::vec3& pos) override;
+		virtual void SetPosition(const Vector3f& pos) override;
 		virtual void MaxDistance(const float f) override;
         virtual void Unload() override;
         virtual void Reload() override;

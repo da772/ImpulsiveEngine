@@ -27,7 +27,7 @@ namespace GEngine {
 		AudioManager::SetListenerVolume(f);
 	}
 
-	const glm::vec3 AudioListenerComponent::GetPosition()
+	const Vector3f AudioListenerComponent::GetPosition()
 	{
 		return AudioManager::GetListenerPosition();
 	}
@@ -63,7 +63,7 @@ namespace GEngine {
 
 	void AudioListenerComponent::OnEnd()
 	{
-		glm::vec3 pos = glm::vec3(0, 0, 0);
+		Vector3f pos = Vector3f(0, 0, 0);
 		AudioManager::SetListenerPosition(pos);
 	}
 

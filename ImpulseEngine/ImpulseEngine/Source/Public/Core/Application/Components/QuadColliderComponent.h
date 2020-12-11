@@ -12,15 +12,15 @@ namespace GEngine {
 
 	struct FColliderQuad {
 		ColliderID id;
-		glm::vec2 position;
-		glm::vec2 scale;
+		Vector2f position;
+		Vector2f scale;
 		float mass;
 		float rotation;
 	};
 
 	class QuadColliderComponent : public Component {
 	public:
-		QuadColliderComponent(bool dyamic = false, bool physics = false, const glm::vec2& position = glm::vec2(0,0));
+		QuadColliderComponent(bool dyamic = false, bool physics = false, const Vector2f& position = Vector2f(0,0));
 		~QuadColliderComponent();
 
 		virtual void OnAttached(Ref<Entity> entity) override;
@@ -34,17 +34,17 @@ namespace GEngine {
 		void SetPosition(const float x, const float y);
 		void SetScale(const float x, const float y);
 
-		const ColliderID CreateQuad(const glm::vec2& position, const glm::vec2& scale, float mass, float rotation = 0, const std::string& tag = "");
-		const ColliderID CreateCircle(const glm::vec2& position, const glm::vec2& scale, float mass, float rotation = 0, const std::string& tag = "");
+		const ColliderID CreateQuad(const Vector2f& position, const Vector2f& scale, float mass, float rotation = 0, const std::string& tag = "");
+		const ColliderID CreateCircle(const Vector2f& position, const Vector2f& scale, float mass, float rotation = 0, const std::string& tag = "");
 		void DestroyQuad(const ColliderID id);
 
-		const glm::vec2 GetPosition();
-		const glm::vec2 GetScale();
+		const Vector2f GetPosition();
+		const Vector2f GetScale();
 
 		void SetGravityScale(const float f);
 
 
-		const glm::vec2 GetLinearVelocity();
+		const Vector2f GetLinearVelocity();
 
 		Ref<ScriptVector2> GetLinearVelocityScript();
 		Ref<ScriptVector2> GetPositionScript();
@@ -75,10 +75,10 @@ namespace GEngine {
 		
 
 	private:
-		glm::vec2 m_position;
-		glm::vec2 m_scale;
-		glm::vec2 m_worldPosition;
-		glm::vec2 m_worldScale;
+		Vector2f m_position;
+		Vector2f m_scale;
+		Vector2f m_worldPosition;
+		Vector2f m_worldScale;
 		float m_worldRotation;
 		bool m_physics =false;
 		float m_rotation;

@@ -68,12 +68,12 @@ namespace GEngine {
 
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const Vector2f& position, const Vector2f& size, const Vector4f& color)
 	{
 		DrawQuad({ position.x, position.y, 0.f }, size, color);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const Vector3f& position, const Vector2f& size, const Vector4f& color)
 	{
 		sData->TextureShader->UploadUniformFloat4("u_Color", color);
 		sData->TextureShader->UploadUniformFloat2("u_UV", { 1.f,1.f });
@@ -88,12 +88,12 @@ namespace GEngine {
 		RenderCommand::DrawIndexed(sData->QuadVertexArray);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, Texture2D* texture, float alphaTolerance, const glm::vec2& uvScale)
+	void Renderer2D::DrawQuad(const Vector2f& position, const Vector2f& size, const Vector4f& color, Texture2D* texture, float alphaTolerance, const Vector2f& uvScale)
 	{
 		DrawQuad({ position.x, position.y, 0.f }, size, color, texture);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, Texture2D* texture, float alphaTolerance, const glm::vec2& uvScale)
+	void Renderer2D::DrawQuad(const Vector3f& position, const Vector2f& size, const Vector4f& color, Texture2D* texture, float alphaTolerance, const Vector2f& uvScale)
 	{
 		sData->TextureShader->UploadUniformFloat4("u_Color", color);
 		sData->TextureShader->UploadUniformFloat2("u_UV", uvScale);

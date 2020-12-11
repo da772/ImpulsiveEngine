@@ -17,12 +17,12 @@ namespace GEngine {
 		s_audioContext = nullptr;
 	}
 
-	void AudioManager::SetListenerPosition(const glm::vec3& pos)
+	void AudioManager::SetListenerPosition(const Vector3f& pos)
 	{
 		s_audioContext->SetListenerPosition(pos);
 	}
 
-	const glm::vec3 AudioManager::GetListenerPosition()
+	const Vector3f AudioManager::GetListenerPosition()
 	{
 		return s_audioContext->GetListenerPosition();
 	}

@@ -105,14 +105,15 @@ namespace GEngine {
 	using u16 = uint16_t;
 	using u8 = uint8_t;
 
+
 	using s64 = int64_t;
 	using s32 = int32_t;
 	using s16 = int16_t;
 	using s8 =  int8_t;
 
-    using Vector2 = glm::vec2;
-    using Vector3 = glm::vec3;
-    using Vector4 = glm::vec4;
+    using Vector2f = glm::vec2;
+    using Vector3f = glm::vec3;
+    using Vector4f = glm::vec4;
     using Mat4 = glm::mat4;
 
 	using ShapeID = uint64_t;

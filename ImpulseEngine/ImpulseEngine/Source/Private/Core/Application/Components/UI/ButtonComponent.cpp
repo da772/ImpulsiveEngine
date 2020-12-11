@@ -20,7 +20,7 @@ namespace GEngine {
 
 	Ref<BatchRenderer> ButtonComponent::s_ShapeFactory = nullptr;
 
-	ButtonComponent::ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, glm::vec2 textureScale /*= 1*/) :
+	ButtonComponent::ButtonComponent(const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale /*= 1*/) :
 		m_colliderPosition(pos), m_colliderRotation(rot), m_colliderScale(scale), m_imagePosition(pos), m_imageRotation(rot), m_imageScale(scale), m_color(color), m_textureScale(textureScale)
 	{
 		if (b_debug)
@@ -54,7 +54,7 @@ namespace GEngine {
 		}
 	}
 
-	void ButtonComponent::SetImageColor(const glm::vec4& color)
+	void ButtonComponent::SetImageColor(const Vector4f& color)
 	{
 		if (s_ShapeFactory)
 			s_ShapeFactory->SetColor(m_ids[0], color);
@@ -66,24 +66,24 @@ namespace GEngine {
 			s_ShapeFactory->SetRotation(m_ids[0], rot);
 	}
 
-	void ButtonComponent::SetImagePosition(const glm::vec2& pos)
+	void ButtonComponent::SetImagePosition(const Vector2f& pos)
 	{
 		s_ShapeFactory->SetPosition(m_ids[0], pos);
 	}
 
-	void ButtonComponent::SetImageScale(const glm::vec2& scale)
+	void ButtonComponent::SetImageScale(const Vector2f& scale)
 	{
 		s_ShapeFactory->SetScale(m_ids[0], scale);
 	}
 
-	void ButtonComponent::SetColliderScale(const glm::vec2& scale)
+	void ButtonComponent::SetColliderScale(const Vector2f& scale)
 	{
 		if (b_debug && s_ShapeFactory)
 			s_ShapeFactory->SetScale(m_ids[1], scale);
 		m_collider->SetScale({ scale.x, scale.y, 1 });
 	}
 
-	void ButtonComponent::SetColliderPosition(const glm::vec2& pos)
+	void ButtonComponent::SetColliderPosition(const Vector2f& pos)
 	{
 		if (b_debug && s_ShapeFactory)
 			s_ShapeFactory->SetPosition(m_ids[1], pos);
@@ -97,7 +97,7 @@ namespace GEngine {
 			if (b_debug)
 				s_ShapeFactory->SetZOrder(m_ids[1], pos+.1f);
 		}
-		glm::vec3 _pos = m_collider->GetPosition();
+		Vector3f _pos = m_collider->GetPosition();
 		m_collider->SetPosition({ _pos.x, _pos.y, pos });
 	}
 
@@ -139,31 +139,31 @@ namespace GEngine {
 			if (IsInitialized()) {
 				for (int i = 0; i < m_debug; i++) {
 					ShapeID id = m_ids[i];
-					Vector3 pos = s_ShapeFactory->GetShapePosition(id);
-					Vector3 nPos = pos - transData.position + transform->GetPosition();
+					Vector3f pos = s_ShapeFactory->GetShapePosition(id);
+					Vector3f nPos = pos - transData.position + transform->GetPosition();
 					if (pos != nPos)
 						s_ShapeFactory->SetPosition(id, nPos);
 					float rot = s_ShapeFactory->GetShapeRotation(id);
 					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
 					if (rot != nRot)
 						s_ShapeFactory->SetRotation(id, nRot);
-					Vector2 _scale = s_ShapeFactory->GetShapeScale(id);
-					Vector3 scale(_scale.x, _scale.y, 1);
-					Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
+					Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
+					Vector3f scale(_scale.x, _scale.y, 1);
+					Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
 					if (scale != nScale)
 						s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
 				}
-				glm::vec3 pos = glm::vec3(m_colliderPosition.x, m_colliderPosition.y, 1);
+				Vector3f pos = Vector3f(m_colliderPosition.x, m_colliderPosition.y, 1);
 				pos = pos + transform->GetPosition();
 				m_worldPosition = pos;
 				m_collider->SetPosition(pos);
 
-				glm::vec3 scale = glm::vec3(m_colliderScale.x, m_colliderScale.y, 1);
+				Vector3f scale = Vector3f(m_colliderScale.x, m_colliderScale.y, 1);
 				scale = scale * transform->GetScale();
-				m_worldScale = glm::vec2(scale.x, scale.y);
+				m_worldScale = Vector2f(scale.x, scale.y);
 				m_collider->SetScale(scale);
 
-				glm::vec3 rotation = glm::vec3(0, 0, m_colliderRotation);
+				Vector3f rotation = Vector3f(0, 0, m_colliderRotation);
 				rotation = rotation + transData.rotation;
 				rotation.x = 0;
 				rotation.y = 0;
@@ -184,14 +184,14 @@ namespace GEngine {
 			if (i == 0)
 				m_ids[i] = s_ShapeFactory->AddShape(m_imagePosition+e->GetEntityPosition(), m_imageRotation, m_imageScale, m_color, m_texture, m_textureScale);
 			if (i == 1) {
-				glm::vec3 m_p = m_colliderPosition;
+				Vector3f m_p = m_colliderPosition;
 				m_p.z += .1f;
-				m_ids[i] = s_ShapeFactory->AddShape(m_p + e->GetEntityPosition(), m_colliderRotation, m_colliderScale, glm::vec4(1, 0, 0, .25f));
+				m_ids[i] = s_ShapeFactory->AddShape(m_p + e->GetEntityPosition(), m_colliderRotation, m_colliderScale, Vector4f(1, 0, 0, .25f));
 			}
 		}
 		
-		m_worldPosition = glm::vec2(m_colliderPosition.x + e->GetEntityPosition().x, m_colliderPosition.y + e->GetEntityPosition().y);
-		m_worldScale = glm::vec2(m_colliderScale.x * e->GetEntityScale().x, m_colliderScale.y * e->GetEntityScale().y);
+		m_worldPosition = Vector2f(m_colliderPosition.x + e->GetEntityPosition().x, m_colliderPosition.y + e->GetEntityPosition().y);
+		m_worldScale = Vector2f(m_colliderScale.x * e->GetEntityScale().x, m_colliderScale.y * e->GetEntityScale().y);
 		m_worldRotation = m_colliderRotation + e->GetEntityRotation().z;
 		m_collider = make_shared<Collider2D>(m_worldPosition,
 			m_worldScale, m_worldRotation);

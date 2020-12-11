@@ -8,11 +8,11 @@ using namespace GEngine;
 
 class DialogFrame : public Entity {
 public:
-	DialogFrame(const glm::vec3& position, float textSpeed, const std::string& title, const std::string& icon, const std::string& text);
+	DialogFrame(const Vector3f& position, float textSpeed, const std::string& title, const std::string& icon, const std::string& text);
 	~DialogFrame();
 
 protected:
-	glm::vec3 m_position;
+	Vector3f m_position;
 	std::string m_text;
 	std::string m_title;
 	std::string m_icon;

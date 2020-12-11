@@ -20,7 +20,7 @@ public:
 
 	void CreateGraphicsDebuggger();
 
-	glm::vec3 m_sqColor = { .3f,.2f,.8f };
+	GEngine::Vector3f m_sqColor= { .3f,.2f,.8f };
 	bool showDock = true;
 	static bool showLog;
 

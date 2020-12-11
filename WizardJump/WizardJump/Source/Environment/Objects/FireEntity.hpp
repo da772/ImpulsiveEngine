@@ -5,7 +5,7 @@ using namespace GEngine;
 
 class FireEntity : public Entity {
 public:
-	FireEntity(const glm::vec3 position = glm::vec3(0,0,0), const glm::vec2& scale = glm::vec2(1,1), const glm::vec2& lightScale = glm::vec2(1,1), bool sound = false) : m_position(position), m_scale(scale), m_lightScale(lightScale), m_bsound(sound) {m_tag = "Fire Entity"; };
+	FireEntity(const Vector3f position = Vector3f(0,0,0), const glm::vec2& scale = glm::vec2(1,1), const glm::vec2& lightScale = glm::vec2(1,1), bool sound = false) : m_position(position), m_scale(scale), m_lightScale(lightScale), m_bsound(sound) {m_tag = "Fire Entity"; };
 	~FireEntity() {};
 
 protected:
@@ -21,7 +21,7 @@ protected:
 
 	bool m_bsound = false;
 
-	glm::vec3 m_position;
+	Vector3f m_position;
 	glm::vec2 m_lightScale;
 	glm::vec2 m_scale;
 

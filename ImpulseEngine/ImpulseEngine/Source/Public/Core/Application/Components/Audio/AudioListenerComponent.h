@@ -14,7 +14,7 @@ namespace GEngine {
 		void SetPitch(float f);
 		void SetVolume(float f);
 		
-		const glm::vec3 GetPosition();
+		const Vector3f GetPosition();
 
 		const float GetPitch();
 		const float GetVolume();

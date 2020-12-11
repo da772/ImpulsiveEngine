@@ -25,8 +25,8 @@ namespace GEngine {
 		inline void SetSubTexture(Ref<SubTexture2D> t) { subTexture = t; }
 
 
-		glm::vec2 Velocity = glm::vec2(0,0), VelocityVariation = glm::vec2(.5f,.5f);
-		glm::vec4 ColorBegin = glm::vec4(1,1,1,1), ColorEnd = glm::vec4(0,0,0,1);
+		Vector2f Velocity = Vector2f(0,0), VelocityVariation = Vector2f(.5f,.5f);
+		Vector4f ColorBegin = Vector4f(1,1,1,1), ColorEnd = Vector4f(0,0,0,1);
 		float SizeBegin = 1.f, SizeEnd = .5f, SizeVariation = .25f;
 		float LifeTime = 1.f;
 		
@@ -63,7 +63,7 @@ namespace GEngine {
 		~ParticleSystem2DComponent();
 
 
-		void Emit(const glm::vec3& postition, const int amt = 1);
+		void Emit(const Vector3f& postition, const int amt = 1);
 		void EmitScript(const Ref<ScriptVector2>& pos, const int amt);
 
 		virtual void UnloadGraphics() override;
@@ -87,11 +87,11 @@ namespace GEngine {
 		int m_PoolIndex = 0;
 
 		struct Particle {
-			glm::vec2 Position;
+			Vector2f Position;
 			float zOrder;
-			glm::vec2 Velocity;
+			Vector2f Velocity;
 			float Rotation = 0.f;
-			glm::vec2 Scale;
+			Vector2f Scale;
 			float LifeRemaining;
 			long id = -1;
 			bool Active = false;

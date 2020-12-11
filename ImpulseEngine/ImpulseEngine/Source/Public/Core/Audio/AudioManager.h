@@ -11,8 +11,8 @@ namespace GEngine {
 	public:
 		static void Initalize();
 		static void Shutdown();
-		static void SetListenerPosition(const glm::vec3& pos);
-		static const glm::vec3 GetListenerPosition();
+		static void SetListenerPosition(const Vector3f& pos);
+		static const Vector3f GetListenerPosition();
 		static Ref<AudioSource> Load_OGG(std::string filename, bool fromPak = true, bool relative = true);
 		static void SetListenerVolume(float f);
 		static void SetListenerPitch(float f);

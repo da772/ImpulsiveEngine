@@ -6,9 +6,9 @@
 namespace GEngine {
     
     struct TransformData {
-        Vector3 position;
-        Vector3 rotation;
-        Vector3 scale;
+        Vector3f position;
+        Vector3f rotation;
+        Vector3f scale;
     };
 
     class Transform : public Component {
@@ -16,18 +16,18 @@ namespace GEngine {
             Transform();
             ~Transform();
 
-            Vector3 GetPosition() const;
-            Vector3 GetRotation() const;
-            Vector3 GetScale() const;
+            Vector3f GetPosition() const;
+            Vector3f GetRotation() const;
+            Vector3f GetScale() const;
 
-            void SetPosition(const Vector3& position);
-            void SetRotation(const Vector3& rotation);
-            void SetScale(const Vector3& scale);
+            void SetPosition(const Vector3f& position);
+            void SetRotation(const Vector3f& rotation);
+            void SetScale(const Vector3f& scale);
 
         private:
-            Vector3 position = Vector3(0);
-            Vector3 rotation = Vector3(0);
-            Vector3 scale = Vector3(1);
+            Vector3f position = Vector3f(0);
+            Vector3f rotation = Vector3f(0);
+            Vector3f scale = Vector3f(1);
 
 
 

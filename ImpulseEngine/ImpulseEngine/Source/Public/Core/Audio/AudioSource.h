@@ -54,7 +54,7 @@ namespace GEngine {
 
 		inline virtual void MaxDistance(const float f) = 0;
 
-		inline virtual void SetPosition(const glm::vec3& pos) { m_position = pos; }
+		inline virtual void SetPosition(const Vector3f& pos) { m_position = pos; }
 
 		void SetSelf(Weak<AudioSource> s) { self = s; }
 
@@ -76,7 +76,7 @@ namespace GEngine {
 		bool b_isStatic = false;
 		AudioStreamingData m_audioData;
 		Weak<AudioSource> self;
-		glm::vec3 m_position;
+		Vector3f m_position;
 
 
 

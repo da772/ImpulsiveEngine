@@ -128,9 +128,16 @@ void FogEntity::OnUpdate(Timestep timestep)
 			unsigned char* noiseData = new unsigned char[noiseDataSize * noiseDataSize * 4];
             
             if (m_lastNoiseData) {
-            memcpy(noiseData, m_lastNoiseData, (noiseDataSize*noiseDataSize*4)*sizeof(unsigned char));
+				memcpy(noiseData, m_lastNoiseData, (noiseDataSize*noiseDataSize*4)*sizeof(unsigned char));
             }
 			int frame = 0;
+			uint64_t cTime = Time::GetEpochTimeMS();
+			while (cTime - m_frameProccesedTime < m_speed) {
+				cTime = Time::GetEpochTimeMS();
+				continue;
+			}
+			m_frameProccesedTime = cTime;
+
 			{
 				if (m_ending) {
 					delete[] noiseData;
@@ -141,12 +148,12 @@ void FogEntity::OnUpdate(Timestep timestep)
 				
 			}
 			int index = 0;
+			
             if (true) {
                 for (int y = 0; y < noiseDataSize; y++)
                 {
                     for (int x = 0; x < noiseDataSize; x++)
                     {
-
                         unsigned char c;
                         {
                             std::lock_guard<std::mutex> guard(m_mutex);

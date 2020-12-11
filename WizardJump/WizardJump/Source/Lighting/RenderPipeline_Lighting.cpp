@@ -56,7 +56,7 @@ void RenderPipeline_Lighting::Render()
 	m_frameBuffer_shadow->Bind();
 	Renderer::Prepare();
 	m_shaderColor->Bind();
-	glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0))
+	glm::mat4 transform = glm::translate(glm::mat4(1.f), Vector3f(0, 0, 0))
 		* glm::scale(glm::mat4(1.0), { 5000.f, 5000.f, 1.f });
 	m_shaderColor->UploadUniformMat4("u_Transform", transform);
 	m_shaderColor->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
@@ -69,7 +69,7 @@ void RenderPipeline_Lighting::Render()
 	RenderCommand::BlendFuncSeparate(0x0302, 0x0303, 0x01, 0x01);
 	Renderer::Prepare();
 	m_shaderMask->Bind();
-	transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0)) * glm::scale(glm::mat4(1.0), { 1.f, 1.f, 1.f });
+	transform = glm::translate(glm::mat4(1.f), Vector3f(0, 0, 0)) * glm::scale(glm::mat4(1.0), { 1.f, 1.f, 1.f });
 	m_shaderMask->UploadUniformMat4("u_Transform", transform);
 	m_shaderMask->UploadUniformInt("u_Texture", 0);
 	m_shaderMask->UploadUniformInt("u_Texture_Mask", 1);

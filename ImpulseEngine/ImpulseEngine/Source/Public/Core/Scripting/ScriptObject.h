@@ -53,7 +53,7 @@ namespace GEngine {
 
 	struct ScriptVector4 {
 		inline ScriptVector4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-		inline ScriptVector4(glm::vec4 vector) : x(vector.x), y(vector.y), z(vector.z), w(vector.w) {}
+		inline ScriptVector4(Vector4f vector) : x(vector.x), y(vector.y), z(vector.z), w(vector.w) {}
 		float x, y, z, w;
 
 		inline void SetX(float n) { x = n; }
@@ -79,8 +79,8 @@ namespace GEngine {
 			return make_shared<ScriptVector4>(x / p->x, y / p->y, z / p->z, w/p->w);
 		}
 		
-		inline glm::vec4 GetGlm() {
-			return glm::vec4(x, y, z, w);
+		inline Vector4f GetGlm() {
+			return Vector4f(x, y, z, w);
 		}
 
 
@@ -89,7 +89,7 @@ namespace GEngine {
 
 	struct ScriptVector3 {
 		inline ScriptVector3(float x, float y, float z) : x(x),y(y),z(z) {}
-		inline ScriptVector3(glm::vec3 vector) : x(vector.x), y(vector.y), z(vector.z) {}
+		inline ScriptVector3(Vector3f vector) : x(vector.x), y(vector.y), z(vector.z) {}
 
 		float x, y, z;
 
@@ -116,12 +116,12 @@ namespace GEngine {
 
 		inline Ref<ScriptVector3> Normalize() {
 			float v = sqrt((x * x + y * y + z*z));
-			return make_shared<ScriptVector3>(glm::vec3(x / v, y / v, z/v));
+			return make_shared<ScriptVector3>(Vector3f(x / v, y / v, z/v));
 			
 		}
 
-		inline glm::vec3 GetGlm() {
-			return glm::vec3(x, y, z);
+		inline Vector3f GetGlm() {
+			return Vector3f(x, y, z);
 		}
 
 
@@ -130,7 +130,7 @@ namespace GEngine {
 
 	struct ScriptVector2 {
 		inline ScriptVector2(float x, float y) : x(x), y(y) {};
-		inline ScriptVector2(glm::vec2 vector) : x(vector.x), y(vector.y) {}
+		inline ScriptVector2(Vector2f vector) : x(vector.x), y(vector.y) {}
 		float x, y;
 
 		inline void SetX(float n) { x = n; }
@@ -155,11 +155,11 @@ namespace GEngine {
 
 		inline Ref<ScriptVector2> Normalize() {
 			float v = sqrt((x * x + y * y));
-			return make_shared<ScriptVector2>(glm::vec2(x/v,y/v));
+			return make_shared<ScriptVector2>(Vector2f(x/v,y/v));
 		}
 
-		inline glm::vec2 GetGlm() {
-			return glm::vec2(x, y);
+		inline Vector2f GetGlm() {
+			return Vector2f(x, y);
 		}
 
 	};

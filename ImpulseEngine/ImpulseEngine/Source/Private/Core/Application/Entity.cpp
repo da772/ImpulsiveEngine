@@ -19,7 +19,7 @@ namespace GEngine {
 		AddComponent(transform);
 	}
 
-	Entity::Entity(glm::vec3 position)
+	Entity::Entity(Vector3f position)
 	{
 		Entity::refCount++;
 		transform = CreateGameObject<Transform>();
@@ -173,19 +173,19 @@ namespace GEngine {
 		scene.reset();
 	}
 
-	const Vector3 Entity::GetEntityPosition() {
+	const Vector3f Entity::GetEntityPosition() {
 		return transform->GetPosition();
 	}
 
-	const Vector3 Entity::GetEntityRotation() {
+	const Vector3f Entity::GetEntityRotation() {
 		return transform->GetRotation();
 	}
 
-	const Vector3 Entity::GetEntityScale() {
+	const Vector3f Entity::GetEntityScale() {
 		return transform->GetScale();
 	}
 
-	void Entity::SetEntityPosition(const Vector3& position)
+	void Entity::SetEntityPosition(const Vector3f& position)
 	{
 		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
 		transform->SetPosition(position);
@@ -194,7 +194,7 @@ namespace GEngine {
 		}
 	}
 
-	void Entity::SetEntityScale(const Vector3& scale)
+	void Entity::SetEntityScale(const Vector3f& scale)
 	{
 		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
 		transform->SetScale(scale);
@@ -203,7 +203,7 @@ namespace GEngine {
 		}
 	}
 
-	void Entity::SetEntityRotation(const Vector3& rot)
+	void Entity::SetEntityRotation(const Vector3f& rot)
 	{
 		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
 		transform->SetRotation(rot);
@@ -214,19 +214,19 @@ namespace GEngine {
 
 	GEngine::Ref<ScriptVector3> Entity::GetEntityPositionScript()
 	{
-		glm::vec3 pos = transform->GetPosition();
+		Vector3f pos = transform->GetPosition();
 		return make_shared<ScriptVector3>(pos);
 	}
 
 	GEngine::Ref<ScriptVector3> Entity::GetEntityRotationScript()
 	{
-		glm::vec3 pos = transform->GetRotation();
+		Vector3f pos = transform->GetRotation();
 		return make_shared<ScriptVector3>(pos);
 	}
 
 	GEngine::Ref<ScriptVector3> Entity::GetEntityScaleScript()
 	{
-		glm::vec3 pos = transform->GetScale();
+		Vector3f pos = transform->GetScale();
 		return make_shared<ScriptVector3>(pos);
 	}
 

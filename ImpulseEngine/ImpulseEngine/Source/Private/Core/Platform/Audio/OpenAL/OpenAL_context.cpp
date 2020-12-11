@@ -219,13 +219,13 @@ namespace GEngine {
 		ov_clear(&dynamic_pointer_cast<OpenAL_source>(s)->oggFile);
 	}
 
-	void OpenAL_Context::SetListenerPosition(const glm::vec3& pos)
+	void OpenAL_Context::SetListenerPosition(const Vector3f& pos)
 	{
 		m_listenerPos = pos;
 		alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
 	}
 
-	const glm::vec3& OpenAL_Context::GetListenerPosition()
+	const Vector3f& OpenAL_Context::GetListenerPosition()
 	{
 		return m_listenerPos;
 	}

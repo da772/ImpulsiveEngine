@@ -22,22 +22,22 @@ namespace GEngine {
 		return a + amt * (b - a);
 	}
 
-	glm::vec3 GEMath::lerp(glm::vec3 a, glm::vec3 b, float amt)
+	Vector3f GEMath::lerp(Vector3f a, Vector3f b, float amt)
 	{
 		return { lerp(a.x, b.x, amt), lerp(a.y, b.y, amt), lerp(a.z,b.z,amt) };
 	}
 
-	glm::vec2 GEMath::lerp(glm::vec2 a, glm::vec2 b, float amt)
+	Vector2f GEMath::lerp(Vector2f a, Vector2f b, float amt)
 	{
 		return { lerp(a.x, b.x, amt), lerp(a.y, b.y, amt)};
 	}
 
-	float GEMath::distance(glm::vec3 a, glm::vec3 b)
+	float GEMath::distance(Vector3f a, Vector3f b)
 	{
 		return sqrt(pow(a.x - b.x, 2.f) + pow(a.y - b.y, 2.f) + pow(a.z - b.z, 2.f));
 	}
 
-	float GEMath::distance(glm::vec2 a, glm::vec2 b)
+	float GEMath::distance(Vector2f a, Vector2f b)
 	{
 		return sqrt(pow(a.x - b.x, 2.f) + pow(a.y - b.y, 2.f));
 	}
@@ -57,27 +57,27 @@ namespace GEngine {
 		return in > max ? max : in < min ? min : in;
 	}
 
-	glm::vec2 GEMath::projection(const glm::vec2& a, const glm::vec2& normal)
+	Vector2f GEMath::projection(const Vector2f& a, const Vector2f& normal)
 	{
 		return (normal * dot(a, normal));
 	}
 
-	float GEMath::dot(const glm::vec2& a, const glm::vec2& b)
+	float GEMath::dot(const Vector2f& a, const Vector2f& b)
 	{
 		return a.x* b.x + a.y * b.y;
 	}
 
-	float GEMath::magnitude(const glm::vec2 a)
+	float GEMath::magnitude(const Vector2f a)
 	{
 		return (sqrt(a.x * a.x + a.y * a.y));
 	}
 
-	glm::vec2 GEMath::normalize(const glm::vec2& v)
+	Vector2f GEMath::normalize(const Vector2f& v)
 	{
 		return v / magnitude(v);
 	}
 
-	glm::vec2 GEMath::reflect(const glm::vec2& v, const glm::vec2 n)
+	Vector2f GEMath::reflect(const Vector2f& v, const Vector2f n)
 	{
 		return v - 2 * (dot(v, n)) * n;
 	}

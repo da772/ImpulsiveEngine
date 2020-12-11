@@ -93,18 +93,18 @@ namespace GEngine {
 		return (void*)m_world;
 	}
 
-	void PhysicsContext_box2d::SetGravity(const glm::vec2& gravity)
+	void PhysicsContext_box2d::SetGravity(const Vector2f& gravity)
 	{
 		GE_CORE_ASSERT(m_world, "WORLD NOT CREATED");
 		m_gravity = gravity;
 		m_world->SetGravity(b2Vec2(m_gravity.x, m_gravity.y));
 	}
 
-	const glm::vec2 PhysicsContext_box2d::GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step)
+	const Vector2f PhysicsContext_box2d::GetTrajectoryPoint2D(const Vector2f& startPos, const Vector2f& startVel, float step)
 	{
 		float t = 1.f / 60.f; // seconds per time step (at 60fps)
-		glm::vec2 stepVelocity = { t * startVel.x, t * startVel.y }; // m/s
-		glm::vec2 stepGravity = { t * t *m_world->GetGravity().x , t * t* m_world->GetGravity().y }; // m/s/s
+		Vector2f stepVelocity = { t * startVel.x, t * startVel.y }; // m/s
+		Vector2f stepGravity = { t * t *m_world->GetGravity().x , t * t* m_world->GetGravity().y }; // m/s/s
 		return { startPos.x + step * stepVelocity.x + 0.5f * (step * step + step) * stepGravity.x, startPos.y + step * stepVelocity.y +.5f * (step*step+step) * stepGravity.y };
 		
 	}
@@ -130,8 +130,8 @@ namespace GEngine {
 			}
 
 			hitInfo->physicsBody = _pbody;
-			hitInfo->hitPoint = glm::vec2(point.x, point.y);
-			hitInfo->hitNormal= glm::vec2(normal.x, normal.y);
+			hitInfo->hitPoint = Vector2f(point.x, point.y);
+			hitInfo->hitNormal= Vector2f(normal.x, normal.y);
 			hitInfo->fraction = fraction;
 			return 0;
 		}
@@ -141,7 +141,7 @@ namespace GEngine {
 
 	};
 
-	Ref<RayCastInfo> PhysicsContext_box2d::RayCast2D(const glm::vec2& start, const glm::vec2& end, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
+	Ref<RayCastInfo> PhysicsContext_box2d::RayCast2D(const Vector2f& start, const Vector2f& end, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
 	{
 
 		_b2_RayCastCallback callback(ignoreBodies);
@@ -175,7 +175,7 @@ namespace GEngine {
 	};
 
 
-	std::vector<Weak<PhysicsBody>> PhysicsContext_box2d::QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
+	std::vector<Weak<PhysicsBody>> PhysicsContext_box2d::QueryCollision(const Vector2f& position, const Vector2f& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
 	{
 		__b2QueryCallback callback(ignoreBodies);
 		b2AABB aabb;
@@ -192,16 +192,16 @@ namespace GEngine {
 	}
 
 
-	float PhysicsContext_box2d::GetVelocityMaxHeight(const glm::vec2& velocity)
+	float PhysicsContext_box2d::GetVelocityMaxHeight(const Vector2f& velocity)
 	{
 		return CalculateVerticalVelocityForHeight(velocity.y);
 	}
 
-	glm::vec2 PhysicsContext_box2d::GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos)
+	Vector2f PhysicsContext_box2d::GetVelocityToPosition(const Vector2f& startPos, const Vector2f& endPos)
 	{
 
 		float velY = CalculateVerticalVelocityForHeight(endPos.y);
-		glm::vec2 sVel = { 0, velY };
+		Vector2f sVel = { 0, velY };
 		float topTime = TimeToTop(sVel);
 		float targetPosX = endPos.x;
 		float velX = targetPosX / topTime * 60.f;
@@ -212,7 +212,7 @@ namespace GEngine {
 	float PhysicsContext_box2d::CalculateVerticalVelocityForHeight(float height)
 	{
 		float t = 1 / 60.f;
-		glm::vec2 stepGravity = t * t* glm::vec2( m_world->GetGravity().x,m_world->GetGravity().y);
+		Vector2f stepGravity = t * t* Vector2f( m_world->GetGravity().x,m_world->GetGravity().y);
 
 		float a = .5f / stepGravity.y;
 		float b = .5f;
@@ -228,26 +228,26 @@ namespace GEngine {
 		return v * 60.f;
 	}
 
-	float PhysicsContext_box2d::TimeToTop(const glm::vec2& velocity)
+	float PhysicsContext_box2d::TimeToTop(const Vector2f& velocity)
 	{
 		float t = 1 / 60.0f;
-		glm::vec2 stepVelocity = t * velocity; // m/s
-		glm::vec2 stepGravity = t * t* glm::vec2(m_world->GetGravity().x, m_world->GetGravity().y); // m/s/s
+		Vector2f stepVelocity = t * velocity; // m/s
+		Vector2f stepGravity = t * t* Vector2f(m_world->GetGravity().x, m_world->GetGravity().y); // m/s/s
 
 		float n = -stepVelocity.y / stepGravity.y - 1;
 		return n;
 	}
 
-	float PhysicsContext_box2d::GetMaxVelocityTime(const glm::vec2& velocity)
+	float PhysicsContext_box2d::GetMaxVelocityTime(const Vector2f& velocity)
 	{
 		return TimeToTop(velocity);
 	}
 
-	float PhysicsContext_box2d::GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel)
+	float PhysicsContext_box2d::GetMaxHeight(const Vector2f& startPos, const Vector2f& startVel)
 	{
 		float t = 1 / 60.f;
-		glm::vec2 stepVel = t * startVel;
-		glm::vec2 stepGravity = t * t * glm::vec2(m_world->GetGravity().x, m_world->GetGravity().y);
+		Vector2f stepVel = t * startVel;
+		Vector2f stepGravity = t * t * Vector2f(m_world->GetGravity().x, m_world->GetGravity().y);
 		float n = -stepVel.y / stepGravity.y - 1;
 		return startPos.y + n * stepVel.y + .5f * (n * n + n) * stepGravity.y;
 	}

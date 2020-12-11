@@ -142,17 +142,17 @@ namespace GEngine {
 
 	}
 
-	void Vulkan_Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& values)
+	void Vulkan_Shader::UploadUniformFloat4(const std::string& name, const Vector4f& values)
 	{
 
 	}
 
-	void Vulkan_Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& values)
+	void Vulkan_Shader::UploadUniformFloat2(const std::string& name, const Vector2f& values)
 	{
 
 	}
 
-	void Vulkan_Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& values)
+	void Vulkan_Shader::UploadUniformFloat3(const std::string& name, const Vector3f& values)
 	{
 
 	}

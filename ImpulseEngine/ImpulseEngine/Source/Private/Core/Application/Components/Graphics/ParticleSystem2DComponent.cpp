@@ -40,7 +40,7 @@ namespace GEngine {
 	{
 	}
 
-	void ParticleSystem2DComponent::Emit(const glm::vec3& pos, int amt)
+	void ParticleSystem2DComponent::Emit(const Vector3f& pos, int amt)
 	{
 		for (int i = 0; i < amt; i++) {
 			Particle particle;
@@ -80,8 +80,8 @@ namespace GEngine {
 
 	void ParticleSystem2DComponent::EmitScript(const Ref<ScriptVector2>& pos, const int amt)
 	{
-		glm::vec2 p = pos->GetGlm();
-		Emit(glm::vec3(p.x,p.y,1e6), amt);
+		Vector2f p = pos->GetGlm();
+		Emit(Vector3f(p.x,p.y,1e6), amt);
 	}
 
 	int ParticleSystem2DComponent::ParticleCount()
@@ -103,12 +103,12 @@ namespace GEngine {
 		}
 
 		particle.LifeRemaining -= dt;
-		particle.Position += particle.Velocity * glm::vec2( dt, dt );
+		particle.Position += particle.Velocity * Vector2f( dt, dt );
 		particle.Rotation += 0.01f * dt;
 		float life = particle.LifeRemaining / m_particleProps.LifeTime;
 		float scale = glm::lerp(m_particleProps.SizeEnd, particle.Scale.x, life);
 		particle.Scale = { scale, scale };
-		glm::vec4 color = glm::lerp(m_particleProps.ColorEnd, m_particleProps.ColorBegin, life);
+		Vector4f color = glm::lerp(m_particleProps.ColorEnd, m_particleProps.ColorBegin, life);
 
 		
 		if (particle.id != -1) {

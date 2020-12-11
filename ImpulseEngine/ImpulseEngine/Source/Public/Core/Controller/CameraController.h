@@ -10,7 +10,7 @@ namespace GEngine {
 	class MouseScrolledEvent;
 	class Event;
 
-	using OnUpdateEventFn = std::function<void(Timestep, glm::vec3&, glm::vec3&, glm::vec2&, uint64_t&, float&)>;
+	using OnUpdateEventFn = std::function<void(Timestep, Vector3f&, Vector3f&, Vector2f&, uint64_t&, float&)>;
 	using OnEventFn = std::function<void(Event&)>;
 
 	class CameraController {
@@ -32,13 +32,13 @@ namespace GEngine {
 		virtual bool OnWindowResized(WindowResizeEvent& e) = 0;
 		virtual void SetCameraZoom(const float zoomLevel) {};
 
-		inline void SetPosition(const glm::vec3& position) { m_Position = position; }
-		inline void SetRotation(const glm::vec3& rotation) { m_Rotation = rotation; }
+		inline void SetPosition(const Vector3f& position) { m_Position = position; }
+		inline void SetRotation(const Vector3f& rotation) { m_Rotation = rotation; }
 
 
 
-		inline const glm::vec3& GetPosition() { return m_Position; }
-		inline const glm::vec3& GetRotation() { return m_Rotation; }
+		inline const Vector3f& GetPosition() { return m_Position; }
+		inline const Vector3f& GetRotation() { return m_Rotation; }
 
 
 	protected:
@@ -48,10 +48,10 @@ namespace GEngine {
         OnEventFn m_OnEventFn;
 
 	protected:
-		glm::vec3 m_Position = { 0.f,0.f,0.f };
-		glm::vec3 m_Rotation = { 0.f,0.f,0.f };
+		Vector3f m_Position = { 0.f,0.f,0.f };
+		Vector3f m_Rotation = { 0.f,0.f,0.f };
 		float m_flRotation = 0.f;
-		glm::vec2 m_LastTouchPos = {-1.f, -1.f};
+		Vector2f m_LastTouchPos = {-1.f, -1.f};
 		uint64_t m_LastTouchId = 0;
 		float m_pinchDistance = 0;
 

@@ -193,19 +193,19 @@ namespace GEngine {
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
-	void OpenGL_Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& values)
+	void OpenGL_Shader::UploadUniformFloat4(const std::string& name, const Vector4f& values)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform4f(location, values.x,values.y,values.z, values.w);
 	}
 
-	void OpenGL_Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& values)
+	void OpenGL_Shader::UploadUniformFloat2(const std::string& name, const Vector2f& values)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform2f(location, values.x, values.y);
 	}
 
-	void OpenGL_Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& values)
+	void OpenGL_Shader::UploadUniformFloat3(const std::string& name, const Vector3f& values)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform3f(location, values.x, values.y, values.z);

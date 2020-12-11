@@ -8,18 +8,18 @@ namespace GEngine {
         static int sign(int x);
         static int sign(float x);
 		static float lerp(float a, float b, float amt);
-		static glm::vec3 lerp(glm::vec3 a, glm::vec3 b, float amt);
-		static glm::vec2 lerp(glm::vec2 a, glm::vec2 b, float amt);
-		static float distance(glm::vec3 a, glm::vec3 b);
-		static float distance(glm::vec2 a, glm::vec2 b);
+		static Vector3f lerp(Vector3f a, Vector3f b, float amt);
+		static Vector2f lerp(Vector2f a, Vector2f b, float amt);
+		static float distance(Vector3f a, Vector3f b);
+		static float distance(Vector2f a, Vector2f b);
 		static float max(float in, float max);
 		static float clamp(float in, float min, float max);
 		static int clamp(int in, int min, int max);
-		static glm::vec2 projection(const glm::vec2& a, const glm::vec2& b);
-		static float dot(const glm::vec2& a, const glm::vec2& b);
-		static float magnitude(const glm::vec2 a);
-		static glm::vec2 normalize(const glm::vec2& v);
-		static glm::vec2 reflect(const glm::vec2& v, const glm::vec2 n);
+		static Vector2f projection(const Vector2f& a, const Vector2f& b);
+		static float dot(const Vector2f& a, const Vector2f& b);
+		static float magnitude(const Vector2f a);
+		static Vector2f normalize(const Vector2f& v);
+		static Vector2f reflect(const Vector2f& v, const Vector2f n);
 		static float ClosestMultiple(float x, float n);
 		
 	};

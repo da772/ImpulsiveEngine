@@ -124,7 +124,7 @@ namespace GEngine {
         #endif
 	}
 
-	void OpenGL_RendererApi::SetClearColor(const glm::vec4& color)
+	void OpenGL_RendererApi::SetClearColor(const Vector4f& color)
 	{
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
@@ -161,7 +161,7 @@ namespace GEngine {
 		glDrawArrays(GL_LINE_STRIP, 0, vertexArray->GetVertexCount());
 	}
 
-	void OpenGL_RendererApi::DrawText3D(const char* txt, const glm::vec4& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center)
+	void OpenGL_RendererApi::DrawText3D(const char* txt, const Vector4f& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center)
 	{
 		#ifdef GE_GRAPHICS_API_OPENGL_3_3
 		// Creating text
@@ -174,7 +174,7 @@ namespace GEngine {
 		// Draw any amount of text between begin and end
 		gltColor(color.x, color.y, color.z, color.w);
 
-		glm::mat4 mvp = projection * view * (center ? glm::translate(glm::mat4(1), glm::vec3(gltGetTextWidth(text, scale) * .5f, gltGetTextHeight(text, scale)*.5f, 0)) : glm::mat4(1)) *model;
+		glm::mat4 mvp = projection * view * (center ? glm::translate(glm::mat4(1), Vector3f(gltGetTextWidth(text, scale) * .5f, gltGetTextHeight(text, scale)*.5f, 0)) : glm::mat4(1)) *model;
 
 		gltDrawText(text, (float*)&mvp[0][0] );
 
@@ -188,7 +188,7 @@ namespace GEngine {
 #endif
 	}
 
-	void OpenGL_RendererApi::DrawText3D_Billboard(const char* txt, const glm::vec4& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center)
+	void OpenGL_RendererApi::DrawText3D_Billboard(const char* txt, const Vector4f& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center)
 	{
 #ifdef GE_GRAPHICS_API_OPENGL_3_3
 		// Creating text

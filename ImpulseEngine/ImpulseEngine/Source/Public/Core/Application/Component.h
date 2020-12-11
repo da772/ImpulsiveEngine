@@ -46,7 +46,7 @@ namespace GEngine {
 
 
 
-		Vector3 GetEntityPosition();
+		Vector3f GetEntityPosition();
 
 		virtual void OnAttached(Ref<Entity> entity) { };
 		virtual void DeAttached(Ref<Entity> entity) { };

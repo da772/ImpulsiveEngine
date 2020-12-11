@@ -53,13 +53,13 @@ namespace GEngine {
 		void UIMouseCollideEnd(const float x,const float y);
 		void UIOnEvent(const Event& e) { if (m_uiEvent) m_uiEvent(e); }
 
-		const glm::vec3 GetPosition() const { return position; };
-		const glm::vec3 GetScale() const { return scale;}
-		const glm::vec3 GetRotation() const { return rotation; }
+		const Vector3f GetPosition() const { return position; };
+		const Vector3f GetScale() const { return scale;}
+		const Vector3f GetRotation() const { return rotation; }
 
-		void SetPosition(const glm::vec3& pos) { position = pos; };
-		void SetScale(const glm::vec3& scale) { this->scale = scale; }
-		void SetRotation(const glm::vec3& rot) { rotation = rot; }
+		void SetPosition(const Vector3f& pos) { position = pos; };
+		void SetScale(const Vector3f& scale) { this->scale = scale; }
+		void SetRotation(const Vector3f& rot) { rotation = rot; }
 
 		Weak<Entity> GetEntity();
 		Weak<Component> GetComponent();
@@ -80,10 +80,10 @@ namespace GEngine {
 		EColliderShape m_shape;
 		EColliderType m_type;
 		EColliderLayer m_layer;
-		glm::vec3 position;
-		glm::vec3 scale;
+		Vector3f position;
+		Vector3f scale;
 		
-		glm::vec3 rotation;
+		Vector3f rotation;
 		std::function<void(Ref<Collider>)> m_collisionFunctionStart;
 		std::function<void(Ref<Collider>)> m_collisionFunctionEnd;
 		

@@ -28,27 +28,27 @@ namespace GEngine {
 		UIComponent();
 		UIComponent(Ref<Shader> shader);
 		virtual ~UIComponent();
-		const ShapeID CreateQuad(const  Vector3& _pos, const float rot = 0, const Vector3& scale = { 1,1,1 }, const Vector4& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, bool aspectRatio = true, const glm::vec2& textureScale = glm::vec2(1, 1), const float alphaChannel = 4);
+		const ShapeID CreateQuad(const  Vector3f& _pos, const float rot = 0, const Vector3f& scale = { 1,1,1 }, const Vector4f& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, bool aspectRatio = true, const Vector2f& textureScale = Vector2f(1, 1), const float alphaChannel = 4);
 
 		const ShapeID CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture );
 		
 
-		const ShapeID CreateSubTexturedQuad(const Vector3& _pos, const float rot, const Vector3& scale, const Vector4& _color, Ref<SubTexture2D> texture, const glm::vec2& textureScale = glm::vec2(1,1), const float alphaChannel = 4);
-		const std::string CreateText(const std::string& string, Ref<Font> font, const Vector3& pos, const Vector3& scale, const Vector4& color);
-		const void AddText(const std::string& id, const std::string& text, const Vector3& pos, const Vector3& scale, const Vector4& color);
+		const ShapeID CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale = Vector2f(1,1), const float alphaChannel = 4);
+		const std::string CreateText(const std::string& string, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
+		const void AddText(const std::string& id, const std::string& text, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
 		void RemoveText(const std::string& id);
-		void SetTextColor(const std::string& id, const glm::vec4& color, int index, int count = 1);
+		void SetTextColor(const std::string& id, const Vector4f& color, int index, int count = 1);
 
 		uint32_t GetTextSize(const std::string& id);
 
-		void SetPosition(const ShapeID id, const glm::vec2& position);
+		void SetPosition(const ShapeID id, const Vector2f& position);
 		void SetPositionScript(const ShapeID id, Ref<ScriptVector2> position);
 		void SetZOrder(const ShapeID id, const float zOrder);
 
         
-        glm::vec2 GetQuadScale(const ShapeID& id);
+        Vector2f GetQuadScale(const ShapeID& id);
 
-		void SetColor(const ShapeID id, const glm::vec4& color);
+		void SetColor(const ShapeID id, const Vector4f& color);
 
 		void Remove(const ShapeID id);
 		void Remove(const std::string& hash);

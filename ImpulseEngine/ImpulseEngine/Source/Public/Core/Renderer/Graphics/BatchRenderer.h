@@ -58,10 +58,10 @@ namespace GEngine {
 	};
 
 	struct BatchObjectData {
-		glm::vec3 position;
-		float rotation; glm::vec2 scale;  glm::vec4 color; 
+		Vector3f position;
+		float rotation; Vector2f scale;  Vector4f color; 
 		Ref<Texture2D> texture;
-		glm::vec2 textureScale;
+		Vector2f textureScale;
 		float alphaChannel;
 		std::vector<float> vertices;
 		Ref<SubTexture2D> subTexture = nullptr;
@@ -81,30 +81,30 @@ namespace GEngine {
 		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr, const char* pipelineId = nullptr, const std::function<void()>& shaderFunc = nullptr);
 		~BatchRenderer();
 
-		const uint64_t AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture = nullptr, const glm::vec2& textureScale = { 1,1 }, float alphaChannel = 4);
-		const uint64_t AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, const glm::vec2& textureScale = { 1,1 }, float alphaChannel = 4);
+		const uint64_t AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture = nullptr, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
+		const uint64_t AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
 		const uint64_t AddShape(BatchObjectData& bData);
-		void EditShape(const uint64_t id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture = nullptr, const glm::vec2& textureScale = { 1,1 }, float alphaChannel = 4);
-		void EditShape(const uint64_t id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, const glm::vec2& textureScale, float alphaChannel = 4);
+		void EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture = nullptr, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
+		void EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture, const Vector2f& textureScale, float alphaChannel = 4);
 		void RemoveShape(const uint64_t id);
 
-		void SetColor(const uint64_t id, glm::vec4 color);
-		void SetPosition(const uint64_t id, glm::vec2 position);
+		void SetColor(const uint64_t id, Vector4f color);
+		void SetPosition(const uint64_t id, Vector2f position);
 		void SetZOrder(const uint64_t id, float zOrder);
 		void SetSubTexture(const uint64_t id, Ref<SubTexture2D> texture);
 		void SetRotation(const uint64_t id, float rotation);
-		void SetScale(const uint64_t id, glm::vec2 scale);
+		void SetScale(const uint64_t id, Vector2f scale);
 		void SetTexture(const uint64_t id, Ref<Texture2D>);
-		void SetTextureScale(const uint64_t id, const glm::vec2& scale);
+		void SetTextureScale(const uint64_t id, const Vector2f& scale);
 
 
 		void UnloadGraphics();
 		void ReloadGraphics();
 
-		const Vector3 GetShapePosition(const uint64_t id);
+		const Vector3f GetShapePosition(const uint64_t id);
 		const Ref<Texture2D> GetShapeTexture(const uint64_t id);
 		const float GetShapeRotation(const uint64_t id);
-		const Vector2 GetShapeScale(const uint64_t id);
+		const Vector2f GetShapeScale(const uint64_t id);
 
 		int UpdateCount(int i);
 

@@ -103,7 +103,7 @@ namespace GEngine {
 		alSourcei(m_audioData.source, AL_BYTE_OFFSET, tot * time);
 	}
 
-	void OpenAL_source::SetPosition(const glm::vec3& pos)
+	void OpenAL_source::SetPosition(const Vector3f& pos)
 	{
 		if (b_isStatic) return;
 		AudioSource::SetPosition(pos);

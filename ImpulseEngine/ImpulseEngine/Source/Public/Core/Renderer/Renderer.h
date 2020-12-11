@@ -68,16 +68,16 @@ namespace GEngine {
 
 		static void SubmitArraysLines(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.f));
 
-		static void DrawCube(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color);
+		static void DrawCube(const Vector3f& position, const Vector3f& scale, const Vector4f& color);
 
-		static void DrawLine(const glm::vec3& startPos,const glm::vec3& endPos,const glm::vec4& color);
-		static void DrawLines(const std::vector<float>& lines, const glm::vec4& color);
-		static void DrawDebugLines(const std::vector<float>& lines, const glm::vec4& color);
-		static void DrawCircle(const glm::vec3& position, float rotation, const glm::vec3& scale, const glm::vec4& color);
+		static void DrawLine(const Vector3f& startPos,const Vector3f& endPos,const Vector4f& color);
+		static void DrawLines(const std::vector<float>& lines, const Vector4f& color);
+		static void DrawDebugLines(const std::vector<float>& lines, const Vector4f& color);
+		static void DrawCircle(const Vector3f& position, float rotation, const Vector3f& scale, const Vector4f& color);
 		
-		static void DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center = true);
+		static void DrawText3D(const char* txt, float scale, const Vector3f& position, const Vector4f& color, bool center = true);
 
-		static void DrawText3D_Billboard(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center = true);
+		static void DrawText3D_Billboard(const char* txt, float scale, const Vector3f& position, const Vector4f& color, bool center = true);
 		static void SetRenderScale(const float f);
 		static const float GetRenderScale();
 		static int GetMaxTextureSlots();
@@ -102,7 +102,7 @@ namespace GEngine {
 			glm::mat4 ViewProjectionMatrix;
 			glm::mat4 ViewMatrix;
 			glm::mat4 ProjectionMatrix;
-			glm::vec3 position;
+			Vector3f position;
 
 		};
 

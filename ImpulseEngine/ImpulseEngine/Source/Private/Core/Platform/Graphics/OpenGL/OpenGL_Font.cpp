@@ -55,10 +55,10 @@ namespace GEngine {
 		return tex;
 	}
 
-	static glm::vec3 GetTextureAspectScale(const glm::vec3& scale, const float& textureWidth, const float& textureHeight, const float& appWidth, const float& appHeight, const bool aspectRatio = true) {
+	static Vector3f GetTextureAspectScale(const Vector3f& scale, const float& textureWidth, const float& textureHeight, const float& appWidth, const float& appHeight, const bool aspectRatio = true) {
 
-		glm::vec3 _scale = scale;
-		const glm::vec3 __scale = scale;
+		Vector3f _scale = scale;
+		const Vector3f __scale = scale;
 		float tWidth = textureWidth;
 		float tHeight = textureHeight;
 
@@ -140,8 +140,8 @@ namespace GEngine {
 				float y1 = y0 + ((float)glyph->height / viewHeight);
 
 
-				Vector2 pos = { (x1 + x0) / 2.f , y0 - (y1 - y0) / 2.f };
-				Vector2 scale = { x1 - x0, y1 - y0 };
+				Vector2f pos = { (x1 + x0) / 2.f , y0 - (y1 - y0) / 2.f };
+				Vector2f scale = { x1 - x0, y1 - y0 };
 
 				if (pos.x > maxWidth) {
 					info->data.pen.x = 0;

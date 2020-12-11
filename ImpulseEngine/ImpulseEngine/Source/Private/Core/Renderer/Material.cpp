@@ -8,7 +8,7 @@ namespace GEngine {
 
 	}
 
-	Material::Material(glm::vec4 color, Ref<Texture2D> texture /*= nullptr*/, Ref<Shader> shader /*= nullptr*/)
+	Material::Material(Vector4f color, Ref<Texture2D> texture /*= nullptr*/, Ref<Shader> shader /*= nullptr*/)
 		: color(color), texture(texture), shader(shader)
 	{
 

@@ -84,7 +84,7 @@ namespace GEngine {
 
 
 
-		static void SetViewPortOffset(const glm::vec2& offset) { s_Instance->m_viewPortOffset = offset; }
+		static void SetViewPortOffset(const Vector2f& offset) { s_Instance->m_viewPortOffset = offset; }
 
 		inline static const bool IsGamePaused() { return s_Instance->m_pause; };
 
@@ -142,7 +142,7 @@ namespace GEngine {
 		float m_fps = 0;
 		bool m_loaded = true;
         
-		glm::vec2 m_viewPortOffset = glm::vec2(0,0);
+		Vector2f m_viewPortOffset = Vector2f(0,0);
 		int m_width = 1280, m_height = 720;
 		int m_uiResolutionWidth = 0, m_uiResolutionHeight = 0;
 

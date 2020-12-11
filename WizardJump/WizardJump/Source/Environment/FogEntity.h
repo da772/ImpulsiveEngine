@@ -43,7 +43,7 @@ protected:
     
     uint64_t m_textureIds[3];
 
-	float m_speed = 40; //MS
+	float m_speed = 16; //MS
 
 	float m_noiseStrength = 4.f;
 	float m_zNoiseStrength = .5f;

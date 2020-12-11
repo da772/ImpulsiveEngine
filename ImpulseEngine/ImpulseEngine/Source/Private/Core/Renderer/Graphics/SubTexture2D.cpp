@@ -6,7 +6,7 @@
 
 namespace GEngine {
 
-	SubTexture2D::SubTexture2D(const Ref<Texture2D>& texture, const Vector2& min, const Vector2& max) :
+	SubTexture2D::SubTexture2D(const Ref<Texture2D>& texture, const Vector2f& min, const Vector2f& max) :
 		m_Texture(texture)
 	{
 		m_TexCoords[0] = { min.x, min.y };
@@ -20,16 +20,16 @@ namespace GEngine {
 		//GE_CORE_DEBUG("SUB TEXTURE DESTROYERD");
 	}
 
-	void SubTexture2D::SetCoords(const Vector2& coords, const Vector2& cellSize, const Vector2& spriteSize /*= { 1,1 }*/)
+	void SubTexture2D::SetCoords(const Vector2f& coords, const Vector2f& cellSize, const Vector2f& spriteSize /*= { 1,1 }*/)
 	{
 		float width = m_Texture->GetWidth(), height = m_Texture->GetHeight();
-		const Vector2 textureCords[] = {
+		const Vector2f textureCords[] = {
 			{ (coords.x * cellSize.x) / width,  (coords.y * cellSize.y) / height },
 			{ ((coords.x + spriteSize.x) * cellSize.x) / width, ((coords.y + spriteSize.y) * cellSize.y) / height}
 		};
 
-		Vector2 min = textureCords[0];
-		Vector2 max = textureCords[1];
+		Vector2f min = textureCords[0];
+		Vector2f max = textureCords[1];
 
 		m_TexCoords[0] = { min.x, min.y };
 		m_TexCoords[1] = { max.x, min.y };
@@ -37,7 +37,7 @@ namespace GEngine {
 		m_TexCoords[3] = { min.x, max.y };
 	}
 
-	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2D>& texture, const Vector2& coords, const Vector2& cellSize, const Vector2& spriteSize)
+	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2D>& texture, const Vector2f& coords, const Vector2f& cellSize, const Vector2f& spriteSize)
 	{
 
 		float width = texture->GetWidth(), height = texture->GetHeight();
@@ -49,7 +49,7 @@ namespace GEngine {
 		}
 		
 
-		const Vector2 textureCords[] = {
+		const Vector2f textureCords[] = {
 			{ (coords.x * cellSize.x) / width,  (coords.y * cellSize.y) / height },
 			{ ((coords.x+ spriteSize.x) * cellSize.x)/width, ((coords.y + spriteSize.y)* cellSize.y)/height}
 		};

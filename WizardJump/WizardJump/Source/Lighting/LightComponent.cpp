@@ -2,6 +2,7 @@
 
 
 #include <glm/gtc/matrix_transform.hpp>
+
 Ref < BatchRenderer >LightComponent::s_CircleShapeFactory = nullptr;
 Ref < BatchRenderer >LightComponent::s_QuadShapeFactory = nullptr;
 
@@ -25,7 +26,7 @@ LightComponent::~LightComponent() {
 }
 
 
-PolygonLightRendererable::PolygonLightRendererable(const glm::vec3& position, const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout, const glm::vec4& color)
+PolygonLightRendererable::PolygonLightRendererable(const Vector3f& position, const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout, const glm::vec4& color)
 {
     vertices = _vertices;
     indices = _indices;
@@ -116,7 +117,7 @@ void LightComponent::EditCircleSize(const ShapeID id, const glm::vec2& size)
     s_CircleShapeFactory->SetScale(id, size);
 }
 
-const ShapeID LightComponent::AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color)
+const ShapeID LightComponent::AddPolygonLight(const Vector3f& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color)
 {
     Ref<PolygonLightRendererable> l = make_shared<PolygonLightRendererable>(GetEntityPosition()+position, vertices, indices, layout, color);
     m_polygonLights.push_back(l);
@@ -181,32 +182,32 @@ void LightComponent::OnAttached(Ref<Entity> entity)
 	entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
 		if (IsInitialized()) {
 			for (const ShapeID id : m_Circleids) {
-				Vector3 pos = s_CircleShapeFactory->GetShapePosition(id);
-				Vector3 nPos = pos - transData.position + transform->GetPosition();
+				Vector3f pos = s_CircleShapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.position + transform->GetPosition();
 				if (pos != nPos)
                     s_CircleShapeFactory->SetPosition(id, nPos);
 				float rot = s_CircleShapeFactory->GetShapeRotation(id);
 				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
 				if (rot != nRot)
                     s_CircleShapeFactory->SetRotation(id, nRot);
-				Vector2 _scale = s_CircleShapeFactory->GetShapeScale(id);
-				Vector3 scale(_scale.x, _scale.y, 1);
-				Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
+				Vector2f _scale = s_CircleShapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, 1);
+				Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
 				if (scale != nScale)
                     s_CircleShapeFactory->SetScale(id, { nScale.x, nScale.y });
 			}
 			for (const ShapeID id : m_Quadids) {
-				Vector3 pos = s_QuadShapeFactory->GetShapePosition(id);
-				Vector3 nPos = pos - transData.position + transform->GetPosition();
+				Vector3f pos = s_QuadShapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.position + transform->GetPosition();
 				if (pos != nPos)
                     s_QuadShapeFactory->SetPosition(id, nPos);
 				float rot = s_QuadShapeFactory->GetShapeRotation(id);
 				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
 				if (rot != nRot)
                     s_QuadShapeFactory->SetRotation(id, nRot);
-				Vector2 _scale = s_QuadShapeFactory->GetShapeScale(id);
-				Vector3 scale(_scale.x, _scale.y, 1);
-				Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
+				Vector2f _scale = s_QuadShapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, 1);
+				Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
 				if (scale != nScale)
                     s_QuadShapeFactory->SetScale(id, { nScale.x, nScale.y });
 			}

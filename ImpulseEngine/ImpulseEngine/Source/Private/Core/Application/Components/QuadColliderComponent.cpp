@@ -16,7 +16,7 @@
 
 namespace GEngine {
 
-	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const glm::vec2& position) : Component(),
+	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const Vector2f& position) : Component(),
 		m_position(position),
 		m_dynamic(dynamic),m_physics(physics)
 	{
@@ -33,13 +33,13 @@ namespace GEngine {
 	void QuadColliderComponent::OnBegin()
 	{
 		Ref<Entity> e = entity.lock();
-		m_worldPosition = glm::vec2(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y);
-		m_worldScale = glm::vec2(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y);
+		m_worldPosition = Vector2f(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y);
+		m_worldScale = Vector2f(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y);
 		m_worldRotation = m_rotation + e->GetEntityRotation().z;
 
 		PhysicsInfo info;
 		info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Kinematic;
-		info.position = glm::vec2(e->GetEntityPosition().x, e->GetEntityPosition().y);
+		info.position = Vector2f(e->GetEntityPosition().x, e->GetEntityPosition().y);
 		info.rotation = glm::radians(e->GetEntityRotation().z);
 		info.fixedRotation = true;
 		m_body = Physics::CreateBody(info);
@@ -51,7 +51,7 @@ namespace GEngine {
 	}
 
 
-	const GEngine::ColliderID QuadColliderComponent::CreateQuad(const glm::vec2& position, const glm::vec2& scale, float mass, float rotation, const std::string& tag)
+	const GEngine::ColliderID QuadColliderComponent::CreateQuad(const Vector2f& position, const Vector2f& scale, float mass, float rotation, const std::string& tag)
 	{
 		const ColliderID id = m_body->CreateQuad(scale, position, mass, rotation, tag);
 		const FColliderQuad quad = { id, position, scale, mass, rotation };
@@ -64,7 +64,7 @@ namespace GEngine {
 		return id;
 	}
 
-	const GEngine::ColliderID QuadColliderComponent::CreateCircle(const glm::vec2& position, const glm::vec2& scale, float mass, float rotation /*= 0*/, const std::string& tag /*= ""*/)
+	const GEngine::ColliderID QuadColliderComponent::CreateCircle(const Vector2f& position, const Vector2f& scale, float mass, float rotation /*= 0*/, const std::string& tag /*= ""*/)
 	{
 		const ColliderID id = m_body->CreateCircle(scale, position, mass, rotation, tag);
 		const FColliderQuad quad = { id, position, scale, mass, rotation };
@@ -91,11 +91,11 @@ namespace GEngine {
 	void QuadColliderComponent::OnUpdate(Timestep ts)
 	{
 		if (m_physics && m_dynamic) {
-			const glm::vec2& pos = m_body->GetPosition();
+			const Vector2f& pos = m_body->GetPosition();
 			const float rot = m_body->GetRotation();
 			m_movedSelf = true;
-			entity.lock()->SetEntityPosition(glm::vec3(pos.x, pos.y, 1));
-			entity.lock()->SetEntityRotation(glm::vec3(0, 0, glm::degrees(rot)));
+			entity.lock()->SetEntityPosition(Vector3f(pos.x, pos.y, 1));
+			entity.lock()->SetEntityRotation(Vector3f(0, 0, glm::degrees(rot)));
 			m_movedSelf = false;
 		}
 	}
@@ -103,25 +103,25 @@ namespace GEngine {
 	void QuadColliderComponent::SetPosition(const float x, const float y)
 	{
 		Ref<Entity> e = entity.lock();
-		m_position = glm::vec2(x + e->GetEntityPosition().x, y + e->GetEntityPosition().y);
+		m_position = Vector2f(x + e->GetEntityPosition().x, y + e->GetEntityPosition().y);
 	}
 
 	void QuadColliderComponent::SetScale(const float x, const float y)
 	{
 		Ref<Entity> e = entity.lock();
-		m_scale = glm::vec2(x * e->GetEntityScale().x, y * e->GetEntityScale().y);
+		m_scale = Vector2f(x * e->GetEntityScale().x, y * e->GetEntityScale().y);
 		
-		//m_collider->SetScale(glm::vec3(m_scale.x, m_scale.y,1));
+		//m_collider->SetScale(Vector3f(m_scale.x, m_scale.y,1));
 	}
 
 
 
-	const glm::vec2 QuadColliderComponent::GetPosition()
+	const Vector2f QuadColliderComponent::GetPosition()
 	{
 		return m_worldPosition;
 	}
 
-	const glm::vec2 QuadColliderComponent::GetScale()
+	const Vector2f QuadColliderComponent::GetScale()
 	{
 		return m_worldScale;
 	}
@@ -132,12 +132,12 @@ namespace GEngine {
 			m_body->SetGravityScale(f);
 	}
 
-	const glm::vec2 QuadColliderComponent::GetLinearVelocity()
+	const Vector2f QuadColliderComponent::GetLinearVelocity()
 	{
 		if (m_physics) {
 			return m_body->GetLinearVelocity();
 		}
-		return glm::vec2(0);
+		return Vector2f(0);
 	}
 
 	Ref<ScriptVector2> QuadColliderComponent::GetLinearVelocityScript()
@@ -180,7 +180,7 @@ namespace GEngine {
 
 	void QuadColliderComponent::IncreaseLinearVelocity(float x, float y)
 	{
-		glm::vec2 v = m_body->GetLinearVelocity();
+		Vector2f v = m_body->GetLinearVelocity();
 		v.x += x;
 		v.y += y;
 		m_body->SetLinearVelocity(v);
@@ -193,13 +193,13 @@ namespace GEngine {
 
 	void QuadColliderComponent::SetVelocityX(const float x)
 	{
-		glm::vec2 v = m_body->GetLinearVelocity();
+		Vector2f v = m_body->GetLinearVelocity();
 		m_body->SetLinearVelocity({ x, v.y });
 	}
 
 	void QuadColliderComponent::SetVelocityY(const float y)
 	{
-		glm::vec2 v = m_body->GetLinearVelocity();
+		Vector2f v = m_body->GetLinearVelocity();
 		m_body->SetLinearVelocity({ v.x, y });
 	}
 
@@ -240,7 +240,7 @@ namespace GEngine {
 	{
 		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
 			if (IsInitialized()) {
-				glm::vec3 pos = glm::vec3(m_position.x, m_position.y, 1);
+				Vector3f pos = Vector3f(m_position.x, m_position.y, 1);
 				pos = pos + transform->GetPosition();
 				m_worldPosition = pos;
 				if (!m_physics) {
@@ -256,14 +256,14 @@ namespace GEngine {
 
 
 			
-				glm::vec3 scale = glm::vec3(m_scale.x, m_scale.y, 1);
+				Vector3f scale = Vector3f(m_scale.x, m_scale.y, 1);
 				scale = scale * transform->GetScale();
-				m_worldScale = glm::vec2(scale.x, scale.y);
+				m_worldScale = Vector2f(scale.x, scale.y);
 				m_body->SetScale(m_worldScale);
 
 					
 
-				glm::vec3 rotation = glm::vec3(0, 0, m_rotation);
+				Vector3f rotation = Vector3f(0, 0, m_rotation);
 				rotation = rotation + transData.rotation;
 				rotation.x = 0;
 				rotation.y = 0;

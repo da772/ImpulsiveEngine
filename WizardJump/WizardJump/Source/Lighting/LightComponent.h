@@ -9,14 +9,14 @@ class PolygonLightRendererable : public Renderable {
 
 
 public:
-    PolygonLightRendererable(const glm::vec3& position, const std::vector<float>& vertices,const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
+    PolygonLightRendererable(const Vector3f& position, const std::vector<float>& vertices,const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
     ~PolygonLightRendererable();
     void Render() override;
 
     void Unload();
     void Reload();
 
-    glm::vec3 m_position;
+    Vector3f m_position;
 
 private:
     Ref<VertexArray> m_vertexArray;
@@ -44,7 +44,7 @@ public:
     void EditCircleColor(const ShapeID id, const glm::vec4& color);
     void EditCircleSize(const ShapeID id, const glm::vec2& size);
 
-    const ShapeID AddPolygonLight(const glm::vec3& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
+    const ShapeID AddPolygonLight(const Vector3f& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
 
     void RemoveQuadLight(const ShapeID id);
 

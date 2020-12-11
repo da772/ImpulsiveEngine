@@ -9,7 +9,7 @@ namespace GEngine {
 	class GE_API Material {
 	public:
 		Material();
-		Material(glm::vec4 color, Ref<Texture2D> texture = nullptr, Ref<Shader> shader = nullptr);
+		Material(Vector4f color, Ref<Texture2D> texture = nullptr, Ref<Shader> shader = nullptr);
 		~Material();
 
 		Ref<Texture2D> GetTexture();
@@ -19,7 +19,7 @@ namespace GEngine {
 
 	private:
 		Ref<Texture2D> texture;
-		glm::vec4 color;
+		Vector4f color;
 		Ref<Shader> shader;
 
 	};

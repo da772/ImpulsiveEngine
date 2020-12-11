@@ -21,9 +21,9 @@ namespace GEngine {
 		virtual void UploadUniformIntArray(const std::string& name, int* values, u32 count) override;
 		void UploadUniformMat4(const std::string& name,  const glm::mat4& matrix) override;
 		void UploadUniformMat3(const std::string& name,  const glm::mat3& matrix) override;
-		virtual void UploadUniformFloat4(const std::string& name, const glm::vec4& values) override;
-		virtual void UploadUniformFloat2(const std::string& name, const glm::vec2& values)override;
-		virtual void UploadUniformFloat3(const std::string& name, const glm::vec3& values) override;
+		virtual void UploadUniformFloat4(const std::string& name, const Vector4f& values) override;
+		virtual void UploadUniformFloat2(const std::string& name, const Vector2f& values)override;
+		virtual void UploadUniformFloat3(const std::string& name, const Vector3f& values) override;
 		virtual void UploadUniformFloat(const std::string& name, const float values) override;
 		virtual void UploadUniformInt(const std::string& name, const int values) override;
 		virtual uint32_t ShaderTypeFromString(const std::string& type) override;

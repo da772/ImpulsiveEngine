@@ -5,11 +5,11 @@
 namespace GEngine {
 
 	struct QuadVertex {
-		Vector3 position;
-		Vector4 color;
-		Vector2 texcoord;
+		Vector3f position;
+		Vector4f color;
+		Vector2f texcoord;
 		float texture;
-		glm::vec2 textureScale;
+		Vector2f textureScale;
 		float alphaChannel;
 	};
 
@@ -22,8 +22,8 @@ namespace GEngine {
 		virtual u32 GetVerticesSize() override;
 
 		virtual std::vector< u32 > GetIndices(u32 offset) override;
-		virtual std::vector<float> GetVertices(Vector3 position, float rotation = 0.f, Vector3 scale = Vector3(1, 1, 1), 
-			Vector4 color = Vector4(1, 1, 1, 1), u32 texture = 0, glm::vec2 textureScale = { 1,1 }, const Vector2* textureCoords = nullptr, float alphaChannel = 4) override;
+		virtual std::vector<float> GetVertices(Vector3f position, float rotation = 0.f, Vector3f scale = Vector3f(1, 1, 1), 
+			Vector4f color = Vector4f(1, 1, 1, 1), u32 texture = 0, Vector2f textureScale = { 1,1 }, const Vector2f* textureCoords = nullptr, float alphaChannel = 4) override;
 		virtual void SetZPosition(std::vector<float>& arr, float zPos);
 		virtual void SetTextureSlot(std::vector<float>& arr, int texture);
 	

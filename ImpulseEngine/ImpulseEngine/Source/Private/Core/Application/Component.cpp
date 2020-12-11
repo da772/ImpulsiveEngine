@@ -56,7 +56,7 @@ namespace GEngine {
 		bInit = false;
 	}
 
-	GEngine::Vector3 Component::GetEntityPosition()
+	GEngine::Vector3f Component::GetEntityPosition()
 	{
 		return entity.lock()->GetEntityPosition();
 	}

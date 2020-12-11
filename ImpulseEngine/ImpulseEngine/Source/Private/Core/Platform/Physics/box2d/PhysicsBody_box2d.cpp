@@ -35,7 +35,7 @@ namespace GEngine {
 		}
 	}
 
-	void PhysicsBody_box2d::SetPosition(const glm::vec2& position)
+	void PhysicsBody_box2d::SetPosition(const Vector2f& position)
 	{
 		PhysicsBody::SetPosition(position* GE_PHYSICS_SCALAR);
 		m_body->SetTransform(b2Vec2(position.x* GE_PHYSICS_SCALAR, position.y* GE_PHYSICS_SCALAR), m_body->GetAngle());
@@ -47,7 +47,7 @@ namespace GEngine {
 		m_body->SetTransform(m_body->GetPosition(), rot);
 	}
 
-	void PhysicsBody_box2d::SetLinearVelocity(const glm::vec2& velocity)
+	void PhysicsBody_box2d::SetLinearVelocity(const Vector2f& velocity)
 	{
 		PhysicsBody::SetLinearVelocity(velocity* GE_PHYSICS_SCALAR);
 		m_body->SetLinearVelocity(b2Vec2(velocity.x*GE_PHYSICS_SCALAR, velocity.y* GE_PHYSICS_SCALAR));
@@ -83,15 +83,15 @@ namespace GEngine {
 		m_body->SetGravityScale(f);
 	}
 
-	void PhysicsBody_box2d::SetScale(const glm::vec2& scale)
+	void PhysicsBody_box2d::SetScale(const Vector2f& scale)
 	{
 		PhysicsBody::SetScale(scale);
 	}
 
-	const glm::vec2& PhysicsBody_box2d::GetPosition()
+	const Vector2f& PhysicsBody_box2d::GetPosition()
 	{
 		const b2Vec2& pos = m_body->GetPosition();
-		m_position = glm::vec2(pos.x/ GE_PHYSICS_SCALAR, pos.y/ GE_PHYSICS_SCALAR);
+		m_position = Vector2f(pos.x/ GE_PHYSICS_SCALAR, pos.y/ GE_PHYSICS_SCALAR);
 		return m_position;
 	}
 
@@ -100,10 +100,10 @@ namespace GEngine {
 		return  m_body->GetAngle();
 	}
 
-	const glm::vec2& PhysicsBody_box2d::GetLinearVelocity()
+	const Vector2f& PhysicsBody_box2d::GetLinearVelocity()
 	{
 		const b2Vec2& v = m_body->GetLinearVelocity();
-		m_linearVelocity = glm::vec2(v.x/ GE_PHYSICS_SCALAR, v.y/ GE_PHYSICS_SCALAR);
+		m_linearVelocity = Vector2f(v.x/ GE_PHYSICS_SCALAR, v.y/ GE_PHYSICS_SCALAR);
 		return m_linearVelocity;
 	}
 
@@ -114,7 +114,7 @@ namespace GEngine {
 
 #define PI 3.14159265358979323846
 
-	const ColliderID PhysicsBody_box2d::CreateQuad(const glm::vec2& size, const glm::vec2& offset, float mass, float rotation, const std::string& tag)
+	const ColliderID PhysicsBody_box2d::CreateQuad(const Vector2f& size, const Vector2f& offset, float mass, float rotation, const std::string& tag)
 	{
 		const ColliderID id = Time::GetEpochTimeNS();
 		
@@ -136,7 +136,7 @@ namespace GEngine {
 	}
 
 
-	const GEngine::ColliderID PhysicsBody_box2d::CreateCircle(const glm::vec2& size, const glm::vec2& offset /*= glm::vec2(0)*/, float mass /*= 0*/, float rotation /*= 0*/, const std::string& tag /*= ""*/)
+	const GEngine::ColliderID PhysicsBody_box2d::CreateCircle(const Vector2f& size, const Vector2f& offset /*= Vector2f(0)*/, float mass /*= 0*/, float rotation /*= 0*/, const std::string& tag /*= ""*/)
 	{
 		const ColliderID id = Time::GetEpochTimeNS();
 

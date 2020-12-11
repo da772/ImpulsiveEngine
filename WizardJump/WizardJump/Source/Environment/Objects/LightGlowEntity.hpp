@@ -5,7 +5,7 @@ using namespace GEngine;
 
 class LightGlowEntity : public Entity {
 public:
-	LightGlowEntity(const glm::vec3& position = glm::vec3(0, 0, 0), const glm::vec2& scale = glm::vec2(1, 1), const glm::vec2& lightScale = glm::vec2(1, 1), const glm::vec4& color = glm::vec4 (1,1,1,1 )) : m_position(position), m_scale(scale), m_lightScale(lightScale), m_color(color)  { m_tag = "Light Glow Entity"; };
+	LightGlowEntity(const Vector3f& position = Vector3f(0, 0, 0), const glm::vec2& scale = glm::vec2(1, 1), const glm::vec2& lightScale = glm::vec2(1, 1), const glm::vec4& color = glm::vec4 (1,1,1,1 )) : m_position(position), m_scale(scale), m_lightScale(lightScale), m_color(color)  { m_tag = "Light Glow Entity"; };
 	~LightGlowEntity() {};
 
 protected:
@@ -17,7 +17,7 @@ protected:
 
 	glm::vec4 m_color;
 
-	glm::vec3 m_position;
+	Vector3f m_position;
 	glm::vec2 m_lightScale;
 	glm::vec2 m_scale;
 

@@ -38,7 +38,7 @@ public:
 		float buttonY = size*((float)buttonTexture->GetHeight()/ (float)Application::GetHeight())*5.f;
 		float buttonX = size*((float)buttonTexture->GetWidth() / (float)Application::GetWidth())*5.f;
 		startButton = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			glm::vec3(0, 0, 10), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
+			Vector3f(0, 0, 10), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
 		buttonsEntity->AddComponent(startButton);
 		startButton->SetImageTexture(buttonTexture);
 		textComponent->CreateQuad({ 0,0,2 }, 0, { 1.5,2,1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/sky_01.png"));

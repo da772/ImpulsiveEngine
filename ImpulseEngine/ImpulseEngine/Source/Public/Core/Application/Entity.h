@@ -17,7 +17,7 @@ namespace GEngine {
 	class GE_API Entity : public GameObject {
 
 	public:
-		Entity(glm::vec3 position);
+		Entity(Vector3f position);
 		virtual ~Entity();
 		std::string m_tag = "Entity";
 		template <class C = Component>
@@ -78,12 +78,12 @@ namespace GEngine {
 			return transform;
 		};
 
-        const Vector3 GetEntityPosition();
-        const Vector3 GetEntityRotation();
-        const Vector3 GetEntityScale();
-		void SetEntityPosition(const Vector3& position);
-		void SetEntityScale(const Vector3& scale);
-		void SetEntityRotation(const Vector3& rot);
+        const Vector3f GetEntityPosition();
+        const Vector3f GetEntityRotation();
+        const Vector3f GetEntityScale();
+		void SetEntityPosition(const Vector3f& position);
+		void SetEntityScale(const Vector3f& scale);
+		void SetEntityRotation(const Vector3f& rot);
 
 		Ref<ScriptVector3> GetEntityPositionScript();
 		Ref<ScriptVector3> GetEntityRotationScript();

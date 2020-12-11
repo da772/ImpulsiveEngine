@@ -1,6 +1,6 @@
 #include "Environment/ColliderEntity.hpp"
 
-ColliderEntity::ColliderEntity(const glm::vec3& pos, const glm::vec2& scale, float bounce, const std::string& tag) : m_pos(pos), m_scale(scale)
+ColliderEntity::ColliderEntity(const Vector3f& pos, const glm::vec2& scale, float bounce, const std::string& tag) : m_pos(pos), m_scale(scale)
 {
 	m_tag = tag;
 	m_bounce = bounce;

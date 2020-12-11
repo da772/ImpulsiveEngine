@@ -138,7 +138,7 @@ namespace GEngine {
 
 
 
-	 const uint64_t BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
+	 const uint64_t BatchRenderer::AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 Setup();
 
@@ -149,13 +149,13 @@ namespace GEngine {
 		 }
 
 		 BatchObjectData data = { position, rotation, scale, color, texture == nullptr ? m_BlankTexture : texture, textureScale, alphaChannel,
-             m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(position.x, position.y, 0) : position, rotation, { scale.x, scale.y, 1 }, color, 0, textureScale, nullptr, alphaChannel) };
+             m_Shape->GetVertices(m_renderType == ERenderType::UI ? Vector3f(position.x, position.y, 0) : position, rotation, { scale.x, scale.y, 1 }, color, 0, textureScale, nullptr, alphaChannel) };
 		
 
 		 return AddShape(data);
 	 }
 
-	 const uint64_t BatchRenderer::AddShape(glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
+	 const uint64_t BatchRenderer::AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 if (m_renderType == ERenderType::UI) {
 			 position.y = GEMath::MapRange(position.y, -1.f, 1.f, Application::GetSafeBottomUI() - 1.f, 1.f - Application::GetSafeTopUI());
@@ -165,7 +165,7 @@ namespace GEngine {
 		 Setup();
 
 		 BatchObjectData data = { position, rotation, scale, color, texture->GetTexture(), textureScale, alphaChannel,
-			m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(position.x, position.y, 0) : position, rotation, { scale.x, scale.y, 1 }, color, 0 , textureScale,  texture->GetTexCoords(), alphaChannel), texture };
+			m_Shape->GetVertices(m_renderType == ERenderType::UI ? Vector3f(position.x, position.y, 0) : position, rotation, { scale.x, scale.y, 1 }, color, 0 , textureScale,  texture->GetTexCoords(), alphaChannel), texture };
 		 
 		 return AddShape(data);
 
@@ -190,7 +190,7 @@ namespace GEngine {
 		 return id;
 	 }
 
-	 void BatchRenderer::EditShape(const uint64_t id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<Texture2D> texture, const glm::vec2& textureScale, float alphaChannel /*= 4*/)
+	 void BatchRenderer::EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
@@ -211,7 +211,7 @@ namespace GEngine {
 			 it->second.texture = texture != nullptr ? texture : m_BlankTexture;
 			 it->second.textureId = tIt - textures.begin();
 
-			 it->second.vertices = m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(it->second.position.x, it->second.position.y, 0) : it->second.position, it->second.rotation, { it->second.scale.x, it->second.scale.y, 1 }, it->second.color,
+			 it->second.vertices = m_Shape->GetVertices(m_renderType == ERenderType::UI ? Vector3f(it->second.position.x, it->second.position.y, 0) : it->second.position, it->second.rotation, { it->second.scale.x, it->second.scale.y, 1 }, it->second.color,
 				 it->second.textureId, textureScale, nullptr, alphaChannel);
 
 			 memcpy(&vertices[(uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos], &it->second.vertices[0], it->second.vertices.size() * sizeof(float));
@@ -220,8 +220,8 @@ namespace GEngine {
 		 }
 	 }
 
-	 void BatchRenderer::EditShape(const uint64_t id, glm::vec3 postiion, float rotation, glm::vec2 scale, glm::vec4 color, Ref<SubTexture2D> texture,
-		 const glm::vec2& textureScale, float alphaChannel /*= 4*/)
+	 void BatchRenderer::EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture,
+		 const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
@@ -252,7 +252,7 @@ namespace GEngine {
 	 }
 
 
-	 void BatchRenderer::SetColor(const uint64_t id, glm::vec4 color)
+	 void BatchRenderer::SetColor(const uint64_t id, Vector4f color)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
@@ -271,11 +271,11 @@ namespace GEngine {
 
 	 void BatchRenderer::ReCreateShapeVertices(BatchObjectData* data)
 	 {
-		 data->vertices = m_Shape->GetVertices(m_renderType == ERenderType::UI ? glm::vec3(data->position.x, data->position.y, 0) : data->position, data->rotation, { data->scale.x, data->scale.y, 1 }, data->color,
+		 data->vertices = m_Shape->GetVertices(m_renderType == ERenderType::UI ? Vector3f(data->position.x, data->position.y, 0) : data->position, data->rotation, { data->scale.x, data->scale.y, 1 }, data->color,
 			 data->textureId, data->textureScale, data->subTexture == nullptr ? nullptr : data->subTexture->GetTexCoords(), data->alphaChannel);
 	 }
 
-	 void BatchRenderer::SetPosition(const uint64_t id, glm::vec2 position)
+	 void BatchRenderer::SetPosition(const uint64_t id, Vector2f position)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
@@ -290,7 +290,7 @@ namespace GEngine {
 		 batch->RefreshVertices();
 	 }
 
-	 void BatchRenderer::SetTextureScale(const uint64_t id, const glm::vec2& scale)
+	 void BatchRenderer::SetTextureScale(const uint64_t id, const Vector2f& scale)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
@@ -396,7 +396,7 @@ namespace GEngine {
 		 batch->RefreshVertices();
 	 }
 
-	 void BatchRenderer::SetScale(const uint64_t id, glm::vec2 scale)
+	 void BatchRenderer::SetScale(const uint64_t id, Vector2f scale)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
@@ -415,7 +415,7 @@ namespace GEngine {
 
 
 
-	 const GEngine::Vector3 BatchRenderer::GetShapePosition(const uint64_t id)
+	 const GEngine::Vector3f BatchRenderer::GetShapePosition(const uint64_t id)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
@@ -442,7 +442,7 @@ namespace GEngine {
 		 return it->second.rotation;
 	 }
 
-	 const GEngine::Vector2 BatchRenderer::GetShapeScale(const uint64_t id)
+	 const GEngine::Vector2f BatchRenderer::GetShapeScale(const uint64_t id)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;

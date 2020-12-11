@@ -15,17 +15,17 @@ namespace GEngine {
 	class ButtonComponent : public Component {
 	public:
 
-		ButtonComponent(const glm::vec3& pos, const float rot, const glm::vec2& scale, const glm::vec4& color, glm::vec2 textureScale = { 1,1 });
+		ButtonComponent(const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale = { 1,1 });
 		virtual ~ButtonComponent();
 
 		void SetImageSubTexture(Ref<SubTexture2D> texture);
 		void SetImageTexture(Ref<Texture2D> texture);
-		void SetImageColor(const glm::vec4& color);
+		void SetImageColor(const Vector4f& color);
 		void SetImageRotation(const float rot);
-		void SetImagePosition(const glm::vec2& pos);
-		void SetImageScale(const glm::vec2& scale);
-		void SetColliderScale(const glm::vec2& scale);
-		void SetColliderPosition(const glm::vec2& pos);
+		void SetImagePosition(const Vector2f& pos);
+		void SetImageScale(const Vector2f& scale);
+		void SetColliderScale(const Vector2f& scale);
+		void SetColliderPosition(const Vector2f& pos);
 		void SetZOrder(float pos);
 
 		void UnloadGraphics() override;
@@ -52,17 +52,17 @@ namespace GEngine {
 		void OnUpdate(Timestep timestep) override;
 		ShapeID m_ids[2] = { 0,0};
 		static Ref<BatchRenderer> s_ShapeFactory;
-		glm::vec3 m_imagePosition, m_colliderPosition;
+		Vector3f m_imagePosition, m_colliderPosition;
 		float m_imageRotation, m_colliderRotation;
-		glm::vec2 m_imageScale, m_colliderScale;
-		glm::vec4 m_color;
+		Vector2f m_imageScale, m_colliderScale;
+		Vector4f m_color;
 		Ref<Collider2D> m_collider;
 		Ref<Texture2D> m_texture = nullptr;
 		Ref<Shader> m_Shader = nullptr;
 		Ref<SubTexture2D> m_subTexture = nullptr;
-		glm::vec2 m_textureScale;
-		glm::vec2 m_worldPosition;
-		glm::vec2 m_worldScale;
+		Vector2f m_textureScale;
+		Vector2f m_worldPosition;
+		Vector2f m_worldScale;
 		float m_worldRotation;
 		std::function<void(float, float)> m_onCollide;
 		std::function<void(float, float)> m_endCollide;

@@ -24,12 +24,12 @@ namespace GEngine {
 		PhysicsBody();
 		virtual ~PhysicsBody();
 
-		inline virtual void SetPosition(const glm::vec2& position) { m_position = position; }
+		inline virtual void SetPosition(const Vector2f& position) { m_position = position; }
 		inline virtual void SetRotation(const float rot) { m_rotation = rot; }
 
 		inline virtual void SetAwake(bool b) { m_awake = b; }
 
-		inline virtual void SetLinearVelocity(const glm::vec2& velocity) { m_linearVelocity = velocity; }
+		inline virtual void SetLinearVelocity(const Vector2f& velocity) { m_linearVelocity = velocity; }
 		inline virtual void SetLinearDamping(const float linearDamping) { m_linearDamping = linearDamping; }
 		inline virtual void SetAngularDamping(const float angularDamping) { m_angularDamping = angularDamping; }
 		inline virtual void SetEnabled(const bool b) { m_enabled = b; }
@@ -38,14 +38,14 @@ namespace GEngine {
 		inline virtual void SetAngularVelocity(const float f) { m_angluarVelocity = f; }
 
 		inline virtual void SetBounce(const ColliderID id, const float f) { m_bounce = f; };
-		inline virtual void SetScale(const glm::vec2& scale) { m_scale = scale; }
+		inline virtual void SetScale(const Vector2f& scale) { m_scale = scale; }
 
 		inline virtual void SetSensor(const ColliderID id, const bool b) { m_sensor = b; }
 
-		inline virtual const glm::vec2& GetPosition() { return m_position; }
+		inline virtual const Vector2f& GetPosition() { return m_position; }
 		inline virtual const float GetRotation() { return m_rotation; }
-		inline virtual const glm::vec2& GetScale() { return m_scale; }
-		inline virtual const glm::vec2& GetLinearVelocity() { return m_linearVelocity; }
+		inline virtual const Vector2f& GetScale() { return m_scale; }
+		inline virtual const Vector2f& GetLinearVelocity() { return m_linearVelocity; }
 		inline virtual const float GetLinearDamping() { return m_linearDamping; }
 		inline virtual const float GetAngularDamping() { return m_angularDamping; }
 		inline virtual const bool CanSleep() { return m_canSleep; }
@@ -72,17 +72,17 @@ namespace GEngine {
 		virtual void SetOnCollideEndFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) = 0;
 
 
-		virtual const ColliderID CreateQuad(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
-		virtual const ColliderID CreateCircle(const glm::vec2& size, const glm::vec2& offset = glm::vec2(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
+		virtual const ColliderID CreateQuad(const Vector2f& size, const Vector2f& offset = Vector2f(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
+		virtual const ColliderID CreateCircle(const Vector2f& size, const Vector2f& offset = Vector2f(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
 		virtual void DestroyQuad(const ColliderID id) = 0;
 
 
 	protected:
 
 		PhysicsInfoType m_type = PhysicsInfoType::PHYSICS_Static;
-		glm::vec2 m_position = glm::vec2(0);;
+		Vector2f m_position = Vector2f(0);;
 		float m_rotation = 0.f;
-		glm::vec2 m_linearVelocity = glm::vec2(0, 0);
+		Vector2f m_linearVelocity = Vector2f(0, 0);
 		float m_angluarVelocity = 0;
 		float m_linearDamping = 0.f;
 		float m_angularDamping = 0.f;
@@ -104,7 +104,7 @@ namespace GEngine {
 
 
 		// Fixture
-		glm::vec2 m_scale = glm::vec2(1);;
+		Vector2f m_scale = Vector2f(1);;
 		float m_mass = 0;
 
 

@@ -5,11 +5,11 @@
 namespace GEngine {
 
 
-	Collider2D::Collider2D(const glm::vec2& position, const glm::vec2& scale, const float rotation)
+	Collider2D::Collider2D(const Vector2f& position, const Vector2f& scale, const float rotation)
 	{
-		SetPosition(glm::vec3(position.x, position.y, 1));
-		SetRotation(glm::vec3(0, 0, rotation));
-		SetScale(glm::vec3(scale.x, scale.y, 1));
+		SetPosition(Vector3f(position.x, position.y, 1));
+		SetRotation(Vector3f(0, 0, rotation));
+		SetScale(Vector3f(scale.x, scale.y, 1));
 	}
 
 	bool Collider2D::CheckCollisionPoint(const float x, const float y)
@@ -56,8 +56,8 @@ namespace GEngine {
 
 	bool Collider2D::AABBCheck(Ref<Collider2D> collider)
 	{
-		glm::vec3 _position = collider->GetPosition();
-		glm::vec3 _scale = collider->GetScale();
+		Vector3f _position = collider->GetPosition();
+		Vector3f _scale = collider->GetScale();
 		float L1 = position.x - scale.x/2.f;
 		float R1 = position.x + scale.x/2.f;
 		float T1 = position.y + scale.y/2.f;

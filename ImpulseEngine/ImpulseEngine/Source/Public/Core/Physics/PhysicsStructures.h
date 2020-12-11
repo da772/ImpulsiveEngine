@@ -38,9 +38,9 @@ namespace GEngine {
 	struct PhysicsInfo {
 
 		PhysicsInfoType type = PhysicsInfoType::PHYSICS_Static;
-		glm::vec2 position = glm::vec2(0,0);
+		Vector2f position = Vector2f(0,0);
 		float rotation = 0;
-		glm::vec2 linearVelocity = glm::vec2(0,0);
+		Vector2f linearVelocity = Vector2f(0,0);
 		float angularVelocity = 0;
 		float linearDamping = 0.f;
 		float angularDamping = .1f;

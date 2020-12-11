@@ -267,7 +267,7 @@ namespace GEngine {
 		RenderCommand::DrawArraysLines(vertexArray);
 	}
 
-	void Renderer::DrawCube(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color)
+	void Renderer::DrawCube(const Vector3f& position, const Vector3f& scale, const Vector4f& color)
 	{
 		Renderer::s_ShapeData->shape_shader->Bind();
 		Renderer::s_ShapeData->shape_shader->UploadUniformInt("u_Texture", 0);
@@ -283,7 +283,7 @@ namespace GEngine {
 		GEngine::Renderer::SubmitArrays(s_ShapeData->shape_shader, s_ShapeData->box_vArray, transform);
 	}
 
-	void Renderer::DrawLine(const glm::vec3& startPos, const glm::vec3& endPos, const glm::vec4& color)
+	void Renderer::DrawLine(const Vector3f& startPos, const Vector3f& endPos, const Vector4f& color)
 	{
 
 		Renderer::s_ShapeData->shape_shader->Bind();
@@ -311,7 +311,7 @@ namespace GEngine {
 
 	}
 
-	void Renderer::DrawLines(const std::vector<float>& lines, const glm::vec4& color)
+	void Renderer::DrawLines(const std::vector<float>& lines, const Vector4f& color)
 	{
 
 		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([lines, color]() {
@@ -336,7 +336,7 @@ namespace GEngine {
 
 	}
 
-	void Renderer::DrawDebugLines(const std::vector<float>& lines, const glm::vec4& color)
+	void Renderer::DrawDebugLines(const std::vector<float>& lines, const Vector4f& color)
 	{
 		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([lines, color]() {
 
@@ -359,12 +359,12 @@ namespace GEngine {
 			}));
 	}
 
-	void Renderer::DrawCircle(const glm::vec3& position, float rotation, const glm::vec3& scale, const glm::vec4& color)
+	void Renderer::DrawCircle(const Vector3f& position, float rotation, const Vector3f& scale, const Vector4f& color)
 	{
 		
 	}
 
-	void Renderer::DrawText3D(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center) {
+	void Renderer::DrawText3D(const char* txt, float scale, const Vector3f& position, const Vector4f& color, bool center) {
 
 		const glm::mat4 model = {
 			scale, 0.0f, 0.0f, 0.0f,
@@ -376,7 +376,7 @@ namespace GEngine {
 		RenderCommand::DrawText3D(txt, color, scale, model, Renderer::s_SceneData->ViewMatrix, Renderer::s_SceneData->ProjectionMatrix, center);
 	}
 
-	void Renderer::DrawText3D_Billboard(const char* txt, float scale, const glm::vec3& position, const glm::vec4& color, bool center)
+	void Renderer::DrawText3D_Billboard(const char* txt, float scale, const Vector3f& position, const Vector4f& color, bool center)
 	{
 		const glm::mat4 model = {
 		scale, 0.0f, 0.0f, 0.0f,

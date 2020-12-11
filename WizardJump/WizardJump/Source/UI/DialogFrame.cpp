@@ -3,7 +3,7 @@
 #include "UI/DialogFrame.hpp"
 
 
-DialogFrame::DialogFrame(const glm::vec3& position, float textSpeed, const std::string& title,const std::string& icon, const std::string& text) : m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon)
+DialogFrame::DialogFrame(const Vector3f& position, float textSpeed, const std::string& title,const std::string& icon, const std::string& text) : m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon)
 {
 	bUpdates = true;
 	m_font = Font::Create("Content/Fonts/Wizard.ttf", 120.f);

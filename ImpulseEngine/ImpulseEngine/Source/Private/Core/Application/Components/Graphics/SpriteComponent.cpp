@@ -25,17 +25,17 @@ namespace GEngine {
 		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
 			if (IsInitialized()) {
 				for (ShapeID id : m_ids) {
-					Vector3 pos = m_shapeFactory->GetShapePosition(id);
-					Vector3 nPos = pos - transData.position + transform->GetPosition();
+					Vector3f pos = m_shapeFactory->GetShapePosition(id);
+					Vector3f nPos = pos - transData.position + transform->GetPosition();
 					if (pos != nPos)
 						m_shapeFactory->SetPosition(id, nPos);
 					float rot = m_shapeFactory->GetShapeRotation(id);
 					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
 					if (rot != nRot)
 						m_shapeFactory->SetRotation(id, nRot);
-					Vector2 _scale = m_shapeFactory->GetShapeScale(id);
-					Vector3 scale(_scale.x, _scale.y, 1);
-					Vector3 nScale = scale - transData.scale.z + transform->GetScale().z;
+					Vector2f _scale = m_shapeFactory->GetShapeScale(id);
+					Vector3f scale(_scale.x, _scale.y, 1);
+					Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
 					if (scale != nScale)
 						m_shapeFactory->SetScale(id, {nScale.x, nScale.y});
 				}
@@ -89,11 +89,11 @@ namespace GEngine {
 		
 	}
 
-	const ShapeID SpriteComponent::CreateQuad(const Vector3& _pos, const float rotation, const Vector3& scale, const Vector4& _color,
-		const Ref<Texture2D> texture, const glm::vec2& textureScale)
+	const ShapeID SpriteComponent::CreateQuad(const Vector3f& _pos, const float rotation, const Vector3f& scale, const Vector4f& _color,
+		const Ref<Texture2D> texture, const Vector2f& textureScale)
 	{
 		Ref<Entity> e = entity.lock();
-		glm::vec3 _scale = scale * e->GetEntityScale();
+		Vector3f _scale = scale * e->GetEntityScale();
 
 		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rotation + e->GetEntityRotation().z, _scale, _color, texture, textureScale);
 		m_ids.push_back(id);
@@ -101,13 +101,13 @@ namespace GEngine {
 	}
 
 	ShapeID SpriteComponent::CreateQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale, const Ref<ScriptVector4>& _color,
-		const Ref<Texture2D>& texture, const glm::vec2& textureScale)
+		const Ref<Texture2D>& texture, const Vector2f& textureScale)
 	{
 		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture,textureScale);
 	}
 
 	ShapeID SpriteComponent::CreateSubTexturedQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale,
-		const Ref<ScriptVector4>& _color,const Ref<SubTexture2D>& texture, const glm::vec2& textureScale)
+		const Ref<ScriptVector4>& _color,const Ref<SubTexture2D>& texture, const Vector2f& textureScale)
 	{
 		return CreateSubTexturedQuad(_pos->GetGlm(), rot , scale->GetGlm(), _color->GetGlm(), texture, textureScale);
 	}
@@ -117,9 +117,9 @@ namespace GEngine {
 		m_shapeFactory->SetSubTexture(id, texture);
 	}
 
-	void SpriteComponent::SetPosition(const ShapeID id, const glm::vec2& position)
+	void SpriteComponent::SetPosition(const ShapeID id, const Vector2f& position)
 	{
-		m_shapeFactory->SetPosition(id, position + glm::vec2( entity.lock()->GetEntityPosition().x, entity.lock()->GetEntityPosition().y ) );
+		m_shapeFactory->SetPosition(id, position + Vector2f( entity.lock()->GetEntityPosition().x, entity.lock()->GetEntityPosition().y ) );
 	}
 
 	void SpriteComponent::SetPositionScript(const ShapeID id, const Ref<ScriptVector2>& position)
@@ -137,7 +137,7 @@ namespace GEngine {
 		m_shapeFactory->SetZOrder(id, zOrder+entity.lock()->GetEntityPosition().z);
 	}
 
-	void SpriteComponent::SetQuadColor(const ShapeID id, const glm::vec4& color)
+	void SpriteComponent::SetQuadColor(const ShapeID id, const Vector4f& color)
 	{
 		m_shapeFactory->SetColor(id, color);
 	}
@@ -152,13 +152,13 @@ namespace GEngine {
 		m_shapeFactory->SetRotation(id, rotation);
 	}
 
-	void SpriteComponent::SetTextureScale(const ShapeID id, const glm::vec2& scale)
+	void SpriteComponent::SetTextureScale(const ShapeID id, const Vector2f& scale)
 	{
 		m_shapeFactory->SetTextureScale(id, scale);
 	}
 
-	ShapeID SpriteComponent::CreateSubTexturedQuad(const Vector3& _pos, const float rot /*= 0*/, const Vector3& scale /*= { 1,1,1 }*/,
-		const Vector4& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const glm::vec2& textureScale/*= 1*/)
+	ShapeID SpriteComponent::CreateSubTexturedQuad(const Vector3f& _pos, const float rot /*= 0*/, const Vector3f& scale /*= { 1,1,1 }*/,
+		const Vector4f& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const Vector2f& textureScale/*= 1*/)
 	{
 		Ref<Entity> e = entity.lock();
 		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rot + e->GetEntityRotation().z, scale * e->GetEntityScale(), _color, texture, textureScale);
@@ -179,7 +179,7 @@ namespace GEngine {
 		m_ids.clear();
 	}
 
-	glm::vec2 SpriteComponent::GetQuadScale(const ShapeID& id)
+	Vector2f SpriteComponent::GetQuadScale(const ShapeID& id)
 	{
 		return m_shapeFactory->GetShapeScale(id);
 	}

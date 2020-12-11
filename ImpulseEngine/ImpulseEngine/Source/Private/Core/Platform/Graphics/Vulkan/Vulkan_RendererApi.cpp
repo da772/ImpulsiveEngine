@@ -12,7 +12,7 @@ namespace GEngine {
 
 	}
 
-	void Vulkan_RendererApi::SetClearColor(const glm::vec4& color)
+	void Vulkan_RendererApi::SetClearColor(const Vector4f& color)
 	{
 		Vulkan_GraphicsContext::SetClearColor(color);
 	}

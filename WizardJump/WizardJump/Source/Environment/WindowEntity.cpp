@@ -93,7 +93,7 @@ static Ref<BufferLayout> lightLayout = Ref<BufferLayout>(new BufferLayout({
 {GEngine::ShaderDataName::Position },
 {GEngine::ShaderDataName::AlphaChannel} }));
 
-WindowEntity::WindowEntity(const glm::vec3 position, const glm::vec2& scale, const glm::vec4& lightColor)
+WindowEntity::WindowEntity(const Vector3f position, const glm::vec2& scale, const glm::vec4& lightColor)
 	: m_position(position), m_scale(scale), m_lightColor(lightColor)
 {
 	

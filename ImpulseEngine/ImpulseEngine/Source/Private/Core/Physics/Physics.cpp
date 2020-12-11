@@ -37,7 +37,7 @@ namespace GEngine {
 		return nullptr;
 	}
 
-	void Physics::SetGravity(const glm::vec2& gravity)
+	void Physics::SetGravity(const Vector2f& gravity)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		m_context->SetGravity(gravity);
@@ -49,19 +49,19 @@ namespace GEngine {
 		return m_context->CreateBody(info);
 	}
 
-	glm::vec2 Physics::GetTrajectoryPoint2D(const glm::vec2& startPos, const glm::vec2& startVel, float step)
+	Vector2f Physics::GetTrajectoryPoint2D(const Vector2f& startPos, const Vector2f& startVel, float step)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		return m_context->GetTrajectoryPoint2D(startPos, startVel, step);
 	}
 
-	GEngine::Ref<GEngine::RayCastInfo> Physics::RayCast2D(const glm::vec2 startPos, const glm::vec2 endPos, const std::vector< Weak<PhysicsBody>>& ignoreBodies)
+	GEngine::Ref<GEngine::RayCastInfo> Physics::RayCast2D(const Vector2f startPos, const Vector2f endPos, const std::vector< Weak<PhysicsBody>>& ignoreBodies)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		return m_context->RayCast2D(startPos, endPos, ignoreBodies);
 	}
 
-	std::vector<GEngine::Weak<GEngine::PhysicsBody>> Physics::QueryCollision(const glm::vec2& position, const glm::vec2& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
+	std::vector<GEngine::Weak<GEngine::PhysicsBody>> Physics::QueryCollision(const Vector2f& position, const Vector2f& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		return m_context->QueryCollision(position, scale, ignoreBodies);
@@ -81,24 +81,24 @@ namespace GEngine {
 		
 	}
 
-	glm::vec2 Physics::GetVelocityToPosition(const glm::vec2& startPos, const glm::vec2& endPos)
+	Vector2f Physics::GetVelocityToPosition(const Vector2f& startPos, const Vector2f& endPos)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		return m_context->GetVelocityToPosition(startPos, endPos);
 	}
 
-	float Physics::GetVelocityMaxHeight(const glm::vec2& velocity)
+	float Physics::GetVelocityMaxHeight(const Vector2f& velocity)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
 		return m_context->GetVelocityMaxHeight(velocity);
 	}
 
-	float Physics::GetMaxVelocityTime(const glm::vec2& velocity)
+	float Physics::GetMaxVelocityTime(const Vector2f& velocity)
 	{
 		return m_context->GetMaxVelocityTime(velocity);
 	}
 
-	float Physics::GetMaxHeight(const glm::vec2& startPos, const glm::vec2& startVel)
+	float Physics::GetMaxHeight(const Vector2f& startPos, const Vector2f& startVel)
 	{
 		return m_context->GetMaxHeight(startPos, startVel);
 	}

@@ -48,15 +48,15 @@ namespace GEngine {
 	}
 	
 
-	glm::vec3 Utility::ScreenPosToWorldPos(glm::vec2 pos)
+	Vector3f Utility::ScreenPosToWorldPos(Vector2f pos)
 	{
-		glm::vec3 position = { pos.x,  pos.y, 1 };
+		Vector3f position = { pos.x,  pos.y, 1 };
 		int width, height;
 		GEngine::Application::GetApp()->GetWindow()->GetFrameBufferSize(&width, &height);
 		//width = GEngine::Application::GetApp()->GetWindow()->GetWidth();
 		//height = GEngine::Application::GetApp()->GetWindow()->GetHeight();
 		position = glm::unProject(position, Application::GetApp()->GetTargetCamera()->GetViewMatrix(),
-			Application::GetApp()->GetTargetCamera()->GetProjectionMatrix(), glm::vec4(0, height, width, -height));
+			Application::GetApp()->GetTargetCamera()->GetProjectionMatrix(), Vector4f(0, height, width, -height));
 		return position;
 	}
 

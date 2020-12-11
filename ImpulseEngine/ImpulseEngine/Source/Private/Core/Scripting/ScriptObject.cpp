@@ -59,7 +59,7 @@ namespace GEngine {
 	GEngine::Ref<GEngine::ScriptVector2> ScriptInput::GetMousePosition()
 	{
 		std::pair<float, float> pos = Input::GetMousePosition();
-		return std::make_shared<ScriptVector2>(glm::vec2(pos.first, pos.second));
+		return std::make_shared<ScriptVector2>(Vector2f(pos.first, pos.second));
 	}
 
 	std::vector<Ref<FTouchInfo>> ScriptInput::GetTouches()
@@ -193,8 +193,8 @@ namespace GEngine {
 
 	Ref<GEngine::ScriptVector2> ScriptMath::ScreenPosToWorldPos(Ref<ScriptVector2> pos)
 	{
-		glm::vec3 p = Utility::ScreenPosToWorldPos(pos->GetGlm());
-		return make_shared<ScriptVector2>(glm::vec2(p.x ,p.y));
+		Vector3f p = Utility::ScreenPosToWorldPos(pos->GetGlm());
+		return make_shared<ScriptVector2>(Vector2f(p.x ,p.y));
 	}
 
 }

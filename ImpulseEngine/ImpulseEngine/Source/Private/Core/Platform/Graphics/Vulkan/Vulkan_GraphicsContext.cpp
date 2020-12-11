@@ -1360,13 +1360,13 @@ namespace GEngine {
 				float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 				UniformBufferObject ubo = {};
-				glm::mat4 m = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-				glm::mat4 _v = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+				glm::mat4 m = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), Vector3f(0.0f, 0.0f, 1.0f));
+				glm::mat4 _v = glm::lookAt(Vector3f(2.0f, 2.0f, 2.0f), Vector3f(0.0f, 0.0f, 0.0f), Vector3f(0.0f, 0.0f, 1.0f));
 				glm::mat4 p = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
 				p[1][1] *= -1;
 				ubo.viewProjection = shaderMap[v.shader_id].vproj;
 				//ubo.viewProjection = p*_v*m;
-				ubo.transform = glm::translate(glm::mat4(1.f), glm::vec3(0.f, 0.f, 0.f)) * glm::scale(glm::mat4(1.0f), { 1.f, 1.f, 1.f });
+				ubo.transform = glm::translate(glm::mat4(1.f), Vector3f(0.f, 0.f, 0.f)) * glm::scale(glm::mat4(1.0f), { 1.f, 1.f, 1.f });
 
 				void* data;
 				vkMapMemory(device, v.uniformBuffersMemory[j][currentImage], 0, sizeof(ubo), 0, &data);

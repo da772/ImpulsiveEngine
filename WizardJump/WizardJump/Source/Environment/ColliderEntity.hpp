@@ -7,7 +7,7 @@ using namespace GEngine;
 class ColliderEntity : public Entity {
 public:
 
-	ColliderEntity(const glm::vec3& pos, const glm::vec2& scale, float bounce, const std::string& tag);
+	ColliderEntity(const Vector3f& pos, const glm::vec2& scale, float bounce, const std::string& tag);
 	~ColliderEntity() {};
 
 	bool debug = false;
@@ -20,7 +20,7 @@ protected:
 
 	float m_bounce;
 	glm::vec2 m_scale = glm::vec2(1,1);
-	glm::vec3 m_pos = glm::vec3(0, 0, 0);
+	Vector3f m_pos = Vector3f(0, 0, 0);
 	float rot;
 
 	void OnUpdate(Timestep timestep) override;

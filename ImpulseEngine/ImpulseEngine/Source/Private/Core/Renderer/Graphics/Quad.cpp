@@ -51,8 +51,8 @@ namespace GEngine {
 		return ind;
 	}
 
-	std::vector<float> Quad::GetVertices(Vector3 position, float rotation, Vector3 scale /*= Vector3(1,1,1)*/,
-		Vector4 color /*= Vector4(1,1,1,1)*/, u32 texture /*= 0*/, glm::vec2 textureScale, const Vector2* textureCoords, float alphaChannel)
+	std::vector<float> Quad::GetVertices(Vector3f position, float rotation, Vector3f scale /*= Vector3f(1,1,1)*/,
+		Vector4f color /*= Vector4f(1,1,1,1)*/, u32 texture /*= 0*/, Vector2f textureScale, const Vector2f* textureCoords, float alphaChannel)
 	{
 		std::vector<QuadVertex> vert;
 
@@ -60,24 +60,24 @@ namespace GEngine {
 			* glm::rotate(glm::mat4(1.f), glm::radians(rotation), { 0,0,1.f })
 			* glm::scale(glm::mat4(1.0), { scale.x, scale.y, 1.f });
 
-		std::vector<Vector4> quadPos = {
+		std::vector<Vector4f> quadPos = {
 			{-.5f, -.5f, 0, 1.f},
 			{.5f, -.5f, 0.f, 1.f},
 			{.5f, .5f, 0.f, 1.f},
 			{-.5f, .5f, 0.f,1.f}
 		};
 
-		Vector4 _p = transform * quadPos[0];
-		vert.push_back({ Vector3(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2(textureCoords[0]) : Vector2(0.f,0.f)), (float)texture, textureScale,alphaChannel });
+		Vector4f _p = transform * quadPos[0];
+		vert.push_back({ Vector3f(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2f(textureCoords[0]) : Vector2f(0.f,0.f)), (float)texture, textureScale,alphaChannel });
 
 		_p = transform * quadPos[1];
-		vert.push_back({ Vector3(_p.x,_p.y,_p.z) , color,  (textureCoords != nullptr ? Vector2(textureCoords[1]) : Vector2(1.f,0.f)), (float)texture, textureScale,alphaChannel });
+		vert.push_back({ Vector3f(_p.x,_p.y,_p.z) , color,  (textureCoords != nullptr ? Vector2f(textureCoords[1]) : Vector2f(1.f,0.f)), (float)texture, textureScale,alphaChannel });
 
 		_p = transform * quadPos[2];
-		vert.push_back({ Vector3(_p.x,_p.y,_p.z), color,  (textureCoords != nullptr ? Vector2(textureCoords[2]) : Vector2(1.f,1.f)), (float)texture, textureScale,alphaChannel });
+		vert.push_back({ Vector3f(_p.x,_p.y,_p.z), color,  (textureCoords != nullptr ? Vector2f(textureCoords[2]) : Vector2f(1.f,1.f)), (float)texture, textureScale,alphaChannel });
 
 		_p = transform * quadPos[3];
-		vert.push_back({ Vector3(_p.x,_p.y,_p.z), color,  (textureCoords != nullptr ? Vector2(textureCoords[3]) : Vector2(0.f,1.f)), (float)texture, textureScale,alphaChannel });
+		vert.push_back({ Vector3f(_p.x,_p.y,_p.z), color,  (textureCoords != nullptr ? Vector2f(textureCoords[3]) : Vector2f(0.f,1.f)), (float)texture, textureScale,alphaChannel });
 
 		std::vector<float> _f((float*)&vert[0], (float*)&vert[0]+GetVerticesSize()/sizeof(float)*GetVerticesRows());
 		vert.clear();
