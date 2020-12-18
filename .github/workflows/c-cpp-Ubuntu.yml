@@ -1,10 +1,10 @@
-name: Ubuntu C/C++ CI
+name: Ubuntu Modules C/C++ CI
 
 on:
   push:
-    branches: [ WizardJump ]
+    branches: [ IEVector ]
   pull_request:
-    branches: [ WizardJump ]
+    branches: [ IEVector ]
 
 jobs:
   build:
