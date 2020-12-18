@@ -8,7 +8,7 @@ using namespace GEngine;
 class SpriteEntity : public Entity {
 
 public:
-	SpriteEntity(const Vector3f& position, const glm::vec2& scale, const float rotation, const std::string& tag = "SpriteEntity") : m_position(position), m_scale(scale), m_rot(rotation) {
+	SpriteEntity(const Vector3f& position, const Vector2f& scale, const float rotation, const std::string& tag = "SpriteEntity") : m_position(position), m_scale(scale), m_rot(rotation) {
 		
 		//bUpdates = false;
 		m_tag = tag;
@@ -22,7 +22,7 @@ public:
 protected:
 	Ref<SpriteComponent> m_spriteComponent;
 	Vector3f m_position;
-	glm::vec2 m_scale;
+	Vector2f m_scale;
 	float m_rot;
 
 	inline void OnBegin() override

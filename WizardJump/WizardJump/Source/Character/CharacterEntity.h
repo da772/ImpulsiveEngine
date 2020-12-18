@@ -10,7 +10,7 @@ class CharacterGraphics;
 class CharacterEntity : public Entity {
 
 public:
-	CharacterEntity(const glm::vec2& position = glm::vec2(0,0));
+	CharacterEntity(const Vector2f& position = Vector2f(0,0));
 	~CharacterEntity() {};
 
 
@@ -22,7 +22,7 @@ public:
 protected:
 	void OnBegin() override;
 	void OnEnd() override;
-	glm::vec2 m_position;
+	Vector2f m_position;
 
 	void OnUpdate(Timestep timestep) override;
 

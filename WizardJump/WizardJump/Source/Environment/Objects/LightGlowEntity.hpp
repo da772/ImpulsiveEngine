@@ -5,7 +5,7 @@ using namespace GEngine;
 
 class LightGlowEntity : public Entity {
 public:
-	LightGlowEntity(const Vector3f& position = Vector3f(0, 0, 0), const glm::vec2& scale = glm::vec2(1, 1), const glm::vec2& lightScale = glm::vec2(1, 1), const glm::vec4& color = glm::vec4 (1,1,1,1 )) : m_position(position), m_scale(scale), m_lightScale(lightScale), m_color(color)  { m_tag = "Light Glow Entity"; };
+	LightGlowEntity(const Vector3f& position = Vector3f(0, 0, 0), const Vector2f& scale = Vector2f(1, 1), const Vector2f& lightScale = Vector2f(1, 1), const Vector4f& color = Vector4f (1,1,1,1 )) : m_position(position), m_scale(scale), m_lightScale(lightScale), m_color(color)  { m_tag = "Light Glow Entity"; };
 	~LightGlowEntity() {};
 
 protected:
@@ -15,11 +15,11 @@ protected:
 	ShapeID id = 0;
 	ShapeID id2 = 0;
 
-	glm::vec4 m_color;
+	Vector4f m_color;
 
 	Vector3f m_position;
-	glm::vec2 m_lightScale;
-	glm::vec2 m_scale;
+	Vector2f m_lightScale;
+	Vector2f m_scale;
 
 	inline void OnBegin() override
 	{

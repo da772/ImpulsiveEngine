@@ -9,7 +9,7 @@ class PolygonLightRendererable : public Renderable {
 
 
 public:
-    PolygonLightRendererable(const Vector3f& position, const std::vector<float>& vertices,const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
+    PolygonLightRendererable(const Vector3f& position, const std::vector<float>& vertices,const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const Vector4f& color);
     ~PolygonLightRendererable();
     void Render() override;
 
@@ -26,7 +26,7 @@ private:
     std::vector<float> vertices;
     std::vector<uint32_t> indices;
     Ref<Shader> m_Shader;
-    glm::vec4 m_color;
+    Vector4f m_color;
    
 
     void CreateGraphics();
@@ -39,12 +39,12 @@ public:
 	LightComponent();
 	virtual ~LightComponent();
     
-    const ShapeID AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color);
-    const ShapeID AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color, Ref<Texture2D> texture = nullptr);
-    void EditCircleColor(const ShapeID id, const glm::vec4& color);
-    void EditCircleSize(const ShapeID id, const glm::vec2& size);
+    const ShapeID AddCircleLight(const Vector2f& position, float intensity, const Vector2f& scale, const Vector4f& color);
+    const ShapeID AddQuadLight(const Vector2f& position, float intensity, const Vector2f& scale, const Vector4f& color, Ref<Texture2D> texture = nullptr);
+    void EditCircleColor(const ShapeID id, const Vector4f& color);
+    void EditCircleSize(const ShapeID id, const Vector2f& size);
 
-    const ShapeID AddPolygonLight(const Vector3f& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color);
+    const ShapeID AddPolygonLight(const Vector3f& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const Vector4f& color);
 
     void RemoveQuadLight(const ShapeID id);
 

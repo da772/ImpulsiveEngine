@@ -80,7 +80,7 @@ namespace GEngine {
         sData->TextureShader->UploadUniformFloat("u_Threshold", .5f);
 		
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.0f), { size.x,size.y, 1.f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3( position.x, position.y, position.z) ) * glm::scale(glm::mat4(1.0f), { size.x,size.y, 1.f });
 		sData->TextureShader->UploadUniformMat4("u_Transform", transform);
 
 		sData->WhiteTexture->Bind();
@@ -99,7 +99,7 @@ namespace GEngine {
 		sData->TextureShader->UploadUniformFloat2("u_UV", uvScale);
         sData->TextureShader->UploadUniformFloat("u_alphaTolerance", alphaTolerance);
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1.0f), { size.x,size.y, 1.f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(position.x, position.y, position.z)) * glm::scale(glm::mat4(1.0f), { size.x,size.y, 1.f });
 		sData->TextureShader->UploadUniformMat4("u_Transform", transform);
 
 		texture->Bind();

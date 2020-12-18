@@ -72,15 +72,15 @@ namespace GEngine {
 		virtual void SetOnCollideEndFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) = 0;
 
 
-		virtual const ColliderID CreateQuad(const Vector2f& size, const Vector2f& offset = Vector2f(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
-		virtual const ColliderID CreateCircle(const Vector2f& size, const Vector2f& offset = Vector2f(0), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
+		virtual const ColliderID CreateQuad(const Vector2f& size, const Vector2f& offset = Vector2f(0.f), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
+		virtual const ColliderID CreateCircle(const Vector2f& size, const Vector2f& offset = Vector2f(0.f), float mass = 0, float rotation = 0, const std::string& tag = "") = 0;
 		virtual void DestroyQuad(const ColliderID id) = 0;
 
 
 	protected:
 
 		PhysicsInfoType m_type = PhysicsInfoType::PHYSICS_Static;
-		Vector2f m_position = Vector2f(0);;
+		Vector2f m_position = Vector2f(0.f);
 		float m_rotation = 0.f;
 		Vector2f m_linearVelocity = Vector2f(0, 0);
 		float m_angluarVelocity = 0;
@@ -104,7 +104,7 @@ namespace GEngine {
 
 
 		// Fixture
-		Vector2f m_scale = Vector2f(1);;
+		Vector2f m_scale = Vector2f(1.f);
 		float m_mass = 0;
 
 

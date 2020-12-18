@@ -4,7 +4,7 @@
 #include "Character/CharacterController.hpp"
 
 
-std::vector<glm::vec4> ProceduralPlatformGeneration::GenerateLevel(uint32_t seed, const glm::vec2& startPos, const glm::vec2& endPos, const glm::vec2& minScale, const glm::vec2& maxScale, const glm::vec2& minVelocity, const glm::vec2& maxVelocity, const glm::vec2& playerScale, std::function< glm::vec2(float, float)> getVel, float platformSizeMultiple)
+std::vector<Vector4f> ProceduralPlatformGeneration::GenerateLevel(uint32_t seed, const Vector2f& startPos, const Vector2f& endPos, const Vector2f& minScale, const Vector2f& maxScale, const Vector2f& minVelocity, const Vector2f& maxVelocity, const Vector2f& playerScale, std::function< Vector2f(float, float)> getVel, float platformSizeMultiple)
 {
 	const int xDist = endPos.x - startPos.x;
 	const int yDist = endPos.y - startPos.y;
@@ -16,7 +16,7 @@ std::vector<glm::vec4> ProceduralPlatformGeneration::GenerateLevel(uint32_t seed
 	}
 
 	std::vector<FPlatformInfo> platforms;
-	std::vector<glm::vec4> pos;
+	std::vector<Vector4f> pos;
 	GE_LOG_INFO("SEED {0}", seed);
 	GEngine::Random::SetSeed(seed);
 
@@ -29,12 +29,12 @@ std::vector<glm::vec4> ProceduralPlatformGeneration::GenerateLevel(uint32_t seed
 	int bdone = 0;
 
 
-	glm::vec4 start = CalculatePosition(startPos, endPos, minScale, maxScale, minVelocity, maxVelocity, platformSizeMultiple, platforms, getVel, playerScale, grid, &bdone);
+	Vector4f start = CalculatePosition(startPos, endPos, minScale, maxScale, minVelocity, maxVelocity, platformSizeMultiple, platforms, getVel, playerScale, grid, &bdone);
 	pos.push_back(start);
 
 
 	while (bdone < 5) {
-		glm::vec4 start = CalculatePosition(startPos, endPos, minScale, maxScale, minVelocity, maxVelocity, platformSizeMultiple, platforms, getVel, playerScale, grid, &bdone);
+		Vector4f start = CalculatePosition(startPos, endPos, minScale, maxScale, minVelocity, maxVelocity, platformSizeMultiple, platforms, getVel, playerScale, grid, &bdone);
 		pos.push_back(start);
 	}
 
@@ -48,7 +48,7 @@ std::vector<glm::vec4> ProceduralPlatformGeneration::GenerateLevel(uint32_t seed
 	return pos;
 }
 
-glm::vec4 ProceduralPlatformGeneration::CalculatePosition(const glm::vec2& startPos, const glm::vec2& endPos, const glm::vec2& minScale, const glm::vec2& maxScale, const glm::vec2& minVel, const glm::vec2& maxVel, float platformSizeMultiple, std::vector<FPlatformInfo>& platforms, std::function< glm::vec2(float, float)> getVel, const glm::vec2& playerScale, int** grid, int* done)
+Vector4f ProceduralPlatformGeneration::CalculatePosition(const Vector2f& startPos, const Vector2f& endPos, const Vector2f& minScale, const Vector2f& maxScale, const Vector2f& minVel, const Vector2f& maxVel, float platformSizeMultiple, std::vector<FPlatformInfo>& platforms, std::function< Vector2f(float, float)> getVel, const Vector2f& playerScale, int** grid, int* done)
 {
 	FPlatformInfo platform;
 	int xDistance = endPos.x - startPos.x;
@@ -56,16 +56,16 @@ glm::vec4 ProceduralPlatformGeneration::CalculatePosition(const glm::vec2& start
 	if (platforms.size() <= 0) {
 
 		int dir = GEngine::Random::IntRange(0, 1) == 0 ? 1 : -1;
-		glm::vec2 _dist = { GEngine::Random::FloatRange(-minVel.x, maxVel.x), GEngine::Random::FloatRange(maxVel.y, maxVel.y) };
-		glm::vec2 vel = getVel(_dist.x, _dist.y);
+		Vector2f _dist = { GEngine::Random::FloatRange(-minVel.x, maxVel.x), GEngine::Random::FloatRange(maxVel.y, maxVel.y) };
+		Vector2f vel = getVel(_dist.x, _dist.y);
 
-		glm::vec2 _startPos = { 0 , 0 };
+		Vector2f _startPos = { 0 , 0 };
 		int height = GEngine::Physics::GetMaxHeight(_startPos, vel);
 		int time = GEngine::Physics::GetMaxVelocityTime(vel);
 
-		glm::vec2 _endPos = GEngine::Physics::GetTrajectoryPoint2D(_startPos, vel, time);
+		Vector2f _endPos = GEngine::Physics::GetTrajectoryPoint2D(_startPos, vel, time);
 
-		glm::vec2 scale = { GEngine::GEMath::ClosestMultiple(GEngine::Random::FloatRange(minScale.x, maxScale.x), .5f), GEngine::GEMath::ClosestMultiple(GEngine::Random::FloatRange(minScale.y,maxScale.y), .5f) };
+		Vector2f scale = { GEngine::GEMath::ClosestMultiple(GEngine::Random::FloatRange(minScale.x, maxScale.x), .5f), GEngine::GEMath::ClosestMultiple(GEngine::Random::FloatRange(minScale.y,maxScale.y), .5f) };
 
 		if (_endPos.x + scale.x / 2.f > _startPos.x) {
 			scale.x = GEMath::clamp(GEngine::GEMath::ClosestMultiple(_endPos.x - _startPos.x, .5f), minScale.x, maxScale.x);
@@ -122,9 +122,9 @@ glm::vec4 ProceduralPlatformGeneration::CalculatePosition(const glm::vec2& start
 		const FPlatformInfo& lastPlatform = platforms[platforms.size() - 1];
 
 		
-		glm::vec2 lastPos = { lastPlatform.pos.x, lastPlatform.pos.y + lastPlatform.scale.y / 2.f };
-		glm::vec2 targetPos;
-		glm::vec2 vel;
+		Vector2f lastPos = { lastPlatform.pos.x, lastPlatform.pos.y + lastPlatform.scale.y / 2.f };
+		Vector2f targetPos;
+		Vector2f vel;
 		int gridX, gridY;
 		bool foundPos = false;
 		for (int i = 0; i < xDistance; i++) {
@@ -135,7 +135,7 @@ glm::vec4 ProceduralPlatformGeneration::CalculatePosition(const glm::vec2& start
 
 				targetPos = { GEngine::GEMath::MapRange(i, 0, xDistance, startPos.x, endPos.x),GEngine::GEMath::MapRange(j, 0, yDistance, startPos.y, endPos.y) };
 				vel = GEngine::Physics::GetVelocityToPosition(lastPos, targetPos);
-				glm::vec2 requiredDrag = CharacterController::DragRequiredForVelocity(vel);
+				Vector2f requiredDrag = CharacterController::DragRequiredForVelocity(vel);
 				GE_CORE_DEBUG("Checking {0},{1}, World Pos: {2},{3}, Vel: {4},{5}, Drag: {6}, {7}", i,j,targetPos.x, targetPos.y, vel.x, vel.y, requiredDrag.x, requiredDrag.y);
 				if (requiredDrag.x > maxVel.x || requiredDrag.x < minVel.x || requiredDrag.y > maxVel.y || requiredDrag.y < minVel.y) continue;
 
@@ -149,7 +149,7 @@ glm::vec4 ProceduralPlatformGeneration::CalculatePosition(const glm::vec2& start
 
 		float height = GEngine::Physics::GetMaxHeight(targetPos, vel);;
 
-		glm::vec2 scale = { 1,1 };
+		Vector2f scale = { 1,1 };
 
 		int _iS = GEngine::GEMath::ClosestMultiple(lastPlatform.pos.x, .5f), _iE = GEngine::GEMath::ClosestMultiple(targetPos.x, .5f);
 		int _jS = GEngine::GEMath::ClosestMultiple(targetPos.y, .5f), _jE = GEngine::GEMath::ClosestMultiple(height, .5f);

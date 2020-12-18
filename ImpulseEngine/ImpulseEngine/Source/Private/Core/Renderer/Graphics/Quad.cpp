@@ -4,6 +4,7 @@
 #include "Public/Core/Renderer/Graphics/Buffer.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace GEngine {
 
@@ -56,7 +57,7 @@ namespace GEngine {
 	{
 		std::vector<QuadVertex> vert;
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.f), position)
+		glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(position.x, position.y, position.z))
 			* glm::rotate(glm::mat4(1.f), glm::radians(rotation), { 0,0,1.f })
 			* glm::scale(glm::mat4(1.0), { scale.x, scale.y, 1.f });
 
@@ -67,16 +68,16 @@ namespace GEngine {
 			{-.5f, .5f, 0.f,1.f}
 		};
 
-		Vector4f _p = transform * quadPos[0];
+		Vector4f _p = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[0].x, quadPos[0].y, quadPos[0].z, quadPos[0].w)));
 		vert.push_back({ Vector3f(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2f(textureCoords[0]) : Vector2f(0.f,0.f)), (float)texture, textureScale,alphaChannel });
 
-		_p = transform * quadPos[1];
+		_p = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[1].x, quadPos[1].y, quadPos[1].z, quadPos[1].w)));
 		vert.push_back({ Vector3f(_p.x,_p.y,_p.z) , color,  (textureCoords != nullptr ? Vector2f(textureCoords[1]) : Vector2f(1.f,0.f)), (float)texture, textureScale,alphaChannel });
 
-		_p = transform * quadPos[2];
+		_p = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[2].x, quadPos[2].y, quadPos[2].z, quadPos[2].w)));
 		vert.push_back({ Vector3f(_p.x,_p.y,_p.z), color,  (textureCoords != nullptr ? Vector2f(textureCoords[2]) : Vector2f(1.f,1.f)), (float)texture, textureScale,alphaChannel });
 
-		_p = transform * quadPos[3];
+		_p = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[3].x, quadPos[3].y, quadPos[3].z, quadPos[3].w)));
 		vert.push_back({ Vector3f(_p.x,_p.y,_p.z), color,  (textureCoords != nullptr ? Vector2f(textureCoords[3]) : Vector2f(0.f,1.f)), (float)texture, textureScale,alphaChannel });
 
 		std::vector<float> _f((float*)&vert[0], (float*)&vert[0]+GetVerticesSize()/sizeof(float)*GetVerticesRows());

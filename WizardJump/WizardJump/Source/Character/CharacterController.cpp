@@ -66,8 +66,8 @@ void CharacterController::OnUpdate(Timestep timestep) {
 
 
     //if (trajectory_pos.size() > 0)
-        //Renderer::DrawDebugLines(trajectory_pos, glm::vec4(1, 0, 0, 1.f));
-    const glm::vec2& vel = bodyComp->GetVelocity();
+        //Renderer::DrawDebugLines(trajectory_pos, Vector4f(1, 0, 0, 1.f));
+    const Vector2f& vel = bodyComp->GetVelocity();
     const bool ground = bodyComp->isGrounded();
     m = Mobile_Input::GetTouches();
 #ifdef GE_CONSOLE_APP
@@ -238,7 +238,7 @@ void CharacterController::OnUpdate(Timestep timestep) {
 void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Timestep timestep) {
     if (!bEnableInput)
         return;
-    const glm::vec2& vel = bodyComp->GetVelocity();
+    const Vector2f& vel = bodyComp->GetVelocity();
     const bool ground = bodyComp->isGrounded();
     for (const FTouchInfo& touch : m) {
         /*
@@ -322,7 +322,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
                     }
                     bWalking = true;
                     if (nXVel <= maxWalkSpeed) {
-                        bodyComp->AddVelocity({ walkAcceleration * timestep, 0 });
+                        bodyComp->AddVelocity({ (float)(walkAcceleration * timestep), 0.0 });
                     }
                     else if ((nXVel - maxWalkSpeed) >= 0.01f) {
                         bodyComp->SetVelocityX(maxWalkSpeed);
@@ -336,7 +336,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
                     bWalking = true;
 
                     if (nXVel >= -maxWalkSpeed) {
-                        bodyComp->AddVelocity({ -walkAcceleration * timestep, 0 });
+                        bodyComp->AddVelocity({ (float)(-walkAcceleration * timestep), 0.0f });
                     }
                     else if ((nXVel + maxWalkSpeed <= -0.01f)) {
                         bodyComp->SetVelocityX(-maxWalkSpeed);
@@ -360,7 +360,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
                     if (touch.state == 1)
                         PredictPath(xDistance, yDistance);
 
-                    glm::vec2 _vel = CalculateJumpVelocity(xDistance, yDistance);
+                    Vector2f _vel = CalculateJumpVelocity(xDistance, yDistance);
                     float _deg = glm::degrees(atan2(-_vel.x, _vel.y));
                     GE_LOG_DEBUG("{0},{1} : {2}", _vel.x, _vel.y, _deg);
                     graphicsComp->SetDirectionIndicator(_deg);
@@ -390,17 +390,17 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
     // GE_LOG_WARN("PREDICTED VEL: {0},{1}", _realVel.x, _realVel.y);
     trajectory_pos.clear();
     std::vector<Weak<PhysicsBody>> ignoreBodies = { bodyComp->m_groundCollider->GetPhysicsBody(), bodyComp->m_quadCollider->GetPhysicsBody() };
-    glm::vec2 _startPos = { GetEntityPosition().x,  bodyComp->m_quadCollider->GetPosition().y - bodyComp->m_quadCollider->GetScale().y / 2.f };
+    Vector2f _startPos = { GetEntityPosition().x,  bodyComp->m_quadCollider->GetPosition().y - bodyComp->m_quadCollider->GetScale().y / 2.f };
     for (int i = 0; i < 180; i++) {
-        glm::vec2 newPos = Physics::GetTrajectoryPoint2D(_startPos,
+        Vector2f newPos = Physics::GetTrajectoryPoint2D(_startPos,
             _realVel, i);
-        glm::vec2 newPos2 = Physics::GetTrajectoryPoint2D({ _startPos.x, _startPos.y + bodyComp->m_quadCollider->GetScale().y },
+        Vector2f newPos2 = Physics::GetTrajectoryPoint2D({ _startPos.x, _startPos.y + bodyComp->m_quadCollider->GetScale().y },
             _realVel, i);
 
         if (trajectory_pos.size() >= 3) {
             Ref<RayCastInfo> info = nullptr;
             Ref<RayCastInfo> info2 = nullptr;
-            glm::vec2 rayPos = { trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] };
+            Vector2f rayPos = { trajectory_pos[trajectory_pos.size() - 3],trajectory_pos[trajectory_pos.size() - 2] };
             if (rayPos != newPos) {
                 info = Physics::RayCast2D(rayPos, { newPos.x,newPos.y }, ignoreBodies);
                 info2 = Physics::RayCast2D(rayPos, { newPos2.x,newPos2.y }, ignoreBodies);

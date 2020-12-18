@@ -19,7 +19,7 @@ namespace GEngine {
 		SpriteComponent(Ref<Shader> shader = nullptr, const std::function<void()>& func = nullptr, const std::string& pipeline = "");
 		virtual ~SpriteComponent();
 
-		const ShapeID CreateQuad(const Vector3f& _pos, const float rot = 0, const Vector3f& scale = { 1,1,1 }, const Vector4f& _color = { 1,1,1,1.f },
+		const ShapeID CreateQuad(const Vector3f& _pos, const float rot = 0, const Vector3f& scale = { 1,1,1 }, const Vector4f& _color = { 1,1,1,1 },
 			const Ref<Texture2D> texture = nullptr, const Vector2f& textureScale = Vector2f(1,1));
 
 

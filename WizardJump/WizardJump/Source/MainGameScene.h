@@ -124,7 +124,7 @@ public:
 		float buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 6.25f;
 		float buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 6.25f;
 		GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			Vector3f(.85, .90, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
+			Vector3f(.85, .90, 0), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
 		eFPS->AddComponent(button);
 		button->SetImageTexture(buttonTexture);
 		float lastButtonX = buttonX;
@@ -133,7 +133,7 @@ public:
 		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
 		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
 		GEngine::Ref<GEngine::ButtonComponent> button2 = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			Vector3f(.8 - (lastButtonX / 2.f) - buttonX/2.f, .90, 0), 0.f, glm::vec2(buttonX, buttonY), glm::vec4(1, 1, 1, 1.f));
+			Vector3f(.8 - (lastButtonX / 2.f) - buttonX/2.f, .90, 0), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
 		eFPS->AddComponent(button2);
 		button2->SetImageTexture(buttonTexture);
 
@@ -179,7 +179,7 @@ public:
         });
 	
 		AddEntity(GEngine::CreateGameObject<GameManagerEntity>());
-		characterEntity = GEngine::CreateGameObject<CharacterEntity>(glm::vec2(-10.f, -6.5f));
+		characterEntity = GEngine::CreateGameObject<CharacterEntity>(Vector2f(-10.f, -6.5f));
 		AddEntity(characterEntity);
 
 		Ref<BackgroundEntity> bg = CreateGameObject<BackgroundEntity>();
@@ -188,24 +188,24 @@ public:
 		//Ref<AudioComponent> audioS = CreateGameObject<AudioComponent>("Content/Audio/countdown.ogg", true, true, true);
 		//bg->AddComponent(audioS);
 
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(0,-7.9, 3), glm::vec2(25, 1), 0.f,"ground"));
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(-11.6f, -5, 3), glm::vec2(1.f, 25),.5f, "wall"));
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(2.f, 7, 3), glm::vec2(1.f, 25),.5f, "wall2"));
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(11.25f, 5, 3), glm::vec2(1.f, 25),.5f, "wall3"));
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(6.5f, 7.0f, 3), glm::vec2(9.f, 1), .5f, "wall4"));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(0,-7.9, 3), Vector2f(25, 1), 0.f,"ground"));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(-11.6f, -5, 3), Vector2f(1.f, 25),.5f, "wall"));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(2.f, 7, 3), Vector2f(1.f, 25),.5f, "wall2"));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(11.25f, 5, 3), Vector2f(1.f, 25),.5f, "wall3"));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(6.5f, 7.0f, 3), Vector2f(9.f, 1), .5f, "wall4"));
 
 
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(10.25f, -4.5f, 3), glm::vec2(3.f, .25f), .0f, "ground"));
-		AddEntity(CreateGameObject<PlatformEntity>(glm::vec2(9.f, -4.5f), glm::vec2(3.f, 1)));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(10.25f, -4.5f, 3), Vector2f(3.f, .25f), .0f, "ground"));
+		AddEntity(CreateGameObject<PlatformEntity>(Vector2f(9.f, -4.5f), Vector2f(3.f, 1)));
 
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(6.6f, -1.f, 3), glm::vec2(1.75f, .25f), .0f, "ground"));
-		AddEntity(CreateGameObject<PlatformEntity>(glm::vec2(6.f, -1.f), glm::vec2(2.5f, 1)));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(6.6f, -1.f, 3), Vector2f(1.75f, .25f), .0f, "ground"));
+		AddEntity(CreateGameObject<PlatformEntity>(Vector2f(6.f, -1.f), Vector2f(2.5f, 1)));
 
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(10.f, 2.f, 3), glm::vec2(2.f, .25f), .0f, "ground"));
-		AddEntity(CreateGameObject<PlatformEntity>(glm::vec2(9.3f, 2.f), glm::vec2(2.5f, 1)));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(10.f, 2.f, 3), Vector2f(2.f, .25f), .0f, "ground"));
+		AddEntity(CreateGameObject<PlatformEntity>(Vector2f(9.3f, 2.f), Vector2f(2.5f, 1)));
 
-		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(4.5f, 4.f, 3), glm::vec2(4.f, .25f), .0f, "ground"));
-		AddEntity(CreateGameObject<PlatformEntity>(glm::vec2(2.7f, 4.f), glm::vec2(7.f, 1)));
+		AddEntity(CreateGameObject<ColliderEntity>(Vector3f(4.5f, 4.f, 3), Vector2f(4.f, .25f), .0f, "ground"));
+		AddEntity(CreateGameObject<PlatformEntity>(Vector2f(2.7f, 4.f), Vector2f(7.f, 1)));
 		
 		
 		bg->AddParalaxBackground("back", Texture2D::Create("Content/Textures/MountainBackground/background1.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest| TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .7, -14, { 0, 0.f});
@@ -223,16 +223,16 @@ public:
 		lc->AddQuadLight({ -98.f,0.f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
 		lc->AddQuadLight({  111.f,0.f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
 		lc->AddQuadLight({ 0.f,107.f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
-		lc->AddQuadLight({ 0.f,-108.f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
+		lc->AddQuadLight({ 0.f,-107.95f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
 		
 		AddEntity(CreateGameObject<FireEntity>(Vector3f(9.5f,-1,6)));
 		AddEntity(CreateGameObject<FireEntity>(Vector3f(9.5f, 5., 6)));
 		AddEntity(CreateGameObject<FireEntity>(Vector3f(4.f, 5., 6)));
 
-		AddEntity(CreateGameObject<LightGlowEntity>(Vector3f(10.23f,-6.7f,0 ),glm::vec2(1,1), glm::vec2(.25f,.25f), glm::vec4(0,1,0,.5f)));
+		AddEntity(CreateGameObject<LightGlowEntity>(Vector3f(10.23f,-6.7f,0 ),Vector2f(1,1), Vector2f(.25f,.25f), Vector4f(0,1,0,.5f)));
 
 
-		Ref<SpriteEntity> windowLights = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), glm::vec2(1, 1), 0.0f, "WindowLighting");
+		Ref<SpriteEntity> windowLights = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), Vector2f(1, 1), 0.0f, "WindowLighting");
 		AddEntity(windowLights);
 		Ref<LightComponent> windowL = CreateGameObject<LightComponent>();
 		windowLights->AddComponent(windowL);
@@ -241,7 +241,7 @@ public:
 
 		
 
-		Ref<SpriteEntity> spriteEntity = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), glm::vec2(1, 1), 0.0f, "Level01_Background");
+		Ref<SpriteEntity> spriteEntity = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), Vector2f(1, 1), 0.0f, "Level01_Background");
 		AddEntity(spriteEntity);
 		Ref<SpriteComponent> comp = spriteEntity->GetSpriteComponent();
 		long id=  comp->CreateQuad({ 0,0,2 }, 0, { 25,17,0 }, { 1,1,1,300.f }, Texture2D::Create("Content/Textures/level_01.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge) );
@@ -391,7 +391,7 @@ private:
 	inline void SetupCamera() {
 		m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
 			(float)GEngine::Application::GetWidth()/ (float)GEngine::Application::GetHeight()));
-		m_CameraController->SetOnUpdateFn([this](GEngine::Timestep timeStep, Vector3f& m_Position, Vector3f& m_Rotation, glm::vec2& m_LastTouchPos,
+		m_CameraController->SetOnUpdateFn([this](GEngine::Timestep timeStep, Vector3f& m_Position, Vector3f& m_Rotation, Vector2f& m_LastTouchPos,
 			uint64_t& m_lastTouchId, float& m_LastDistance) {
 
 				const float m_CameraMoveSpeed = 1.5f;
@@ -420,7 +420,7 @@ private:
 						if (abs(m_LastTouchPos.x - touches.begin()->second.x) > .1f ||
 							abs(m_LastTouchPos.y - touches.begin()->second.y) > .1f) {
 
-							glm::vec2 m_touchDir = { m_LastTouchPos.x - touches.begin()->second.x, m_LastTouchPos.y - touches.begin()->second.y };
+							Vector2f m_touchDir = { m_LastTouchPos.x - touches.begin()->second.x, m_LastTouchPos.y - touches.begin()->second.y };
 							m_LastTouchPos = { touches.begin()->second.x, touches.begin()->second.y };
 							m_Position.y += (m_CameraMoveSpeed * m_CameraController->GetFOV() * timeStep.GetSeconds()) * -m_touchDir.y / 10.f;
 							m_Position.x += (m_CameraMoveSpeed * m_CameraController->GetFOV() * timeStep.GetSeconds()) * m_touchDir.x / 10.f;

@@ -4,6 +4,7 @@ workspace "WizardJump"
 	android_version = 21
 
 	startproject "WizardJump"
+
 	
 
 	configurations
@@ -81,6 +82,7 @@ project "WizardJump"
 		"ImpulseEngine/%{IncludeDir.glm}",
 		"ImpulseEngine/%{IncludeDir.entt}",	
 		"ImpulseEngine/%{IncludeDir.cr}",
+		"ImpulseEngine/%{IncludeDir.vector}",
 		"%{prj.location}/%{prj.name}/Source/"
 
 	}

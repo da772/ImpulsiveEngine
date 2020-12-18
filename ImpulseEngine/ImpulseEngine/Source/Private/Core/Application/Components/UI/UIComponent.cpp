@@ -106,7 +106,7 @@ namespace GEngine {
 
 		_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
 
-		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale, _color, texture, textureScale, alphaChannel);
+		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -119,7 +119,7 @@ namespace GEngine {
 
 	const ShapeID UIComponent::CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale /*= 1.f*/, const float alphaChannel)
 	{
-		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale, _color, texture, textureScale, alphaChannel);
+		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -289,7 +289,7 @@ namespace GEngine {
 					if (rot != nRot)
 						s_ShapeFactory->SetRotation(id, nRot);
 					Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, 1);
+					Vector3f scale(_scale.x, _scale.y, 1.f);
 					Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
 					if (scale != nScale)
 						s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });

@@ -86,6 +86,7 @@
 #endif
 
 #include "glm/glm.hpp"
+#include "IEVector/IEVector.hpp"
 #include "Public/Core/Profiling/Profiler.h"
 #include <memory.h>
 
@@ -111,9 +112,22 @@ namespace GEngine {
 	using s16 = int16_t;
 	using s8 =  int8_t;
 
-    using Vector2f = glm::vec2;
-    using Vector3f = glm::vec3;
-    using Vector4f = glm::vec4;
+	template <typename T>
+	using Vector2 = IEVector::Vector2<T>;
+	template <typename T>
+	using Vector3 = IEVector::Vector3<T>;
+	template <typename T>
+	using Vector4 = IEVector::Vector4<T>;
+
+
+    using Vector2f = IEVector::Vector2f;
+    using Vector3f = IEVector::Vector3f;
+    using Vector4f = IEVector::Vector4f;
+
+	using Vector2i = IEVector::Vector2<int>;
+	using Vector3i = IEVector::Vector3<int>;
+	using Vector4i = IEVector::Vector4<int>;
+
     using Mat4 = glm::mat4;
 
 	using ShapeID = uint64_t;

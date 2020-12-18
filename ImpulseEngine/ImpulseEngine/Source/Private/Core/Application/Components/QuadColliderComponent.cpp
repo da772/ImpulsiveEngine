@@ -94,8 +94,9 @@ namespace GEngine {
 			const Vector2f& pos = m_body->GetPosition();
 			const float rot = m_body->GetRotation();
 			m_movedSelf = true;
-			entity.lock()->SetEntityPosition(Vector3f(pos.x, pos.y, 1));
-			entity.lock()->SetEntityRotation(Vector3f(0, 0, glm::degrees(rot)));
+			GE_CORE_ASSERT( !(Vector3f(1.212f, 5.223f, 588.131f) != Vector3f(1.212f, 5.223f, 588.131f)), "");
+			entity.lock()->SetEntityPosition(Vector3f(pos.x, pos.y, 1.f));
+			entity.lock()->SetEntityRotation(Vector3f(0.f, 0.f, glm::degrees(rot)));
 			m_movedSelf = false;
 		}
 	}
@@ -137,7 +138,7 @@ namespace GEngine {
 		if (m_physics) {
 			return m_body->GetLinearVelocity();
 		}
-		return Vector2f(0);
+		return Vector2f(0.f);
 	}
 
 	Ref<ScriptVector2> QuadColliderComponent::GetLinearVelocityScript()

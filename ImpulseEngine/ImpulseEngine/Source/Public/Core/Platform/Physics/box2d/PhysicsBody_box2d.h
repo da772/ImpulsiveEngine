@@ -45,8 +45,8 @@ namespace GEngine {
 		const Vector2f& GetLinearVelocity() override;
 		const float virtual GetBounce(const ColliderID id) override;
 
-		virtual const ColliderID CreateQuad(const Vector2f& size, const Vector2f& offset = Vector2f(0), float mass = 0, float rotation = 0, const std::string& tag = "") override;
-		virtual const ColliderID CreateCircle(const Vector2f& size, const Vector2f& offset = Vector2f(0), float mass = 0, float rotation = 0, const std::string& tag = "") override;
+		virtual const ColliderID CreateQuad(const Vector2f& size, const Vector2f& offset = Vector2f(0.f), float mass = 0, float rotation = 0, const std::string& tag = "") override;
+		virtual const ColliderID CreateCircle(const Vector2f& size, const Vector2f& offset = Vector2f(0.f), float mass = 0, float rotation = 0, const std::string& tag = "") override;
 		virtual void DestroyQuad(const ColliderID) override;
 
 		virtual void SetOnCollideStartFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) override;

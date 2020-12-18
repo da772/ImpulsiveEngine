@@ -5,6 +5,7 @@
 #include "Public/Core/Renderer/Graphics/Buffer.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace GEngine {
 
@@ -98,20 +99,20 @@ Circle::~Circle()
         
         std::vector<CircleVertex> vert;
 
-        glm::mat4 transform = glm::translate(glm::mat4(1.f), position)
+        glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(position.x, position.y, position.z))
             * glm::rotate(glm::mat4(1.f), glm::radians(rotation), { 0,0,1.f })
             * glm::scale(glm::mat4(1.0), { scale.x, scale.y, 1.f });
         
         const Vector2f texCoordPos[] = { {0,0},{1,0},{1,1},{0,1} };
         uint32_t quadLen = GetVerticesRows();
         {
-			Vector4f _p = transform * quadPos[0];
-			Vector4f _sp = transform * Vector4f(quadPos[0].x, quadPos[0].y, 0, 1);
+            Vector4f _p = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[0].x, quadPos[0].y, quadPos[0].z, quadPos[0].z)));
+			Vector4f _sp = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[0].x, quadPos[0].y, 0, 1)));
 			vert.push_back({ Vector3f(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2f(textureCoords[0]) : texCoordPos[0]), (float)texture, textureScale,0, Vector2f(_sp.x,_sp.y) });
         }
         for (int i = 1; i < quadLen; i++) {
-            Vector4f _p = transform * quadPos[i];
-            Vector4f _sp = transform * Vector4f(quadPos[0].x, quadPos[0].y, 0, 1);
+            Vector4f _p = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[i].x, quadPos[i].y, quadPos[i].z, quadPos[i].z)));
+            Vector4f _sp = Vector4f(glm::value_ptr(transform * glm::vec4(quadPos[0].x, quadPos[0].y, 0, 1)));
             vert.push_back({ Vector3f(_p.x,_p.y,_p.z),color, (textureCoords != nullptr ? Vector2f(textureCoords[i]) : texCoordPos[i%4]), (float)texture, textureScale,1, Vector2f(_sp.x,_sp.y) });
         }
 

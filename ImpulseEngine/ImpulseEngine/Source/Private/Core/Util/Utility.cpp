@@ -5,6 +5,7 @@
 #include "Public/Core/Application/Application.h"
 #include "Public/Core/Controller/CameraController.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #if defined( GE_PLATFORM_WINDOWS) && !defined(GE_MINGW_)
 
@@ -55,8 +56,8 @@ namespace GEngine {
 		GEngine::Application::GetApp()->GetWindow()->GetFrameBufferSize(&width, &height);
 		//width = GEngine::Application::GetApp()->GetWindow()->GetWidth();
 		//height = GEngine::Application::GetApp()->GetWindow()->GetHeight();
-		position = glm::unProject(position, Application::GetApp()->GetTargetCamera()->GetViewMatrix(),
-			Application::GetApp()->GetTargetCamera()->GetProjectionMatrix(), Vector4f(0, height, width, -height));
+		position = Vector3f(glm::value_ptr(glm::unProject(glm::vec3(position.x, position.y, position.z), Application::GetApp()->GetTargetCamera()->GetViewMatrix(),
+			Application::GetApp()->GetTargetCamera()->GetProjectionMatrix(), glm::vec4(0, height, width, -height))));
 		return position;
 	}
 

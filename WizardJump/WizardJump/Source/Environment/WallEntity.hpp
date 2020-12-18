@@ -11,7 +11,7 @@ using namespace GEngine;
 class WallEntity : public Entity {
 public:
 
-	inline WallEntity(const glm::vec2 pos, const glm::vec2 scale, const float rot = 90) : pos(pos), scale(scale), rot(rot) {
+	inline WallEntity(const Vector2f pos, const Vector2f scale, const float rot = 90) : pos(pos), scale(scale), rot(rot) {
 
 	};
 	~WallEntity() {};
@@ -24,8 +24,8 @@ protected:
 
 	void OnEnd() override;
 
-	glm::vec2 scale;
-	glm::vec2 pos;
+	Vector2f scale;
+	Vector2f pos;
 	float rot;
 
 	void OnUpdate(Timestep timestep) override;

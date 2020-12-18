@@ -1,6 +1,6 @@
 #include "Environment/BackgroundEntity.hpp"
 
-void BackgroundEntity::AddParalaxBackground(const std::string& name, Ref<Texture2D> texture, const glm::vec2& scale, float speed, float zOrder, const glm::vec2& offset)
+void BackgroundEntity::AddParalaxBackground(const std::string& name, Ref<Texture2D> texture, const Vector2f& scale, float speed, float zOrder, const Vector2f& offset)
 {
 	m_backgrounds[name] = { bInit ? m_backgroundSprite->CreateQuad({ offset.x, offset.y,zOrder }, 0, { scale.x, scale.y, 1 }, { 1,1,1,1 }, texture) : -1, texture, speed, scale, zOrder, offset , {0,0}, bInit };
 }

@@ -11,16 +11,16 @@ class LightComponent;
 
 class WindowEntity : public Entity {
 public:
-	WindowEntity(const Vector3f position, const glm::vec2& scale, const glm::vec4& color);
+	WindowEntity(const Vector3f position, const Vector2f& scale, const Vector4f& color);
 
 
 
 private:
 	Vector3f m_position;
-	glm::vec2 m_scale;
+	Vector2f m_scale;
 	Ref<SpriteComponent> m_spriteComponent;
 	Ref<LightComponent> m_lightComponent;
-	glm::vec4 m_lightColor;
+	Vector4f m_lightColor;
 	long m_lightId = -1;
 
 protected:

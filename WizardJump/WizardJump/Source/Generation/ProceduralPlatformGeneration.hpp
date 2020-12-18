@@ -2,14 +2,16 @@
 #include "GEngine.h"
 
 
+using namespace GEngine;
+
 struct FPlatformInfo {
 
-	glm::vec2 pos;
-	glm::vec2 scale;
-	glm::vec2 velocity;
+	Vector2f pos;
+	Vector2f scale;
+	Vector2f velocity;
 	float maxHeight;
 	int gridStartX, gridEndX, gridStartY, gridEndY;
-	glm::vec2 worldPos;
+	Vector2f worldPos;
 
 };
 
@@ -17,10 +19,10 @@ struct FPlatformInfo {
 class ProceduralPlatformGeneration {
 
 public:
-	static std::vector<glm::vec4> GenerateLevel(uint32_t seed, const glm::vec2& startPos, const glm::vec2& endPos, const glm::vec2& minScale, const glm::vec2& maxScale, const glm::vec2& minVelocity, const glm::vec2& maxVelocity, const glm::vec2& playerScale, std::function< glm::vec2(float,float)> getVel, float platformSizeMultiple = 0);
+	static std::vector<Vector4f> GenerateLevel(uint32_t seed, const Vector2f& startPos, const Vector2f& endPos, const Vector2f& minScale, const Vector2f& maxScale, const Vector2f& minVelocity, const Vector2f& maxVelocity, const Vector2f& playerScale, std::function< Vector2f(float,float)> getVel, float platformSizeMultiple = 0);
 
 private:
-	static glm::vec4 CalculatePosition(const glm::vec2& startPos, const glm::vec2& endPos, const glm::vec2& minScale, const glm::vec2& maxScale, const glm::vec2& minJumpVelocity, const glm::vec2& maxJumpVelocity, float platformSizeMultiple, std::vector<FPlatformInfo>& platforms,std::function< glm::vec2(float, float)> getVel, const glm::vec2& playerScale, int** grid, int* done);
+	static Vector4f CalculatePosition(const Vector2f& startPos, const Vector2f& endPos, const Vector2f& minScale, const Vector2f& maxScale, const Vector2f& minJumpVelocity, const Vector2f& maxJumpVelocity, float platformSizeMultiple, std::vector<FPlatformInfo>& platforms,std::function< Vector2f(float, float)> getVel, const Vector2f& playerScale, int** grid, int* done);
 	
 
 	

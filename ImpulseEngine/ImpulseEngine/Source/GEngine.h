@@ -87,5 +87,8 @@
 
 #include "Public/Core/Hardware/DeviceInfo.h"
 
+
+#include "Public/Core/Core.h"
+
 #endif
 

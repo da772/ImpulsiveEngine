@@ -26,7 +26,7 @@ LightComponent::~LightComponent() {
 }
 
 
-PolygonLightRendererable::PolygonLightRendererable(const Vector3f& position, const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout, const glm::vec4& color)
+PolygonLightRendererable::PolygonLightRendererable(const Vector3f& position, const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout, const Vector4f& color)
 {
     vertices = _vertices;
     indices = _indices;
@@ -53,7 +53,7 @@ void PolygonLightRendererable::Render()
     //RenderCommand::BlendEquationSeparate(0x8006, 0x8007); // GL_FUNC_ADD, GL_MIN
     m_Shader->Bind();
     m_Shader->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
-    glm::mat4 pos = glm::translate(glm::mat4(1.f), m_position);
+    glm::mat4 pos = glm::translate(glm::mat4(1.f), glm::vec3(m_position.x, m_position.y, m_position.z));
     m_Shader->UploadUniformMat4("u_Transform", pos);
     m_Shader->UploadUniformFloat4("u_Color", m_color);
     m_vertexArray->Bind();
@@ -92,14 +92,14 @@ void LightComponent::OnBegin()
     
 }
 
-const ShapeID LightComponent::AddCircleLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color) {
+const ShapeID LightComponent::AddCircleLight(const Vector2f& position, float intensity, const Vector2f& scale, const Vector4f& color) {
     Ref<Texture2D> t = nullptr;
     const ShapeID id = LightComponent::s_CircleShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
     m_Circleids.push_back(id);
     return id;
 }
 
-const ShapeID LightComponent::AddQuadLight(const glm::vec2& position, float intensity, const glm::vec2& scale, const glm::vec4& color, Ref<Texture2D> texture)
+const ShapeID LightComponent::AddQuadLight(const Vector2f& position, float intensity, const Vector2f& scale, const Vector4f& color, Ref<Texture2D> texture)
 {
     const ShapeID id = s_QuadShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y + position.y, intensity
         }, 0, scale, color, texture);
@@ -107,17 +107,17 @@ const ShapeID LightComponent::AddQuadLight(const glm::vec2& position, float inte
     return id;
 }
 
-void LightComponent::EditCircleColor(const ShapeID id, const glm::vec4& color)
+void LightComponent::EditCircleColor(const ShapeID id, const Vector4f& color)
 {
     s_CircleShapeFactory->SetColor(id, color);
 }
 
-void LightComponent::EditCircleSize(const ShapeID id, const glm::vec2& size)
+void LightComponent::EditCircleSize(const ShapeID id, const Vector2f& size)
 {
     s_CircleShapeFactory->SetScale(id, size);
 }
 
-const ShapeID LightComponent::AddPolygonLight(const Vector3f& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const glm::vec4& color)
+const ShapeID LightComponent::AddPolygonLight(const Vector3f& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const Vector4f& color)
 {
     Ref<PolygonLightRendererable> l = make_shared<PolygonLightRendererable>(GetEntityPosition()+position, vertices, indices, layout, color);
     m_polygonLights.push_back(l);

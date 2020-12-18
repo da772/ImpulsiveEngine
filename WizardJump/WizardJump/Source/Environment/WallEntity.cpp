@@ -12,7 +12,7 @@ void WallEntity::OnBegin()
                                   Texture2D::Create("Content/Textures/bluishBricks.png", TEXTUREFLAGS_Wrap_Repeat), { scale.x/4.f, scale.y/4.f});
 	}
 	/*
-	m_collider = CreateGameObject<QuadColliderComponent>(false, true, glm::vec2(0, 0), glm::vec2(1, 1), rot, 0.f);
+	m_collider = CreateGameObject<QuadColliderComponent>(false, true, Vector2f(0, 0), Vector2f(1, 1), rot, 0.f);
 	m_collider->SetTag("wall");
 	AddComponent(m_collider);
 	m_collider->SetBounce(.5f);

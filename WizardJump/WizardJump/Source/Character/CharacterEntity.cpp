@@ -3,7 +3,7 @@
 #include "Character/CharacterGraphics.hpp"
 #include "Character/CharacterBody.hpp"
 
-CharacterEntity::CharacterEntity(const glm::vec2& position) : m_position(position)
+CharacterEntity::CharacterEntity(const Vector2f& position) : m_position(position)
 {
 
 }
@@ -11,7 +11,7 @@ CharacterEntity::CharacterEntity(const glm::vec2& position) : m_position(positio
 void CharacterEntity::OnBegin()
 	{
 
-		SetEntityPosition({ m_position.x, m_position.y,0 });
+		SetEntityPosition({ m_position.x, m_position.y,0.f });
 
 		m_characterComponent = CreateGameObject<CharacterController>();
 		m_spriteComponent = CreateGameObject<CharacterGraphics>();

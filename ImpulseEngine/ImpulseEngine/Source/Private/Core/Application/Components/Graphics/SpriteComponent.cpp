@@ -28,7 +28,7 @@ namespace GEngine {
 					Vector3f pos = m_shapeFactory->GetShapePosition(id);
 					Vector3f nPos = pos - transData.position + transform->GetPosition();
 					if (pos != nPos)
-						m_shapeFactory->SetPosition(id, nPos);
+						m_shapeFactory->SetPosition(id, nPos.xy());
 					float rot = m_shapeFactory->GetShapeRotation(id);
 					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
 					if (rot != nRot)
@@ -95,7 +95,7 @@ namespace GEngine {
 		Ref<Entity> e = entity.lock();
 		Vector3f _scale = scale * e->GetEntityScale();
 
-		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rotation + e->GetEntityRotation().z, _scale, _color, texture, textureScale);
+		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rotation + e->GetEntityRotation().z, _scale.xy(), _color, texture, textureScale);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -161,7 +161,7 @@ namespace GEngine {
 		const Vector4f& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const Vector2f& textureScale/*= 1*/)
 	{
 		Ref<Entity> e = entity.lock();
-		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rot + e->GetEntityRotation().z, scale * e->GetEntityScale(), _color, texture, textureScale);
+		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rot + e->GetEntityRotation().z, (scale * e->GetEntityScale()).xy(), _color, texture, textureScale);
 		m_ids.push_back(id);
 		return id;
 	}

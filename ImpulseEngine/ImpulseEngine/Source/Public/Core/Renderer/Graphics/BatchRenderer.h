@@ -81,8 +81,8 @@ namespace GEngine {
 		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr, const char* pipelineId = nullptr, const std::function<void()>& shaderFunc = nullptr);
 		~BatchRenderer();
 
-		const uint64_t AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture = nullptr, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
-		const uint64_t AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
+		const uint64_t AddShape(const Vector3f& position, float rotation, const Vector2f& scale,const Vector4f& color, Ref<Texture2D> texture = nullptr, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
+		const uint64_t AddShape(const Vector3f& position, float rotation, const Vector2f& scale, const Vector4f& color, Ref<SubTexture2D> texture, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
 		const uint64_t AddShape(BatchObjectData& bData);
 		void EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture = nullptr, const Vector2f& textureScale = { 1,1 }, float alphaChannel = 4);
 		void EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture, const Vector2f& textureScale, float alphaChannel = 4);

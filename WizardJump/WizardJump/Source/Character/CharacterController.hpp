@@ -58,16 +58,16 @@ public:
 
 	/* TRAJECTORTY TEST */
 	std::vector<float> trajectory_pos;
-	glm::vec2 _realVel;
+	Vector2f _realVel;
 
-	inline static glm::vec2 CalculateJumpVelocity(float xDistance, float yDistance) {
-		glm::vec2 _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
-        glm::vec2 mapped_vel = { GEMath::sign(_vel.x) * GEMath::MapRange(abs(_vel.x), 0, jumpXDragClamp, 0, 1), GEMath::MapRange(_vel.y, 0, jumpYDragClamp, 0, 1)};
-        glm::vec2 vel = { mapped_vel.x * jumpXMultipler, mapped_vel.y * jumpYMultipler };
+	inline static Vector2f CalculateJumpVelocity(float xDistance, float yDistance) {
+		Vector2f _vel = { (abs(xDistance) > jumpXDragClamp ? (xDistance >= 0 ? 1.f : -1.f) * jumpXDragClamp : xDistance), (yDistance > jumpYDragClamp ? jumpYDragClamp : yDistance) };
+        Vector2f mapped_vel = { GEMath::sign(_vel.x) * GEMath::MapRange(abs(_vel.x), 0, jumpXDragClamp, 0, 1), GEMath::MapRange(_vel.y, 0, jumpYDragClamp, 0, 1)};
+        Vector2f vel = { mapped_vel.x * jumpXMultipler, mapped_vel.y * jumpYMultipler };
         return vel;
 	}
 
-    inline static glm::vec2 DragRequiredForVelocity(const glm::vec2& velocity) {
+    inline static Vector2f DragRequiredForVelocity(const Vector2f& velocity) {
         return { GEMath::sign(velocity.x) * GEMath::MapRange(abs(velocity.x) / jumpXMultipler, 0, 1, 0, jumpXDragClamp), GEMath::MapRange(velocity.y / jumpYMultipler, 0,1, 0, jumpYDragClamp) };
 	}
 

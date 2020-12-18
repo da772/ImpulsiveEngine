@@ -6,7 +6,7 @@
 static float xSlope = -.25f;
 static float ySlope = -.5f;
 
-static glm::vec2 leftPos(-.15f, -0.0f), centerPos(0, -0.0f), rightPos(.5f, -0.0f);
+static Vector2f leftPos(-.15f, -0.0f), centerPos(0, -0.0f), rightPos(.5f, -0.0f);
 
 static float xScale = 2.0f;
 static float yScale = 2.0f;
@@ -93,7 +93,7 @@ static Ref<BufferLayout> lightLayout = Ref<BufferLayout>(new BufferLayout({
 {GEngine::ShaderDataName::Position },
 {GEngine::ShaderDataName::AlphaChannel} }));
 
-WindowEntity::WindowEntity(const Vector3f position, const glm::vec2& scale, const glm::vec4& lightColor)
+WindowEntity::WindowEntity(const Vector3f position, const Vector2f& scale, const Vector4f& lightColor)
 	: m_position(position), m_scale(scale), m_lightColor(lightColor)
 {
 	

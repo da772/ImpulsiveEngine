@@ -138,8 +138,9 @@ namespace GEngine {
 
 
 
-	 const uint64_t BatchRenderer::AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
+	 const uint64_t BatchRenderer::AddShape(const Vector3f& _position, float rotation,const Vector2f& scale,const Vector4f& color, Ref<Texture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
+		 Vector3f position = _position;
 		 Setup();
 
 		 if (m_renderType == ERenderType::UI) {
@@ -155,8 +156,9 @@ namespace GEngine {
 		 return AddShape(data);
 	 }
 
-	 const uint64_t BatchRenderer::AddShape(Vector3f position, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
+	 const uint64_t BatchRenderer::AddShape(const Vector3f& _position, float rotation,const Vector2f& scale, const Vector4f& color, Ref<SubTexture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
+		 Vector3f position = _position;
 		 if (m_renderType == ERenderType::UI) {
 			 position.y = GEMath::MapRange(position.y, -1.f, 1.f, Application::GetSafeBottomUI() - 1.f, 1.f - Application::GetSafeTopUI());
 			 position.x = GEMath::MapRange(position.x, -1.f, 1.f, Application::GetSafeLeftUI() - 1.f, 1.f - Application::GetSafeRightUI());

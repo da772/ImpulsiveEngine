@@ -10,7 +10,7 @@ using namespace GEngine;
 class PlatformEntity : public Entity {
 public:
 
-	PlatformEntity(const glm::vec2 pos, const glm::vec2 scale = glm::vec2(1, 1), const float zOrder = 5, const std::string& entityTag = "Platform Entity", const float rot = 0);
+	PlatformEntity(const Vector2f pos, const Vector2f scale = Vector2f(1, 1), const float zOrder = 5, const std::string& entityTag = "Platform Entity", const float rot = 0);
 	~PlatformEntity() {};
 
 	
@@ -26,8 +26,8 @@ protected:
 
 
 
-	glm::vec2 scale;
-	glm::vec2 pos;
+	Vector2f scale;
+	Vector2f pos;
 	float rot;
 	float zOrder = 1;
 

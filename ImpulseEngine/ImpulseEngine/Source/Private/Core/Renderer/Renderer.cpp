@@ -272,7 +272,7 @@ namespace GEngine {
 		Renderer::s_ShapeData->shape_shader->Bind();
 		Renderer::s_ShapeData->shape_shader->UploadUniformInt("u_Texture", 0);
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.f), position) * glm::scale(glm::mat4(1), scale);
+		glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(position.x, position.y, position.z)) * glm::scale(glm::mat4(1), glm::vec3(scale.x, scale.y,scale.z));
 
 		Renderer::s_ShapeData->shape_shader->UploadUniformFloat4("u_Color", color);
 		Renderer::s_ShapeData->shape_shader->UploadUniformFloat2("u_UV", { 1.f,1.f });

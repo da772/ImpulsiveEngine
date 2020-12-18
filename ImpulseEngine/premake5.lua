@@ -23,6 +23,7 @@ IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
 IncludeDir["OpenAL"] = "ImpulseEngine/vendor/OpenAL/include"
 IncludeDir["Vorbis"] = "ImpulseEngine/vendor/Vorbis/include"
 IncludeDir["zlib"] = "ImpulseEngine/vendor/zlib/include"
+IncludeDir["vector"] = "ImpulseEngine/Modules/IE_VECTOR/include"
 
 
 group "Dependencies"
@@ -94,6 +95,7 @@ project "ImpulseEngine"
 		"%{IncludeDir.OpenAL}",
 		"%{IncludeDir.Vorbis}",
 		"%{IncludeDir.zlib}",
+		"%{IncludeDir.vector}",
 
 	}
 

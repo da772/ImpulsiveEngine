@@ -53,7 +53,7 @@ public:
 				}
 			}
 			bIsWalking = true;
-			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame-1 : frame, 1), glm::vec2(74, 74), glm::vec2(dir, 1));
+			m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? frame-1 : frame, 1), Vector2f(74, 74), Vector2f(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
 			
 		});
@@ -75,7 +75,7 @@ public:
                 return;
             }
             bIsWalking = false;
-            m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame-1+1 : frame+1, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+            m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? frame-1+1 : frame+1, 0), Vector2f(74, 74), Vector2f(dir, 1));
             SetSubTexture(quad, m_characterSpriteSheet);
             
             });
@@ -97,7 +97,7 @@ public:
 				return;
 			}
 			bIsWalking = false;
-			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame-1 : frame, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+			m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? frame-1 : frame, 0), Vector2f(74, 74), Vector2f(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
 			
 			});
@@ -122,7 +122,7 @@ public:
 				return;
 			}
 			bIsWalking = false;
-			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame+5 - 1 : frame+5, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+			m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? frame+5 - 1 : frame+5, 0), Vector2f(74, 74), Vector2f(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
 			});
 	}
@@ -147,7 +147,7 @@ public:
             } 
             bIsWalking = false;
 			
-            m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame+5 - 1 : frame+5, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+            m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? frame+5 - 1 : frame+5, 0), Vector2f(74, 74), Vector2f(dir, 1));
             SetSubTexture(quad, m_characterSpriteSheet);
             });
     }
@@ -168,7 +168,7 @@ public:
 				return;
 			}
 			bIsWalking = false;
-			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? frame+2 - 1 : frame+2, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+			m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? frame+2 - 1 : frame+2, 0), Vector2f(74, 74), Vector2f(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
 			});
 	}
@@ -178,7 +178,7 @@ public:
 		animState = MovementAnim::Idle;
 		m_animationComp->SetFrameAnimation(255, 1, false, [this, f](int frame) {
 			bIsWalking = false;
-			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? 0 : 1, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+			m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? 0 : 1, 0), Vector2f(74, 74), Vector2f(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
 			bAnimating = false;
 			if (f) {
@@ -195,7 +195,7 @@ public:
 		animState = MovementAnim::Falling;
 		m_animationComp->SetFrameAnimation(255, 8, false, [this,f](int frame) {
 			bIsWalking = false;
-			m_characterSpriteSheet->SetCoords(glm::vec2(dir >= 0 ? 4 : 5, 0), glm::vec2(74, 74), glm::vec2(dir, 1));
+			m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? 4 : 5, 0), Vector2f(74, 74), Vector2f(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
 			bAnimating = false;
 			if (f) {
@@ -228,7 +228,7 @@ public:
 	void SetPowerBar(float amt) {
 
 		int frame = amt >= .08f ? GEMath::clamp((int)GEMath::MapRange(amt, 0.f, 1.f, 0, 11), 0, 11) : 0;
-		powerIndicatorTexture->SetCoords({ frame,0 }, { 32,32 });
+		powerIndicatorTexture->SetCoords({ (float)frame,0.f }, { 32.f,32.f });
 		SetSubTexture(powerIndicator, powerIndicatorTexture);
 	}
 
@@ -263,11 +263,11 @@ protected:
 	ShapeID powerIndicator = -1;
 	Vector3f powerIndicatorPos = Vector3f(.45f, .45f, 12.f);
 	Vector3f powerIndicatorScale = Vector3f(.5f, .5f, 1.f);
-	glm::vec4 powerIndicatorColor = glm::vec4(1, 1, 1, 0.f);
+	Vector4f powerIndicatorColor = Vector4f(1, 1, 1, 0.f);
 
 	Vector3f directionIndicatorPos = Vector3f(0, .45f, 12.f);
 	Vector3f directionIndicatorScale = Vector3f(.75f, .75f, 1.f);
-	glm::vec4 directionIndicatorColor = glm::vec4(1, 1, 1, 0.f);
+	Vector4f directionIndicatorColor = Vector4f(1, 1, 1, 0.f);
 
 	Ref<SubTexture2D> powerIndicatorTexture = nullptr;
 	
@@ -276,7 +276,7 @@ protected:
 		SpriteComponent::OnBegin();
 		m_characterSpriteSheet = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/wizard.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest),
 			{ 0,1 }, { 74,74 }, { 1,1 });
-		quad = CreateSubTexturedQuad({ 0,0,10 }, 0.f, { 2,2,1 }, { 1,1,1,1 }, m_characterSpriteSheet);
+		quad = CreateSubTexturedQuad({ 0.f,0.f,10.f }, 0.f, { 2.f,2.f,1.f }, { 1.f,1.f,1.f,1.f }, m_characterSpriteSheet);
 		powerIndicatorTexture = SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/jumpProgressBar.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest), { 0,0 }, { 32,32 });
 		directionIndicator = CreateQuad(directionIndicatorPos, 0.f, directionIndicatorScale, directionIndicatorColor, Texture2D::Create("Content/Textures/halfCircle.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest));
 		powerIndicator = CreateSubTexturedQuad(powerIndicatorPos, 0.f, powerIndicatorScale, powerIndicatorColor,

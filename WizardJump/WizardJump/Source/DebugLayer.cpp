@@ -2,6 +2,8 @@
 #include "imgui/imgui_internal.h"
 
 
+using namespace GEngine;
+
 bool DebugLayer::showLog = true;
 
 bool handleResize = false;
@@ -282,11 +284,11 @@ void DebugLayer::CreateSceneHierarchy()
 
 }
 
-glm::vec2 lastFrameSize;
-glm::vec2 finalSize = { 0, 0 };
-glm::vec2 originalSize = { 0,0 };
+Vector2<float> lastFrameSize;
+Vector2<uint32_t> finalSize = { 0, 0 };
+Vector2<int> originalSize = { 0,0 };
 
-static glm::vec2 scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHeight) {
+static Vector2<uint32_t> scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHeight) {
 
 
 	// calc
@@ -297,7 +299,7 @@ static glm::vec2 scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHe
 	// output
 	int newWidth = (float)imgWidth * bestRatio,
 		newHeight = (float)imgHeight * bestRatio;
-	return { newWidth, newHeight };
+	return { (uint32_t)newWidth, (uint32_t)newHeight };
 }
 
 
@@ -306,7 +308,7 @@ static glm::vec2 scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHe
 void DebugLayer::CreateViewPort()
 {
 	if (originalSize.x == 0) {
-		originalSize = { GEngine::Application::GetApp()->m_viewPortWidth,GEngine::Application::GetApp()->m_viewPortHeight };
+		originalSize = {GEngine::Application::GetApp()->m_viewPortWidth,GEngine::Application::GetApp()->m_viewPortHeight };
 	}
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -337,9 +339,9 @@ void DebugLayer::CreateViewPort()
 	const char* pipelineId = "viewport";
 	GEngine::Application::SetInputEnabled(ImGui::IsWindowFocused());
 	ImVec2 viewPortSize = ImGui::GetContentRegionAvail();
-	glm::vec2 sz = { viewPortSize.x, viewPortSize.y };
+	Vector2<float> sz = { viewPortSize.x, viewPortSize.y };
 	GEngine::Ref<GEngine::RenderPipeline> pipeline = GEngine::Renderer::GetPipeline(pipelineId);
-	glm::vec2 csz = { pipeline->GetFrameBuffer()->GetTexture()->GetWidth(), pipeline->GetFrameBuffer()->GetTexture()->GetHeight() };
+	Vector2<uint32_t> csz = { pipeline->GetFrameBuffer()->GetTexture()->GetWidth(), pipeline->GetFrameBuffer()->GetTexture()->GetHeight() };
 	if (lastFrameSize != sz || handleResize) {
 		
 		finalSize = scaleRatio(sz.x, sz.y, originalSize.x, originalSize.y);
@@ -354,7 +356,7 @@ void DebugLayer::CreateViewPort()
 
 	ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - finalSize.x) * .5f , ImGui::GetCursorPosY() });
 	GEngine::Application::SetViewPortOffset({ ImGui::GetCursorPosX() + ImGui::GetWindowPos().x, ImGui::GetCursorPosY() + ImGui::GetWindowPos().y });
-	ImGui::Image((void*)(intptr_t)pipeline->GetFrameBuffer()->GetTexture()->GetRendererID(), { finalSize.x, finalSize.y }, { 0,1 }, { 1,0 });
+	ImGui::Image((void*)(intptr_t)pipeline->GetFrameBuffer()->GetTexture()->GetRendererID(), { (float)finalSize.x,(float) finalSize.y }, { 0,1 }, { 1,0 });
 
 	
 	ImGui::End();

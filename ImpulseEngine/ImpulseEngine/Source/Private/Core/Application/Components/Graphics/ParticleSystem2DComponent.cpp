@@ -106,9 +106,9 @@ namespace GEngine {
 		particle.Position += particle.Velocity * Vector2f( dt, dt );
 		particle.Rotation += 0.01f * dt;
 		float life = particle.LifeRemaining / m_particleProps.LifeTime;
-		float scale = glm::lerp(m_particleProps.SizeEnd, particle.Scale.x, life);
+		float scale = Vector2f::lerp({ m_particleProps.SizeEnd, 0 }, particle.Scale, life).x;
 		particle.Scale = { scale, scale };
-		Vector4f color = glm::lerp(m_particleProps.ColorEnd, m_particleProps.ColorBegin, life);
+		Vector4f color = Vector4f::lerp(m_particleProps.ColorEnd, m_particleProps.ColorBegin, life);
 
 		
 		if (particle.id != -1) {
