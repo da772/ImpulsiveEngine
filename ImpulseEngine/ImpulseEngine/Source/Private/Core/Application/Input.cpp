@@ -4,11 +4,11 @@
 #include "Public/Core/Application/Window.h"
 
 #ifdef GE_WINDOW_API_GLFW
-#include "Public/Core/Platform/Window/GLFW/GLFW_Input.h"
+#include "Public/Platform/Window/GLFW/GLFW_Input.h"
 #endif
 
 #ifdef GE_WINDOW_API_MOBILE
-#include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Platform/Window/Mobile/Mobile_Input.h"
 #endif
 
 #include "Public/Core/Application/Application.h"
@@ -62,6 +62,9 @@ namespace GEngine {
 			s_Instance = nullptr;
 		}
 
+		s_Instance = Create_Input();
+		return;
+
 		switch (Window::GetWindowApi()) {
 #ifdef GE_WINDOW_API_GLFW
 		case WindowApi::FWindowApi::GLFW:
@@ -81,6 +84,10 @@ namespace GEngine {
 
 
 
+	}
+
+	Input* Create_Input() {
+		return new GLFW_Input();
 	}
 
 	

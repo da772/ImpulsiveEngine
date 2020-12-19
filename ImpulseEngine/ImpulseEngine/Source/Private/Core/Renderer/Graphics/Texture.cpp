@@ -5,11 +5,11 @@
 #include "Public/Core/Util/Utility.h"
 
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-#include "Public/Core/Platform/Graphics/OpenGL/OpenGL_Texture.h"
+#include "Public/Platform/Graphics/OpenGL/OpenGL_Texture.h"
 #endif
 
 #ifdef GE_GRAPHICS_API_VULKAN
-#include "Public/Core/Platform/Graphics/Vulkan/Vulkan_Texture.h"
+#include "Public/Platform/Graphics/Vulkan/Vulkan_Texture.h"
 #endif
 
 

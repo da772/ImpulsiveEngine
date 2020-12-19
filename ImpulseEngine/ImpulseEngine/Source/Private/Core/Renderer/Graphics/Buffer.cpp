@@ -4,11 +4,11 @@
 
 
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-#include "Core/Platform/Graphics/OpenGL/OpenGL_Buffer.h"
+#include "Public/Platform/Graphics/OpenGL/OpenGL_Buffer.h"
 #endif
 
 #ifdef GE_GRAPHICS_API_VULKAN
-#include "Core/Platform/Graphics/Vulkan/Vulkan_Buffer.h"
+#include "Public/Platform/Graphics/Vulkan/Vulkan_Buffer.h"
 #endif
 
 

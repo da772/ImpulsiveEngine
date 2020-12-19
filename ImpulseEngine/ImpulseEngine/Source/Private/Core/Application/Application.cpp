@@ -21,7 +21,7 @@
 #include "Public/Core/Ads/AdManager.h"
 
 #include "Public/Core/Physics/Physics.h"
-#include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Platform/Window/Mobile/Mobile_Input.h"
 
 #include "Public/Core/Audio/AudioManager.h"
 
@@ -227,7 +227,7 @@ namespace GEngine {
         }
         
         m_Window.reset();
-        m_Window = Scope<Window>(Window::Create(WindowData(std::string(title), m_width, m_height)));
+        m_Window = Scope<Window>(Create_Window(WindowData(std::string(title), m_width, m_height)));
         m_Window->SetEventCallback(BIND_EVENT_FN(Application, OnEvent));
         LayerSetup();
     }

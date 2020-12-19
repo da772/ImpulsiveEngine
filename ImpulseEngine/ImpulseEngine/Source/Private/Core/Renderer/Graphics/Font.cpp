@@ -3,7 +3,7 @@
 #include "Public/Core/Renderer/Graphics/GraphicsContext.h"
 
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-#include "Public/Core/Platform/Graphics/OpenGL/OpenGL_Font.h"
+#include "Public/Platform/Graphics/OpenGL/OpenGL_Font.h"
 #endif
 
 namespace GEngine {

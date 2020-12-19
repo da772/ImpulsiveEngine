@@ -30,6 +30,8 @@ namespace GEngine {
 
 	};
 
+	extern Input* Create_Input();
+
 
 
 

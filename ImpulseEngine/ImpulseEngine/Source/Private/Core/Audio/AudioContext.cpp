@@ -5,7 +5,7 @@
 
 #ifdef GE_AUDIO_OPENAL
 
-#include "Public/Core/Platform/Audio/OpenAL/OpenAL_Context.h"
+#include "Public/Platform/Audio/OpenAL/OpenAL_Context.h"
 
 #endif
 

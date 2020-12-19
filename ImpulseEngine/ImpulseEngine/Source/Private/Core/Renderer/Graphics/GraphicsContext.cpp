@@ -5,11 +5,11 @@
 #include "Core/Application/Input.h"
 
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-#include "Core/Platform/Graphics/OpenGL/OpenGL_GraphicsContext.h"
+#include "Public/Platform/Graphics/OpenGL/OpenGL_GraphicsContext.h"
 #endif
 
 #ifdef GE_GRAPHICS_API_VULKAN
-#include "Core/Platform/Graphics/Vulkan/Vulkan_GraphicsContext.h"
+#include "Public/Platform/Graphics/Vulkan/Vulkan_GraphicsContext.h"
 #endif
 
 namespace GEngine {
@@ -17,7 +17,7 @@ namespace GEngine {
 
 	GraphicsContext::GraphicsContext()
 	{
-		Input::Create();
+		
 		
 	}
 

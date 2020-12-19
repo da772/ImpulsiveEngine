@@ -2,16 +2,17 @@
 #include "Public/Core/Application/Window.h"
 #include "Public/Core/Application/Application.h"
 #include "Public/Core/Util/GEMath.h"
+#include "Public/Core/Application/Input.h"
 
 #ifdef GE_WINDOW_API_GLFW
-#include "Public/Core/Platform/Window/GLFW/GLFW_Window.h"
+#include "Public/Platform/Window/GLFW/GLFW_Window.h"
 #endif
 #ifdef GE_WINDOW_API_WIN32
-#include "Public/Core/Platform/Window/WIN32/WIN32_Window.h"
+#include "Public/Platform/Window/WIN32/WIN32_Window.h"
 
 #endif
 #ifdef GE_WINDOW_API_MOBILE
-#include "Public/Core/Platform/Window/Mobile/MobileWindow.h"
+#include "Public/Platform/Window/Mobile/MobileWindow.h"
 #endif
 
 
@@ -24,6 +25,7 @@ namespace GEngine {
 	{
 		Window* window = new T(props);
 		window->Init(props);
+		Input::Create();
 		return window;
 	}
 
@@ -52,11 +54,11 @@ namespace GEngine {
 		*left = 0;
 		*right = 0;
 	}
-
-	Window* Window::Create(const WindowData& props)
+	
+	Window* Create_Window(const WindowData& props)
 	{
-        Window::s_WindowApi = Application::GetApp()->GetWindowApi();
-        switch (Window::s_WindowApi) {
+		FWindowApi s_WindowApi = FWindowApi::GLFW;
+        switch (s_WindowApi) {
             #ifdef GE_WINDOW_API_GLFW
             case FWindowApi::GLFW:
 				return Window::_CreateWindow<GLFW_Window>(props);
@@ -71,12 +73,12 @@ namespace GEngine {
             #endif
             case FWindowApi::NONE:
             default:
-                GE_CORE_ASSERT(false, "Window Api invalid on current platform : {0}",(int) Window::s_WindowApi);
+                GE_CORE_ASSERT(false, "Window Api invalid on current platform : {0}",(int) s_WindowApi);
 				return nullptr;
         }
 		
 	}
-
+	
 	const float WindowData::GetSafeTopUI() const
 	{
 		return (float)((float)safe_top / (float)Height);

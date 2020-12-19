@@ -90,7 +90,7 @@ namespace GEngine {
 
 		virtual void Init(const WindowData& props) = 0;
 
-		static Window* Create(const WindowData& props = WindowData());
+		
 
 		template<typename T>
 		static Window* _CreateWindow(const WindowData& props);
@@ -105,5 +105,7 @@ namespace GEngine {
 	private:
 		static FWindowApi s_WindowApi;
 	};
+
+	extern Window* Create_Window(const WindowData& props = WindowData());
 
 }

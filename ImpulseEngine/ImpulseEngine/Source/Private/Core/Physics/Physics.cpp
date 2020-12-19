@@ -2,7 +2,7 @@
 #include "Public/Core/Physics/Physics.h"
 #include "Public/Core/Physics/PhysicsContext.h"
 #ifdef GE_PHYSICS_BOX2D
-#include "Public/Core/Platform/Physics/box2d/PhysicsContext_box2d.h"
+#include "Public/Platform/Physics/box2d/PhysicsContext_box2d.h"
 #endif
 
 #include "Public/Core/Util/Time.h"

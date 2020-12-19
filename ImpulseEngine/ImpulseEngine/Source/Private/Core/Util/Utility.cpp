@@ -19,7 +19,7 @@
 #endif
 
 #ifdef GE_PLATFORM_ANDROID
-#include "Public/Core/Platform/Window/Android/android_util.h"
+#include "Public/Platform/Window/Android/android_util.h"
 #include <arpa/inet.h>
 #endif
 

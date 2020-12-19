@@ -16,7 +16,7 @@
 #ifdef GE_GRAPHICS_API_VULKAN
 #include <vulkan/vulkan.h>
 #include "examples/imgui_impl_vulkan.h"
-#include "Public/Core/Platform/Graphics/Vulkan/Vulkan_GraphicsContext.h"
+#include "Public/Platform/Graphics/Vulkan/Vulkan_GraphicsContext.h"
 #endif
 
 #include "Public/Core/FileSystem/FileSystem.h"

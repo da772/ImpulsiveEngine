@@ -1,6 +1,6 @@
 #include "gepch.h"
 #include "Public/Core/Ads/AdBase.h"
-#include "Public/Core/Platform/Ads/Firebase/Firebase_Ads.h"
+#include "Public/Platform/Ads/Firebase/Firebase_Ads.h"
 
 namespace GEngine {
 
