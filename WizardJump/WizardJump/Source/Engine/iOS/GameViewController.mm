@@ -2,7 +2,7 @@
 #import <OpenGLES/ES3/glext.h>
 #include <GEngine.h>
 #include <EntryPoint.h>
-#include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Platform/Window/Mobile/Mobile_Input.h"
 
 
 @interface GameViewController () {}

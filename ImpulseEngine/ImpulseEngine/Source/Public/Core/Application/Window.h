@@ -100,10 +100,12 @@ namespace GEngine {
 		virtual void GetSafeAreaUI(float* top, float* bottom, float* left, float* right);
 
 		inline static const FWindowApi GetWindowApi() { return Window::s_WindowApi; }
+        
 	protected:
 		WindowData m_Data;
 	private:
-		static FWindowApi s_WindowApi;
+        static FWindowApi s_WindowApi;
+		
 	};
 
 	extern Window* Create_Window(const WindowData& props = WindowData());

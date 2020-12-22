@@ -55,15 +55,12 @@ namespace GEngine {
 			s_Instance->ProcessEvent(e);
 	}
 
-	void Input::Create()
+	Input* Input::Create()
 	{
 		if (s_Instance != nullptr) {
 			delete Input::s_Instance;
 			s_Instance = nullptr;
 		}
-
-		s_Instance = Create_Input();
-		return;
 
 		switch (Window::GetWindowApi()) {
 #ifdef GE_WINDOW_API_GLFW
@@ -86,9 +83,6 @@ namespace GEngine {
 
 	}
 
-	Input* Create_Input() {
-		return new GLFW_Input();
-	}
 
 	
 }

@@ -15,7 +15,7 @@ namespace GEngine {
 		static float GetMouseY();
 		static std::pair<float, float>  GetMousePosition();
 		static void ProcessEvents(const Event& e);
-		static void Create();
+		static Input* Create();
 
 	protected:
 		virtual bool IsKeyPressedImpl(int keycode) = 0;
@@ -29,8 +29,6 @@ namespace GEngine {
 		static Input* s_Instance;
 
 	};
-
-	extern Input* Create_Input();
 
 
 

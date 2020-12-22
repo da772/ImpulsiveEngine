@@ -17,8 +17,8 @@
 
 
 namespace GEngine {
+FWindowApi Window::s_WindowApi = GE_WINDOW_API_DEFAULT;
 
-	FWindowApi Window::s_WindowApi = FWindowApi::NONE;
 
 	template<typename T>
 	Window* Window::_CreateWindow(const WindowData& props)
@@ -57,7 +57,8 @@ namespace GEngine {
 	
 	Window* Create_Window(const WindowData& props)
 	{
-		FWindowApi s_WindowApi = FWindowApi::GLFW;
+        FWindowApi s_WindowApi = Window::GetWindowApi();
+        
         switch (s_WindowApi) {
             #ifdef GE_WINDOW_API_GLFW
             case FWindowApi::GLFW:
@@ -67,10 +68,10 @@ namespace GEngine {
             case FWindowApi::WIN32API:
 				return  Window::_CreateWindow<WIN32_Window>(props);
             #endif
-            #ifdef GE_WINDOW_API_MOBILE
+#ifdef GE_WINDOW_API_MOBILE
             case FWindowApi::MOBILE:
                 return Window::_CreateWindow<MobileWindow>(props);
-            #endif
+#endif
             case FWindowApi::NONE:
             default:
                 GE_CORE_ASSERT(false, "Window Api invalid on current platform : {0}",(int) s_WindowApi);
