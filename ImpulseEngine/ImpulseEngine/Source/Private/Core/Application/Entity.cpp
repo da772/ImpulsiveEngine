@@ -139,8 +139,8 @@ namespace GEngine {
 			OnEnd();
 			Ref<Entity> e = static_pointer_cast<Entity>(self.lock());
 			for (std::pair<uint64_t, Ref<Component>> c : components) {
-				c.second->End();
 				c.second->DeAttached(e);
+				c.second->End();
 			}
 		}
 		bInit = false;
@@ -158,10 +158,10 @@ namespace GEngine {
 	}
 
 	void Entity::Destroy() {
+		End();
 		if (scene.lock() != nullptr)
 			scene.lock()->RemoveEntity(std::static_pointer_cast<Entity>(self.lock()));
 		scene.reset();
-		End();
 	}
 
 	void Entity::Clean()

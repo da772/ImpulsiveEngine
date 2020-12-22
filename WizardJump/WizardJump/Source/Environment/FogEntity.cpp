@@ -49,6 +49,18 @@ void FogEntity::SetSeed(int seed)
 	noise.SetSeed(m_seed);
 }
 
+void FogEntity::SetTickSpeed(float speed)
+{
+	std::lock_guard<std::mutex> guard(m_mutex);
+	m_speed = speed;
+}
+
+void FogEntity::SetSpeed(float speed)
+{
+	std::lock_guard<std::mutex> guard(m_mutex);
+	m_moveSpeed = speed;
+}
+
 void FogEntity::OnUnloadGraphics() {
     for (int i = 0; i < sizeof(m_textureIds)/sizeof(uint64_t); i++) {
         m_spriteComponent->RemoveQuad(m_textureIds[i]);
@@ -75,8 +87,8 @@ void FogEntity::OnBegin()
 	//m_shader = Shader::Create("Content/shaders/FogShader.glsl");
 	m_spriteComponent = CreateGameObject<SpriteComponent>();
 	AddComponent(m_spriteComponent);
-	m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/windLoop.ogg", true, true, true, .25f, .75f);
-	AddComponent(m_audioComponent);
+	//m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/windLoop.ogg", true, true, true, .25f, .75f);
+	//AddComponent(m_audioComponent);
 	
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetFractalType(FastNoiseLite::FractalType_FBm);
@@ -109,7 +121,7 @@ void FogEntity::OnUpdate(Timestep timestep)
 {
 	m_time += timestep;
 
-	if (Time::GetEpochTimeMS() - m_pitchAdjust > 2500) {
+	if (m_audioComponent && Time::GetEpochTimeMS() - m_pitchAdjust > 2500) {
 		m_audioComponent->SetPitch(Random::FloatRange(.75f, 1.f));
 		m_pitchAdjust = Time::GetEpochTimeMS();
 	}
@@ -157,7 +169,7 @@ void FogEntity::OnUpdate(Timestep timestep)
                         unsigned char c;
                         {
                             std::lock_guard<std::mutex> guard(m_mutex);
-                            c = GEMath::clamp((int)(255.f * noise.GetNoise((float)(x+(float)frame*m_noiseStrength), (float)y* m_noiseStrength, (float)frame*m_noiseStrength * m_zNoiseStrength)), 0, 255);
+                            c = GEMath::clamp((int)(255.f * noise.GetNoise((float)(x+(float)frame/ m_moveSpeed *m_noiseStrength), (float)y* m_noiseStrength, (float)frame/ m_moveSpeed *m_noiseStrength * m_zNoiseStrength)), 0, 255);
                         }
                         noiseData[index++] = 255;
                         noiseData[index++] = 255;

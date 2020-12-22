@@ -21,9 +21,11 @@ protected:
 	Ref<UIComponent> m_uiComponent;
 	Ref<AudioComponent> m_audioComponent;
 	Ref<SpriteAnimationComponent> m_spriteAnimComponent;
+	Ref<ButtonComponent> m_buttonComponent;
 	float m_characterPerSecond = 20.f;
 	Ref<Font> m_font;
 	int m_textPos = 0;
+	int maxChars = 180;
 
 	bool m_isTyping = false;
 

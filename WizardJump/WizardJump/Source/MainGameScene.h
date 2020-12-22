@@ -89,11 +89,6 @@ public:
 
 	}
 
-
-	
-
-
-
 	inline void OnBegin() override
 	{
 		camera = m_CameraController->GetCamera().get();
@@ -281,16 +276,19 @@ public:
 
 		if (!DebugLayer::showLog) return;
 
-		ImGui::Begin("Fog Debug", &DebugLayer::showLog);
+		ImGui::Begin("FogDebug", &DebugLayer::showLog);
 		
-		float lacunarity = fog->m_lacunarity, frequency = fog->m_frequency, gain = fog->m_gain;
+		float lacunarity = fog->m_lacunarity, frequency = fog->m_frequency, gain = fog->m_gain, tickSpeed = fog->m_speed, speed = fog->m_moveSpeed;
 		int octaves = fog->m_octaves, seed = fog->m_seed;
+
 
 		ImGui::DragInt("Seed", &seed);
 		ImGui::DragInt("Octaves", (int*)&octaves);
 		ImGui::DragFloat("Lacunarity", &lacunarity, .25f);
 		ImGui::DragFloat("Frequency", &frequency, .01f);
 		ImGui::DragFloat("Gain", &gain, .25f);
+		ImGui::DragFloat("Speed", &speed, .25f);
+		ImGui::DragFloat("Tick Speed", &tickSpeed, 1.f);
 
 		ImGui::End();
 
@@ -313,6 +311,16 @@ public:
 		if (fog->m_seed != seed) {
 			fog->SetSeed(seed);
 		}
+
+		if (fog->m_moveSpeed != speed) {
+			fog->SetSpeed(speed);
+		}
+
+		if (fog->m_speed != tickSpeed) {
+			fog->SetTickSpeed(tickSpeed);
+		}
+
+
 
 		ImGui::Begin("Debug Info", &DebugLayer::showLog);
 		ImGui::Separator();

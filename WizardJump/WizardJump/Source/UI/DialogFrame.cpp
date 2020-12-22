@@ -22,6 +22,7 @@ void DialogFrame::OnBegin()
 	m_uiComponent = CreateGameObject<UIComponent>();
 	m_spriteAnimComponent = CreateGameObject<SpriteAnimationComponent>();
 	m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/keyPress.ogg", false, false, true, 1.f, 1.f);
+	
 	AddComponent(m_spriteAnimComponent);
 	AddComponent(m_uiComponent);
 	AddComponent(m_audioComponent);
@@ -55,6 +56,23 @@ void DialogFrame::OnBegin()
 		
 	});
 	
+
+	m_buttonComponent = CreateGameObject<ButtonComponent>(m_position, 0.f, Vector3f( 2.f,  m_uiComponent->GetQuadScale(m_dialogId).y, 1.f ), Vector4f(1, 0, 0, 0.f), Vector2f(0, 0));
+	AddComponent(m_buttonComponent);
+	m_buttonComponent->SetOnEvent([this](const Event& event) {
+		if (event.GetEventType() == EventType::MouseButtonReleased || event.GetEventType() == EventType::TouchReleased) {
+			if (m_textPos == m_uiComponent->GetTextSize(m_textId)) {
+				Destroy();
+			}
+			else {
+				m_spriteAnimComponent->Stop();
+				m_audioComponent->SetLooping(false);
+				m_uiComponent->SetTextColor(m_textId, { 1,1,1,1 }, m_textPos, m_uiComponent->GetTextSize(m_textId)-m_textPos);
+				m_textPos = m_uiComponent->GetTextSize(m_textId) ;
+			}
+		}
+	});
+
 
 }
 

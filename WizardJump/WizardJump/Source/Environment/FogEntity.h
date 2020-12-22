@@ -22,9 +22,15 @@ public:
 	void SetFractalGain(float gain);
 	void SetFrequency(float freq);
 	void SetSeed(int seed);
+	void SetTickSpeed(float speed);
+	void SetSpeed(float speed);
 
 	float m_gain = .5f, m_frequency = .01f, m_lacunarity = 2.f;
 	int m_octaves = 4, m_seed = 0;
+
+
+	float m_speed = 16; //MS
+	float m_moveSpeed = 2.f;
 
 protected:
 	FastNoiseLite noise;
@@ -43,7 +49,6 @@ protected:
     
     uint64_t m_textureIds[3];
 
-	float m_speed = 16; //MS
 
 	float m_noiseStrength = 4.f;
 	float m_zNoiseStrength = .5f;
