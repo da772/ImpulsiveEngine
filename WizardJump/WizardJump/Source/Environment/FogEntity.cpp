@@ -153,6 +153,7 @@ void FogEntity::OnUpdate(Timestep timestep)
 			{
 				if (m_ending) {
 					delete[] noiseData;
+					noiseData = nullptr;
 					return;
 				}
 				std::lock_guard<std::mutex> guard(m_mutex);

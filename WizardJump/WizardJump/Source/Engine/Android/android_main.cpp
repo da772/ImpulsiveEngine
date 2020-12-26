@@ -19,8 +19,8 @@
 #include <malloc.h>
 #include <jni.h>
 #include <errno.h>
-#include "Public/Core/Platform/Window/Android/android_util.h"
-#include "Public/Core/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Platform/Window/Android/android_util.h"
+#include "Public/Platform/Window/Mobile/Mobile_Input.h"
 #include "GEngine.h"
 #include <EntryPoint.h>
 

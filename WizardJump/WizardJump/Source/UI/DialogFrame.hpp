@@ -11,6 +11,9 @@ public:
 	DialogFrame(const Vector3f& position, float textSpeed, const std::string& title, const std::string& icon, const std::string& text);
 	~DialogFrame();
 
+	void SetOnDialogComplete(const std::function<void()>& f );
+	inline void SetStickyFrame(bool b) { m_sticky = b; }
+
 protected:
 	Vector3f m_position;
 	std::string m_text;
@@ -23,9 +26,12 @@ protected:
 	Ref<SpriteAnimationComponent> m_spriteAnimComponent;
 	Ref<ButtonComponent> m_buttonComponent;
 	float m_characterPerSecond = 20.f;
+	bool m_sticky = false;
 	Ref<Font> m_font;
 	int m_textPos = 0;
 	int maxChars = 180;
+
+	std::function<void()> m_onComplete = nullptr;
 
 	bool m_isTyping = false;
 

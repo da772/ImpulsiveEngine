@@ -170,7 +170,7 @@ namespace GEngine {
 			c.second = nullptr;
 		}
 		components.clear();
-		scene.reset();
+		//scene.reset();
 	}
 
 	const Vector3f Entity::GetEntityPosition() {

@@ -238,9 +238,13 @@ void CharacterController::OnUpdate(Timestep timestep) {
 void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Timestep timestep) {
     if (!bEnableInput)
         return;
+   
     const Vector2f& vel = bodyComp->GetVelocity();
     const bool ground = bodyComp->isGrounded();
     for (const FTouchInfo& touch : m) {
+		if (m_inputFilterFunc) {
+			if (!m_inputFilterFunc(touch)) return;
+		}
         /*
             State 0:
                     - Check if we have already been processed
@@ -374,7 +378,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
                 }
             }
         }
-        else if (touchId != 0 && touch.y > startyPos + Application::GetHeight() * jumpThreshold) {
+        else if (bEnableJump && touchId != 0 && touch.y > startyPos + Application::GetHeight() * jumpThreshold) {
             if (!bFalling && !bJumping && ground) {
                 SetJumping(true);
                 lastxpos = touch.x;

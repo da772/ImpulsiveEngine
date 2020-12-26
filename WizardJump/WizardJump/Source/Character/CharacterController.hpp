@@ -40,6 +40,7 @@ public:
 	bool bJumping = false;
 	bool bWalking = false;
 	bool bEnableInput = true;
+	bool bEnableJump = true;
 	const float walkAnimThreshold = .03f;
 	const float maxWalkSpeed = 2.5f;
     const int walkDelay = 125;
@@ -51,6 +52,10 @@ public:
     const static float jumpYDragClamp;
     static const float maxJumpXVel;
     static const float maxJumpYVel;
+
+	inline void SetInputFilterFunction(std::function<bool(const FTouchInfo& touch)> f) {
+		m_inputFilterFunc = f;
+	}
 
 
 
@@ -79,6 +84,8 @@ protected:
     */
     uint64_t pcTouchTime = 0;
     int pcX = 0, pcY = 0, pcState = -1;
+
+	std::function<bool(const FTouchInfo& touch)> m_inputFilterFunc = nullptr;
 
 
     void SetJumping(bool bJump) {

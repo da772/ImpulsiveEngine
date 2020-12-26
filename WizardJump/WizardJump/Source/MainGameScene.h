@@ -136,7 +136,7 @@ public:
 		AddEntity(fog);
 
 
-		AddEntity(CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+		
 
 
 		button->SetOnEvent([](const GEngine::Event& e) {
@@ -249,13 +249,81 @@ public:
 		comp->CreateQuad({ -15.7f,8.8f,3 }, 0, { 9.25f,11.78f,0 }, { .4f,.4f,.4f,1.f }, Texture2D::Create("Content/Textures/towerUnder.png", TEXTUREFLAGS_Wrap_ClampToEdge));
 
 
-
 		/**
 		 * END CHUNK
 		 */
-	
+		
+		/* TUTORIAL BEGIN */
         
 
+		uint64_t uiT = FPSuiComponent->CreateQuad({ -.5f,0,0 }, 0, { 1.f,2,1 }, { .25f,.25f,.25f,0 });
+
+		characterEntity->m_characterComponent->bEnableInput = false;
+		characterEntity->m_characterComponent->bEnableJump = false;
+		Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! \n(Tap here to continue...)");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+		dialog->SetOnDialogComplete([this, uiT]() {
+			/*
+			Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+			dialog->SetStickyFrame(true);
+			AddEntity(dialog);
+			FPSuiComponent->SetColor(uiT, { .1f,.1f,.1f,.9f });
+			characterEntity->m_characterComponent->bEnableInput = true;
+
+			characterEntity->m_characterComponent->SetInputFilterFunction([this, dialog, uiT](const GEngine::FTouchInfo& touch) {
+				// ensure we are moving right!
+				if (touch.state == 0 && touch.x <= (float)Application::GetWidth() / 2.f) {
+					return false;
+				}
+				else {
+					if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x > 2.f || characterEntity->GetEntityPosition().x > -8.f) {
+						dialog->Destroy();
+						characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
+						characterEntity->m_characterComponent->bEnableInput = false;
+						Ref<DialogFrame> _dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the left side of the screen to move to the left!");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+						_dialog->SetStickyFrame(true);
+						FPSuiComponent->SetPosition(uiT, { .5f, 0 });
+						AddEntity(_dialog);
+						
+						characterEntity->m_characterComponent->SetInputFilterFunction([this, _dialog, uiT](const GEngine::FTouchInfo& touch) {
+							// ensure we are moving right!
+							if (touch.state == 0 && touch.x >= (float)Application::GetWidth() / 2.f) {
+								return false;
+							}
+							else {
+								if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x < -2.f || characterEntity->GetEntityPosition().x < -10.0f) {
+									_dialog->Destroy();
+									characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
+									characterEntity->m_characterComponent->SetInputFilterFunction(nullptr);
+									characterEntity->m_characterComponent->bEnableInput = false;
+									Ref<DialogFrame> __dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "I should keep walking to the right. \n(Tap here to continue...)");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+									AddEntity(__dialog);
+									FPSuiComponent->Remove(uiT);
+									__dialog->SetOnDialogComplete([this]() {
+										characterEntity->m_characterComponent->bEnableInput = true;
+										// Enable jump during jump tutorial
+										characterEntity->m_characterComponent->bEnableJump = true;
+										});
+									
+								}
+
+							}
+
+
+							return true;
+							});
+						characterEntity->m_characterComponent->bEnableInput = true;
+					}
+						
+				}
+
+				return true;
+			});
+				*/
+			});
+		AddEntity(dialog);
+
+
+		/* TUTORIAL END */
 
 
 	}

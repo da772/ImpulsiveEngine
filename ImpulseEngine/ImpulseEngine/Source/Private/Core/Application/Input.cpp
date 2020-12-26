@@ -79,6 +79,8 @@ namespace GEngine {
 		}
 
 
+		return s_Instance;
+
 
 
 	}

@@ -103,8 +103,11 @@ namespace GEngine {
 
 		float tWidth = texture ? texture->GetWidth() : 1.f;
 		float tHeight = texture ? texture->GetHeight() : 1.f;
-
-		_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
+		if (texture)
+			_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
+		else {
+			_scale = scale * GetEntity()->GetEntityTransformComponent()->GetScale();
+		}
 
 		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
