@@ -30,8 +30,8 @@ void main() {
     v_TexCoord = a_TexCoord;
     v_TexScale = a_TexScale;
     v_Position2D = a_Position2D;
-    gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
     r_Position =  gl_Position.xy;
+    gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 }
 
 #type fragment

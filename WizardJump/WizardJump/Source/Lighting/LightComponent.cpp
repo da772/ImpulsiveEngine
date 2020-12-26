@@ -14,10 +14,14 @@ LightComponent::LightComponent() {
         m_Shader = Ref<Shader>(Shader::Create(path));
         LightComponent::s_CircleShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Circle>(new Circle()),
             5000, m_Shader, "lighting"));
-
-		LightComponent::s_QuadShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
-			5000, Shader::Create("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots()) + "Batch.glsl") , "lighting"));
     }
+
+    if (s_QuadShapeFactory == nullptr) {
+		LightComponent::s_QuadShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
+			5000, Shader::Create("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots()) + "Batch.glsl"), "lighting"));
+    }
+		
+    
 }
 
 

@@ -213,6 +213,7 @@ public:
 		bg->AddParalaxBackground("frontL", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -12, { -8,-6 });
 		bg->AddParalaxBackground("frontR", Texture2D::Create("Content/Textures/MountainBackground/background3.png", TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Wrap_ClampToEdge), { 16,8 }, .3f, -12, { 8,-6 });
 
+		
 		Ref<LightComponent> lc = CreateGameObject<LightComponent>();
 		bg->AddComponent(lc);
 		lc->AddQuadLight({ -98.f,0.f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
@@ -220,20 +221,21 @@ public:
 		lc->AddQuadLight({ 0.f,107.f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
 		lc->AddQuadLight({ 0.f,-107.95f }, 0.f, { 200.f,200.f }, { 0.f,0.f,0.f,300.f });
 		
+
 		AddEntity(CreateGameObject<FireEntity>(Vector3f(9.5f,-1,6)));
 		AddEntity(CreateGameObject<FireEntity>(Vector3f(9.5f, 5., 6)));
 		AddEntity(CreateGameObject<FireEntity>(Vector3f(4.f, 5., 6)));
 
 		AddEntity(CreateGameObject<LightGlowEntity>(Vector3f(10.23f,-6.7f,0 ),Vector2f(1,1), Vector2f(.25f,.25f), Vector4f(0,1,0,.5f)));
 
-
+		
 		Ref<SpriteEntity> windowLights = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), Vector2f(1, 1), 0.0f, "WindowLighting");
 		AddEntity(windowLights);
 		Ref<LightComponent> windowL = CreateGameObject<LightComponent>();
 		windowLights->AddComponent(windowL);
 		windowL->AddQuadLight({ 4.9f,-5.4f}, 0, { 5.125f, 5.031f }, { 1.f,1.f,1.f,.7f }, Texture2D::Create("Content/Textures/windowLight01.png"));
 		windowL->AddQuadLight({ 4.9f,1.3f }, 0, { 5.125f, 5.031f }, { 1.f,1.f,1.f,.7f }, Texture2D::Create("Content/Textures/windowLight01.png"));
-
+		
 		
 
 		Ref<SpriteEntity> spriteEntity = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), Vector2f(1, 1), 0.0f, "Level01_Background");
@@ -254,7 +256,7 @@ public:
 		 */
 		
 		/* TUTORIAL BEGIN */
-        
+		
 
         tutorialCover = FPSuiComponent->CreateQuad({ -.5f,0,0 }, 0, { 1.f,2,1 }, { .25f,.25f,.25f,0 });
 
@@ -322,7 +324,7 @@ public:
 			});
 		AddEntity(dialog);
 
-
+		
 		/* TUTORIAL END */
 
 

@@ -67,8 +67,12 @@ void DialogFrame::OnBegin()
 	m_buttonComponent->SetOnEvent([this](const Event& event) {
 		if (event.GetEventType() == EventType::MouseButtonReleased || event.GetEventType() == EventType::TouchReleased) {
 			if (m_textPos == m_uiComponent->GetTextSize(m_textId)) {
-				if (!m_sticky)
+				if (m_onComplete) {
+					m_onComplete();
+				}
+				if (!m_sticky) {
 					Destroy();
+				}
 			}
 			else {
 				m_spriteAnimComponent->Stop();
@@ -84,9 +88,7 @@ void DialogFrame::OnBegin()
 
 void DialogFrame::OnEnd()
 {
-	if (m_onComplete) {
-		m_onComplete();
-	}
+
 	m_spriteAnimComponent = nullptr;
 	m_uiComponent = nullptr;
 }
