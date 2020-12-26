@@ -174,7 +174,8 @@ namespace GEngine {
 
 	void ButtonComponent::DeAttached(Ref<Entity> entity)
 	{
-		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
+        if (entity)
+            entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
 	}
 
 	void ButtonComponent::OnBegin()

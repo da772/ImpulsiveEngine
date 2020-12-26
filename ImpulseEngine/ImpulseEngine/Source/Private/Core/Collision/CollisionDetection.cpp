@@ -166,7 +166,9 @@ namespace GEngine {
 
         std::lock_guard<std::mutex> guard(s_uiMutex);
         if (s_lastCollider) {
-            s_lastUICollision.lock()->UIMouseCollideEnd(x,y);
+            if (s_lastUICollision.lock())
+                s_lastUICollision.lock()->UIMouseCollideEnd(x,y);
+            s_lastUICollision.reset();
             s_lastCollider = false;
         }
 		return nullptr;

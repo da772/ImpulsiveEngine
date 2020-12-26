@@ -119,7 +119,7 @@ public:
 		float buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 6.25f;
 		float buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 6.25f;
 		GEngine::Ref<GEngine::ButtonComponent> button = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			Vector3f(.85, .90, 0), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
+			Vector3f(.85, .90, 1), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
 		eFPS->AddComponent(button);
 		button->SetImageTexture(buttonTexture);
 		float lastButtonX = buttonX;
@@ -128,7 +128,7 @@ public:
 		buttonY = sizeY * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
 		buttonX = sizeX * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
 		GEngine::Ref<GEngine::ButtonComponent> button2 = GEngine::CreateGameObject<GEngine::ButtonComponent>(
-			Vector3f(.8 - (lastButtonX / 2.f) - buttonX/2.f, .90, 0), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
+			Vector3f(.8 - (lastButtonX / 2.f) - buttonX/2.f, .90, 1), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
 		eFPS->AddComponent(button2);
 		button2->SetImageTexture(buttonTexture);
 
@@ -256,20 +256,20 @@ public:
 		/* TUTORIAL BEGIN */
         
 
-		uint64_t uiT = FPSuiComponent->CreateQuad({ -.5f,0,0 }, 0, { 1.f,2,1 }, { .25f,.25f,.25f,0 });
+        tutorialCover = FPSuiComponent->CreateQuad({ -.5f,0,0 }, 0, { 1.f,2,1 }, { .25f,.25f,.25f,0 });
 
 		characterEntity->m_characterComponent->bEnableInput = false;
 		characterEntity->m_characterComponent->bEnableJump = false;
 		Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! \n(Tap here to continue...)");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
-		dialog->SetOnDialogComplete([this, uiT]() {
-			/*
+		dialog->SetOnDialogComplete([this]() {
+			
 			Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 			dialog->SetStickyFrame(true);
 			AddEntity(dialog);
-			FPSuiComponent->SetColor(uiT, { .1f,.1f,.1f,.9f });
+			FPSuiComponent->SetColor(tutorialCover, { .1f,.1f,.1f,.9f });
 			characterEntity->m_characterComponent->bEnableInput = true;
 
-			characterEntity->m_characterComponent->SetInputFilterFunction([this, dialog, uiT](const GEngine::FTouchInfo& touch) {
+			characterEntity->m_characterComponent->SetInputFilterFunction([this, dialog](const GEngine::FTouchInfo& touch) {
 				// ensure we are moving right!
 				if (touch.state == 0 && touch.x <= (float)Application::GetWidth() / 2.f) {
 					return false;
@@ -281,10 +281,10 @@ public:
 						characterEntity->m_characterComponent->bEnableInput = false;
 						Ref<DialogFrame> _dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the left side of the screen to move to the left!");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 						_dialog->SetStickyFrame(true);
-						FPSuiComponent->SetPosition(uiT, { .5f, 0 });
+						FPSuiComponent->SetPosition(tutorialCover, { .5f, 0 });
 						AddEntity(_dialog);
 						
-						characterEntity->m_characterComponent->SetInputFilterFunction([this, _dialog, uiT](const GEngine::FTouchInfo& touch) {
+						characterEntity->m_characterComponent->SetInputFilterFunction([this, _dialog](const GEngine::FTouchInfo& touch) {
 							// ensure we are moving right!
 							if (touch.state == 0 && touch.x >= (float)Application::GetWidth() / 2.f) {
 								return false;
@@ -297,7 +297,7 @@ public:
 									characterEntity->m_characterComponent->bEnableInput = false;
 									Ref<DialogFrame> __dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "I should keep walking to the right. \n(Tap here to continue...)");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 									AddEntity(__dialog);
-									FPSuiComponent->Remove(uiT);
+                                    FPSuiComponent->Remove(tutorialCover);
 									__dialog->SetOnDialogComplete([this]() {
 										characterEntity->m_characterComponent->bEnableInput = true;
 										// Enable jump during jump tutorial
@@ -318,7 +318,7 @@ public:
 
 				return true;
 			});
-				*/
+				
 			});
 		AddEntity(dialog);
 
@@ -328,6 +328,8 @@ public:
 
 	}
 
+    
+    ShapeID tutorialCover;
 
 
 	inline void OnEnd() override

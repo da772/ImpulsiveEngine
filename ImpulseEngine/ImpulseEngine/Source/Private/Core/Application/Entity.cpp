@@ -33,6 +33,7 @@ namespace GEngine {
 	{
 		End();
 		Entity::refCount--;
+        self.reset();
 	}
 
 
@@ -139,7 +140,8 @@ namespace GEngine {
 			OnEnd();
 			Ref<Entity> e = static_pointer_cast<Entity>(self.lock());
 			for (std::pair<uint64_t, Ref<Component>> c : components) {
-				c.second->DeAttached(e);
+                if (e)
+                    c.second->DeAttached(e);
 				c.second->End();
 			}
 		}
