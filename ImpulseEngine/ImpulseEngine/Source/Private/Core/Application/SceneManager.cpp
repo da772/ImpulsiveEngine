@@ -6,6 +6,7 @@
 #include "Public/Core/Util/Timestep.h"
 #include "Public/Core/Events/Event.h"
 #include "Public/Core/Util/ThreadPool.h"
+#include "Public/Core/Collision/CollisionDetection.h"
 
 
 namespace GEngine {
@@ -30,6 +31,7 @@ namespace GEngine {
 	void SceneManager::SetCurrentScene(const std::string& name, bool unload)
 	{
 		ThreadPool::AddEndFrameFunction([name, unload]() {
+			CollisionDetection::Reset();
 			if (SceneManager::scene != nullptr) {
 				scene->End();
 				if (unload)
@@ -73,12 +75,14 @@ namespace GEngine {
 
 	void SceneManager::ReloadGraphics(){
 		if (scene != nullptr) {
+			CollisionDetection::Reset();
 			scene->ReloadGraphics();
 		}
 	}
 
 	void SceneManager::UnloadGraphics() {
 		if (scene != nullptr) {
+			CollisionDetection::Reset();
 			scene->UnloadGraphics();
 		}
 	}
@@ -116,12 +120,14 @@ namespace GEngine {
 
 	void SceneManager::Pause(bool b)
 	{
+		CollisionDetection::Reset();
 		b_paused = b;
 	}
 
 	void SceneManager::ResetScene()
 	{
 		if (scene != nullptr) {
+			CollisionDetection::Reset();
 			End();
 			scene->Unload();
 			Begin();

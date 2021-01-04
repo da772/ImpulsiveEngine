@@ -268,12 +268,12 @@ public:
 			Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 			dialog->SetStickyFrame(true);
 			AddEntity(dialog);
-			FPSuiComponent->SetColor(tutorialCover, { .1f,.1f,.1f,.9f });
+			FPSuiComponent->SetColor(tutorialCover, { .0f,.0f,.0f,.9f });
 			characterEntity->m_characterComponent->bEnableInput = true;
-
+			
 			characterEntity->m_characterComponent->SetInputFilterFunction([this, dialog](const GEngine::FTouchInfo& touch) {
 				// ensure we are moving right!
-				if (touch.state == 0 && touch.x <= (float)Application::GetWidth() / 2.f) {
+				if ((touch.state == 0 || touch.state == 1) && touch.x <= (float)Application::GetWidth() / 2.f) {
 					return false;
 				}
 				else {
@@ -287,8 +287,8 @@ public:
 						AddEntity(_dialog);
 						
 						characterEntity->m_characterComponent->SetInputFilterFunction([this, _dialog](const GEngine::FTouchInfo& touch) {
-							// ensure we are moving right!
-							if (touch.state == 0 && touch.x >= (float)Application::GetWidth() / 2.f) {
+							// ensure we are moving left!
+							if ( (touch.state == 0 || touch.state == 1) && touch.x >= (float)Application::GetWidth() / 2.f) {
 								return false;
 							}
 							else {

@@ -25,6 +25,7 @@ namespace GEngine {
 		static Ref<Collider> InteractionEndUI(const float x, const float y);
 		static bool CheckLastUI(Ref<Collider> c);
 		static void OnEvent(const Event& e);
+		static void Reset();
 		
 	private:
 		static std::unordered_set<Ref<Collider>> s_GameColliders;

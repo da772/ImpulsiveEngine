@@ -102,6 +102,7 @@ namespace GEngine {
     void Application::UnloadGraphics() {
         if (Application::GetApp() == nullptr || !Application::GetApp()->m_Running) return;
         if (!AdManager::AdPlaying() && Application::GetApp()->m_loaded) Application::GetApp()->Pause();
+        CollisionDetection::Reset();
         SceneManager::UnloadGraphics();
         Renderer::Unload();
         Font::UnloadGraphics();
@@ -309,6 +310,7 @@ namespace GEngine {
 	void Application::Shutdown()
 	{
         m_Running = false;
+        CollisionDetection::Reset();
         Texture2D::GetLoadedTexturesRaw().clear();
         Physics::Shutdown();
         SceneManager::End();

@@ -190,6 +190,12 @@ namespace GEngine {
 			
 	}
 
+	void CollisionDetection::Reset()
+	{
+		s_lastCollider = false;
+		s_lastUICollision.reset();
+	}
+
 	bool UIComparator::operator()(Ref<Collider>left, Ref<Collider> right) const
 	{
 		return left->GetPosition().z < right->GetPosition().z;

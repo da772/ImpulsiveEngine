@@ -7,7 +7,7 @@ using namespace GEngine;
 
 enum class MovementAnim {
 
-	None = -0,
+	None = 0,
 	Idle,
 	Walk,
 	Crouch, 
@@ -25,7 +25,7 @@ public:
 
 	std::vector<std::function<void()>> animQue;
 
-	MovementAnim animState = MovementAnim::Idle;
+	MovementAnim animState = MovementAnim::None;
 	int dir = 1;
 	bool bIsWalking = false;
     bool bAnimating = false;
