@@ -138,10 +138,8 @@ namespace GEngine {
 	void Entity::End() {
 		if (bInit) {
 			OnEnd();
-			Ref<Entity> e = static_pointer_cast<Entity>(self.lock());
 			for (std::pair<uint64_t, Ref<Component>> c : components) {
-                if (e)
-                    c.second->DeAttached(e);
+                //c.second->DeAttached(nullptr);
 				c.second->End();
 			}
 		}

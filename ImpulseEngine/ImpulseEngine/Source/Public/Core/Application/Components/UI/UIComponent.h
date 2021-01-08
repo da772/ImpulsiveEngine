@@ -44,6 +44,7 @@ namespace GEngine {
 		void SetPosition(const ShapeID id, const Vector2f& position);
 		void SetPositionScript(const ShapeID id, Ref<ScriptVector2> position);
 		void SetZOrder(const ShapeID id, const float zOrder);
+		void SetScale(const ShapeID id, const Vector3f& scale);
 
         
         Vector2f GetQuadScale(const ShapeID& id);

@@ -2,6 +2,7 @@
 #ifndef GE_FACTORY_INCLUDE
 #define GE_FACTORY_INCLUDE
 #include "Public/Core/Util/Time.h"
+#include "Public/Core/Util/Utility.h"
 
 namespace GEngine {
 
@@ -10,14 +11,25 @@ namespace GEngine {
 		static uint64_t NextHash() {
 			return ++Factory::counter;
 		}
+		static std::unordered_set<uint64_t> hashes;
+		static void RemoveHash(uint64_t hash) { hashes.erase(hash); };
 	}
 
 	template<class E, typename ... Args>
 	static inline std::shared_ptr<E> CreateGameObject(Args&& ... args) {
 		std::shared_ptr<E> e = std::make_shared<E>(std::forward<Args>(args)...);
 		e->self = e;
-		std::hash<long long> hash;
-		e->hash = hash(Time::GetEpochTimeNS());
+		char ch[8];
+		Utility::GenerateHash(ch, 8);
+		uint64_t h = 0;
+		memcpy(&h, ch, sizeof(char) * 8);
+
+		while (Factory::hashes.find(h) != Factory::hashes.end()) {
+			Utility::GenerateHash(ch, 8);
+			memcpy(&h, ch, sizeof(char) * 8);
+		}
+
+		e->hash = h;
 		return e;
 	};
 

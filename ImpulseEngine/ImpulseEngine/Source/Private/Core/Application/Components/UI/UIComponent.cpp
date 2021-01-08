@@ -228,8 +228,15 @@ namespace GEngine {
 
 	void UIComponent::SetZOrder(ShapeID id, float zOrder)
 	{
-		if (id >= 0) {
+		if (id > 0) {
 			s_ShapeFactory->SetZOrder(id, zOrder + entity.lock()->GetEntityPosition().z);
+		}
+	}
+
+	void UIComponent::SetScale(const ShapeID id, const Vector3f& scale)
+	{
+		if (id > 0) {
+			s_ShapeFactory->SetScale(id, scale);
 		}
 	}
 
@@ -240,7 +247,7 @@ namespace GEngine {
 
 	void UIComponent::Remove(ShapeID id)
 	{
-		if (id >= 0) {
+		if (id > 0) {
 			s_ShapeFactory->RemoveShape(id);
 			m_ids.erase(std::find(m_ids.begin(), m_ids.end(), id));
 		}

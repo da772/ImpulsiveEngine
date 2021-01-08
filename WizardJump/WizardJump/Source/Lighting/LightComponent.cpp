@@ -221,6 +221,7 @@ void LightComponent::OnAttached(Ref<Entity> entity)
 
 void LightComponent::DeAttached(Ref<Entity> entity)
 {
+    if (!entity) return;
 	entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
 }
 

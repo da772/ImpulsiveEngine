@@ -45,6 +45,7 @@ namespace GEngine {
 
 	void SpriteComponent::DeAttached(Ref<Entity> entity)
 	{
+		if (!entity) return;
 		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
 	}
 
