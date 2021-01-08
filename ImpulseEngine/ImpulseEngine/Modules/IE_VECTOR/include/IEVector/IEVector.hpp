@@ -145,7 +145,6 @@ class Vector2 {
         static inline T distance(const Vector2<T>& a, const Vector2<T>& b)  { return sqrt<T>(( (a.x-b.x)*(a.x-b.x) ) + ((a.y-b.y)*(a.y-b.y))); };
         static inline Vector2<T> lerp(const Vector2<T>& a, const Vector2<T>& b, T amt)  { return Vector2<T>(IEVector::lerp<T>(a.x,b.x, amt), IEVector::lerp<T>(a.y,b.y,amt)); }
         inline const T* data() const { return &x;}
-        //template < typename N > Vector2& operator=(const Vector2< N >& rhs) { return Vector2<N>((T)rhs.x, (T)rhs.y); }
 };
 
 template <typename T>
@@ -312,7 +311,6 @@ class Vector3 {
         static inline Vector3<T> lerp(const Vector3<T>& a, const Vector3<T>& b, T amt)  { return Vector3<T>(IEVector::lerp<T>(a.x,b.x, amt), IEVector::lerp<T>(a.y,b.y,amt), IEVector::lerp<T>(a.z,b.z,amt)); }
         inline Vector2<T> xy() const { return {x,y};}
         inline const T* data() const { return &x;}
-        //template < typename N > Vector3& operator=(const Vector3< N >& rhs) { return Vector3<N>((T)rhs.x, (T)rhs.y, (T)rhs.z); }
 };
 
 template <typename T>
@@ -527,7 +525,6 @@ class Vector4 {
         inline Vector2<T> xy() const { return {x,y};}
         inline Vector3<T> xyz() const { return {x,y,z};}
         inline const T* data() const { return &x;}
-		//template < typename N > Vector4& operator=(const Vector4< N >& rhs) { return Vector4<N>((T)rhs.x, (T) rhs.y, (T) rhs.z, (T) rhs.w); }
 };
 
 template<typename T = float>
