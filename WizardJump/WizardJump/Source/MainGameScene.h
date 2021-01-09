@@ -265,13 +265,13 @@ public:
 
 		characterEntity->m_characterComponent->bEnableInput = false;
 		characterEntity->m_characterComponent->bEnableJump = false;
-		Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! \n(Tap here to continue...)");//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+		Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "This is a big mountain. I wonder how I got up here. Maybe I should search that tower for clues so I can get out of here! \n(Tap here to continue...)", true, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 	
 		
 		
 		dialog->SetOnDialogComplete([this]() {
 			
-			Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!", false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+			Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 			dialog->SetStickyFrame(true);
 			AddEntity(dialog);
 			Ref<SpriteAnimationComponent> spriteAnim = CreateGameObject<SpriteAnimationComponent>();
@@ -295,7 +295,7 @@ public:
 						dialog->Destroy();
 						characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
 						characterEntity->m_characterComponent->bEnableInput = false;
-						Ref<DialogFrame> _dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the left side of the screen to move to the left!", false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+						Ref<DialogFrame> _dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the left side of the screen to move to the left!", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 						_dialog->SetStickyFrame(true);
 						FPSuiComponent->SetColor(tutorialCover, { .0f,.0f,.0f, 0.f });
 						FPSuiComponent->SetPosition(tutorialCover, { .5f, 0 });
@@ -319,7 +319,7 @@ public:
 									characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
 									characterEntity->m_characterComponent->SetInputFilterFunction(nullptr);
 									characterEntity->m_characterComponent->bEnableInput = false;
-									Ref<DialogFrame> __dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "I should keep walking to the right. \n(Tap here to continue...)", false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+									Ref<DialogFrame> __dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "I should keep walking to the right. \n(Tap here to continue...)", false, true);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 									AddEntity(__dialog);
                                     FPSuiComponent->Remove(tutorialCover);
 									__dialog->SetOnDialogComplete([this]() {

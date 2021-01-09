@@ -8,7 +8,7 @@ using namespace GEngine;
 
 class DialogFrame : public Entity {
 public:
-	DialogFrame(const Vector3f& position, float textSpeed, const std::string& title, const std::string& icon, const std::string& text, bool animate = true);
+	DialogFrame(const Vector3f& position, float textSpeed, const std::string& title, const std::string& icon, const std::string& text, bool animateOpen = true, bool animateClose = true);
 	~DialogFrame();
 
 	void SetOnDialogComplete(const std::function<void()>& f );
@@ -22,6 +22,7 @@ protected:
 	float m_textScale = .35f;
 	float m_titleScale = .45f;
 	bool animateOpen = true;
+	bool animateClose = true;
 	Ref<UIComponent> m_uiComponent;
 	Ref<AudioComponent> m_audioComponent;
 	Ref<SpriteAnimationComponent> m_spriteAnimComponent;

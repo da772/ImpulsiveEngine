@@ -3,13 +3,13 @@
 #include "UI/DialogFrame.hpp"
 
 
-DialogFrame::DialogFrame(const Vector3f& position, float textSpeed, const std::string& title,const std::string& icon, const std::string& text, bool animate) : m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon)
+DialogFrame::DialogFrame(const Vector3f& position, float textSpeed, const std::string& title,const std::string& icon, const std::string& text, bool animateOpen, bool animateClose) : m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon)
 {
 	bUpdates = true;
 	m_font = Font::Create("Content/Fonts/Wizard.ttf", 120.f);
 	m_font->LoadCharactersEN();
-	animateOpen = animate;
-	
+	this->animateOpen = animateOpen;
+	this->animateClose = animateClose;
 }
 
 DialogFrame::~DialogFrame()
@@ -102,11 +102,34 @@ void DialogFrame::OnBegin()
 		if (isAnimating) return;
 		if (event.GetEventType() == EventType::MouseButtonReleased || event.GetEventType() == EventType::TouchReleased) {
 			if (m_textPos == m_uiComponent->GetTextSize(m_textId)) {
-				if (m_onComplete) {
-					m_onComplete();
-				}
+				
 				if (!m_sticky) {
-					Destroy();
+					if (animateClose) {
+						m_uiComponent->RemoveText(m_titleId);
+						m_uiComponent->RemoveText(m_textId);
+						isAnimating = true;
+						m_spriteAnimComponent->SetFrameAnimation(30, 15, false, [this](int frame) {
+							m_uiComponent->SetScale(m_iconId, { iconScale.x - ((float)frame * iconScale.x / 15.f),iconScale.y - ((float)frame * iconScale.y / 15.f),1 });
+							m_uiComponent->SetScale(m_dialogId, { dialogScale.x - ((float)frame * dialogScale.x / 15.f), dialogScale.y - ((float)frame * dialogScale.y / 15.f),1 });
+
+							if (frame >= 15) {
+								if (m_onComplete) {
+									m_onComplete();
+								}
+								ThreadPool::AddMainThreadFunction([this]() {
+									isAnimating = false;
+									Destroy();
+								});
+							}
+
+						});
+					}
+					else {
+						if (m_onComplete) {
+							m_onComplete();
+						}
+						Destroy();
+					}
 				}
 			}
 			else {
