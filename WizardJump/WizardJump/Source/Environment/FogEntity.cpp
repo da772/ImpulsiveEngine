@@ -1,5 +1,8 @@
 #include "Environment/FogEntity.h"
 
+std::mutex FogEntity::m_mutex;
+
+
 FogEntity::FogEntity()
 {
 	bUpdates = true;

@@ -31,6 +31,8 @@ public:
 
 	float m_speed = 16; //MS
 	float m_moveSpeed = 2.f;
+    
+    static std::mutex m_mutex;
 
 protected:
 	FastNoiseLite noise;
@@ -53,7 +55,7 @@ protected:
 	float m_noiseStrength = 4.f;
 	float m_zNoiseStrength = .5f;
 
-	std::mutex m_mutex;
+	
 	uint64_t m_spriteId = 0;
 
 	uint64_t m_pitchAdjust = 0;
