@@ -35,14 +35,14 @@ public:
 		bAnimating = true;
 		if (animState == MovementAnim::Walk) return;
 		animState = MovementAnim::Walk;
-		m_animationComp->SetFrameAnimation(8, 8, true, [this, f](int frame) {
+		m_animationComp->SetFrameAnimation(8, 9, true, [this, f](int frame) {
 			if (frame == 2) {
 				FootDown(0);
 			}
 			else if (frame == 6) {
 				FootDown(1);
 			}
-			else if (frame == 8) {
+			else if (frame == 9) {
 				if (f) {
 					bAnimating = false;
 					ThreadPool::AddMainThreadFunction([f]() {
@@ -53,6 +53,7 @@ public:
 				}
 			}
 			bIsWalking = true;
+			frame = frame == 9 ? 1 : frame; // extra frame for loop
 			m_characterSpriteSheet->SetCoords(Vector2f(dir >= 0 ? frame-1 : frame, 1), Vector2f(74, 74), Vector2f(dir, 1));
 			SetSubTexture(quad, m_characterSpriteSheet);
 			
