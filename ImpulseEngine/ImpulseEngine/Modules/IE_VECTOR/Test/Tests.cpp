@@ -39,6 +39,16 @@ void vec4Tests() {
     vc--;
     assert(vc == Vector4f(1,1,1,1));
     std::cout << "Reference Operators Pass" << std::endl;
+
+    assert(vc.x == vc.r);
+    assert(vc.y == vc.g);
+    assert(vc.z == vc.b);
+    assert(vc.w == vc.a);
+    assert(vc.s == vc.x);
+    assert(vc.t == vc.y);
+    assert(vc.p == vc.z);
+    assert(vc.q == vc.w);
+
     
     Vector4f subVec(5,5, 6,4);
     std::cout << "Testing copy operators" << std::endl;
@@ -113,6 +123,15 @@ void vec3Tests() {
 
     vc--;
     assert(vc == Vector3f(1,1,1));
+
+
+    assert(vc.x == vc.r);
+    assert(vc.y == vc.g);
+    assert(vc.z == vc.b);
+    assert(vc.s == vc.x);
+    assert(vc.t == vc.y);
+    assert(vc.p == vc.z);
+
     std::cout << "Reference Operators Pass" << std::endl;
     Vector3f subVec(5,5, 6);
     std::cout << "Testing copy operators" << std::endl;
@@ -179,6 +198,13 @@ void vec2Tests() {
     assert(vc.x == 2 && vc.y == 2);
     vc--;
     assert(vc.x == 1 && vc.y == 1);
+
+    assert(vc.x == vc.r);
+    assert(vc.y == vc.g);
+    assert(vc.s == vc.x);
+    assert(vc.t == vc.y);
+
+
     std::cout << "Reference Operators Pass" << std::endl;
     Vector2f subVec(5,5);
     std::cout << "Testing copy operators" << std::endl;

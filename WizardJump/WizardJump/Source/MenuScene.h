@@ -24,15 +24,12 @@ public:
 
 	inline void OnBegin() override
 	{
-
-
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		buttonsEntity = GEngine::CreateGameObject<GEngine::Entity>();
 		AddEntity(buttonsEntity);
 		textComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 		buttonsEntity->AddComponent(textComponent);
-		
 		
 		float size = max( (float)Application::GetWidth() /(float)Application::GetUIResolutionWidth(), (float) Application::GetHeight()/(float)Application::GetUIResolutionHeight());
 		float buttonY = size*((float)buttonTexture->GetHeight()/ (float)Application::GetHeight())*5.f;
@@ -48,8 +45,6 @@ public:
 
 		startButton->SetOnEvent([](const Event& e) {
 
-			
-
 			if (e.GetEventType() == EventType::MouseButtonReleased) {
 				GE_LOG_DEBUG("EVENT: {0}", e.GetName());
 				GEngine::SceneManager::SetCurrentScene("mainGame");
@@ -64,10 +59,7 @@ public:
 			}
 			
 		});
-
-
 	
-		
 	}
 
 
@@ -89,7 +81,6 @@ public:
 
 	inline void OnUnload() override
 	{
-		
         buttonTexture = nullptr;
 		m_CameraController = nullptr;
 	}

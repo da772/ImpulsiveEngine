@@ -13,6 +13,8 @@
 #include "Environment/Objects/LightGlowEntity.hpp"
 #include "Environment/FogEntity.h"
 
+#include "Environment/CloudGenerator.h"
+
 #include "UI/DialogFrame.hpp"
 
 #include "Environment/SpriteEntity.hpp"
@@ -260,6 +262,9 @@ public:
 		
 		/* TUTORIAL BEGIN */
 		
+
+
+		AddEntity(CreateGameObject<CloudGenerator>(Vector3f( 20,0,10 ), Vector3f( -20,0,10 ), Vector2f(-1.f,1.f), 1.f, 10));
 
         tutorialCover = FPSuiComponent->CreateQuad({ -.5f,0,0 }, 0, { 0.f,0,1 }, { .25f,.25f,.25f,0 });
 

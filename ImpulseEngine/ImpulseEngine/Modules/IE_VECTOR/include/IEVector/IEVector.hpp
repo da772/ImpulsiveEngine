@@ -22,15 +22,15 @@ static T lerp(T a, T b, T amt) {
 }
 
 template <typename T>
-class Vector2;
+union Vector2;
 template <typename T>
-class Vector3;
+union Vector3;
 template <typename T>
-class Vector4;
+union Vector4;
 
 template <typename T>
-class Vector2 {
-    public:
+union Vector2 {
+public:
         inline Vector2() : x(0.f), y(0.f) {}
         inline Vector2(const T& v) : x(v), y(v) {};
         inline Vector2(const T& x, const T& y) : x(x), y(y) {};
@@ -39,8 +39,22 @@ class Vector2 {
         inline Vector2(const Vector4<T>& other) : x(other.x), y(other.y) {}
         inline Vector2(const T* ptr) : x(ptr[0]), y(ptr[1]) {};
      
-        T x;
-        T y;
+        struct {
+            T x;
+            T y;
+        };
+
+        struct {
+            T r;
+            T g;
+        };
+
+        struct {
+            T s;
+            T t;
+        };
+
+
         inline Vector2<T> operator +(const Vector2<T>& other) const {
             return Vector2<T>(x+other.x, y+other.y);
         }
@@ -148,18 +162,36 @@ class Vector2 {
 };
 
 template <typename T>
-class Vector3 {
-    public:
+union Vector3 {
+public:
         inline Vector3() : x(0.f), y(0.f), z(0.f) {}
         inline Vector3(const T& v) : x(v), y(v), z(v) {};
         inline Vector3(const T& x, const T& y, const T& z) : x(x),y(y),z(z) {}
         inline Vector3(const Vector3<T>& other) : x(other.x),y(other.y),z(other.z) {}
         inline Vector3(const Vector4<T>& other) : x(other.x), y(other.y), z(other.z) {}
         inline Vector3(const T* ptr) : x(ptr[0]), y(ptr[1]), z(ptr[2]) {};
+		inline Vector3(const Vector2<T>& v, const T& z) : x(v.x), y(v.y), z(z) {};
+		inline Vector3(const T& x, const Vector2<T>& v) : x(x), y(v.x), z(v.y){};
 
-        T x;
-        T y;
-        T z;
+        struct {
+            T x;
+            T y;
+            T z;
+        };
+
+        struct {
+            T r;
+            T g;
+            T b;
+        };
+
+        struct {
+            T s;
+            T t;
+            T p;
+        };
+
+
 
         inline Vector3<T> operator +(const Vector3<T>& other) const {
             return Vector3<T>(x+other.x, y+other.y, z+other.z);
@@ -314,18 +346,40 @@ class Vector3 {
 };
 
 template <typename T>
-class Vector4 {
+union Vector4 {
     public:
         inline Vector4() : x(0.f), y(0.f), z(0.f), w(0.f) {}
         inline Vector4(const T& v) : x(v), y(v), z(v), w(v) {};
-        inline Vector4(const T& x, const T& y, const T& z, const T& w) : x(x),y(y),z(z),w(w) {}
+        inline Vector4(const Vector2<T>& v, const T& z, const T& w) : x(v.x), y(v.y), z(z), w(w) {};
+        inline Vector4(const T& x, const T& y, const Vector2<T>& v) : x(x), y(y), z(v.x), w(v.y) {};
+        inline Vector4(const T& x,const Vector2<T>& v, const T& w ) : x(x), y(v.x), z(v.y), w(w) {};
+        inline Vector4(const Vector3<T>& v, const T& w) : x(v.x), y(v.y), z(v.z), w(w) {};
+        inline Vector4(const T& x, const Vector3<T>& v) : x(x), y(v.x), z(v.y), w(v.z) {};
+        inline Vector4(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w) {};
+
         inline Vector4(const Vector4<T>& other) : x(other.x),y(other.y),z(other.z),w(other.w) {}
         inline Vector4(const T* ptr) : x(ptr[0]), y(ptr[1]), z(ptr[2]), w(ptr[3]) {};
-        
-        T x;
-        T y;
-        T z;
-        T w;
+
+        struct {
+            T x;
+            T y;
+            T z;
+            T w;
+        };
+
+		struct {
+			T r;
+			T g;
+			T b;
+			T a;
+		};
+
+		struct {
+			T s;
+			T t;
+			T p;
+            T q;
+		};
 
         inline Vector4<T> operator +(const Vector4<T>& other) const {
             return Vector4<T>(x+other.x, y+other.y, z+other.z, w+other.w);
