@@ -394,7 +394,8 @@ namespace GEngine {
 		const char* path = CFStringGetCStringPtr(dirSTR, encodingMethod);
 		// GE_CORE_DEBUG("{0}", path);
         const std::string& rPath =  std::string(path) +  std::string("/");
-        free((void*)dirSTR);
+		CFRelease(dirURL);
+		CFRelease(dirSTR);
         return rPath;
 #endif
 		return std::string();
