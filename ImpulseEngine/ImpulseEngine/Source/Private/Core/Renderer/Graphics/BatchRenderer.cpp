@@ -315,6 +315,12 @@ namespace GEngine {
 		 float _zOrder = it->second.position.z;
 		 it->second.position = { it->second.position.x,  it->second.position.y, zOrder };
 
+		 if (m_Sort) {
+			 std::sort(m_SortedObjects.begin(), m_SortedObjects.end(), [](const std::pair<u64, BatchObjectData>& l, const std::pair<u64, BatchObjectData>& r) {
+				 return l.second.position == r.second.position ? l.second.time < r.second.time : l.second.position.z < r.second.position.z;
+				 });
+		 }
+
 		 ReCreateBatches();
 	 }
 
@@ -373,6 +379,7 @@ namespace GEngine {
 			 std::copy(it->second.vertices.begin(), it->second.vertices.end(),(vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos)));
 
 			 batch->RefreshVertices();
+			 ReCreateBatches();
 		 }
 		 else {
 			 it->second.texture = texture;
@@ -435,6 +442,15 @@ namespace GEngine {
 		 return it->second.texture;
 	 }
 
+	 const GEngine::Ref<GEngine::SubTexture2D> BatchRenderer::GetShapeSubTexture(const uint64_t id)
+	 {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 return it->second.subTexture;
+	 }
+
 	 const float BatchRenderer::GetShapeRotation(const uint64_t id)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
@@ -451,6 +467,24 @@ namespace GEngine {
 			 });
 
 		 return it->second.scale;
+	 }
+
+	 const GEngine::Vector2f BatchRenderer::GetTextureScale(const uint64_t id)
+	 {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 return it->second.textureScale;
+	 }
+
+	 const GEngine::Vector4f BatchRenderer::GetShapeColor(const uint64_t id)
+	 {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 return it->second.color;
 	 }
 
 	 void BatchRenderer::RemoveShape(const uint64_t id)

@@ -1,0 +1,123 @@
+<SpriteEntity tag=SpriteEntity>
+<constructor>
+<float> 0.000000</float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+<float> 0.000000</float>
+
+</constructor>
+<function>
+<CreateSubTexturedQuad id=23664006758000>
+<float> 0.000000</float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/wiz10_face.png</string>
+<int>1</int>
+</constructor>
+</Texture2D>
+<float> 0.000000</float>
+<float> 0.000000 </float>
+<float> 128.000000</float>
+<float> 128.000000 </float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id=23664008107000>
+<float> 0.000000</float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/towerUnder.png</string>
+<int>1</int>
+</constructor>
+</Texture2D>
+<float> 0.000000</float>
+<float> 0.000000 </float>
+<float> 128.000000</float>
+<float> 128.000000 </float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateQuad id=23664010228400>
+<float> 0.000000</float>
+<float> 0.000000 </float>
+<float> -5.000000 </float>
+<float> 0.000000</float>
+<float> 200.000000</float>
+<float> 200.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Checkerboard.png</string>
+<int>2</int>
+</constructor>
+</Texture2D>
+<float> 200.000000</float>
+<float> 200.000000 </float>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id=23679337800400>
+<float> 0.000000</float>
+<float> 0.500000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 0.000000</float>
+<float> 1.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<Texture2D>
+<constructor>
+<string>batchBlank</string>
+<int>0</int>
+</constructor>
+</Texture2D>
+<float> 1.000000</float>
+<float> 1.000000 </float>
+</CreateQuad>
+</function>
+</SpriteEntity>

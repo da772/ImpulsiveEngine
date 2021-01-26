@@ -22,6 +22,9 @@ namespace GEngine {
 
 	void SubTexture2D::SetCoords(const Vector2f& coords, const Vector2f& cellSize, const Vector2f& spriteSize /*= { 1,1 }*/)
 	{
+		m_coords = coords;
+		m_cellSize = cellSize;
+		m_spriteSize = spriteSize;
 		float width = m_Texture->GetWidth(), height = m_Texture->GetHeight();
 		const Vector2f textureCords[] = {
 			{ (coords.x * cellSize.x) / width,  (coords.y * cellSize.y) / height },
@@ -39,7 +42,7 @@ namespace GEngine {
 
 	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2D>& texture, const Vector2f& coords, const Vector2f& cellSize, const Vector2f& spriteSize)
 	{
-
+		
 		float width = texture->GetWidth(), height = texture->GetHeight();
 
 		if (!ThreadPool::OnMainThread()) {
@@ -54,7 +57,12 @@ namespace GEngine {
 			{ ((coords.x+ spriteSize.x) * cellSize.x)/width, ((coords.y + spriteSize.y)* cellSize.y)/height}
 		};
 
-		return Ref<SubTexture2D>(new SubTexture2D(texture, textureCords[0], textureCords[1]));
+		Ref<SubTexture2D> t = Ref<SubTexture2D>(new SubTexture2D(texture, textureCords[0], textureCords[1]));
+		t->m_cellSize = cellSize;
+		t->m_spriteSize = spriteSize;
+		t->m_coords = coords;
+
+		return t;
 
 	}
 

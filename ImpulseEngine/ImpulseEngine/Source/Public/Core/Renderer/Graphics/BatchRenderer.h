@@ -103,8 +103,11 @@ namespace GEngine {
 
 		const Vector3f GetShapePosition(const uint64_t id);
 		const Ref<Texture2D> GetShapeTexture(const uint64_t id);
+		const Ref<SubTexture2D> GetShapeSubTexture(const uint64_t id);
 		const float GetShapeRotation(const uint64_t id);
 		const Vector2f GetShapeScale(const uint64_t id);
+		const Vector2f GetTextureScale(const uint64_t id);
+		const Vector4f GetShapeColor(const uint64_t id);
 
 		int UpdateCount(int i);
 

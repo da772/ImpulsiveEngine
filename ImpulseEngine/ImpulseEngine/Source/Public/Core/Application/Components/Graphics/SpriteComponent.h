@@ -43,6 +43,7 @@ namespace GEngine {
 		void SetQuadColor(const ShapeID id, const Vector4f& color);
 		void SetQuadColorScript(const ShapeID id, const Ref<ScriptVector4>& color);
 		void SetRotation(const ShapeID id, const float rotation);
+		void SetQuadScale(const ShapeID id, const Vector2f& scale);
 
 		void SetTextureScale(const ShapeID id, const Vector2f& scale);
 
@@ -59,6 +60,9 @@ namespace GEngine {
 
 		virtual void OnBegin() override;
 		virtual void OnEnd() override;
+
+		inline std::vector<ShapeID> GetQuads() { return m_ids; };
+		inline Ref<BatchRenderer> GetBatchRenderer() const { return m_shapeFactory; }
 
 
 		

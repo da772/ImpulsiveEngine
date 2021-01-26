@@ -23,6 +23,8 @@ public:
 	GEngine::Vector3f m_sqColor= { .3f,.2f,.8f };
 	bool showDock = true;
 	static bool showLog;
+	static bool showScene;
+	static bool showGraphicsDebugger;
 
 
 

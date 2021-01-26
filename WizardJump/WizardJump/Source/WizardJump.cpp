@@ -1,6 +1,7 @@
 #include "WizardJump.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "SplashScreenScene.h"
+#include "MapEditor.hpp"
 
 
 #include "MainGameScene.h"
@@ -35,11 +36,12 @@ void ExampleLayer::OnAttach()
 	GEngine::SceneManager::AddScene("splashScreen",s);
 	GEngine::Ref<MainGameScene> s2 = GEngine::CreateGameObject<MainGameScene>("mainGame", nullptr);
 	GEngine::Ref<MenuScene> s3 = GEngine::CreateGameObject<MenuScene>("menuScene", nullptr);
+	GEngine::Ref<MapEditor> s4 = GEngine::CreateGameObject<MapEditor>("mapEditor", nullptr);
 	GEngine::SceneManager::AddScene("mainGame", s2);
 	GEngine::SceneManager::AddScene("menuScene", s3);
-	GEngine::SceneManager::SetCurrentScene("splashScreen");
-
-
+	GEngine::SceneManager::AddScene("mapEditor", s4);
+	GEngine::SceneManager::SetCurrentScene("mapEditor");
+	//GEngine::SceneManager::SetCurrentScene("splashScreen");
 
 
 }

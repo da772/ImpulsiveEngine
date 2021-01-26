@@ -44,6 +44,7 @@ namespace GEngine {
 	
 		virtual void Unload() = 0;
 		virtual void Reload() = 0;
+		inline u32 GetFlags() const { return m_flags; }
 
 	protected:
 		

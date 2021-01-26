@@ -12,7 +12,7 @@ namespace GEngine {
 			return ++Factory::counter;
 		}
 		static std::unordered_set<uint64_t> hashes;
-		static void RemoveHash(uint64_t hash) { hashes.erase(hash); };
+		static void RemoveHash(uint64_t hash) { if (hashes.size() > 0 &&  hashes.find(hash) != hashes.end()) hashes.erase(hash); };
 	}
 
 	template<class E, typename ... Args>

@@ -26,6 +26,11 @@ namespace GEngine {
 			m_Data = nullptr;
 		}
 
+		inline void SetData(uint64_t size, unsigned char* data) {
+			m_Size = size;
+			m_Data = data;
+		}
+
 
 	private:
 		unsigned char* m_Data = nullptr;

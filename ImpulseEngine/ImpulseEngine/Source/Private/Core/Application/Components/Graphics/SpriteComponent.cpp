@@ -34,10 +34,11 @@ namespace GEngine {
 					if (rot != nRot)
 						m_shapeFactory->SetRotation(id, nRot);
 					Vector2f _scale = m_shapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, 1);
-					Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
-					if (scale != nScale)
-						m_shapeFactory->SetScale(id, {nScale.x, nScale.y});
+					Vector3f scale(_scale.x, _scale.y, transform->GetScale().z);
+					Vector3f nScale = scale / transData.scale;
+					if (scale != nScale* transform->GetScale().xy()) {
+						m_shapeFactory->SetScale(id, transform->GetScale().xy() * nScale.xy());
+					}
 				}
 			}
 			});
@@ -123,6 +124,11 @@ namespace GEngine {
 		m_shapeFactory->SetPosition(id, position + Vector2f( entity.lock()->GetEntityPosition().x, entity.lock()->GetEntityPosition().y ) );
 	}
 
+	void SpriteComponent::SetQuadScale(const ShapeID id, const Vector2f& scale)
+	{
+		m_shapeFactory->SetScale(id, scale * entity.lock()->GetEntityScale().xy());
+	}
+
 	void SpriteComponent::SetPositionScript(const ShapeID id, const Ref<ScriptVector2>& position)
 	{
 		SetPosition(id, position->GetGlm());
@@ -152,6 +158,7 @@ namespace GEngine {
 	{
 		m_shapeFactory->SetRotation(id, rotation);
 	}
+
 
 	void SpriteComponent::SetTextureScale(const ShapeID id, const Vector2f& scale)
 	{

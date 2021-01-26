@@ -64,7 +64,6 @@ void CharacterController::OnBegin()
 
 void CharacterController::OnUpdate(Timestep timestep) {
 
-
     //if (trajectory_pos.size() > 0)
         //Renderer::DrawDebugLines(trajectory_pos, Vector4f(1, 0, 0, 1.f));
     const Vector2f& vel = bodyComp->GetVelocity();

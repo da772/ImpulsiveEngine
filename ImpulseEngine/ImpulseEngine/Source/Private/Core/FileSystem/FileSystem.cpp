@@ -5,7 +5,7 @@
 
 #define GE_FILESYSTEM_CHAR_LENGTH 1024
 
-#if defined( GE_PLATFORM_WINDOWS) && !defined(GE_MINGW_)
+#if defined( GE_PLATFORM_WINDOWS)
 #include <locale>
 #include <codecvt>
 #include <WS2tcpip.h>

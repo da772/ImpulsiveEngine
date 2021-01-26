@@ -83,7 +83,8 @@ project "WizardJump"
 		"ImpulseEngine/%{IncludeDir.entt}",	
 		"ImpulseEngine/%{IncludeDir.cr}",
 		"ImpulseEngine/%{IncludeDir.vector}",
-		"%{prj.location}/%{prj.name}/Source/"
+		"%{prj.location}/%{prj.name}/Source/",
+		"%{prj.location}/%{prj.name}/include/"
 
 	}
 

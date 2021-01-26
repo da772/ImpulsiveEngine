@@ -16,6 +16,9 @@ namespace GEngine {
 		static Ref<SubTexture2D> CreateFromCoords(const Ref<Texture2D>& texure, const Vector2f& coords, const Vector2f& cellSize, const Vector2f& spriteSize = { 1,1 });
 
 		Vector2f m_TexCoords[4];
+		Vector2f m_coords;
+		Vector2f m_cellSize;
+		Vector2f m_spriteSize;
 		static std::condition_variable m_condVar;
 	private:
 		Ref<Texture2D> m_Texture;

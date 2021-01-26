@@ -8,6 +8,10 @@ bool DebugLayer::showLog = true;
 
 bool handleResize = false;
 
+bool DebugLayer::showScene = true;
+bool DebugLayer::showGraphicsDebugger = true;
+
+
 DebugLayer::DebugLayer() : Layer("DebugLayer")
 {
 
@@ -25,8 +29,8 @@ void DebugLayer::OnImGuiRender()
 
 		if (GEngine::Application::DebugTools()) {
 			CreateViewPort();
-			CreateSceneHierarchy();
-			CreateGraphicsDebuggger();
+			if (showScene) CreateSceneHierarchy();
+			if (showGraphicsDebugger) CreateGraphicsDebuggger();
 		}
 }
 
