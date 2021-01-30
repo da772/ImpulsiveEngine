@@ -27,7 +27,6 @@ void CharacterController::OnBegin()
 	graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
 
     graphicsComp->footDownCallback = [this](uint8_t foot) {
-        GE_LOG_DEBUG("Foot Down: {0}", foot);
         switch (foot) {
         default:
         case 0:

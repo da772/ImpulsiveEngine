@@ -24,7 +24,7 @@ private:
 	GEngine::Scope<GEngine::Orthographic_CameraController> m_CameraController;
 	void SetupCamera();
 	void SceneMenu();
-	void SaveScene();
+	void SaveScene(const std::string& location);
 	void LoadScene(const std::string& scene);
 
 };

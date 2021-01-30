@@ -52,7 +52,7 @@ namespace GEngine {
 
 	SpriteComponent::SpriteComponent(Ref<Shader> shader, const std::function<void()>& shaderFunc, const std::string& pipelineId)
 	{
-		
+		m_tag = "SpriteComponent";
 		if (shader != nullptr || pipelineId.size() > 0) {
 			if (shader == nullptr) {
 				std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";

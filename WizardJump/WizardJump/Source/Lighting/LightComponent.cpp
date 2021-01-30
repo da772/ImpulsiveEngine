@@ -21,7 +21,7 @@ LightComponent::LightComponent() {
 			5000, Shader::Create("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots()) + "Batch.glsl"), "lighting"));
     }
 		
-    
+    m_tag = "LightComponent";
 }
 
 

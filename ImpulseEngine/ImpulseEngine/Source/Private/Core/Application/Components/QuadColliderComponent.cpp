@@ -11,18 +11,21 @@
 #include "Public/Core/Physics/PhysicsBody.h"
 
 #include "Public/Core/FileSystem/FileSystem.h"
+#include "Public/Core/Util/ThreadPool.h"
+
 //Debug
 #include "Public/Core/Renderer/Renderer.h"
 
 namespace GEngine {
 
-	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const Vector2f& position) : Component(),
+	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const Vector2f& position, bool fixedRotation, float bounce) : Component(),
 		m_position(position),
-		m_dynamic(dynamic),m_physics(physics)
+		m_dynamic(dynamic), m_physics(physics), m_bounce(bounce), m_fixedRotation(fixedRotation)
 	{
 		if (dynamic)
 			bUpdates = true;
-		
+
+		m_tag = "QuadColliderComponent";
 	}
 
 	QuadColliderComponent::~QuadColliderComponent()
@@ -41,25 +44,22 @@ namespace GEngine {
 		info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Kinematic;
 		info.position = Vector2f(e->GetEntityPosition().x, e->GetEntityPosition().y);
 		info.rotation = glm::radians(e->GetEntityRotation().z);
-		info.fixedRotation = true;
+		info.fixedRotation = m_fixedRotation;
 		m_body = Physics::CreateBody(info);
 		m_body->SetComponent(std::static_pointer_cast<Component>(self.lock()));
-
-		
-
-		
 	}
 
 
 	const GEngine::ColliderID QuadColliderComponent::CreateQuad(const Vector2f& position, const Vector2f& scale, float mass, float rotation, const std::string& tag)
 	{
 		const ColliderID id = m_body->CreateQuad(scale, position, mass, rotation, tag);
-		const FColliderQuad quad = { id, position, scale, mass, rotation };
+		const FColliderQuad quad = { id, position, scale, mass, rotation, tag, m_bounce, true };
 		m_body->SetSensor(id, !m_physics);
 		m_body->SetGroupIndex(id, m_groupIndex);
 		m_body->SetCategory(id, m_category);
 		m_body->SetMask(id, m_mask);
 		m_quads[id] = quad;
+		ThreadPool::AddMainThreadFunction([this]() {m_body->SetAwake(true); });
 
 		return id;
 	}
@@ -67,13 +67,13 @@ namespace GEngine {
 	const GEngine::ColliderID QuadColliderComponent::CreateCircle(const Vector2f& position, const Vector2f& scale, float mass, float rotation /*= 0*/, const std::string& tag /*= ""*/)
 	{
 		const ColliderID id = m_body->CreateCircle(scale, position, mass, rotation, tag);
-		const FColliderQuad quad = { id, position, scale, mass, rotation };
+		const FColliderQuad quad = { id, position, scale, mass, rotation, tag, m_bounce, false };
 		m_body->SetSensor(id, !m_physics);
 		m_body->SetGroupIndex(id, m_groupIndex);
 		m_body->SetCategory(id, m_category);
 		m_body->SetMask(id, m_mask);
 		m_quads[id] = quad;
-
+		ThreadPool::AddMainThreadFunction([this]() {m_body->SetAwake(true); });
 		return id;
 	}
 
@@ -94,7 +94,6 @@ namespace GEngine {
 			const Vector2f& pos = m_body->GetPosition();
 			const float rot = m_body->GetRotation();
 			m_movedSelf = true;
-			GE_CORE_ASSERT( !(Vector3f(1.212f, 5.223f, 588.131f) != Vector3f(1.212f, 5.223f, 588.131f)), "");
 			entity.lock()->SetEntityPosition(Vector3f(pos.x, pos.y, 1.f));
 			entity.lock()->SetEntityRotation(Vector3f(0.f, 0.f, glm::degrees(rot)));
 			m_movedSelf = false;
@@ -117,6 +116,12 @@ namespace GEngine {
 
 
 
+	void QuadColliderComponent::SetRotation(const float rot)
+	{
+		Ref<Entity> e = entity.lock();
+		m_rotation = rot + e->GetEntityRotation().z;
+	}
+
 	const Vector2f QuadColliderComponent::GetPosition()
 	{
 		return m_worldPosition;
@@ -125,6 +130,21 @@ namespace GEngine {
 	const Vector2f QuadColliderComponent::GetScale()
 	{
 		return m_worldScale;
+	}
+
+	const GEngine::Vector2f QuadColliderComponent::GetLocalPosition()
+	{
+		return m_worldPosition - GetEntityPosition().xy();
+	}
+
+	const GEngine::Vector2f QuadColliderComponent::GetLocalScale()
+	{
+		return m_worldScale / GetEntity()->GetEntityScale().xy();
+	}
+
+	const float QuadColliderComponent::GetLocalRotation()
+	{
+		return m_worldRotation - GetEntity()->GetEntityRotation().z;
 	}
 
 	void QuadColliderComponent::SetGravityScale(const float f)
@@ -158,16 +178,23 @@ namespace GEngine {
 
 	void QuadColliderComponent::SetBounce(const ColliderID id,const float bounce)
 	{
-		if (m_physics)
-			m_body->SetBounce(id, bounce);
+		m_bounce = bounce;
+		m_quads[id].bounce = bounce;
+		m_body->SetBounce(id, bounce);
 	}
 
 	const float QuadColliderComponent::GetBounce(const ColliderID id)
 	{
-		if (m_physics)
-			return m_body->GetBounce(id);
-		return 0;
+		return m_quads[id].bounce;
 	}
+
+	void QuadColliderComponent::SetFixedRotation(const bool rot)
+	{
+		if (m_physics)
+			m_body->SetFixedRotation(rot);
+		m_fixedRotation = rot;
+	}
+
 
 	void QuadColliderComponent::SetDynamic(bool b)
 	{
@@ -221,9 +248,9 @@ namespace GEngine {
 		}
 	}
 
-	void QuadColliderComponent::WakeBody()
+	void QuadColliderComponent::WakeBody(bool wake)
 	{
-		m_body->SetAwake(true);
+		m_body->SetAwake(wake);
 	}
 
 	void QuadColliderComponent::SetOnCollideFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> onCollideFunc)

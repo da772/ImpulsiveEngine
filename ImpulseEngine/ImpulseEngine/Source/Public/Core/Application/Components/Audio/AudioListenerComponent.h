@@ -9,7 +9,6 @@ namespace GEngine {
 	public:
 		AudioListenerComponent();
 		virtual ~AudioListenerComponent();
-
 		
 		void SetPitch(float f);
 		void SetVolume(float f);

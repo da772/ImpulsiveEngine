@@ -54,6 +54,11 @@ public:
 	virtual void OnAttached(Ref<Entity> entity) override;
 	virtual void DeAttached(Ref<Entity> entity) override;
 
+    const std::vector<ShapeID>& GetCircleLights() const { return m_Circleids; };
+    const std::vector<ShapeID>& GetQuadLights() const { return m_Quadids; };
+    Ref<BatchRenderer> GetCircleRenderer() const { return s_CircleShapeFactory; }
+    Ref<BatchRenderer> GetQuadRenderer() const { return s_QuadShapeFactory; }
+
 protected:
     std::vector<ShapeID> m_Circleids;
     std::vector<ShapeID> m_Quadids;
@@ -69,5 +74,6 @@ protected:
     void CreateGraphics();
     uint32_t m_polygonLightCounter = 0;
     std::unordered_map<ShapeID, Weak<PolygonLightRendererable>> m_polygonLightMap;
+    
   
 };

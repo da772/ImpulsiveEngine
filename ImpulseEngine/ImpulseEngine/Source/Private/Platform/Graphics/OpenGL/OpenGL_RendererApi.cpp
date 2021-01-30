@@ -74,6 +74,8 @@ namespace GEngine {
 		gltInit();
 #endif
 
+
+
 	}
 
 	void OpenGL_RendererApi::SetBlendMode(int sFactor, int dFactor)

@@ -1,40 +1,4 @@
 <Entity tag="SkyBackground">
-<TransformComponent>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</TransformComponent>
-<SpriteComponent tag="SpriteComponent">
-<function>
-<CreateQuad id="294034667145900">
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 10.000000 </float>
-<float> 10.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<Texture2D>
-<constructor>
-<string>Content/Textures/sky_01.png</string>
-<int>68</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuad>
-</function>
-</SpriteComponent>
 <LightComponent tag="LightComponent">
 <function>
 <CreateQuadLight>
@@ -60,11 +24,9 @@
 </CreateQuadLight>
 </function>
 </LightComponent>
-</Entity>
-<Entity tag="Ground">
 <TransformComponent>
 <float> 0.000000 </float>
-<float> -5.000000 </float>
+<float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
@@ -75,58 +37,12 @@
 </TransformComponent>
 <SpriteComponent tag="SpriteComponent">
 <function>
-<CreateQuad id="294034671044100">
+<CreateQuad id="291206163509100">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000</float>
-<float> 20.000000 </float>
-<float> 0.500000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<Texture2D>
-<constructor>
-<string>batchBlank</string>
-<int>0</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="294034671059000">
-<float> -3.500000 </float>
-<float> 5.200000 </float>
-<float> 0.000000 </float>
-<float> 90.000000</float>
 <float> 10.000000 </float>
-<float> 0.500000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<Texture2D>
-<constructor>
-<string>batchBlank</string>
-<int>0</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="294034671073200">
-<float> -3.500000 </float>
-<float> 5.200000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 0.500000 </float>
 <float> 10.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
@@ -135,25 +51,40 @@
 <float> 1.000000 </float>
 <Texture2D>
 <constructor>
-<string>batchBlank</string>
-<int>0</int>
+<string>Content/Textures/sky_01.png</string>
+<int>68</int>
 </constructor>
 </Texture2D>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 </CreateQuad>
 </function>
-<function>
-<CreateQuad id="294034671087200">
-<float> 5.000000 </float>
-<float> 5.200000 </float>
+</SpriteComponent>
+</Entity>
+<Entity tag="Checkerboard">
+<TransformComponent>
 <float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 100.000000 </float>
+<float> 100.000000 </float>
+<float> 1.000000 </float>
+</TransformComponent>
+<SpriteComponent tag="SpriteComponent">
+<function>
+<CreateQuad id="291206163608000">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> -10.000000 </float>
 <float> 0.000000</float>
-<float> 0.500000 </float>
-<float> 10.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 0.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <Texture2D>
@@ -167,74 +98,39 @@
 </CreateQuad>
 </function>
 </SpriteComponent>
-<QuadColliderComponent>
-<constructor>
-<int> 0 </int>
-<int> 1 </int>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<int> 1 </int>
-</constructor>
-<function>
-<CreateQuad id="294034671130100">
-<float> -3.500000 </float>
-<float> 5.200000 </float>
-<float> 0.500000 </float>
-<float> 10.000000 </float>
-<float> 0.000000</float>
-<float> 0.000000</float>
-<string>wall</string>
-<float> 10.000000</float>
-<int> 1 </int>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="294034671172000">
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 20.000000 </float>
-<float> 0.500000 </float>
-<float> 0.000000</float>
-<float> 0.000000</float>
-<string>ground</string>
-<float> 0.000000</float>
-<int> 1 </int>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="294034671179700">
-<float> 5.000000 </float>
-<float> 5.200000 </float>
-<float> 0.500000 </float>
-<float> 10.000000 </float>
-<float> 0.000000</float>
-<float> 0.000000</float>
-<string>wall</string>
-<float> 10.000000</float>
-<int> 1 </int>
-</CreateQuad>
-</function>
-</QuadColliderComponent>
 </Entity>
+<CharacterEntity tag="CharacterEntity">
+<TransformComponent>
+<float> 1.000000 </float>
+<float> 2.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</TransformComponent>
+</CharacterEntity>
 <Entity tag="CircleEntity">
 <TransformComponent>
-<float> -2.754978 </float>
-<float> 1.791330 </float>
-<float> 1.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
-<float> 306.026642 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 </TransformComponent>
 <SpriteComponent tag="SpriteComponent">
 <function>
-<CreateQuad id="294034671500600">
+<CreateQuad id="291206172824000">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
-<float> -1.000000 </float>
-<float> 612.053284</float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
@@ -253,11 +149,11 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="294034672048700">
+<CreateQuad id="291206172852200">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 612.053284</float>
+<float> 1.000000 </float>
+<float> 0.000000</float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
@@ -285,7 +181,7 @@
 <int> 0 </int>
 </constructor>
 <function>
-<CreateCircle id="294034672080200">
+<CreateCircle id="291206172881700">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.500000 </float>
@@ -299,43 +195,53 @@
 </function>
 </QuadColliderComponent>
 </Entity>
-<CharacterEntity tag="CharacterEntity">
-<TransformComponent>
-<float> 0.334727 </float>
-<float> 5.000000 </float>
-<float> 1.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</TransformComponent>
-</CharacterEntity>
-<Entity tag="Checkerboard">
+<Entity tag="Ground">
 <TransformComponent>
 <float> 0.000000 </float>
+<float> -5.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 100.000000 </float>
-<float> 100.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
 <float> 1.000000 </float>
 </TransformComponent>
 <SpriteComponent tag="SpriteComponent">
 <function>
-<CreateQuad id="294034676372800">
+<CreateQuad id="291206172916600">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
-<float> -10.000000 </float>
+<float> 0.000000 </float>
 <float> 0.000000</float>
-<float> 1.000000 </float>
+<float> 20.000000 </float>
+<float> 0.500000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <float> 0.000000 </float>
+<float> 1.000000 </float>
+<Texture2D>
+<constructor>
+<string>batchBlank</string>
+<int>0</int>
+</constructor>
+</Texture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id="291206172935100">
+<float> -3.500000 </float>
+<float> 5.200000 </float>
+<float> 0.000000 </float>
+<float> 90.000000</float>
+<float> 10.000000 </float>
+<float> 0.500000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 <Texture2D>
@@ -349,4 +255,39 @@
 </CreateQuad>
 </function>
 </SpriteComponent>
+<QuadColliderComponent>
+<constructor>
+<int> 0 </int>
+<int> 1 </int>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<int> 1 </int>
+</constructor>
+<function>
+<CreateQuad id="291206172958400">
+<float> -3.500000 </float>
+<float> 5.200000 </float>
+<float> 10.000000 </float>
+<float> 0.500000 </float>
+<float> 0.000000</float>
+<float> 90.000000</float>
+<string>wall</string>
+<float> 1.000000</float>
+<int> 1 </int>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id="291206172966100">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 20.000000 </float>
+<float> 0.500000 </float>
+<float> 0.000000</float>
+<float> 0.000000</float>
+<string>ground</string>
+<float> 0.000000</float>
+<int> 1 </int>
+</CreateQuad>
+</function>
+</QuadColliderComponent>
 </Entity>

@@ -53,6 +53,8 @@ namespace GEngine {
 		static std::string GetParentExecuteableDir(int levelsUp);
 
 		static Ref<FileData> FileDataFromPath(std::string path, bool fromPak = false, bool relative = true);
+		static void AddToMemoryPak(const std::string& name, Ref<FileData> data);
+		static bool FileInMemory(const std::string& name);
 
 	private:
 		static std::unordered_map<std::string, Ref<FileData>> s_fileMap;

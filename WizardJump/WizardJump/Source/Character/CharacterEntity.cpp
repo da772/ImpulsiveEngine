@@ -8,6 +8,7 @@ CharacterEntity::CharacterEntity(const Vector2f& position) : m_position(position
 
 }
 
+
 void CharacterEntity::OnBegin()
 	{
 

@@ -82,8 +82,6 @@ namespace GEngine {
 		static const int GetUIResolutionWidth() { return s_Instance->m_uiResolutionWidth; }
 		static const int GetUIResolutionHeight() { return s_Instance->m_uiResolutionHeight; }
 
-
-
 		static void SetViewPortOffset(const Vector2f& offset) { s_Instance->m_viewPortOffset = offset; }
 
 		inline static const bool IsGamePaused() { return s_Instance->m_pause; };
@@ -120,6 +118,9 @@ namespace GEngine {
 		inline void SetRenderScale(const float i) { m_renderSettings.renderScale = i; Renderer::SetRenderScale(m_renderSettings.renderScale); }
 		inline void SetRenderSamples(uint8_t i) { m_renderSettings.samples = i; }
 		
+		std::string AddOnGamePauseCallback(std::function<void(bool)> f);
+		inline void RemoveOnGamePauseCallback(std::string s) { m_onPausedCallbacks.erase(s); }
+
 
 	protected:
 		void SetWindowApi(const FWindowApi& windowApi);
@@ -149,8 +150,10 @@ namespace GEngine {
 		const char* title = "NULL";
 		
 		static bool s_debugTools;
-		
 		bool m_enableInput = true;
+
+		std::unordered_map<std::string, std::function<void(bool)>> m_onPausedCallbacks;
+
 	private:
 		bool b_EnableImGui = false;
 		bool OnWindowClose(WindowCloseEvent& e);

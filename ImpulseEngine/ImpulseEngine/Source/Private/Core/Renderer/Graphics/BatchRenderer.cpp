@@ -347,6 +347,8 @@ namespace GEngine {
 			 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 
 			 batch->RefreshVertices();
+
+			 ReCreateBatches();
 		 }
 		 else {
 			 it->second.texture = texture != nullptr ? texture->GetTexture() : m_BlankTexture;

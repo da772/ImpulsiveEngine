@@ -57,14 +57,14 @@ void DebugLayer::OnEvent(GEngine::Event& event)
 		if (e.GetKeyCode() == GE_KEY_TILDE) {
 			DebugLayer::showLog = !DebugLayer::showLog;
 		}
-		if (e.GetKeyCode() == GE_KEY_R) {
+		if (e.GetKeyCode() == GE_KEY_F11) {
 			if (GEngine::Input::IsKeyPressed(GE_KEY_LEFT_CONTROL)) {
 				RefreshAssets();
 				ReCreateGraphics();
 			}
 		}
 
-		if (e.GetKeyCode() == GE_KEY_P) {
+		if (e.GetKeyCode() == GE_KEY_F12) {
 			if (GEngine::Application::IsGamePaused()) {
 				GEngine::Application::ResumeGame();
 			}

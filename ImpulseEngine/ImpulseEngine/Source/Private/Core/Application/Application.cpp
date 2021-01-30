@@ -25,6 +25,8 @@
 
 #include "Public/Core/Audio/AudioManager.h"
 
+#include "Public/Core/Util/Utility.h"
+
 /*DEBUG*/
 
 
@@ -266,6 +268,15 @@ namespace GEngine {
         Application::s_Instance->m_enableInput = b;
 	}
 
+	std::string Application::AddOnGamePauseCallback(std::function<void(bool)> f)
+	{
+        std::string s = Utility::GenerateHash(7);
+        while (m_onPausedCallbacks.find(s) != m_onPausedCallbacks.end())
+            s = Utility::GenerateHash(7);
+        m_onPausedCallbacks[s] = f;
+        return s;
+	}
+
 	void Application::PushLayer(Layer* layer)
     {
         m_LayerStack.PushLayer(layer);
@@ -333,6 +344,9 @@ namespace GEngine {
 	void Application::PauseGame()
 	{
         Application::GetApp()->m_pause = true;
+		for (auto f : Application::GetApp()->m_onPausedCallbacks) {
+			f.second(true);
+		}
         ThreadPool::PauseThreads();
         AudioManager::Pause();
 	}
@@ -340,6 +354,9 @@ namespace GEngine {
 	void Application::ResumeGame()
 	{
         Application::GetApp()->m_pause = false;
+		for (auto f : Application::GetApp()->m_onPausedCallbacks) {
+			f.second(false);
+		}
         ThreadPool::UnpauseThreads();
         AudioManager::Resume();
 	}
@@ -381,32 +398,34 @@ namespace GEngine {
 		{
 			{
 				GE_PROFILE_TIMER("Application:OnUpdate", &profile["OnUpdate"]);
-				if (!m_Minimized && !m_pause) {
-					OnUpdate(timestep);
+                if (!m_Minimized && !m_pause) {
+                    OnUpdate(timestep);
                     SceneManager::Update(timestep);
-                    {
-                        std::queue<std::function<void()>>& f = ThreadPool::GetMainThreadFunctions();
-                        if (!f.empty()) {
-                            std::mutex& mut = ThreadPool::GetMainFunctionsMutex();
-                            std::lock_guard<std::mutex> guard(mut);
-                            while (!f.empty()) {
-                                f.front()();
-                                f.pop();
-                            }   
-                        }
-                    }
-                    {
-						std::queue<std::function<void()>>& f = ThreadPool::GetEndThreadFunction();
-						if (!f.empty()) {
-							std::mutex& mut = ThreadPool::GetEndThreadFunctionsMutex();
-							std::lock_guard<std::mutex> guard(mut);
-							while (!f.empty()) {
-								f.front()();
-								f.pop();
-							}
+                }
+				
+				{
+					std::queue<std::function<void()>>& f = ThreadPool::GetMainThreadFunctions();
+					if (!f.empty()) {
+						std::mutex& mut = ThreadPool::GetMainFunctionsMutex();
+						std::lock_guard<std::mutex> guard(mut);
+						while (!f.empty()) {
+							f.front()();
+							f.pop();
 						}
-                    }
+					}
 				}
+				{
+					std::queue<std::function<void()>>& f = ThreadPool::GetEndThreadFunction();
+					if (!f.empty()) {
+						std::mutex& mut = ThreadPool::GetEndThreadFunctionsMutex();
+						std::lock_guard<std::mutex> guard(mut);
+						while (!f.empty()) {
+							f.front()();
+							f.pop();
+						}
+					}
+				}
+				
 			}
 
             {

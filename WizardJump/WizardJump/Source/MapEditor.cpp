@@ -1,7 +1,13 @@
 #include "MapEditor.hpp"
 #include "DebugLayer.h"
 #include "Environment/SpriteEntity.hpp"
-#include "CXML/CXML.hpp"
+#include "Lighting/LightComponent.h"
+#include <CXML/CXML.hpp>
+#include "Character/CharacterEntity.h"
+#include "Character/CharacterController.hpp"
+#include "Character/CharacterBody.hpp"
+#include "Environment/BackgroundEntity.hpp"
+
 
 
 static CXML cxml;
@@ -19,19 +25,87 @@ MapEditor::~MapEditor()
 void MapEditor::OnEvent(Event& e)
 {
 	m_CameraController->OnEvent(e);
+
 }
+
+static Ref<Entity> characterEntity = nullptr;
 
 void MapEditor::OnUpdate(Timestep timestep)
 {
+
+	if (characterEntity) {
+
+		Vector3f pos;
+		float dist = GEngine::GEMath::distance(m_CameraController->GetPosition(), characterEntity->GetEntityPosition());
+		if (dist > .01f) {
+			pos = GEngine::GEMath::lerp(m_CameraController->GetPosition(), characterEntity->GetEntityPosition(), 10.f * timestep);
+		}
+		else {
+			pos = characterEntity->GetEntityPosition();
+		}
+
+		m_CameraController->SetPosition(pos);
+	}
+
 	m_CameraController->OnUpdate(timestep);
+
 }
+
+
+static void GamePauseCallback(bool b) {
+	
+}
+
+static std:: string pauseCallback;
+static std::string savePath = "Content/Scenes/Scene.scene";
 
 void MapEditor::OnBegin()
 {
 	DebugLayer::showScene = false;
 	camera = m_CameraController->GetCamera().get();
+	GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
 	GEngine::Application::GetApp()->SetTargetCamera(camera);
+	if (!GEngine::Application::DebugTools()) {
+		LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
+		for (auto p : entities) {
+			Ref<CharacterEntity> c = dynamic_pointer_cast<CharacterEntity>(p.second);
+			if (c != nullptr) {
+				characterEntity = c;
+				break;
+			}
+		}
+		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
+		GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(Vector3f(0.f));
+		Application::PauseGame();
+		Application::ResumeGame();
+	}
+	else {
+		pauseCallback = Application::GetApp()->AddOnGamePauseCallback([this](bool b) {
+			if (b) {
+				for (auto p : entities) {
+					p.second->Destroy();
+				}
+				LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
+			}
+			else {
+				if (Application::GetApp()->IsRunning()) {
+					for (auto p : entities) {
+						Ref<CharacterEntity> c = dynamic_pointer_cast<CharacterEntity>(p.second);
+						if (c) {
+							characterEntity = c;
+							break;
+						}
+					}
+					GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
+					GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(Vector3f(0.f));
+					SaveScene(savePath);
+				}
+			}
+			});
 
+
+		Application::PauseGame();
+	}
 	return;
 	Ref<SpriteEntity> spEnt = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), Vector3f(1, 1, 1), 0.f);
 	AddEntity(spEnt);
@@ -46,7 +120,7 @@ void MapEditor::OnBegin()
 
 void MapEditor::OnEnd()
 {
-
+	Application::GetApp()->RemoveOnGamePauseCallback(pauseCallback);
 }
 
 void MapEditor::OnImGuiRender()
@@ -70,7 +144,6 @@ void MapEditor::SetupCamera()
 		(float)GEngine::Application::GetWidth() / (float)GEngine::Application::GetHeight()));
 	m_CameraController->SetOnUpdateFn([this](GEngine::Timestep timeStep, Vector3f& m_Position, Vector3f& m_Rotation, Vector2f& m_LastTouchPos,
 		uint64_t& m_lastTouchId, float& m_LastDistance) {
-
 			const float m_CameraMoveSpeed = 1.5f;
 			const float m_CameraRotSpeed = 180.f;
 
@@ -90,13 +163,43 @@ void MapEditor::SetupCamera()
 				m_Rotation.z += m_CameraRotSpeed * m_CameraController->GetFOV() * timeStep.GetSeconds();
 			if (GEngine::Input::IsKeyPressed(GE_KEY_E))
 				m_Rotation.z -= m_CameraRotSpeed * m_CameraController->GetFOV() * timeStep.GetSeconds();
-
-
+			
 		});
 	m_CameraController->SetOnEventFn([this](GEngine::Event& e) {
 		GEngine::EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<GEngine::MouseScrolledEvent>([this](GEngine::MouseScrolledEvent& e) {
 			m_CameraController->OnCameraZoom(e.GetXOffset(), e.GetYOffset(), .1f);
+			return false;
+			});
+
+		dispatcher.Dispatch<GEngine::KeyPressedEvent>([this](GEngine::KeyPressedEvent& e) {
+			if (!Application::IsGamePaused()) return false;
+			const float m_CameraMoveSpeed = .1f;
+			const float m_CameraRotSpeed = 180.f;
+			Vector3f m_Position = m_CameraController->GetPosition();
+			Vector3f m_Rotation = m_CameraController->GetRotation();
+			if (GEngine::Input::IsKeyPressed(GE_KEY_A))
+				m_Position.x -= m_CameraMoveSpeed * m_CameraController->GetFOV() ;
+			if (GEngine::Input::IsKeyPressed(GE_KEY_D))
+				m_Position.x += m_CameraMoveSpeed * m_CameraController->GetFOV();
+			if (GEngine::Input::IsKeyPressed(GE_KEY_LEFT_SHIFT))
+				m_Position.z -= m_CameraMoveSpeed * m_CameraController->GetFOV();
+			if (GEngine::Input::IsKeyPressed(GE_KEY_LEFT_CONTROL))
+				m_Position.z += m_CameraMoveSpeed * m_CameraController->GetFOV();
+			if (GEngine::Input::IsKeyPressed(GE_KEY_W))
+				m_Position.y += m_CameraMoveSpeed * m_CameraController->GetFOV();
+			if (GEngine::Input::IsKeyPressed(GE_KEY_S))
+				m_Position.y -= m_CameraMoveSpeed * m_CameraController->GetFOV();
+			if (GEngine::Input::IsKeyPressed(GE_KEY_Q))
+				m_Rotation.z += m_CameraRotSpeed * m_CameraController->GetFOV();
+			if (GEngine::Input::IsKeyPressed(GE_KEY_E))
+				m_Rotation.z -= m_CameraRotSpeed * m_CameraController->GetFOV();
+
+			m_CameraController->SetPosition(m_Position);
+			m_CameraController->SetRotation(m_Rotation);
+
+			m_CameraController->OnUpdate(16.f / 1000.f);
+
 			return false;
 			});
 		});
@@ -105,25 +208,70 @@ void MapEditor::SetupCamera()
 
 static GEngine::Ref<GEngine::GameObject> hashSelected = nullptr;
 static bool b_component = false;
+static bool b_addObj = false;
+static bool b_showpopup = false;
+static std::string entityCreate = "Entity";
+static std::string componentCreate = "SpriteComponent";
+static unordered_map<std::string, std::function<void()>> entityMap = { { "Entity", []() { SceneManager::GetCurrentScene()->AddEntity(CreateGameObject<Entity>()); }}, {"CharacterEntity", []() {SceneManager::GetCurrentScene()->AddEntity(CreateGameObject<CharacterEntity>()); }  }, {"BackgroundEntity", []() {SceneManager::GetCurrentScene()->AddEntity(CreateGameObject<BackgroundEntity>()); }}
+
+};
+static unordered_map<std::string, std::function<void()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); }}
+};
 
 void MapEditor::SceneMenu()
 {
+#ifdef GE_CONSOLE_APP
+	if (ImGui::BeginPopupModal("Create Object", &b_addObj, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Type:");
+		if (!ImGui::IsWindowHovered()) {
+			if (ImGui::IsKeyPressed(GE_KEY_ESCAPE)) {
+				b_addObj = false;
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::BeginCombo("", (hashSelected == nullptr ? entityCreate.c_str() : componentCreate.c_str()))) {
+			const unordered_map<std::string, std::function<void()>>& map = hashSelected == nullptr ? entityMap : componentMap;
+			for (const std::pair<std::string, std::function<void()>>& p : map) {
+				bool selected = (hashSelected == nullptr ? entityCreate : componentCreate) == p.first;
+				if (ImGui::Selectable(p.first.c_str(), selected)) {
+					(hashSelected == nullptr ? entityCreate : componentCreate) = p.first;
+				}
+				if (selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::SetCursorPosX( (ImGui::GetWindowSize().x / 2.f) - 100.f);
+		if (ImGui::Button(hashSelected == nullptr ? "Add Entity" : "Add Component", { 200,30 })) {
+			bool ent = hashSelected == nullptr;
+			if (ent) {
+				entityMap[entityCreate]();
+			}
+			else {
+				componentMap[componentCreate]();
+			}
+			b_addObj = false;
+		}
+		ImGui::EndPopup();
+	}
 
-	
+	if (b_addObj) {
+		ImGui::OpenPopup("Create Object");
+	}
+
 
 	ImGui::Begin("Scene Hierarchy"); {
-
-
 		if (ImGui::Button("Add")) {
-			if (dynamic_pointer_cast<Component>(hashSelected) != nullptr) {
+			b_addObj = true;
+			/*			if (dynamic_pointer_cast<Component>(hashSelected) != nullptr) {
 				if (dynamic_pointer_cast<SpriteComponent>(hashSelected)) {
 					Ref<SpriteComponent> s = dynamic_pointer_cast<SpriteComponent>(hashSelected);
 					s->CreateQuad({ 0,0, 0 });
 				}
 			}
+			*/
+
 		}
-
-
 
 		if (hashSelected != nullptr) {
 			ImGui::SameLine();
@@ -131,7 +279,8 @@ void MapEditor::SceneMenu()
 
 				if (b_component) {
 					GEngine::Ref<GEngine::Component> __c = static_pointer_cast<GEngine::Component>(hashSelected);
-					__c->Destroy();
+					__c->GetEntity()->RemoveComponent(__c);
+
 				}
 				else {
 					GEngine::Ref<GEngine::Entity> __e = static_pointer_cast<GEngine::Entity>(hashSelected);
@@ -140,19 +289,32 @@ void MapEditor::SceneMenu()
 
 				hashSelected = nullptr;
 				b_component = false;
-
+				ImGui::End();
+				return;
 			}
 		}
 
-		ImGui::SameLine();
+		
 
-		if (ImGui::Button("Save")) {
-			SaveScene();
-		}
+		if (Application::IsGamePaused()) {
+			ImGui::SameLine();
+			if (ImGui::Button("Save")) {
+				SaveScene(savePath);
+			}
 
-		ImGui::SameLine();
-		if (ImGui::Button("Load")) {
-			LoadScene((char*)FileSystem::FileDataFromPath("Content/Scenes/Scene.scene")->GetDataAsString());
+			ImGui::SameLine();
+			if (ImGui::Button("Load")) {
+
+				
+
+				LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
+			}
+			ImGui::SameLine();
+			char ch[256] = { 0 };
+			memcpy(ch, &savePath[0], savePath.size());
+			if (ImGui::InputText("##hidelabel", ch, ImGuiInputTextFlags_EnterReturnsTrue)) {
+				savePath = ch;
+			}
 		}
 
 		ImGui::Separator();
@@ -169,10 +331,36 @@ void MapEditor::SceneMenu()
 					entity_base_flags |= ImGuiTreeNodeFlags_Selected;
 				}
 				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%ju)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), e.first);
-				if (ImGui::IsItemClicked()) {
-					b_component = false;
-					hashSelected = e.second;
+				
+				if (ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) {
+					if (hashSelected != e.second) {
+						b_component = false;
+						hashSelected = e.second;
+					}
+					else if (!ImGui::IsItemClicked(1)) {
+						b_component = false;
+						hashSelected = nullptr;
+					}
 				}
+				
+				if (hashSelected == e.second) {
+					if (ImGui::BeginPopupContextItem("RenameEntity")) {
+
+					char ch[255] = { 0 };
+					if (ImGui::InputText("Rename Entity", ch, sizeof(ch), ImGuiInputTextFlags_EnterReturnsTrue)) {
+						e.second->m_tag = ch;
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (Input::IsKeyPressed(GE_KEY_ESCAPE)) {
+						ImGui::CloseCurrentPopup();
+					}
+
+					ImGui::EndPopup();
+				}
+				}
+
+
 
 				if (show_e)
 				{
@@ -191,8 +379,123 @@ void MapEditor::SceneMenu()
 							b_component = true;
 							hashSelected = c.second;
 						}
-						if (show_c) {
 
+						if (compName == "class LightComponent") {
+							Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
+							if (ImGui::BeginPopupContextItem("Create Light")) {
+
+								if (ImGui::Button("Create Quad Light")) {
+									lightC->AddQuadLight({ 0,0 }, 1, { 1,1 }, { 1,1,1,.99f });
+								}
+
+								if (ImGui::Button("Create Cirlce Light")) {
+									lightC->AddCircleLight({ 0,0 }, 1, { 1,1 }, { 1,0,0,1.f });
+								}
+
+								ImGui::EndPopup();
+							}
+						}
+
+						if (compName == "class GEngine::QuadColliderComponent") {
+							Ref<class GEngine::QuadColliderComponent> quad = dynamic_pointer_cast<QuadColliderComponent>(c.second);
+							if (ImGui::BeginPopupContextItem("QuadColliderCreation")) {
+
+								if (ImGui::Button("Create Quad")) {
+									quad->CreateQuad({ 0,0 }, { 1,1 }, 1.f, 0.f, "Quad");
+									//quad->WakeBody();
+								}
+
+								if (ImGui::Button("Create Circle")) {
+									quad->CreateCircle({ 0,0 }, { 1,1 }, 1.f, 0.f, "Circle");
+									//quad->WakeBody();
+								}
+
+								ImGui::EndPopup();
+							}
+						}
+
+						if (compName == "class GEngine::SpriteComponent") {
+
+
+							GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
+
+							if (ImGui::BeginPopupContextItem("ShowCreatButton")) {
+
+								if (ImGui::Button("Create Textured Quad")) {
+									spriteComp->CreateQuad({ 0,0,0 });
+								}
+
+								if (ImGui::Button("Create SubTextured Quad")) {
+									spriteComp->CreateSubTexturedQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1,1,1,1 }, SubTexture2D::CreateFromCoords(Texture2D::Create("batchBlank"), { 0,0 }, { 1,1 }));
+								}
+
+								ImGui::EndPopup();
+							}
+
+						}
+
+						if (show_c) {
+							if (compName == "class LightComponent") {
+								Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
+								int i = 0;
+								while (i <= 1) {
+									std::vector<ShapeID> ids = i == 0 ? lightC->GetQuadLights() : lightC->GetCircleLights();
+									
+									for (const ShapeID& id : ids) {
+										bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)id, component_base_flags, "%s, %llu", (i == 0 ? "Quad Light" : "Circle Light"),  id);
+										Ref<BatchRenderer> batchRender = (i == 0 ? lightC->GetQuadRenderer() : lightC->GetCircleRenderer());
+										if (show_sid) {
+											Vector3f p = batchRender->GetShapePosition(id) - e.second->GetEntityPosition();
+											float v[3];
+											memcpy(v, p.data(), sizeof(float) * 3);
+											ImGui::Text("Position: ");
+											ImGui::SameLine();
+											if (ImGui::InputFloat3("Pos", v, 4)) {
+												if (Vector3f(v) != p) {
+													batchRender->SetPosition(id, (Vector2f(v) + e.second->GetEntityPosition().xy()));
+													if (v[2] != p.z) {
+														batchRender->SetZOrder(id, v[2] + e.second->GetEntityPosition().z);
+													}
+												}
+											}
+											float _rot = batchRender->GetShapeRotation(id);
+											float rot = _rot - e.second->GetEntityRotation().z;
+											ImGui::Text("Rotation: ");
+											ImGui::SameLine();
+											ImGui::InputFloat("rot", &rot);
+											if (rot != _rot - e.second->GetEntityRotation().z) {
+												batchRender->SetRotation(id, rot + e.second->GetEntityRotation().z);
+											}
+											float _s[2];
+											ImGui::Text("Scale: ");
+											ImGui::SameLine();
+											Vector2f s = batchRender->GetShapeScale(id);
+											Vector2f __s = e.second->GetEntityScale().xy();
+											s = { s.x / __s.x,s.y / __s.y };
+											memcpy(_s, s.data(), sizeof(float) * 2);
+											if (ImGui::InputFloat2("scale", _s, 4)) {
+												if (s != Vector2f(_s)) {
+													batchRender->SetScale(id, Vector2f(_s) * e.second->GetEntityScale().xy());
+												}
+											}
+											ImGui::Text("Color: ");
+											ImGui::SameLine();
+											Vector4f _c = batchRender->GetShapeColor(id);
+											float __c[4];
+											memcpy(__c, _c.data(), sizeof(float) * 4);
+											if (ImGui::InputFloat4("sColr", __c)) {
+												if (Vector4f(__c) != _c) {
+													batchRender->SetColor(id, __c);
+												}
+											}
+
+											ImGui::TreePop();
+										}
+
+									}
+									i++;
+								}
+							}
 							if (compName == "class GEngine::Transform") {
 								float v[3];
 								GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second);
@@ -231,15 +534,120 @@ void MapEditor::SceneMenu()
 								}
 
 							}
+							if (compName == "class GEngine::QuadColliderComponent") {
+								GEngine::Ref<GEngine::QuadColliderComponent> collider = dynamic_pointer_cast<GEngine::QuadColliderComponent>(c.second);
+								if (collider == nullptr) return;
+								ImGui::Text("Velocity: ");
+								ImGui::SameLine();
+								float vl[2];
+								Vector2f _vl = collider->GetLinearVelocity();
+								memcpy(vl, _vl.data(), sizeof(float) * 2);
+								ImGui::InputFloat2("__vl", vl);
+								if (_vl != Vector2f(vl)) {
+									collider->SetVelocity(vl[0], vl[1]);
+								}
+								bool b = collider->GetFixedRotation();
+								ImGui::Text("Fixed Rotation: ");
+								ImGui::SameLine();
+								if (ImGui::Checkbox("##hidelabel", &b)) {
+									collider->SetFixedRotation(b);
+								}
+
+								if (ImGui::Button("Wake Bodies")) {
+									collider->WakeBody(true);
+								}
+								ImGui::SameLine();
+								if (ImGui::Button("Sleep Bodies")) {
+									collider->WakeBody(false);
+								}
+
+								for (std::pair<const ColliderID, FColliderQuad >& c : collider->GetColliders()) {
+									bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s - %s : %llu", c.second.tag, (c.second.quad ? "QuadCollider" : "CircleCollider"),c.first);
+									if (show_sid) {
+										ImGui::Text("Tag: ");
+										ImGui::SameLine();
+										char buff[255] = { 0 };
+										memcpy(buff, &c.second.tag[0], c.second.tag.size());
+										if (ImGui::InputText("__", buff, sizeof(buff), ImGuiInputTextFlags_EnterReturnsTrue)) {
+											c.second.tag = std::string(buff);
+										}
+										ImGui::Text("Position: ");
+										ImGui::SameLine();
+										float p[2];
+										memcpy(p, c.second.position.data(), sizeof(float) * 2);
+										ImGui::InputFloat2("__f", p);
+										if (Vector2f(p) != c.second.position) {
+											c.second.position = Vector2f(p);
+										}
+										ImGui::Text("Rotation: ");
+										ImGui::SameLine();
+										ImGui::InputFloat("__r", &c.second.rotation);
+
+										ImGui::Text("Scale: ");
+										ImGui::SameLine();
+										float s[2];
+										memcpy(s, c.second.scale.data(), sizeof(float) * 2);
+										ImGui::InputFloat2("__s", s);
+										if (Vector2f(s) != c.second.scale) {
+											c.second.scale = Vector2f(s);
+										}
+										ImGui::Text("Mass: ");
+										ImGui::SameLine();
+										ImGui::InputFloat("__m", &c.second.mass);
+										ImGui::Text("Bounce: ");
+										ImGui::SameLine();
+										float bounce = c.second.bounce;
+										if (ImGui::InputFloat("__bo", &bounce)) {
+											collider->SetBounce(c.first, bounce);
+										}
+										if (ImGui::Button("Destroy")) {
+											collider->DestroyQuad(c.first);
+										}
+										
+										ImGui::TreePop();
+									}
+									
+								}
+
+								
+
+							}
 							if (compName == "class GEngine::SpriteComponent") {
+
+
 								GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
+
 								std::vector<ShapeID> ids = spriteComp->GetQuads();
 								Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
 								int counter = 0;
 								for (const ShapeID& id : ids) {
-									bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)ids[counter++], component_base_flags, "%llu", id);
+									bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)ids[counter++], component_base_flags, "%s - %llu", batchRender->GetShapeTexture(id)->GetName().c_str(), id);
+
+									if (ImGui::BeginPopupContextItem("spriteComponentDupe")) {
+
+										if (ImGui::Button("Duplicate")) {
+											
+											if (batchRender->GetShapeSubTexture(id) != nullptr) {
+												Vector2f s = batchRender->GetShapeScale(id);
+												Vector2f __s = e.second->GetEntityScale().xy();
+												s = { s.x / __s.x,s.y / __s.y };
+												spriteComp->CreateSubTexturedQuad(batchRender->GetShapePosition(id) - e.second->GetEntityPosition(), batchRender->GetShapeRotation(id) - e.second->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeSubTexture(id), batchRender->GetTextureScale(id));
+											}
+											else {
+												Vector2f s = batchRender->GetShapeScale(id);
+												Vector2f __s = e.second->GetEntityScale().xy();
+												s = { s.x / __s.x,s.y / __s.y };
+												spriteComp->CreateQuad(batchRender->GetShapePosition(id) - e.second->GetEntityPosition(), batchRender->GetShapeRotation(id) - e.second->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeTexture(id), batchRender->GetTextureScale(id));
+											}
+												
+											ImGui::CloseCurrentPopup();
+										}
+
+										ImGui::EndPopup();
+									}
+
 									if (show_sid) {
-										Vector3f p = batchRender->GetShapePosition(id)-e.second->GetEntityPosition();
+										Vector3f p = batchRender->GetShapePosition(id) - e.second->GetEntityPosition();
 										float v[3];
 										memcpy(v, p.data(), sizeof(float) * 3);
 										ImGui::Text("Position: ");
@@ -253,11 +661,11 @@ void MapEditor::SceneMenu()
 											}
 										}
 										float _rot = batchRender->GetShapeRotation(id);
-										float rot = _rot-e.second->GetEntityRotation().z;
+										float rot = _rot - e.second->GetEntityRotation().z;
 										ImGui::Text("Rotation: ");
 										ImGui::SameLine();
 										ImGui::InputFloat("rot", &rot);
-										if (rot != _rot-e.second->GetEntityRotation().z) {
+										if (rot != _rot - e.second->GetEntityRotation().z) {
 											spriteComp->SetRotation(id, rot);
 										}
 										float _s[2];
@@ -283,9 +691,21 @@ void MapEditor::SceneMenu()
 											}
 										}
 
+										ImGui::Text("Texture Scale: ");
+										ImGui::SameLine();
+
+										float _ts[2];
+										Vector2f __ts = batchRender->GetTextureScale(id);
+										memcpy(_ts, __ts.data(), sizeof(float) * 2);
+										if (ImGui::InputFloat2("ttscale", _ts)) {
+											if (__ts != Vector2f(_ts)) {
+												batchRender->SetTextureScale(id, _ts);
+											}
+										}
+
 										if (batchRender->GetShapeSubTexture(id)) {
 											uint64_t __id = id + 1;
-											bool show_subTId = ImGui::TreeNodeEx((void*)(intptr_t)__id, component_base_flags, "Sub Texture");
+											bool show_subTId = ImGui::TreeNodeEx((void*)(intptr_t)__id, component_base_flags, "Sub Texture: %s", batchRender->GetShapeSubTexture(id)->GetTexture()->GetName().c_str());
 											if (show_subTId) {
 												bool change = false;
 												Ref<SubTexture2D> subT = batchRender->GetShapeSubTexture(id);
@@ -310,22 +730,22 @@ void MapEditor::SceneMenu()
 												ImGui::Text("Cell Size: ");
 												ImGui::SameLine();
 												if (ImGui::InputFloat2("subCell", subSiz)) {
-													subT->SetCoords(*subT->GetTexCoords(), subSiz);
+													subT->SetCoords(subT->m_coords, subSiz);
 													change = true;
 												}
 
 												float spSize[2];
-												memcpy(spSize, subT->m_spriteSize.data(), sizeof(float)*2);
+												memcpy(spSize, subT->m_spriteSize.data(), sizeof(float) * 2);
 												ImGui::Text("Sprite Size: ");
 												ImGui::SameLine();
 												if (ImGui::InputFloat2("sizeCell", spSize)) {
-													subT->SetCoords(*subT->GetTexCoords(), subT->m_cellSize, spSize);
+													subT->SetCoords(subT->m_coords, subT->m_cellSize, spSize);
 													change = true;
 												}
 
 												if (change) {
 													subT = SubTexture2D::CreateFromCoords(Texture2D::Create(std::string(ch), TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest),
-														*subT->GetTexCoords(), subT->m_cellSize, subT->m_spriteSize);
+														subT->m_coords, subT->m_cellSize, subT->m_spriteSize);
 													batchRender->SetSubTexture(id, subT);
 												}
 												ImGui::TreePop();
@@ -343,24 +763,11 @@ void MapEditor::SceneMenu()
 											}
 										}
 
-										
-
-										ImGui::Text("Texture Scale: ");
-										ImGui::SameLine();
-
-										float _ts[2];
-										Vector2f __ts = batchRender->GetTextureScale(id);
-										memcpy(_ts, __ts.data(), sizeof(float) * 2);
-										if (ImGui::InputFloat2("ttscale", _ts)) {
-											if (__ts != Vector2f(_ts)) {
-												batchRender->SetTextureScale(id, _ts);
-											}
-										}
 
 										if (ImGui::Button("Destroy")) {
 											spriteComp->RemoveQuad(id);
 										}
-										
+
 										ImGui::TreePop();
 									}
 								}
@@ -382,17 +789,18 @@ void MapEditor::SceneMenu()
 
 	}
 	ImGui::End();
+#endif
 }
 
 
 static std::string Vec3fToCXML(const Vector3f& v) {
-	return "<float> " + std::to_string(v.x) + "</float>\n" + "<float> " + std::to_string(v.y) + " </float>\n" + "<float> " + std::to_string(v.z) + " </float>\n";
+	return "<float> " + std::to_string(v.x) + " </float>\n" + "<float> " + std::to_string(v.y) + " </float>\n" + "<float> " + std::to_string(v.z) + " </float>\n";
 }
 static std::string Vec4fToCXML(const Vector4f& v) {
-	return "<float> " + std::to_string(v.x) + "</float>\n" + "<float> " + std::to_string(v.y) + " </float>\n" + "<float> " + std::to_string(v.z) + " </float>\n" + "<float> " + std::to_string(v.w) + " </float>\n";
+	return "<float> " + std::to_string(v.x) + " </float>\n" + "<float> " + std::to_string(v.y) + " </float>\n" + "<float> " + std::to_string(v.z) + " </float>\n" + "<float> " + std::to_string(v.w) + " </float>\n";
 }
 static std::string Vec2fToCXML(const Vector2f& v) {
-	return "<float> " + std::to_string(v.x) + "</float>\n" + "<float> " + std::to_string(v.y) + " </float>\n";
+	return "<float> " + std::to_string(v.x) + " </float>\n" + "<float> " + std::to_string(v.y) + " </float>\n";
 }
 
 static std::string FloatToCXML(const float& f) {
@@ -403,73 +811,186 @@ static std::string StringToCXML(const std::string& s) {
 	return "<string>" + s + "</string>\n";
 }
 
+static std::string IntToCXML(const int& i) {
+	return "<int> " + std::to_string(i) + " </int>\n";
+}
+
 static std::string Texture2DToCXML(Ref<Texture2D> texture) {
-	return "<Texture2D>\n<constructor>\n<string>"+texture->GetName()+"</string>\n<int>"+std::to_string(texture->GetFlags())+"</int>\n</constructor>\n</Texture2D>\n";
+	return "<Texture2D>\n<constructor>\n<string>" + texture->GetName() + "</string>\n<int>" + std::to_string(texture->GetFlags()) + "</int>\n</constructor>\n</Texture2D>\n";
 }
 
 static std::string SubTexture2DToCXML(Ref<SubTexture2D> texture) {
-	return "<SubTexture2D>\n<constructor>\n" + Texture2DToCXML(texture->GetTexture()) + Vec2fToCXML(*texture->GetTexCoords()) + Vec2fToCXML(texture->m_cellSize) + Vec2fToCXML(texture->m_spriteSize) + "</constructor>\n</SubTexture2D>\n";
+	return "<SubTexture2D>\n<constructor>\n" + Texture2DToCXML(texture->GetTexture()) + Vec2fToCXML(texture->m_coords) + Vec2fToCXML(texture->m_cellSize) + Vec2fToCXML(texture->m_spriteSize) + "</constructor>\n</SubTexture2D>\n";
+}
+
+static std::string SpriteComponentToCXML(Ref<SpriteComponent> spriteComp) {
+	std::string _scene = "<SpriteComponent tag=\"" + spriteComp->m_tag + "\">\n";
+	std::vector<ShapeID> ids = spriteComp->GetQuads();
+	Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
+
+	for (const ShapeID& id : ids) {
+		_scene += "<function>\n";
+
+		if (spriteComp->GetBatchRenderer()->GetShapeSubTexture(id) != nullptr) {
+			_scene += "<CreateSubTexturedQuad id=\"" + std::to_string(id) + "\">\n";
+			Vector3f p = batchRender->GetShapePosition(id) - spriteComp->GetEntityPosition();
+			Vector2f s = batchRender->GetShapeScale(id);
+			Vector2f __s = spriteComp->GetEntity()->GetEntityScale().xy();
+			s = { s.x / __s.x,s.y / __s.y };
+			_scene += Vec3fToCXML(p) + FloatToCXML(batchRender->GetShapeRotation(id)) + Vec3fToCXML({ s,1 }) + Vec4fToCXML(batchRender->GetShapeColor(id)) + SubTexture2DToCXML(batchRender->GetShapeSubTexture(id)) + Vec2fToCXML(batchRender->GetTextureScale(id));
+			_scene += "</CreateSubTexturedQuad>\n";
+		}
+		else {
+			_scene += "<CreateQuad id=\"" + std::to_string(id) + "\">\n";
+			Vector3f p = batchRender->GetShapePosition(id) - spriteComp->GetEntityPosition();
+			Vector2f s = batchRender->GetShapeScale(id);
+			Vector2f __s = spriteComp->GetEntity()->GetEntityScale().xy();
+			s = { s.x / __s.x,s.y / __s.y };
+			_scene += Vec3fToCXML(p) + FloatToCXML(batchRender->GetShapeRotation(id)) + Vec3fToCXML({ s,1 }) + Vec4fToCXML(batchRender->GetShapeColor(id)) + Texture2DToCXML(batchRender->GetShapeTexture(id)) + Vec2fToCXML(batchRender->GetTextureScale(id));
+			_scene += "</CreateQuad>\n";
+		}
+
+		_scene += "</function>\n";
+
+	}
+	_scene += "</SpriteComponent>\n";
+	return _scene;
+}
+
+static std::string QuadColliderComponentToCXML(Ref<QuadColliderComponent> c) {
+
+	std::string s = "<QuadColliderComponent>\n<constructor>\n";
+	int dynamic = c->IsDynamic() ? 1 : 0;
+	int physics = c->HasPhysics() ? 1 : 0;
+	s += IntToCXML(dynamic) + IntToCXML(physics) + Vec2fToCXML({0,0}) + IntToCXML((int)c->GetFixedRotation()) +std::string("</constructor>\n");
+
+	for (std::pair<const ColliderID, FColliderQuad>& q : c->GetColliders()) {
+		s += "<function>\n" + std::string(q.second.quad ? ("<CreateQuad id=\""+std::to_string(q.second.id)+"\">\n") : "<CreateCircle id=\"" + std::to_string(q.second.id) + "\">\n");
+		s += Vec2fToCXML(q.second.position) + Vec2fToCXML(q.second.scale) + FloatToCXML(q.second.mass) + FloatToCXML(q.second.rotation) +StringToCXML(q.second.tag)+ FloatToCXML(q.second.bounce) + IntToCXML((int)q.second.quad);
+		s += std::string(q.second.quad ? ("</CreateQuad>\n") : "</CreateCircle >\n") + "</function>\n";
+	}
+
+	s += "</QuadColliderComponent>\n";
+	return s;
+}
+
+static std::string CharacterControllerToCXML(Ref<CharacterController> c) {
+	return "<CharacterController></CharacterController>\n";
+}
+
+static std::string CharacterGraphicsToCXML(Ref<CharacterGraphics> c) {
+	return "<CharacterGraphics></CharacterGraphics>\n";
+}
+
+static std::string AudioListenerComponentToCXML(Ref<AudioListenerComponent> c) {
+	return "<AudioListenerComponent></AudioListenerComponent>\n";
+}
+
+static std::string LightComponentToCXML(Ref<LightComponent> lightComp) {
+	std::string s = "<LightComponent tag=\"" + lightComp->m_tag + "\">\n";
+
+	int i = 0;
+	while (i < 2) {
+		Ref<BatchRenderer> batchRender = i == 0 ? lightComp->GetQuadRenderer() : lightComp->GetCircleRenderer();
+		const std::vector<ShapeID>& ids = i == 0 ? lightComp->GetQuadLights() : lightComp->GetCircleLights();
+
+		for (const ShapeID& id : ids) {
+			s += "<function>\n" + std::string(i == 0 ? "<CreateQuadLight>\n" : "<CreateCircleLight>\n");
+			Vector3f p = batchRender->GetShapePosition(id) - lightComp->GetEntityPosition();
+			Vector2f sc = batchRender->GetShapeScale(id);
+			Vector2f __s = lightComp->GetEntity()->GetEntityScale().xy();
+			sc = { sc.x / __s.x,sc.y / __s.y };
+			s += Vec3fToCXML(p) + FloatToCXML(batchRender->GetShapeRotation(id)) + Vec3fToCXML({ sc,1 }) + Vec4fToCXML(batchRender->GetShapeColor(id)) + Texture2DToCXML(batchRender->GetShapeTexture(id)) + Vec2fToCXML(batchRender->GetTextureScale(id));
+			s += (i == 0 ? "</CreateQuadLight>\n" : "</CreateCircleLight>\n") + std::string("</function>\n");
+		}
+
+		i++;
+	}
+
+	s += "</LightComponent>\n";
+	return s;
+}
+
+static std::string TransformToCXML(Ref<Transform> trans) {
+	std::string t = "<TransformComponent>\n";
+	t += Vec3fToCXML(trans->GetPosition()) + Vec3fToCXML(trans->GetRotation()) + Vec3fToCXML(trans->GetScale());
+	t += "</TransformComponent>\n";
+	return t;
 }
 
 
-void MapEditor::SaveScene() {
+void MapEditor::SaveScene(const std::string& location ) {
 
 	std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
 
 	std::string _scene;
 
-
 	for (const std::pair<uint64_t, Ref<Entity>>& e : entities) {
+		
 
-		if (auto s = dynamic_pointer_cast<SpriteEntity>(e.second)) {
-
-			_scene += "<SpriteEntity tag=" + e.second->m_tag + ">\n<constructor>\n" + Vec3fToCXML(e.second->GetEntityPosition()) + Vec2fToCXML(e.second->GetEntityScale().xy()) + FloatToCXML(e.second->GetEntityRotation().z) + "\n</constructor>\n";
-
-			std::vector<ShapeID> ids = s->GetSpriteComponent()->GetQuads();
-
-			Ref<BatchRenderer> batchRender =  s->GetSpriteComponent()->GetBatchRenderer();
-
-			for (const ShapeID& id : ids) {
-				_scene += "<function>\n";
-
-				if (s->GetSpriteComponent()->GetBatchRenderer()->GetShapeSubTexture(id) != nullptr) {
-					_scene += "<CreateSubTexturedQuad id=" + std::to_string(id) + ">\n";
-					Vector3f p = batchRender->GetShapePosition(id) - e.second->GetEntityPosition();
-					Vector2f s = batchRender->GetShapeScale(id);
-					Vector2f __s = e.second->GetEntityScale().xy();
-					s = { s.x / __s.x,s.y / __s.y };
-					_scene += Vec3fToCXML(p) + FloatToCXML(batchRender->GetShapeRotation(id)) + Vec3fToCXML({ s,1 }) + Vec4fToCXML(batchRender->GetShapeColor(id))+SubTexture2DToCXML(batchRender->GetShapeSubTexture(id)) + Vec2fToCXML(batchRender->GetTextureScale(id));
-					_scene += "</CreateSubTexturedQuad>\n";
-				}
-				else {
-					_scene += "<CreateQuad id="+std::to_string(id)+">\n";
-					Vector3f p = batchRender->GetShapePosition(id) - e.second->GetEntityPosition();
-					Vector2f s = batchRender->GetShapeScale(id);
-					Vector2f __s = e.second->GetEntityScale().xy();
-					s = { s.x / __s.x,s.y / __s.y };
-					_scene += Vec3fToCXML(p) + FloatToCXML(batchRender->GetShapeRotation(id)) + Vec3fToCXML({ s,1 }) + Vec4fToCXML(batchRender->GetShapeColor(id))+Texture2DToCXML(batchRender->GetShapeTexture(id))+Vec2fToCXML(batchRender->GetTextureScale(id));
-					_scene += "</CreateQuad>\n";
-				}
-
-				_scene += "</function>\n";
-
-			}
-			_scene += "</SpriteEntity>\n";
+		if (auto _c = dynamic_pointer_cast<CharacterEntity>(e.second)) {
+			_scene += "<CharacterEntity tag=\"" + e.second->m_tag + "\">\n";
+			_scene += TransformToCXML(_c->GetEntityTransformComponent());
+			_scene += "</CharacterEntity>\n";
+			continue;
+		}
+		else {
+			_scene += "<Entity tag=\"" + e.second->m_tag + "\">\n";
 		}
 
-
+		for (const std::pair<uint64_t, Ref<Component>>& c : e.second->GetComponents()) {
+			if (auto _c = dynamic_pointer_cast<CharacterController>(c.second)) {
+				_scene += CharacterControllerToCXML(_c);
+				continue;
+			}
+			if (auto _c = dynamic_pointer_cast<CharacterGraphics>(c.second)) {
+				_scene += CharacterGraphicsToCXML(_c);
+				continue;
+			}
+			if (auto _c = dynamic_pointer_cast<AudioListenerComponent>(c.second)) {
+				_scene += AudioListenerComponentToCXML(_c);
+				continue;
+			}
+			if (auto _c = dynamic_pointer_cast<Transform>(c.second)) {
+				_scene += TransformToCXML(_c);
+				continue;
+			}
+			if (auto _c = dynamic_pointer_cast<SpriteComponent>(c.second)) {
+				_scene += SpriteComponentToCXML(_c);
+				continue;
+			}
+			if (auto _c = dynamic_pointer_cast<LightComponent>(c.second)) {
+				_scene += LightComponentToCXML(_c);
+				continue;
+			}
+			if (auto _c = dynamic_pointer_cast<QuadColliderComponent>(c.second)) {
+				_scene += QuadColliderComponentToCXML(_c);
+				continue;
+			}
+		}
+		_scene += "</Entity>\n";
 	}
 
-	std::ofstream _outFile(FileSystem::GetParentExecuteableDir(3) + "WizardJump/Content/Scenes/Scene.scene");
+	std::ofstream _outFile(FileSystem::GetParentExecuteableDir(3) + "WizardJump/"+ location);
 	_outFile.write(_scene.c_str(), _scene.size());
 	_outFile.close();
 
-	Ref<FileData> data = FileSystem::FileDataFromPath("Content/Scenes/Scene.scene");
-	data->Clear();
-	void* _scData = malloc(_scene.size() * sizeof(char));
-	memcpy(_scData, &_scene[0], _scene.size() * sizeof(char));
-	data->SetData(_scene.size() * sizeof(char), (unsigned char*)_scData);
 	
+	bool b = FileSystem::FileInMemory(location);
+	if (b) {
+		Ref<FileData> data = FileSystem::FileDataFromPath(location);
+		data->Clear();
+		void* _scData = malloc(_scene.size() * sizeof(char));
+		memcpy(_scData, &_scene[0], _scene.size() * sizeof(char));
+		data->SetData(_scene.size() * sizeof(char), (unsigned char*)_scData);
+	}
+	else {
+		void* _scData = malloc(_scene.size() * sizeof(char));
+		memcpy(_scData, &_scene[0], _scene.size() * sizeof(char));
+		Ref<FileData> data = make_shared<FileData>(_scene.size() * sizeof(char), (unsigned char*)_scData);
+		FileSystem::AddToMemoryPak(location, data);
+	}
+
 }
 
 static Ref<Texture2D> GetNodeAsTexture2D(const CXML::CXML_Node& n, size_t* endPos = nullptr) {
@@ -494,55 +1015,193 @@ static Ref<SubTexture2D> GetNodeAsSubTexture2D(const CXML::CXML_Node& n, size_t*
 	return SubTexture2D::CreateFromCoords(texture, coords, cellSize, spriteSize);
 }
 
+static Ref<SpriteComponent> GetNodeAsSpriteComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
+	size_t endPos;
+	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
+	Ref<SpriteComponent> sprEnt = CreateGameObject<SpriteComponent>();
+	e->AddComponent(sprEnt);
+	while (CXML::ValidNode(_n)) {
+		if (_n.type == "function") {
+			if (sprEnt != nullptr) {
+				CXML::CXML_Node __n = cxml.GetNext(_n.info.c_str());
+				if (__n.type == "CreateQuad") {
+					Vector3f pos = cxml.GetNextAsFloats(__n.info.c_str(), 3, 0, &endPos).data();
+					float rot = cxml.GetNextAsFloat(__n.info.c_str(), endPos, &endPos);
+					Vector3f scale = cxml.GetNextAsFloats(__n.info.c_str(), 3, endPos, &endPos).data();
+					Vector4f color = cxml.GetNextAsFloats(__n.info.c_str(), 4, endPos, &endPos).data();
+					Ref<Texture2D> texture = GetNodeAsTexture2D(cxml.GetNext(__n.info.c_str(), endPos), &endPos);
+					Vector2f textureScale = cxml.GetNextAsFloats(__n.info.c_str(), 2, endPos, &endPos).data();
+					sprEnt->CreateQuad(pos, rot, scale, color, texture, textureScale);
+				}
+				else if (__n.type == "CreateSubTexturedQuad") {
+					Vector3f pos = cxml.GetNextAsFloats(__n.info.c_str(), 3, 0, &endPos).data();
+					float rot = cxml.GetNextAsFloat(__n.info.c_str(), endPos, &endPos);
+					Vector3f scale = cxml.GetNextAsFloats(__n.info.c_str(), 3, endPos, &endPos).data();
+					Vector4f color = cxml.GetNextAsFloats(__n.info.c_str(), 4, endPos, &endPos).data();
+					Ref<SubTexture2D> texture = GetNodeAsSubTexture2D(cxml.GetNext(__n.info.c_str(), endPos), &endPos);
+					Vector2f textureScale = cxml.GetNextAsFloats(__n.info.c_str(), 2, endPos, &endPos).data();
+					sprEnt->CreateSubTexturedQuad(pos, rot, scale, color, texture, textureScale);
+				}
+			}
+		}
+		_n = cxml.GetNext(n.info.c_str(), _n.endPos);
+	}
+	if (_endPos)
+		*_endPos = n.endPos;
+	return sprEnt;
+}
+
+static Ref<LightComponent> GetNodeAsLightComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
+	size_t endPos;
+	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
+	Ref<LightComponent> sprEnt = CreateGameObject<LightComponent>();
+	e->AddComponent(sprEnt);
+	while (CXML::ValidNode(_n)) {
+		if (_n.type == "function") {
+			if (sprEnt != nullptr) {
+				CXML::CXML_Node __n = cxml.GetNext(_n.info.c_str());
+				if (__n.type == "CreateCircleLight" || "CreateQuadLight") {
+					Vector3f pos = cxml.GetNextAsFloats(__n.info.c_str(), 3, 0, &endPos).data();
+					float rot = cxml.GetNextAsFloat(__n.info.c_str(), endPos, &endPos);
+					Vector3f scale = cxml.GetNextAsFloats(__n.info.c_str(), 3, endPos, &endPos).data();
+					Vector4f color = cxml.GetNextAsFloats(__n.info.c_str(), 4, endPos, &endPos).data();
+					Ref<Texture2D> texture = GetNodeAsTexture2D(cxml.GetNext(__n.info.c_str(), endPos), &endPos);
+					Vector2f textureScale = cxml.GetNextAsFloats(__n.info.c_str(), 2, endPos, &endPos).data();
+					__n.type == "CreateCircleLight" ? sprEnt->AddCircleLight(pos, rot, scale, color) : sprEnt->AddQuadLight(pos, rot, scale, color, texture);
+				}
+			}
+		}
+		_n = cxml.GetNext(n.info.c_str(), _n.endPos);
+	}
+	if (_endPos)
+		*_endPos = n.endPos;
+
+	return sprEnt;
+}
+
+static Ref<CharacterController> GetNodeAsCharacterController(Ref<Entity> e, const CXML::CXML_Node& n, size_t* endPos = nullptr) {
+	Ref<CharacterController> c = CreateGameObject<CharacterController>();
+	e->AddComponent(c);
+	if(endPos)
+		*endPos = n.endPos;
+	return c;
+}
+
+static Ref<CharacterGraphics> GetNodeAsCharacterGraphics(Ref<Entity> e, const CXML::CXML_Node& n, size_t* endPos = nullptr) {
+	Ref<CharacterGraphics> c = CreateGameObject<CharacterGraphics>();
+	e->AddComponent(c);
+	if (endPos)
+		*endPos = n.endPos;
+	return c;
+}
+
+static Ref<AudioListenerComponent> GetNodeAsAudioListener(Ref<Entity> e, const CXML::CXML_Node& n, size_t* endPos = nullptr) {
+	Ref<AudioListenerComponent> c = CreateGameObject<AudioListenerComponent>();
+	e->AddComponent(c);
+	if (endPos)
+		*endPos = n.endPos;
+	return c;
+}
+
+
+static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
+
+	Ref<QuadColliderComponent> c;
+
+	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
+
+	while (CXML::ValidNode(_n)) {
+		if (_n.type == "constructor") {
+			size_t pos = 0;
+			Vector2<int> cc = cxml.GetNextAsInts(_n.info.c_str(), 2, pos, &pos).data();
+			Vector2f poss = cxml.GetNextAsFloats(_n.info.c_str(), 2, pos, &pos).data();
+			int rot = cxml.GetNextAsInt(_n.info.c_str(), pos, &pos);
+			c = CreateGameObject<QuadColliderComponent>((bool)cc.x, (bool)cc.y, poss, (bool)rot);
+			e->AddComponent(c);
+		}
+		if (_n.type == "function") {
+			CXML::CXML_Node __n = cxml.GetNext(_n.info.c_str());
+
+			if (__n.type == "CreateQuad" || __n.type == "CreateCircle") {
+				size_t pos = 0;
+				Vector2f poss = cxml.GetNextAsFloats(__n.info.c_str(), 2, pos, &pos).data();
+				Vector2f scale = cxml.GetNextAsFloats(__n.info.c_str(), 2, pos, &pos).data();
+				Vector2f mssrot = cxml.GetNextAsFloats(__n.info.c_str(), 2, pos, &pos).data();
+				std::string t = cxml.GetNextAsString(__n.info.c_str(), pos, &pos);
+				float bounce = cxml.GetNextAsFloat(__n.info.c_str(), pos, &pos);
+				GE_CORE_DEBUG("BOUNCE: {0}", bounce);
+				ColliderID id = __n.type == "CreateQuad" ? c->CreateQuad(poss, scale, mssrot.x, mssrot.y, t) : c->CreateCircle(poss, scale, mssrot.x, mssrot.y, t);
+				c->SetBounce(id, bounce);
+				ThreadPool::AddMainThreadFunction([c]() {c->WakeBody(); });
+			}
+		}
+		_n = cxml.GetNext(n.info.c_str(), _n.endPos);
+	}
+
+	return c;
+}
+
 void MapEditor::LoadScene(const std::string& scene)
 {
+
+	for (auto p : entities) {
+		p.second->Destroy();
+	}
+
+
 	Ref<Entity> lastEntity = nullptr;
 	CXML::CXML_Node n = cxml.GetNext(scene.c_str());
 	while (CXML::ValidNode(n)) {
-
-		if (n.type == "SpriteEntity") {
+		if (n.type == "Entity") {
+			Ref<Entity> e = CreateGameObject<Entity>();
+			e->m_tag = n.tags["tag"];
+			AddEntity(e);
+			CXML::CXML_Node c = cxml.GetNext(n.info.c_str());
 			size_t endPos;
-			CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
-			while (CXML::ValidNode(_n)) {
-				if (_n.type == "constructor") {
-					Vector3f pos = cxml.GetNextAsFloats(_n.info.c_str(), 3, 0, &endPos).data();
-					Vector2f scale = cxml.GetNextAsFloats(_n.info.c_str(), 2, endPos, &endPos).data();
-					float rot = cxml.GetNextAsFloat(_n.info.c_str(), endPos, &endPos);
-					lastEntity = CreateGameObject<SpriteEntity>(pos, scale, rot);
-					AddEntity(lastEntity);
+			while (CXML::ValidNode(c)) {
+
+				if (c.type == "TransformComponent") {
+					Vector3f pos = cxml.GetNextAsFloats(c.info.c_str(), 3, 0, &endPos).data();
+					Vector3f rot = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
+					Vector3f scale = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
+
+					e->SetEntityPosition(pos);
+					e->SetEntityRotation(rot);
+					e->SetEntityScale(scale);
+				} else if (c.type == "SpriteComponent") {
+					GetNodeAsSpriteComponent(e, c);
+				} else if (c.type == "LightComponent") {
+					GetNodeAsLightComponent(e, c);
+				} else if (c.type == "QuadColliderComponent") {
+					GetNodeAsQuadColliderComponent(e, c);
+				} else if (c.type == "AudioListenerComponent") {
+					GetNodeAsAudioListener(e, c);
 				}
-				if (_n.type == "function") {
-					Ref<SpriteEntity> sprEnt = dynamic_pointer_cast<SpriteEntity>(lastEntity);
-					if (sprEnt != nullptr) {
-						CXML::CXML_Node __n = cxml.GetNext(_n.info.c_str());
-						if (__n.type == "CreateQuad") {
-							Vector3f pos = cxml.GetNextAsFloats(__n.info.c_str(), 3, 0, &endPos).data();
-							float rot = cxml.GetNextAsFloat(__n.info.c_str(), endPos, &endPos);
-							Vector3f scale = cxml.GetNextAsFloats(__n.info.c_str(), 3, endPos, &endPos).data();
-							Vector4f color = cxml.GetNextAsFloats(__n.info.c_str(), 4, endPos, &endPos).data();
-							Ref<Texture2D> texture = GetNodeAsTexture2D(cxml.GetNext(__n.info.c_str(), endPos), &endPos);
-							Vector2f textureScale = cxml.GetNextAsFloats(__n.info.c_str(), 2, endPos, &endPos).data();
-							sprEnt->GetSpriteComponent()->CreateQuad(pos, rot, scale, color, texture, textureScale);
-						}
-						else if (__n.type == "CreateSubTexturedQuad") {
-							Vector3f pos = cxml.GetNextAsFloats(__n.info.c_str(), 3, 0, &endPos).data();
-							float rot = cxml.GetNextAsFloat(__n.info.c_str(), endPos, &endPos);
-							Vector3f scale = cxml.GetNextAsFloats(__n.info.c_str(), 3, endPos, &endPos).data();
-							Vector4f color = cxml.GetNextAsFloats(__n.info.c_str(), 4, endPos, &endPos).data();
-							Ref<SubTexture2D> texture = GetNodeAsSubTexture2D(cxml.GetNext(__n.info.c_str(), endPos), &endPos);
-							Vector2f textureScale = cxml.GetNextAsFloats(__n.info.c_str(), 2, endPos, &endPos).data();
-							sprEnt->GetSpriteComponent()->CreateSubTexturedQuad(pos, rot, scale, color, texture, textureScale);
-						}
-					}
-					
-				}
-				_n = cxml.GetNext(n.info.c_str(), _n.endPos);
+				
+				c = cxml.GetNext(n.info.c_str(), c);
 			}
 
-
-
 		}
+		else if (n.type == "CharacterEntity") {
 
+			CXML::CXML_Node c = cxml.GetNext(n.info.c_str());
+			size_t endPos;
+			while (CXML::ValidNode(c)) {
+				if (c.type == "TransformComponent") {
+					Vector3f pos = cxml.GetNextAsFloats(c.info.c_str(), 3, 0, &endPos).data();
+					Vector3f rot = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
+					Vector3f scale = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
+					Ref<Entity> e = CreateGameObject<CharacterEntity>();
+					e->m_tag = n.tags["tag"];
+					AddEntity(e);
+					e->SetEntityPosition(pos);
+					e->SetEntityRotation(rot);
+					e->SetEntityScale(scale);
+					c = cxml.GetNext(n.info.c_str(), c);
+				}
+				
+			}
+		}
 		n = cxml.GetNext(scene.c_str(), n.endPos);
 	}
 	

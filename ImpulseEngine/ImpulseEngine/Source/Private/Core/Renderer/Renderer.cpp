@@ -78,6 +78,7 @@ namespace GEngine {
 		RenderCommand::Init();
 		Renderer::OnInit();
 		Renderer2D::Init();
+
 	}
 
 	void Renderer::OnInit()
@@ -94,7 +95,7 @@ namespace GEngine {
 
 		s_ShapeData->shape_shader = Shader::Create("Content/shaders/TextureShader.glsl");
 		s_ShapeData->empty_texture.reset();
-		s_ShapeData->empty_texture = std::shared_ptr<GEngine::Texture2D>(GEngine::Texture2D::Create("rendererEmptyTexture", 1, 1));
+		s_ShapeData->empty_texture = std::shared_ptr<GEngine::Texture2D>(GEngine::Texture2D::Create("batchBlank", 1, 1));
 		uint32_t whiteTextureData = 0xffffffff;
 		s_ShapeData->empty_texture->SetData(&whiteTextureData, sizeof(uint32_t));
 

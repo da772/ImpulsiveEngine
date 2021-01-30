@@ -16,11 +16,14 @@ namespace GEngine {
 		Vector2f scale;
 		float mass;
 		float rotation;
+		std::string tag;
+		float bounce;
+		bool quad;
 	};
 
 	class QuadColliderComponent : public Component {
 	public:
-		QuadColliderComponent(bool dyamic = false, bool physics = false, const Vector2f& position = Vector2f(0,0));
+		QuadColliderComponent(bool dyamic = false, bool physics = false, const Vector2f& position = Vector2f(0,0), bool fixedRotation = true, float bounce = 0.f);
 		~QuadColliderComponent();
 
 		virtual void OnAttached(Ref<Entity> entity) override;
@@ -33,6 +36,7 @@ namespace GEngine {
 
 		void SetPosition(const float x, const float y);
 		void SetScale(const float x, const float y);
+		void SetRotation(const float rot);
 
 		const ColliderID CreateQuad(const Vector2f& position, const Vector2f& scale, float mass, float rotation = 0, const std::string& tag = "");
 		const ColliderID CreateCircle(const Vector2f& position, const Vector2f& scale, float mass, float rotation = 0, const std::string& tag = "");
@@ -40,6 +44,10 @@ namespace GEngine {
 
 		const Vector2f GetPosition();
 		const Vector2f GetScale();
+
+		const Vector2f GetLocalPosition();
+		const Vector2f GetLocalScale();
+		const float GetLocalRotation();
 
 		void SetGravityScale(const float f);
 
@@ -52,6 +60,8 @@ namespace GEngine {
 
 		void SetBounce(const ColliderID id, const float bounce);
 		const float GetBounce(const ColliderID id);
+		void SetFixedRotation(const bool rot);
+		inline bool GetFixedRotation() const { return m_fixedRotation; };
 		
 		void SetDynamic(bool b);
 
@@ -68,11 +78,15 @@ namespace GEngine {
 
 		void SetCollisionLayers(const ColliderID id, const uint16_t category, const uint16_t mask, const int16_t index);
 
-		void WakeBody();
+		void WakeBody(bool wake = true);
 
 		void SetOnCollideFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> onCollideFunc);
 		void SetEndCollideFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> onCollideFunc);
+
+		inline bool IsDynamic() const { return m_dynamic; }
+		inline bool HasPhysics() const { return m_physics; }
 		
+		std::unordered_map<ColliderID, FColliderQuad>& GetColliders() { return m_quads; }
 
 	private:
 		Vector2f m_position;
@@ -84,6 +98,8 @@ namespace GEngine {
 		float m_rotation;
 		bool m_dynamic = false;
 		float m_mass = 0;
+		bool m_fixedRotation;
+		float m_bounce;
 		Ref<PhysicsBody> m_body;
 		bool m_movedSelf = false;
 		uint16_t m_category = 0x02;

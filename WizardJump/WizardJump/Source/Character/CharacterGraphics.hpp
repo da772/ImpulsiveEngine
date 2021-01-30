@@ -23,6 +23,9 @@ public:
 	CharacterGraphics() {};
 	~CharacterGraphics() {};
 
+
+	inline void Collapse() {};
+
 	std::vector<std::function<void()>> animQue;
 
 	MovementAnim animState = MovementAnim::None;

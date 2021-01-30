@@ -302,6 +302,16 @@ namespace GEngine {
 		return fileData;
 	}
 	
+	void FileSystem::AddToMemoryPak(const std::string& name, Ref<FileData> data)
+	{
+		s_fileMap[name] = data;
+	}
+
+	bool FileSystem::FileInMemory(const std::string& name)
+	{
+		return s_fileMap.find(name) != s_fileMap.end();
+	}
+
 	GEngine::Ref<GEngine::FileData> FileSystem::LoadFileFromPak(const std::string& path, std::string pak)
 	{
 		std::unordered_map<std::string, Ref<FileData>>::iterator it = s_fileMap.find(path);

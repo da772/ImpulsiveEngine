@@ -11,6 +11,7 @@ public:
 	};
 	~CharacterBody() {};
 
+
 	inline void AddVelocity(Vector2f v) {
 		m_quadCollider->IncreaseLinearVelocity(v.x, v.y);
 	}
@@ -79,6 +80,7 @@ protected:
 		}
 
 		m_quadCollider->WakeBody();
+		m_groundCollider->WakeBody();
 	}
 
 
