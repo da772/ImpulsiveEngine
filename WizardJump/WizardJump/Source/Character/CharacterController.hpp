@@ -22,7 +22,6 @@ public:
     Ref<AudioComponent> musicSound;
     long long startTime;
 
-	void Collapse();
 
 protected:
     void OnBegin() override;

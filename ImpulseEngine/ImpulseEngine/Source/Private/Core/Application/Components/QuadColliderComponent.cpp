@@ -196,11 +196,6 @@ namespace GEngine {
 	}
 
 
-	void QuadColliderComponent::SetDynamic(bool b)
-	{
-		m_dynamic = b;
-	}
-
 	const GEngine::FColliderQuad& QuadColliderComponent::GetQuadCollider(const ColliderID id)
 	{
 		return m_quads[id];

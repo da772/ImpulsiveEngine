@@ -20,6 +20,9 @@ public:
 
 	void OnUnload() override;
 
+
+	static unordered_map<std::string, std::function<Ref<GameObject>()>> entityMap;
+
 private:
 	GEngine::Scope<GEngine::Orthographic_CameraController> m_CameraController;
 	void SetupCamera();

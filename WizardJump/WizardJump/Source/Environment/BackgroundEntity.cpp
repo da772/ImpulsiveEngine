@@ -3,6 +3,7 @@
 void BackgroundEntity::AddParalaxBackground(const std::string& name, Ref<Texture2D> texture, const Vector2f& scale, float speed, float zOrder, const Vector2f& offset)
 {
 	m_backgrounds[name] = { bInit ? m_backgroundSprite->CreateQuad({ offset.x, offset.y,zOrder }, 0, { scale.x, scale.y, 1 }, { 1,1,1,1 }, texture) : -1, texture, speed, scale, zOrder, offset , {0,0}, bInit };
+	
 }
 
 void BackgroundEntity::RemoveParalaxBackground(const std::string& name) {
@@ -34,9 +35,6 @@ void BackgroundEntity::OnBegin()
 			m_backgrounds[p.first].id = m_backgroundSprite->CreateQuad({ p.second.offset.x,p.second.offset.y,p.second.zOrder }, 0, { p.second.scale.x, p.second.scale.y, 1 }, { 1,1,1,1 }, p.second.texture.lock());
 		
 	}
-
-	m_backgroundSprite->CreateQuad({ 0,102.f,-15 }, 0, { 200.f, 200.f ,1.f }, { 102.f / 255.f,190.f / 255.f,239.f / 255.f,1 });
-	m_backgroundSprite->CreateQuad({ 0,-110,-15 }, 0, { 200.f, 200.f ,1.f }, { 119.f / 255.f,112.f / 255.f,111.f / 255.f,1 });
 
 }
 

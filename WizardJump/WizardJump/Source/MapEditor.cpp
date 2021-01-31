@@ -7,10 +7,13 @@
 #include "Character/CharacterController.hpp"
 #include "Character/CharacterBody.hpp"
 #include "Environment/BackgroundEntity.hpp"
+#include "UI/DialogFrame.hpp"
 
 
 
 static CXML cxml;
+static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr);
+static std::string QuadColliderComponentToCXML(Ref<QuadColliderComponent> c);
 
 MapEditor::MapEditor(const char* id, Camera* camera) : Scene(id, camera)
 {
@@ -107,14 +110,6 @@ void MapEditor::OnBegin()
 		Application::PauseGame();
 	}
 	return;
-	Ref<SpriteEntity> spEnt = CreateGameObject<SpriteEntity>(Vector3f(0, 0, 0), Vector3f(1, 1, 1), 0.f);
-	AddEntity(spEnt);
-	spEnt->GetSpriteComponent()->CreateSubTexturedQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1,1,1,1 }, SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/wiz10_face.png", TEXTUREFLAGS_Wrap_ClampToEdge), { 0,0 }, { 128,128 }));
-
-	spEnt->GetSpriteComponent()->CreateSubTexturedQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1,1,1,1 }, SubTexture2D::CreateFromCoords(Texture2D::Create("Content/Textures/towerUnder.png", TEXTUREFLAGS_Wrap_ClampToEdge), { 0,0 }, { 128,128 }));
-
-
-	spEnt->GetSpriteComponent()->CreateQuad({ 0,0,-5 }, 0, { 200,200,1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/Checkerboard.png", TEXTUREFLAGS_Wrap_Repeat), { 200,200 });
 };
 
 
@@ -212,10 +207,9 @@ static bool b_addObj = false;
 static bool b_showpopup = false;
 static std::string entityCreate = "Entity";
 static std::string componentCreate = "SpriteComponent";
-static unordered_map<std::string, std::function<void()>> entityMap = { { "Entity", []() { SceneManager::GetCurrentScene()->AddEntity(CreateGameObject<Entity>()); }}, {"CharacterEntity", []() {SceneManager::GetCurrentScene()->AddEntity(CreateGameObject<CharacterEntity>()); }  }, {"BackgroundEntity", []() {SceneManager::GetCurrentScene()->AddEntity(CreateGameObject<BackgroundEntity>()); }}
-
+unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { Ref<Entity> e = CreateGameObject<Entity>();  SceneManager::GetCurrentScene()->AddEntity(e); return e; }}, {"CharacterEntity", []() {Ref<Entity> e = CreateGameObject<CharacterEntity>(); SceneManager::GetCurrentScene()->AddEntity(e); return e; }}, {"BackgroundEntity", []() {Ref<Entity> e = CreateGameObject<BackgroundEntity>(); SceneManager::GetCurrentScene()->AddEntity(e); return e; }}, {"DialogFrame", []() {Ref<Entity> e = CreateGameObject<DialogFrame>(Vector3f(0,0,0), 1.f, "Yes", "batchBlank", "My Text"); SceneManager::GetCurrentScene()->AddEntity(e); return e; } }
 };
-static unordered_map<std::string, std::function<void()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); }}
+static unordered_map<std::string, std::function<Ref<GameObject>()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); return nullptr; } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); return nullptr; }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); return nullptr; }}
 };
 
 void MapEditor::SceneMenu()
@@ -230,8 +224,8 @@ void MapEditor::SceneMenu()
 		}
 		ImGui::SameLine();
 		if (ImGui::BeginCombo("", (hashSelected == nullptr ? entityCreate.c_str() : componentCreate.c_str()))) {
-			const unordered_map<std::string, std::function<void()>>& map = hashSelected == nullptr ? entityMap : componentMap;
-			for (const std::pair<std::string, std::function<void()>>& p : map) {
+			const unordered_map<std::string, std::function<Ref<GameObject>()>>& map = hashSelected == nullptr ? entityMap : componentMap;
+			for (const std::pair<std::string, std::function<Ref<GameObject>()>>& p : map) {
 				bool selected = (hashSelected == nullptr ? entityCreate : componentCreate) == p.first;
 				if (ImGui::Selectable(p.first.c_str(), selected)) {
 					(hashSelected == nullptr ? entityCreate : componentCreate) = p.first;
@@ -359,16 +353,114 @@ void MapEditor::SceneMenu()
 					ImGui::EndPopup();
 				}
 				}
+				bool skip_c = false;
+				if (auto __e = dynamic_pointer_cast<BackgroundEntity>(e.second)) {
+					skip_c = true;
+					if (show_e) {
+						for (auto p : __e->GetBackgrounds()) {
+							bool show_pp = ImGui::TreeNodeEx((void*)(intptr_t)std::hash<std::string>{}(p.first), entity_base_flags, "%s bg", p.first.c_str());
+							if (ImGui::BeginPopupContextItem((std::string("backGroundDupe")+p.first).c_str())) {
+								
+								if (ImGui::Button("Duplicate")) {
+									__e->AddParalaxBackground(p.first + "_Copy", p.second.texture.lock(), p.second.scale, p.second.speed, p.second.zOrder, p.second.offset);
+									ImGui::CloseCurrentPopup();
+								}
 
+								ImGui::EndPopup();
+							}
+							if (show_pp) {
 
+								bool recreate = false;
+								char ch[255] = { 0 };
+								ImGui::Text("Name: ");
+								ImGui::SameLine();
+								memcpy(ch, &p.first[0], p.first.size());
+								if (ImGui::InputText("##hidelabel1", ch, sizeof(ch), ImGuiInputTextFlags_EnterReturnsTrue)) {
+									if (p.first != ch) {
+										recreate = true;
+									}
+								}
+								ImGui::Text("Texture: ");
+								ImGui::SameLine();
+								char ch1[255] = { 0 };
+								memcpy(ch1, &p.second.texture.lock()->GetName()[0], p.second.texture.lock()->GetName().size());
+								if (ImGui::InputText("##hidelabel2", ch1, sizeof(ch1), ImGuiInputTextFlags_EnterReturnsTrue)) {
+									if (p.second.texture.lock()->GetName() != ch1) {
+										recreate = true;
+									}
+								}
+
+								ImGui::Text("Texture Flags: ");
+								ImGui::SameLine();
+								int flags = p.second.texture.lock()->GetFlags();
+								if (ImGui::InputInt("##hidelabelflag", &flags)) {
+									if (p.second.texture.lock()->GetFlags() != flags)
+										recreate = true;
+								}
+
+								float sc[2] = { p.second.scale.x, p.second.scale.y };
+								ImGui::Text("Scale: ");
+								ImGui::SameLine();
+								if (ImGui::InputFloat2("##hidelabel3", sc)) {
+									if (p.second.offset != sc) {
+										recreate = true;
+									}
+								}
+
+								float sp = p.second.speed;
+
+								ImGui::Text("Speed: ");
+								ImGui::SameLine();
+								if (ImGui::InputFloat("##hidelabel4", &sp)) {
+									if (p.second.speed != sp) {
+										recreate = true;
+									}
+								}
+
+								float zO = p.second.zOrder;
+								ImGui::Text("zOrder: ");
+								ImGui::SameLine();
+								if (ImGui::InputFloat("##hidelabel5", &zO)) {
+									if (p.second.zOrder != zO) {
+										recreate = true;
+									}
+								}
+
+								float of[2] = { p.second.offset.x, p.second.offset.y };
+								ImGui::Text("Offset: ");
+								ImGui::SameLine();
+								if (ImGui::InputFloat2("##hidelabel6", of)) {
+									if (p.second.offset != of) {
+										recreate = true;
+									}
+								}
+
+								if (ImGui::Button("Destroy")) {
+									__e->RemoveParalaxBackground(p.first);
+								}
+
+								if (recreate) {
+									__e->RemoveParalaxBackground(p.first);
+									__e->AddParalaxBackground(ch, Texture2D::Create(ch1, flags), sc, sp, zO, of);
+								}
+
+								ImGui::TreePop();
+							}
+						}
+						if (ImGui::Button("Add Background")) {
+							__e->AddParalaxBackground("background", Texture2D::Create("batchBlank"), { 1,1 }, 1, 0, { 0,0 });
+						}
+					}
+					
+				}
 
 				if (show_e)
 				{
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.75, .75, .75, 1));
 					std::unordered_map<uint64_t, GEngine::Ref<GEngine::Component>> components = e.second->GetComponents();
 
-
 					for (const std::pair<uint64_t, GEngine::Ref<GEngine::Component>>& c : components) {
+						if (skip_c) continue;
 						std::string compName = typeid(*c.second.get()).name();
 						ImGuiTreeNodeFlags component_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 						if (hashSelected == c.second) {
@@ -537,6 +629,30 @@ void MapEditor::SceneMenu()
 							if (compName == "class GEngine::QuadColliderComponent") {
 								GEngine::Ref<GEngine::QuadColliderComponent> collider = dynamic_pointer_cast<GEngine::QuadColliderComponent>(c.second);
 								if (collider == nullptr) return;
+
+								bool phys = collider->HasPhysics();
+								ImGui::Text("Physics: ");
+								ImGui::SameLine();
+								if (ImGui::Checkbox("##hidelabelphysics", &phys)) {
+									collider->SetPhysics(phys);
+
+									Ref<Entity> ec = collider->GetEntity();
+									std::string xcml = QuadColliderComponentToCXML(collider);
+									collider->Destroy();
+									collider = GetNodeAsQuadColliderComponent(ec, cxml.GetNext(xcml.c_str()));
+								}
+								bool dyn = collider->IsDynamic();
+								ImGui::Text("Dynamic: ");
+								ImGui::SameLine();
+								if (ImGui::Checkbox("##hidelabeldynamic", &dyn)) {
+									collider->SetDynamic(dyn);
+
+									Ref<Entity> ec = collider->GetEntity();
+									std::string xcml = QuadColliderComponentToCXML(collider);
+									collider->Destroy();
+									collider = GetNodeAsQuadColliderComponent(ec, cxml.GetNext(xcml.c_str()));
+								}
+
 								ImGui::Text("Velocity: ");
 								ImGui::SameLine();
 								float vl[2];
@@ -716,6 +832,12 @@ void MapEditor::SceneMenu()
 													change = true;
 												}
 
+												int fl = subT->GetTexture()->GetFlags();
+												if (ImGui::InputInt("__flags", &fl)) {
+													if (fl != subT->GetTexture()->GetFlags())
+														change = true;
+												}
+
 												float coords[2];
 												memcpy(coords, subT->m_coords.data(), sizeof(float) * 2);
 												ImGui::Text("Coords: ");
@@ -744,7 +866,7 @@ void MapEditor::SceneMenu()
 												}
 
 												if (change) {
-													subT = SubTexture2D::CreateFromCoords(Texture2D::Create(std::string(ch), TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest),
+													subT = SubTexture2D::CreateFromCoords(Texture2D::Create(std::string(ch), 192),
 														subT->m_coords, subT->m_cellSize, subT->m_spriteSize);
 													batchRender->SetSubTexture(id, subT);
 												}
@@ -780,6 +902,7 @@ void MapEditor::SceneMenu()
 
 					ImGui::TreePop();
 				}
+				
 				ImGui::PopStyleColor(1);
 			}
 
@@ -886,6 +1009,20 @@ static std::string AudioListenerComponentToCXML(Ref<AudioListenerComponent> c) {
 	return "<AudioListenerComponent></AudioListenerComponent>\n";
 }
 
+
+static std::string BackgroundEntityToCXML(Ref<BackgroundEntity> e) {
+	std::string s = "<BackgroundEntity>\n";
+	const std::unordered_map<std::string, FParalaxBackground>& b = e->GetBackgrounds();
+	for (const std::pair<std::string, FParalaxBackground>& p : b) {
+		s += "<function>\n<AddParalaxBackground>\n" + StringToCXML(p.first) + Texture2DToCXML(p.second.texture.lock()) + Vec2fToCXML(p.second.scale) + FloatToCXML(p.second.speed) + FloatToCXML(p.second.zOrder) + Vec2fToCXML(p.second.offset);
+		s += "</AddParalaxBackground>\n</function>\n";
+	}
+
+	s += "</BackgroundEntity>\n";
+	return s;
+}
+
+
 static std::string LightComponentToCXML(Ref<LightComponent> lightComp) {
 	std::string s = "<LightComponent tag=\"" + lightComp->m_tag + "\">\n";
 
@@ -926,7 +1063,7 @@ void MapEditor::SaveScene(const std::string& location ) {
 	std::string _scene;
 
 	for (const std::pair<uint64_t, Ref<Entity>>& e : entities) {
-		
+
 
 		if (auto _c = dynamic_pointer_cast<CharacterEntity>(e.second)) {
 			_scene += "<CharacterEntity tag=\"" + e.second->m_tag + "\">\n";
@@ -934,8 +1071,21 @@ void MapEditor::SaveScene(const std::string& location ) {
 			_scene += "</CharacterEntity>\n";
 			continue;
 		}
+		else if (auto _c = dynamic_pointer_cast<BackgroundEntity>(e.second)) {
+			_scene += BackgroundEntityToCXML(_c);
+			continue;
+		}
 		else {
-			_scene += "<Entity tag=\"" + e.second->m_tag + "\">\n";
+			std::string s = typeid(*e.second.get()).name();
+			if (s.find("GEngine::Entity") != std::string::npos) {
+				_scene += "<Entity tag=\"" + e.second->m_tag + "\">\n";
+			}
+			else {
+				s.erase(s.find("class "), 6);
+				_scene += "<" + s + " tag=\"" + e.second->m_tag + "\">\n";
+				_scene += "</" + s + ">";
+				continue;
+			}
 		}
 
 		for (const std::pair<uint64_t, Ref<Component>>& c : e.second->GetComponents()) {
@@ -1103,9 +1253,42 @@ static Ref<AudioListenerComponent> GetNodeAsAudioListener(Ref<Entity> e, const C
 	return c;
 }
 
+static Ref<BackgroundEntity> GetNodeAsBackgroundEntity(Scene* s, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
 
-static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
+	Ref<BackgroundEntity> e = CreateGameObject<BackgroundEntity>();
+	s->AddEntity(e);
 
+	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
+
+	while (CXML::ValidNode(_n)) {
+
+		if (_n.type == "function") {
+			CXML::CXML_Node __n = cxml.GetNext(_n.info.c_str());
+			if (__n.type == "AddParalaxBackground") {
+				size_t endPos = 0;
+				std::string s = cxml.GetNextAsString(__n.info.c_str(), endPos, &endPos);
+				CXML::CXML_Node _tex = cxml.GetNext(__n.info.c_str(), endPos);
+				endPos = _tex.endPos;
+				Ref<Texture2D> tex = GetNodeAsTexture2D(_tex);
+				Vector2f sc = cxml.GetNextAsFloats(__n.info.c_str(), 2, endPos, &endPos).data();
+				float sp = cxml.GetNextAsFloat(__n.info.c_str(), endPos, &endPos);
+				float order = cxml.GetNextAsFloat(__n.info.c_str(), endPos, &endPos);
+				Vector2f offset = cxml.GetNextAsFloats(__n.info.c_str(), 2, endPos, &endPos).data();
+
+				e->AddParalaxBackground(s, tex, sc, sp, order, offset);
+			}
+		}
+
+		_n = cxml.GetNext(n.info.c_str(), _n);
+	}
+
+	if (_endPos)
+		*_endPos = n.endPos;
+
+	return e;
+}
+
+static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos){
 	Ref<QuadColliderComponent> c;
 
 	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
@@ -1200,6 +1383,16 @@ void MapEditor::LoadScene(const std::string& scene)
 					c = cxml.GetNext(n.info.c_str(), c);
 				}
 				
+			}
+		}
+		else if (n.type == "BackgroundEntity") {
+			GetNodeAsBackgroundEntity(this, n);
+		}
+		else {
+			if (entityMap.find(n.type) != entityMap.end()) {
+				entityMap[n.type]()->m_tag = n.tags["tag"];
+				GE_CORE_DEBUG("{0}", n.tags["tag"]);
+
 			}
 		}
 		n = cxml.GetNext(scene.c_str(), n.endPos);

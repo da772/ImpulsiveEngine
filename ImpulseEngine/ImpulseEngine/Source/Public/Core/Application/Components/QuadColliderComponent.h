@@ -63,7 +63,6 @@ namespace GEngine {
 		void SetFixedRotation(const bool rot);
 		inline bool GetFixedRotation() const { return m_fixedRotation; };
 		
-		void SetDynamic(bool b);
 
 		Ref<PhysicsBody> GetPhysicsBody() const { return m_body; }
 
@@ -82,6 +81,10 @@ namespace GEngine {
 
 		void SetOnCollideFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> onCollideFunc);
 		void SetEndCollideFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> onCollideFunc);
+
+		inline void SetPhysics(bool b) { m_physics = b; }
+		inline void SetDynamic(bool b) { m_dynamic = b; }
+
 
 		inline bool IsDynamic() const { return m_dynamic; }
 		inline bool HasPhysics() const { return m_physics; }
