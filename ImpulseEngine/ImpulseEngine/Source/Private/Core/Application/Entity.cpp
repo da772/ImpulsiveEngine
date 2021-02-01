@@ -161,7 +161,7 @@ namespace GEngine {
 		End();
 		if (scene.lock() != nullptr)
 			scene.lock()->RemoveEntity(std::static_pointer_cast<Entity>(self.lock()));
-		scene.reset();
+		//scene.reset();
 	}
 
 	void Entity::Clean()

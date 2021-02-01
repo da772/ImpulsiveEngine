@@ -3,6 +3,7 @@
 #include <GEngine.h>
 
 using namespace GEngine;
+class CharacterEntity;
 
 class MapEditor : public Scene {
 
@@ -16,11 +17,14 @@ public:
 	void OnImGuiRender() override;
 
 	void OnLoad() override;
-
+	void Tutorial();
 
 	void OnUnload() override;
 
 
+	ShapeID tutorialCover = 0;
+
+	static Ref<CharacterEntity> characterEntity;
 	static unordered_map<std::string, std::function<Ref<GameObject>()>> entityMap;
 
 private:

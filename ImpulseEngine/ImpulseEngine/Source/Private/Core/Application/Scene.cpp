@@ -22,6 +22,16 @@ namespace GEngine {
 		}
 	}
 
+	GEngine::Camera* Scene::GetCamera() const
+	{
+		return camera;
+	}
+
+	void Scene::SetCamera(Camera* _camera)
+	{
+		camera = _camera;
+	}
+
 	bool Scene::AddEntity(Ref<Entity> entity)
 	{
 		if (entity) {

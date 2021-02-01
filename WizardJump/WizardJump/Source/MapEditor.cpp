@@ -8,12 +8,12 @@
 #include "Character/CharacterBody.hpp"
 #include "Environment/BackgroundEntity.hpp"
 #include "UI/DialogFrame.hpp"
+#include "Tutorial/Tutorial.hpp"
 
 
-
-static CXML cxml;
 static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr);
 static std::string QuadColliderComponentToCXML(Ref<QuadColliderComponent> c);
+static CXML cxml;
 
 MapEditor::MapEditor(const char* id, Camera* camera) : Scene(id, camera)
 {
@@ -31,7 +31,7 @@ void MapEditor::OnEvent(Event& e)
 
 }
 
-static Ref<Entity> characterEntity = nullptr;
+Ref<CharacterEntity> MapEditor::characterEntity = nullptr;
 
 void MapEditor::OnUpdate(Timestep timestep)
 {
@@ -99,6 +99,7 @@ void MapEditor::OnBegin()
 							break;
 						}
 					}
+					Tutorial();
 					GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
 					GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(Vector3f(0.f));
 					SaveScene(savePath);
@@ -126,6 +127,11 @@ void MapEditor::OnImGuiRender()
 void MapEditor::OnLoad()
 {
 	SetupCamera();
+}
+
+void MapEditor::Tutorial()
+{
+	Tutorial::CreateMainTutorial(dynamic_pointer_cast<Scene>(self.lock()), characterEntity);
 }
 
 void MapEditor::OnUnload()
@@ -207,7 +213,9 @@ static bool b_addObj = false;
 static bool b_showpopup = false;
 static std::string entityCreate = "Entity";
 static std::string componentCreate = "SpriteComponent";
-unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { Ref<Entity> e = CreateGameObject<Entity>();  SceneManager::GetCurrentScene()->AddEntity(e); return e; }}, {"CharacterEntity", []() {Ref<Entity> e = CreateGameObject<CharacterEntity>(); SceneManager::GetCurrentScene()->AddEntity(e); return e; }}, {"BackgroundEntity", []() {Ref<Entity> e = CreateGameObject<BackgroundEntity>(); SceneManager::GetCurrentScene()->AddEntity(e); return e; }}, {"DialogFrame", []() {Ref<Entity> e = CreateGameObject<DialogFrame>(Vector3f(0,0,0), 1.f, "Yes", "batchBlank", "My Text"); SceneManager::GetCurrentScene()->AddEntity(e); return e; } }
+template <typename T, typename ... Args>
+static Ref<GameObject> mapEditorTemplate(Args&& ... args) { Ref<Entity> e = CreateGameObject<T>(std::forward<Args>(args)...); SceneManager::GetCurrentScene()->AddEntity(e); return e; }
+unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() {return mapEditorTemplate<CharacterEntity>(); }}, {"BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); }}
 };
 static unordered_map<std::string, std::function<Ref<GameObject>()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); return nullptr; } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); return nullptr; }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); return nullptr; }}
 };
@@ -1083,6 +1091,7 @@ void MapEditor::SaveScene(const std::string& location ) {
 			else {
 				s.erase(s.find("class "), 6);
 				_scene += "<" + s + " tag=\"" + e.second->m_tag + "\">\n";
+				_scene += Vec3fToCXML(e.second->GetEntityPosition()) + Vec3fToCXML(e.second->GetEntityRotation()) + Vec3fToCXML(e.second->GetEntityScale());
 				_scene += "</" + s + ">";
 				continue;
 			}
@@ -1390,8 +1399,16 @@ void MapEditor::LoadScene(const std::string& scene)
 		}
 		else {
 			if (entityMap.find(n.type) != entityMap.end()) {
-				entityMap[n.type]()->m_tag = n.tags["tag"];
-				GE_CORE_DEBUG("{0}", n.tags["tag"]);
+				CXML::CXML_Node c = n;
+				size_t endPos = 0;
+				Ref<Entity> e = dynamic_pointer_cast<Entity>(entityMap[n.type]());
+				e->m_tag = n.tags["tag"];
+				Vector3f pos = cxml.GetNextAsFloats(c.info.c_str(), 3, 0, &endPos).data();
+				Vector3f rot = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
+				Vector3f scale = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
+				e->SetEntityPosition(pos);
+				e->SetEntityRotation(rot);
+				e->SetEntityScale(scale);
 
 			}
 		}

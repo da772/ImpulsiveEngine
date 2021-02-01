@@ -30,8 +30,8 @@ namespace GEngine {
 		}
 		inline const char* GetId() const { return id.c_str(); }
 		inline void SetId(const char* _id) { }
-		inline Camera* GetCamera() const { return camera; }
-		inline void SetCamera(Camera* _camera) { camera = _camera; }
+		Camera* GetCamera() const;
+		void SetCamera(Camera* _camera);
 		bool AddEntity(Ref<Entity> actor);
 		bool RemoveEntity(Ref<Entity> actor);
 		void Begin();
