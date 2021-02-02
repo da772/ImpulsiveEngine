@@ -61,7 +61,7 @@ protected:
 	uint64_t m_pitchAdjust = 0;
 
 	bool m_init = false;
-
+	unsigned char* noiseData = nullptr;
 	uint64_t m_frame = 0;
 	uint64_t m_frameProcessed = 0;
 	uint8_t m_threadCount = 0;

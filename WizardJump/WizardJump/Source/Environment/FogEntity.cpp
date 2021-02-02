@@ -175,11 +175,11 @@ void FogEntity::OnUpdate(Timestep timestep)
                             std::lock_guard<std::mutex> guard(m_mutex);
                             c = GEMath::clamp((int)(255.f * noise.GetNoise((float)(x+(float)frame/ m_moveSpeed *m_noiseStrength), (float)y* m_noiseStrength, (float)frame/ m_moveSpeed *m_noiseStrength * m_zNoiseStrength)), 0, 255);
                         }
+						float _fade = .2f;
                         noiseData[index++] = 255;
                         noiseData[index++] = 255;
                         noiseData[index++] = 255;
-                        noiseData[index++] = c;
-                        //GE_CORE_DEBUG("NOISE: {0},{1}: {2}", x, y, noiseData[index - 3]);
+						noiseData[index++] = c;
                     }
                 }
             } else {
@@ -192,10 +192,19 @@ void FogEntity::OnUpdate(Timestep timestep)
                             std::lock_guard<std::mutex> guard(m_mutex);
                             c = GEMath::clamp((int)(255.f * noise.GetNoise((float)(x+(float)frame*m_noiseStrength), (float)y* m_noiseStrength, (float)frame*m_noiseStrength * m_zNoiseStrength)), 0, 255);
                         }
+						float _fade = .1f;
                         noiseData[index++] = 255;
                         noiseData[index++] = 255;
                         noiseData[index++] = 255;
-                        noiseData[index++] = c;
+						if (x < (noiseDataSize * _fade)) {
+							c *= (x/(noiseDataSize*_fade)) ;
+							GE_LOG_DEBUG("NOISEDATA: {0}, {1}, {2}", x, noiseDataSize * _fade, x);
+						}
+						else if (x > (noiseDataSize * (1.f - _fade))) {
+							c *=  (x / (noiseDataSize * (1.f-_fade)));
+							GE_LOG_DEBUG("NOISEDATA: {0}, {1}, {2}", x, noiseDataSize * (1.f - _fade), x);
+						}
+						noiseData[index++] = c;
                     }
                 }
             }
@@ -220,8 +229,8 @@ void FogEntity::OnUpdate(Timestep timestep)
 				if (!m_init) {
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,0,15 }, 0, { 10,20, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
 					m_textureIds[0] = m_spriteComponent->CreateQuad({ -4.75f,-3.5f,15 }, 0, { 12.5f,7.5f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
-                    m_textureIds[1] = m_spriteComponent->CreateQuad({ 2.f,-3.5f,-1 }, 0, { -1.f,7.5f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
-                    m_textureIds[2] = m_spriteComponent->CreateQuad({ -4.75f,-17.25f,-1 }, 0, { 13.f,-20.f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
+                    m_textureIds[1] = m_spriteComponent->CreateQuad({ 2.f,-3.5f,-1 }, 0, { -1.f,7.5f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, 0 }, m_texture, { 1.f,1.f });
+                    m_textureIds[2] = m_spriteComponent->CreateQuad({ -4.75f,-17.25f*GetEntityScale().y,-1 }, 0, { 13.f,-20.f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,0,15 }, 0, { 20,7.5, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,-3.75,15 }, 0, { 20,-7.5, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,3.75,15 }, 0, { 20,7.5, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });

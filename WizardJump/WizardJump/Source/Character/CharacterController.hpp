@@ -22,7 +22,6 @@ public:
     Ref<AudioComponent> musicSound;
     long long startTime;
 
-
 protected:
     void OnBegin() override;
 
@@ -42,6 +41,7 @@ public:
 	bool bWalking = false;
 	bool bEnableInput = true;
 	bool bEnableJump = true;
+	bool bEnableWalk = true;
 	const float walkAnimThreshold = .03f;
 	const float maxWalkSpeed = 2.5f;
     const int walkDelay = 125;
@@ -58,7 +58,13 @@ public:
 		m_inputFilterFunc = f;
 	}
 
+	inline bool GetIsJumping() const {
+		return bJumping; 
+	};
 
+	void ResetInput();
+
+	Vector2f GetPredictedJumpVel(float newY);
 
 	std::unordered_map<uint64_t, FTouchInfo> m;
 

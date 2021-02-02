@@ -9,6 +9,7 @@
 #include "Environment/BackgroundEntity.hpp"
 #include "UI/DialogFrame.hpp"
 #include "Tutorial/Tutorial.hpp"
+#include "Environment/FogEntity.h"
 
 
 static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr);
@@ -61,6 +62,7 @@ static void GamePauseCallback(bool b) {
 
 static std:: string pauseCallback;
 static std::string savePath = "Content/Scenes/Scene.scene";
+static bool tutorial = false;
 
 void MapEditor::OnBegin()
 {
@@ -79,8 +81,9 @@ void MapEditor::OnBegin()
 		}
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(Vector3f(0.f));
-		Application::PauseGame();
-		Application::ResumeGame();
+		//Application::PauseGame();
+		//Application::ResumeGame();
+		if (tutorial) RunTutorial();
 	}
 	else {
 		pauseCallback = Application::GetApp()->AddOnGamePauseCallback([this](bool b) {
@@ -99,7 +102,7 @@ void MapEditor::OnBegin()
 							break;
 						}
 					}
-					Tutorial();
+					if (tutorial) RunTutorial();
 					GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
 					GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(Vector3f(0.f));
 					SaveScene(savePath);
@@ -129,7 +132,7 @@ void MapEditor::OnLoad()
 	SetupCamera();
 }
 
-void MapEditor::Tutorial()
+void MapEditor::RunTutorial()
 {
 	Tutorial::CreateMainTutorial(dynamic_pointer_cast<Scene>(self.lock()), characterEntity);
 }
@@ -215,7 +218,8 @@ static std::string entityCreate = "Entity";
 static std::string componentCreate = "SpriteComponent";
 template <typename T, typename ... Args>
 static Ref<GameObject> mapEditorTemplate(Args&& ... args) { Ref<Entity> e = CreateGameObject<T>(std::forward<Args>(args)...); SceneManager::GetCurrentScene()->AddEntity(e); return e; }
-unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() {return mapEditorTemplate<CharacterEntity>(); }}, {"BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); }}
+unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() {return mapEditorTemplate<CharacterEntity>(); }}, {"BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); }},{"Tutorial", []() {tutorial = true; return mapEditorTemplate<Tutorial>(); }},
+	{"FogEntity", []() {tutorial = true; return mapEditorTemplate<FogEntity>(); }}
 };
 static unordered_map<std::string, std::function<Ref<GameObject>()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); return nullptr; } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); return nullptr; }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); return nullptr; }}
 };

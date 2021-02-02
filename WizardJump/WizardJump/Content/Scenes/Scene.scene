@@ -1,4 +1,24 @@
-<BackgroundEntity>
+<Tutorial tag="tutorial">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</Tutorial><FogEntity tag="Fog">
+<float> -2.250000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 2.000000 </float>
+<float> 4.000000 </float>
+<float> 1.000000 </float>
+</FogEntity><BackgroundEntity>
 <function>
 <AddParalaxBackground>
 <string>front</string>
@@ -165,6 +185,100 @@
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 </TransformComponent>
+<SpriteComponent tag="SpriteComponent">
+<function>
+<CreateQuad id="558106362711500">
+<float> 0.000000 </float>
+<float> 50.000000 </float>
+<float> -200.000000 </float>
+<float> 0.000000</float>
+<float> 100.000000 </float>
+<float> 100.000000 </float>
+<float> 1.000000 </float>
+<float> 0.403000 </float>
+<float> 0.729000 </float>
+<float> 0.909000 </float>
+<float> 1.000000 </float>
+<Texture2D>
+<constructor>
+<string>batchBlank</string>
+<int>0</int>
+</constructor>
+</Texture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id="558106362739500">
+<float> 0.000000 </float>
+<float> -50.000000 </float>
+<float> -200.000000 </float>
+<float> 0.000000</float>
+<float> 100.000000 </float>
+<float> 100.000000 </float>
+<float> 1.000000 </float>
+<float> 0.466000 </float>
+<float> 0.439000 </float>
+<float> 0.439000 </float>
+<float> 1.000000 </float>
+<Texture2D>
+<constructor>
+<string>batchBlank</string>
+<int>0</int>
+</constructor>
+</Texture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id="558106365449700">
+<float> -20.000000 </float>
+<float> -15.000000 </float>
+<float> -10.000000 </float>
+<float> 0.000000</float>
+<float> 20.000000 </float>
+<float> 20.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/texturedUnderground.png</string>
+<int>70</int>
+</constructor>
+</Texture2D>
+<float> 10.000000 </float>
+<float> 10.000000 </float>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id="558106365470000">
+<float> 0.000000 </float>
+<float> -15.000000 </float>
+<float> -10.000000 </float>
+<float> 0.000000</float>
+<float> 20.000000 </float>
+<float> 20.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/texturedUnderground.png</string>
+<int>70</int>
+</constructor>
+</Texture2D>
+<float> 10.000000 </float>
+<float> 10.000000 </float>
+</CreateQuad>
+</function>
+</SpriteComponent>
 <LightComponent tag="LightComponent">
 <function>
 <CreateQuadLight>
@@ -190,400 +304,7 @@
 </CreateQuadLight>
 </function>
 </LightComponent>
-<SpriteComponent tag="SpriteComponent">
-<function>
-<CreateQuad id="536148187232100">
-<float> 0.000000 </float>
-<float> 50.000000 </float>
-<float> -200.000000 </float>
-<float> 0.000000</float>
-<float> 100.000000 </float>
-<float> 100.000000 </float>
-<float> 1.000000 </float>
-<float> 0.403000 </float>
-<float> 0.729000 </float>
-<float> 0.909000 </float>
-<float> 1.000000 </float>
-<Texture2D>
-<constructor>
-<string>batchBlank</string>
-<int>0</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="536148187253700">
-<float> 0.000000 </float>
-<float> -50.000000 </float>
-<float> -200.000000 </float>
-<float> 0.000000</float>
-<float> 100.000000 </float>
-<float> 100.000000 </float>
-<float> 1.000000 </float>
-<float> 0.466000 </float>
-<float> 0.439000 </float>
-<float> 0.439000 </float>
-<float> 1.000000 </float>
-<Texture2D>
-<constructor>
-<string>batchBlank</string>
-<int>0</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="536148187320800">
-<float> 0.000000 </float>
-<float> -15.000000 </float>
-<float> -10.000000 </float>
-<float> 0.000000</float>
-<float> 20.000000 </float>
-<float> 20.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<Texture2D>
-<constructor>
-<string>Content/Textures/Castle01/texturedUnderground.png</string>
-<int>70</int>
-</constructor>
-</Texture2D>
-<float> 10.000000 </float>
-<float> 10.000000 </float>
-</CreateQuad>
-</function>
-</SpriteComponent>
 </Entity>
-<Entity tag="Ground">
-<TransformComponent>
-<float> 0.000000 </float>
-<float> -5.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</TransformComponent>
-<QuadColliderComponent>
-<constructor>
-<int> 0 </int>
-<int> 1 </int>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<int> 1 </int>
-</constructor>
-<function>
-<CreateQuad id="536148187098300">
-<float> -10.250000 </float>
-<float> 9.750000 </float>
-<float> 0.500000 </float>
-<float> 20.000000 </float>
-<float> 0.000000</float>
-<float> 0.000000</float>
-<string>wall</string>
-<float> 0.500000</float>
-<int> 1 </int>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="536148187116200">
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 20.000000 </float>
-<float> 0.500000 </float>
-<float> 0.000000</float>
-<float> 0.000000</float>
-<string>ground</string>
-<float> 0.000000</float>
-<int> 1 </int>
-</CreateQuad>
-</function>
-</QuadColliderComponent>
-<SpriteComponent tag="SpriteComponent">
-<function>
-<CreateQuad id="536148187141500">
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 10.000000 </float>
-<float> 0.000000</float>
-<float> 20.000000 </float>
-<float> 0.500000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.200000 </float>
-<Texture2D>
-<constructor>
-<string>batchBlank</string>
-<int>0</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuad>
-</function>
-<function>
-<CreateQuad id="536148187162700">
-<float> -10.250000 </float>
-<float> 9.750000 </float>
-<float> 10.000000 </float>
-<float> 0.000000</float>
-<float> 0.500000 </float>
-<float> 20.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.200000 </float>
-<Texture2D>
-<constructor>
-<string>batchBlank</string>
-<int>0</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuad>
-</function>
-</SpriteComponent>
-</Entity>
-<Entity tag="OutsideCastle">
-<TransformComponent>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</TransformComponent>
-<SpriteComponent tag="SpriteComponent">
-<function>
-<CreateSubTexturedQuad id="536148189720100">
-<float> -8.500000 </float>
-<float> -4.800000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<SubTexture2D>
-<constructor>
-<Texture2D>
-<constructor>
-<string>Content/Textures/Castle01/ground.png</string>
-<int>192</int>
-</constructor>
-</Texture2D>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 32.000000 </float>
-<float> 32.000000 </float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-</constructor>
-</SubTexture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateSubTexturedQuad>
-</function>
-<function>
-<CreateSubTexturedQuad id="536148189756800">
-<float> -5.500000 </float>
-<float> -4.800000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<SubTexture2D>
-<constructor>
-<Texture2D>
-<constructor>
-<string>Content/Textures/Castle01/ground.png</string>
-<int>192</int>
-</constructor>
-</Texture2D>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 32.000000 </float>
-<float> 32.000000 </float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-</constructor>
-</SubTexture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateSubTexturedQuad>
-</function>
-<function>
-<CreateSubTexturedQuad id="536148189787900">
-<float> -2.500000 </float>
-<float> -4.800000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<SubTexture2D>
-<constructor>
-<Texture2D>
-<constructor>
-<string>Content/Textures/Castle01/ground.png</string>
-<int>192</int>
-</constructor>
-</Texture2D>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 32.000000 </float>
-<float> 32.000000 </float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-</constructor>
-</SubTexture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateSubTexturedQuad>
-</function>
-<function>
-<CreateSubTexturedQuad id="536148189819200">
-<float> 0.500000 </float>
-<float> -4.800000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<SubTexture2D>
-<constructor>
-<Texture2D>
-<constructor>
-<string>Content/Textures/Castle01/ground.png</string>
-<int>192</int>
-</constructor>
-</Texture2D>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 32.000000 </float>
-<float> 32.000000 </float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-</constructor>
-</SubTexture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateSubTexturedQuad>
-</function>
-<function>
-<CreateSubTexturedQuad id="536148189851100">
-<float> 3.500000 </float>
-<float> -4.800000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<SubTexture2D>
-<constructor>
-<Texture2D>
-<constructor>
-<string>Content/Textures/Castle01/ground.png</string>
-<int>192</int>
-</constructor>
-</Texture2D>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 32.000000 </float>
-<float> 32.000000 </float>
-<float> 3.000000 </float>
-<float> 1.000000 </float>
-</constructor>
-</SubTexture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateSubTexturedQuad>
-</function>
-<function>
-<CreateSubTexturedQuad id="536148189882900">
-<float> 5.500000 </float>
-<float> -4.800000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<SubTexture2D>
-<constructor>
-<Texture2D>
-<constructor>
-<string>Content/Textures/Castle01/ground.png</string>
-<int>192</int>
-</constructor>
-</Texture2D>
-<float> 3.000000 </float>
-<float> 0.000000 </float>
-<float> 32.000000 </float>
-<float> 32.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</constructor>
-</SubTexture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateSubTexturedQuad>
-</function>
-</SpriteComponent>
-</Entity>
-<CharacterEntity tag="CharacterEntity">
-<TransformComponent>
-<float> -9.000000 </float>
-<float> -3.955000 </float>
-<float> 1.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</TransformComponent>
-</CharacterEntity>
 <Entity tag="BoxEntity (Outside)">
 <TransformComponent>
 <float> 0.000000 </float>
@@ -596,9 +317,31 @@
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 </TransformComponent>
+<QuadColliderComponent>
+<constructor>
+<int> 1 </int>
+<int> 1 </int>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<int> 1 </int>
+</constructor>
+<function>
+<CreateQuad id="558106360319200">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 0.200000</float>
+<float> 0.000000</float>
+<string>ground</string>
+<float> 0.000000</float>
+<int> 1 </int>
+</CreateQuad>
+</function>
+</QuadColliderComponent>
 <SpriteComponent tag="SpriteComponent">
 <function>
-<CreateSubTexturedQuad id="536148196475300">
+<CreateSubTexturedQuad id="558106362603400">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 1.000000 </float>
@@ -631,21 +374,95 @@
 </CreateSubTexturedQuad>
 </function>
 </SpriteComponent>
+</Entity>
+<Entity tag="Ground">
+<TransformComponent>
+<float> 0.000000 </float>
+<float> -5.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</TransformComponent>
+<SpriteComponent tag="SpriteComponent">
+<function>
+<CreateQuad id="558106369383200">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 10.000000 </float>
+<float> 0.000000</float>
+<float> 40.000000 </float>
+<float> 0.500000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.200000 </float>
+<Texture2D>
+<constructor>
+<string>batchBlank</string>
+<int>0</int>
+</constructor>
+</Texture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id="558106369413600">
+<float> -10.250000 </float>
+<float> 9.750000 </float>
+<float> 10.000000 </float>
+<float> 0.000000</float>
+<float> 0.500000 </float>
+<float> 20.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.200000 </float>
+<Texture2D>
+<constructor>
+<string>batchBlank</string>
+<int>0</int>
+</constructor>
+</Texture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateQuad>
+</function>
+</SpriteComponent>
 <QuadColliderComponent>
 <constructor>
-<int> 1 </int>
+<int> 0 </int>
 <int> 1 </int>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <int> 1 </int>
 </constructor>
 <function>
-<CreateQuad id="536148196499800">
+<CreateQuad id="558106369466300">
+<float> -10.250000 </float>
+<float> 9.750000 </float>
+<float> 0.500000 </float>
+<float> 20.000000 </float>
+<float> 0.000000</float>
+<float> 0.000000</float>
+<string>wall</string>
+<float> 0.500000</float>
+<int> 1 </int>
+</CreateQuad>
+</function>
+<function>
+<CreateQuad id="558106369480900">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 0.200000</float>
+<float> 40.000000 </float>
+<float> 0.500000 </float>
+<float> 0.000000</float>
 <float> 0.000000</float>
 <string>ground</string>
 <float> 0.000000</float>
@@ -654,6 +471,298 @@
 </function>
 </QuadColliderComponent>
 </Entity>
+<Entity tag="OutsideCastle">
+<TransformComponent>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</TransformComponent>
+<SpriteComponent tag="SpriteComponent">
+<function>
+<CreateSubTexturedQuad id="558106370558700">
+<float> -8.500000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id="558106370591900">
+<float> -5.500000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id="558106370618900">
+<float> -2.500000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id="558106370645300">
+<float> 0.500000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id="558106370674800">
+<float> 3.500000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id="558106370701200">
+<float> 10.500000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 3.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id="558106370726700">
+<float> 6.500000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 3.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+<function>
+<CreateSubTexturedQuad id="558106370753200">
+<float> 9.000000 </float>
+<float> -4.800000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 2.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<SubTexture2D>
+<constructor>
+<Texture2D>
+<constructor>
+<string>Content/Textures/Castle01/ground.png</string>
+<int>192</int>
+</constructor>
+</Texture2D>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 32.000000 </float>
+<float> 32.000000 </float>
+<float> 2.000000 </float>
+<float> 1.000000 </float>
+</constructor>
+</SubTexture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateSubTexturedQuad>
+</function>
+</SpriteComponent>
+</Entity>
+<CharacterEntity tag="CharacterEntity">
+<TransformComponent>
+<float> -4.500000 </float>
+<float> -3.800000 </float>
+<float> 1.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</TransformComponent>
+</CharacterEntity>
 <DialogFrame tag="Entity">
 <float> 0.000000 </float>
 <float> 0.000000 </float>

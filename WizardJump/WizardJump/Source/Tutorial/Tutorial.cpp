@@ -16,7 +16,7 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 
 	dialog->SetOnDialogComplete([s, characterEntity]() {
 
-		Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+		Ref<DialogFrame> dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the left side of the screen to move to the left!", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 		dialog->SetStickyFrame(true);
 		s->AddEntity(dialog);
 		Ref<SpriteAnimationComponent> spriteAnim = CreateGameObject<SpriteAnimationComponent>();
@@ -32,15 +32,15 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 
 		characterEntity->m_characterComponent->SetInputFilterFunction([s, characterEntity, dialog](const GEngine::FTouchInfo& touch) {
 			// ensure we are moving right!
-			if ((touch.state == 0 || touch.state == 1) && touch.x <= (float)Application::GetWidth() / 2.f) {
+			if ((touch.state == 0 || touch.state == 1) && touch.x >= (float)Application::GetWidth() / 2.f) {
 				return false;
 			}
 			else {
-				if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x > 2.f || characterEntity->GetEntityPosition().x > -8.f) {
+				if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x < -2.f || characterEntity->GetEntityPosition().x < -6.f) {
 					dialog->Destroy();
 					characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
 					characterEntity->m_characterComponent->bEnableInput = false;
-					Ref<DialogFrame> _dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the left side of the screen to move to the left!", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+					Ref<DialogFrame> _dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 					_dialog->SetStickyFrame(true);
 					//FPSuiComponent->SetColor(tutorialCover, { .0f,.0f,.0f, 0.f });
 					//FPSuiComponent->SetPosition(tutorialCover, { .5f, 0 });
@@ -53,23 +53,51 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 					_dialog->AddComponent(spriteAnim);
 					spriteAnim->Start();
 					characterEntity->m_characterComponent->bEnableInput = true;
-					characterEntity->m_characterComponent->SetInputFilterFunction([characterEntity, _dialog,s](const GEngine::FTouchInfo& touch) {
+					characterEntity->m_characterComponent->SetInputFilterFunction([s,characterEntity, _dialog](const GEngine::FTouchInfo& touch) {
 						// ensure we are moving left!
-						if ((touch.state == 0 || touch.state == 1) && touch.x >= (float)Application::GetWidth() / 2.f) {
+						if ((touch.state == 0 || touch.state == 1) && touch.x <= (float)Application::GetWidth() / 2.f) {
 							return false;
 						}
 						else {
-							if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x < -2.f || characterEntity->GetEntityPosition().x < -10.0f) {
+							if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x > 200.f || characterEntity->GetEntityPosition().x > -2.25f) {
 								_dialog->Destroy();
 								characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
 								characterEntity->m_characterComponent->bEnableInput = false;
-								Ref<DialogFrame> __dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "I should keep walking to the right. \n(Tap here to continue...)", false, true);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+								characterEntity->m_characterComponent->bEnableWalk = false;
+								Ref<DialogFrame> __dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "There is a box in the way. Maybe there is a way to get around it?. \n(Tap here to continue...)", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 								s->AddEntity(__dialog);
 								//FPSuiComponent->Remove(tutorialCover);
-								__dialog->SetOnDialogComplete([characterEntity]() {
+								__dialog->SetOnDialogComplete([s,characterEntity]() {
 									characterEntity->m_characterComponent->bEnableInput = true;
-									// Enable jump during jump tutorial
+									// Enable jump during jump 
 									characterEntity->m_characterComponent->bEnableJump = true;
+									// Set walk true after jump tutorial
+									characterEntity->m_characterComponent->bEnableWalk = false;
+
+									Ref<DialogFrame> ___dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Click and drag to jump.", false, true);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
+									___dialog->SetStickyFrame(true);
+									s->AddEntity(___dialog);
+									characterEntity->m_characterComponent->SetInputFilterFunction([characterEntity, ___dialog](const GEngine::FTouchInfo& touch) {
+										// ensure that we jumped
+										if ((touch.state == 0 || touch.state == 1) && touch.x >= (float)Application::GetWidth() / 2.f) {
+											return false;
+										}
+										else if (touch.state == 2 && characterEntity->m_characterComponent->GetIsJumping() ) {
+											GE_LOG_WARN("PREDICTED VEL: {0}", characterEntity->m_characterComponent->GetPredictedJumpVel(touch.y).y);
+											if (characterEntity->m_characterComponent->GetPredictedJumpVel(touch.y).y < .20f) {
+												
+												characterEntity->m_characterComponent->ResetInput();
+												return false;
+											}
+											___dialog->Destroy();
+											
+											characterEntity->m_characterComponent->bEnableWalk = true;
+											characterEntity->m_characterComponent->SetInputFilterFunction(nullptr);
+										}
+
+										return true;
+										});
+
 									});
 								characterEntity->m_characterComponent->SetInputFilterFunction(nullptr);
 

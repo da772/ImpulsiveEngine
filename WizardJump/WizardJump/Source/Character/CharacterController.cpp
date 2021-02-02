@@ -60,6 +60,26 @@ void CharacterController::OnBegin()
 	
 }
 
+void CharacterController::ResetInput()
+{
+	startxPos = -1.f;
+	startyPos = -1.f;
+	lastxpos = -1;
+	lastypos = -1;
+	touchId = 0;
+	touchTime = 0;
+	bFalling = false;
+	bWalking = false;
+    SetJumping(false);
+}
+
+GEngine::Vector2f CharacterController::GetPredictedJumpVel(float newY)
+{
+	float yDistance = (newY - startyPos + Application::GetHeight() * jumpThreshold) / Application::GetHeight();
+
+	float xDistance = 2.f * -(lastxpos - (float)Application::GetWidth() / 2.f) / (float)Application::GetWidth();
+	return { xDistance, yDistance };
+}
 
 void CharacterController::OnUpdate(Timestep timestep) {
 
@@ -279,8 +299,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
         else if (touch.state == 1 && touchId == touch.id && ground) {
             lastxpos = touch.x;
             lastypos = touch.y;
-        }
-        else if ((touch.state == 2 || touch.state == 3) && ground) {
+        } else if ((touch.state == 2 || touch.state == 3) && ground) {
             if (bJumping && touchId == touch.id) {
                 touchId = 0;
                 float yDistance = (touch.y - startyPos + Application::GetHeight() * jumpThreshold) / Application::GetHeight();
@@ -312,7 +331,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
         if (touch.state < 2 && Time::GetEpochTimeMS() - (touch.time / 1e6) > walkDelay) {
             lastxpos = touch.x;
             lastypos = touch.y;
-            if (!bJumping && !bFalling && ground) {
+            if (!bJumping && !bFalling && ground && bEnableWalk) {
                 float xPos = touch.x;
                 float width = (float)Application::GetWidth();
 

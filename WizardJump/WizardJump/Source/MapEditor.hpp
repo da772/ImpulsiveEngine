@@ -17,7 +17,7 @@ public:
 	void OnImGuiRender() override;
 
 	void OnLoad() override;
-	void Tutorial();
+	void RunTutorial();
 
 	void OnUnload() override;
 
