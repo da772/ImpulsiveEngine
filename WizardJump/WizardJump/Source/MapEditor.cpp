@@ -33,6 +33,10 @@ void MapEditor::OnEvent(Event& e)
 }
 
 Ref<CharacterEntity> MapEditor::characterEntity = nullptr;
+Ref<Entity> fpsEnt;
+Ref<UIComponent> uiComp;
+Ref<Font> font;
+std::string fpsId;
 
 void MapEditor::OnUpdate(Timestep timestep)
 {
@@ -53,6 +57,15 @@ void MapEditor::OnUpdate(Timestep timestep)
 
 	m_CameraController->OnUpdate(timestep);
 
+#if !defined(GE_CONSOLE_APP)
+	if (fpsId.size() > 0) {
+		uiComp->RemoveText(fpsId);
+	}
+	fpsId = uiComp->CreateText(std::to_string((int)
+		GEngine::Application::GetApp()->profile["FPS"]) + " fps", font, { -1, .9f,1 },
+		{ 1,1,1 }, { 1,1,1,1 });
+#endif
+
 }
 
 
@@ -66,6 +79,15 @@ static bool tutorial = false;
 
 void MapEditor::OnBegin()
 {
+#if !defined(GE_CONSOLE_APP)
+	fpsEnt = CreateGameObject<Entity>();
+	AddEntity(fpsEnt);
+	uiComp = CreateGameObject<UIComponent>();
+	fpsEnt->AddComponent(uiComp);
+	font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
+	font->LoadCharactersEN();
+	
+#endif
 	DebugLayer::showScene = false;
 	camera = m_CameraController->GetCamera().get();
 	GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());

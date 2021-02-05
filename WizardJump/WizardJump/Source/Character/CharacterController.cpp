@@ -482,12 +482,12 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
     }
 }
 
-void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float scale, const Vector4f& col, const Vector3f& offset)
+void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float _scale, const Vector4f& col, const Vector3f& offset)
 {
     for (int i = 0; i < traj.size(); i += 3) {
         Vector3f pos = &traj[i];
         float rot = 0;
-        Vector3f scale(.1f, scale, 1.f);
+        Vector3f scale(.1f, _scale, 1.f);
         if (i < traj.size() - 3) {
             Vector3f pos2 = &traj[i+3];
             rot = GEMath::RadToDeg(atan2(pos.y - pos2.y, pos.x - pos2.x));
