@@ -39,6 +39,8 @@ public:
 
 	Ref<QuadColliderComponent> m_quadCollider;
 	Ref<QuadColliderComponent> m_groundCollider;
+	ColliderID circleColliderID = 0;
+	ColliderID quadColliderID = 0;
 protected:
 	inline void OnBegin() override
 	{
@@ -54,8 +56,8 @@ protected:
 		GetEntity()->AddComponent(m_quadCollider);
 		GetEntity()->AddComponent(m_groundCollider);
 		
-		ColliderID id = m_quadCollider->CreateQuad(pos, scale, 1, 0, "characterBody");
-		ColliderID id2 = m_quadCollider->CreateCircle({ 0.f,-.6f }, { .2f, .2f }, 1, 0, "characterBody");
+		quadColliderID = m_quadCollider->CreateQuad(pos, scale, 1, 0, "characterBody");
+		circleColliderID = m_quadCollider->CreateCircle({ 0.f,-.6f }, { .2f, .2f }, 1, 0, "characterBody");
 		ColliderID id1 = m_groundCollider->CreateQuad(groundPos, groundScale, 1, 0, "characterBodyGround");
 
 		m_groundCollider->SetOnCollideFunction(id1, [this](Ref<PhysicsCollision> other) {

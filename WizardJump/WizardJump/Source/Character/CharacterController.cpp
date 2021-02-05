@@ -10,16 +10,20 @@ const float CharacterController::jumpYDragClamp = .3f;
 const float CharacterController::jumpYMultipler = 10.f;
 const float CharacterController::jumpXMultipler = 4.f;
 
+static void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float scale = .1f, const Vector4f& color = Vector4f(0.f), const Vector3f& offset = Vector3f(0.f));
+
 void CharacterController::OnBegin()
 {
 	startTime = Time::GetEpochTimeNS();
 	bodyComp = CreateGameObject<CharacterBody>();
-	GetEntity()->AddComponent(bodyComp);
+    spriteComp = CreateGameObject<SpriteComponent>();
 	jumpSound = CreateGameObject<AudioComponent>("Content/Audio/jumpRustling.ogg", false, false, true, .75f);
     leftFootSound = CreateGameObject<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
     rightFootSound = CreateGameObject<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
 	//musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
 
+	GetEntity()->AddComponent(spriteComp);
+	GetEntity()->AddComponent(bodyComp);
 	GetEntity()->AddComponent(leftFootSound);
 	GetEntity()->AddComponent(rightFootSound);
 	GetEntity()->AddComponent(jumpSound);
@@ -83,8 +87,11 @@ GEngine::Vector2f CharacterController::GetPredictedJumpVel(float newY)
 
 void CharacterController::OnUpdate(Timestep timestep) {
 
-    //if (trajectory_pos.size() > 0)
-        //Renderer::DrawDebugLines(trajectory_pos, Vector4f(1, 0, 0, 1.f));
+    if (bdrawTrajectory && trajectory_pos.size() > 0) {
+        spriteComp->ClearQuads();
+        DrawTrajectoryLines(trajectory_pos, spriteComp, trajectorySize,  trajectoryColor, {GetEntityPosition().xy(), -trajectoryZorder });
+    }
+    //Renderer::DrawDebugLines(trajectory_pos, Vector4f(1, 0, 0, 1.f));
     const Vector2f& vel = bodyComp->GetVelocity();
     const bool ground = bodyComp->isGrounded();
     m = Mobile_Input::GetTouches();
@@ -378,12 +385,12 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
                     float xDistance = 2.f * -(lastxpos - (float)Application::GetWidth() / 2.f) / (float)Application::GetWidth();
 
                     /* DEBUG */
-                    if (touch.state == 1)
+                    if (touch.state == 1 && bdrawTrajectory)
                         PredictPath(xDistance, yDistance);
 
                     Vector2f _vel = CalculateJumpVelocity(xDistance, yDistance);
                     float _deg = glm::degrees(atan2(-_vel.x, _vel.y));
-                    GE_LOG_DEBUG("{0},{1} : {2}", _vel.x, _vel.y, _deg);
+                    //GE_LOG_DEBUG("{0},{1} : {2}", _vel.x, _vel.y, _deg);
                     graphicsComp->SetDirectionIndicator(_deg);
                     graphicsComp->SetPowerBar(GEMath::MapRange(yDistance, 0, jumpYDragClamp, 0, 1.f));
                     if (nDir != graphicsComp->dir && !graphicsComp->bAnimating) {
@@ -411,11 +418,12 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
     // GE_LOG_WARN("PREDICTED VEL: {0},{1}", _realVel.x, _realVel.y);
     trajectory_pos.clear();
     std::vector<Weak<PhysicsBody>> ignoreBodies = { bodyComp->m_groundCollider->GetPhysicsBody(), bodyComp->m_quadCollider->GetPhysicsBody() };
-    Vector2f _startPos = { GetEntityPosition().x,  bodyComp->m_quadCollider->GetPosition().y - bodyComp->m_quadCollider->GetScale().y / 2.f };
+    FColliderQuad quad = bodyComp->m_quadCollider->GetQuadCollider(bodyComp->quadColliderID);
+    Vector2f _startPos = { GetEntityPosition().x, GetEntityPosition().y + quad.position.y - (quad.scale.y/2.f) - trajectoryOffset };
     for (int i = 0; i < 180; i++) {
         Vector2f newPos = Physics::GetTrajectoryPoint2D(_startPos,
             _realVel, i);
-        Vector2f newPos2 = Physics::GetTrajectoryPoint2D({ _startPos.x, _startPos.y + bodyComp->m_quadCollider->GetScale().y },
+        Vector2f newPos2 = Physics::GetTrajectoryPoint2D({ _startPos.x, _startPos.y + bodyComp->m_quadCollider->GetScale().y},
             _realVel, i);
 
         if (trajectory_pos.size() >= 3) {
@@ -473,5 +481,34 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
         trajectory_pos.push_back(1.f);
     }
 }
+
+void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float scale, const Vector4f& col, const Vector3f& offset)
+{
+    for (int i = 0; i < traj.size(); i += 3) {
+        Vector3f pos = &traj[i];
+        float rot = 0;
+        Vector3f scale(.1f, scale, 1.f);
+        if (i < traj.size() - 3) {
+            Vector3f pos2 = &traj[i+3];
+            rot = GEMath::RadToDeg(atan2(pos.y - pos2.y, pos.x - pos2.x));
+            scale.x += abs(pos2.y - pos.y);
+        }
+        else {
+			Vector3f pos2 = &traj[i - 3];
+			rot = GEMath::RadToDeg(atan2(pos2.y - pos.y, pos2.x - pos.x));
+			scale.x += abs(pos2.y - pos.y);
+        }
+        /*
+        if (i != traj.size() - 4) {
+            pos.magnitude()
+        }
+        */
+        
+        spriteComp->CreateQuad(pos - offset, rot, scale, col);
+    }
+    
+}
+
+
 
 

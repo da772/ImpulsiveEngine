@@ -3,6 +3,8 @@
 
 namespace GEngine {
 
+#define GE_PI 3.14159265
+
 
 	float GEMath::MapRange(float x, float min1, float max1, float min2, float max2)
 	{
@@ -94,6 +96,11 @@ namespace GEngine {
 			return floor(f) * n;
 		}
 
+	}
+
+	float GEMath::RadToDeg(float r)
+	{
+		return r * (180.0 / GE_PI);
 	}
 
 }

@@ -91,6 +91,7 @@ void MapEditor::OnBegin()
 				for (auto p : entities) {
 					p.second->Destroy();
 				}
+				tutorial = false;
 				LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
 			}
 			else {
@@ -116,6 +117,7 @@ void MapEditor::OnBegin()
 	return;
 };
 
+static void Inspector();
 
 void MapEditor::OnEnd()
 {
@@ -125,6 +127,7 @@ void MapEditor::OnEnd()
 void MapEditor::OnImGuiRender()
 {
 	SceneMenu();
+	Inspector();
 }
 
 void MapEditor::OnLoad()
@@ -211,6 +214,7 @@ void MapEditor::SetupCamera()
 
 
 static GEngine::Ref<GEngine::GameObject> hashSelected = nullptr;
+static GEngine::Ref<GEngine::GameObject> compSelected = nullptr;
 static bool b_component = false;
 static bool b_addObj = false;
 static bool b_showpopup = false;
@@ -219,7 +223,7 @@ static std::string componentCreate = "SpriteComponent";
 template <typename T, typename ... Args>
 static Ref<GameObject> mapEditorTemplate(Args&& ... args) { Ref<Entity> e = CreateGameObject<T>(std::forward<Args>(args)...); SceneManager::GetCurrentScene()->AddEntity(e); return e; }
 unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() {return mapEditorTemplate<CharacterEntity>(); }}, {"BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); }},{"Tutorial", []() {tutorial = true; return mapEditorTemplate<Tutorial>(); }},
-	{"FogEntity", []() {tutorial = true; return mapEditorTemplate<FogEntity>(); }}
+	{"FogEntity", []() {return mapEditorTemplate<FogEntity>(); }}
 };
 static unordered_map<std::string, std::function<Ref<GameObject>()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); return nullptr; } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); return nullptr; }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); return nullptr; }}
 };
@@ -236,11 +240,11 @@ void MapEditor::SceneMenu()
 		}
 		ImGui::SameLine();
 		if (ImGui::BeginCombo("", (hashSelected == nullptr ? entityCreate.c_str() : componentCreate.c_str()))) {
-			const unordered_map<std::string, std::function<Ref<GameObject>()>>& map = hashSelected == nullptr ? entityMap : componentMap;
+			const unordered_map<std::string, std::function<Ref<GameObject>()>>& map = !b_component ? entityMap : componentMap;
 			for (const std::pair<std::string, std::function<Ref<GameObject>()>>& p : map) {
 				bool selected = (hashSelected == nullptr ? entityCreate : componentCreate) == p.first;
 				if (ImGui::Selectable(p.first.c_str(), selected)) {
-					(hashSelected == nullptr ? entityCreate : componentCreate) = p.first;
+					(!b_component ? entityCreate : componentCreate) = p.first;
 				}
 				if (selected)
 					ImGui::SetItemDefaultFocus();
@@ -248,13 +252,14 @@ void MapEditor::SceneMenu()
 			ImGui::EndCombo();
 		}
 		ImGui::SetCursorPosX( (ImGui::GetWindowSize().x / 2.f) - 100.f);
-		if (ImGui::Button(hashSelected == nullptr ? "Add Entity" : "Add Component", { 200,30 })) {
-			bool ent = hashSelected == nullptr;
+		if (ImGui::Button(!b_component ? "Add Entity" : "Add Component", { 200,30 })) {
+			bool ent = !b_component;
 			if (ent) {
 				entityMap[entityCreate]();
 			}
 			else {
 				componentMap[componentCreate]();
+				b_component = false;
 			}
 			b_addObj = false;
 		}
@@ -269,6 +274,7 @@ void MapEditor::SceneMenu()
 	ImGui::Begin("Scene Hierarchy"); {
 		if (ImGui::Button("Add")) {
 			b_addObj = true;
+			b_component = false;
 			/*			if (dynamic_pointer_cast<Component>(hashSelected) != nullptr) {
 				if (dynamic_pointer_cast<SpriteComponent>(hashSelected)) {
 					Ref<SpriteComponent> s = dynamic_pointer_cast<SpriteComponent>(hashSelected);
@@ -282,17 +288,9 @@ void MapEditor::SceneMenu()
 		if (hashSelected != nullptr) {
 			ImGui::SameLine();
 			if (ImGui::Button("Destroy")) {
-
-				if (b_component) {
-					GEngine::Ref<GEngine::Component> __c = static_pointer_cast<GEngine::Component>(hashSelected);
-					__c->GetEntity()->RemoveComponent(__c);
-
-				}
-				else {
-					GEngine::Ref<GEngine::Entity> __e = static_pointer_cast<GEngine::Entity>(hashSelected);
-					__e->Destroy();
-				}
-
+				GEngine::Ref<GEngine::Entity> __e = static_pointer_cast<GEngine::Entity>(hashSelected);
+				__e->Destroy();
+				
 				hashSelected = nullptr;
 				b_component = false;
 				ImGui::End();
@@ -325,14 +323,14 @@ void MapEditor::SceneMenu()
 
 		ImGui::Separator();
 
-		ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+		ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 		if (ImGui::TreeNode("Entities"))
 		{
 			std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
 			for (const std::pair<uint64_t, GEngine::Ref<GEngine::Entity>>& e : entities)
 			{
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
-				ImGuiTreeNodeFlags entity_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.8, .8, .8, 1));
+				ImGuiTreeNodeFlags entity_base_flags = ImGuiTreeNodeFlags_Bullet;
 				if (hashSelected == e.second) {
 					entity_base_flags |= ImGuiTreeNodeFlags_Selected;
 				}
@@ -366,556 +364,13 @@ void MapEditor::SceneMenu()
 				}
 				}
 				bool skip_c = false;
-				if (auto __e = dynamic_pointer_cast<BackgroundEntity>(e.second)) {
-					skip_c = true;
-					if (show_e) {
-						for (auto p : __e->GetBackgrounds()) {
-							bool show_pp = ImGui::TreeNodeEx((void*)(intptr_t)std::hash<std::string>{}(p.first), entity_base_flags, "%s bg", p.first.c_str());
-							if (ImGui::BeginPopupContextItem((std::string("backGroundDupe")+p.first).c_str())) {
-								
-								if (ImGui::Button("Duplicate")) {
-									__e->AddParalaxBackground(p.first + "_Copy", p.second.texture.lock(), p.second.scale, p.second.speed, p.second.zOrder, p.second.offset);
-									ImGui::CloseCurrentPopup();
-								}
 
-								ImGui::EndPopup();
-							}
-							if (show_pp) {
-
-								bool recreate = false;
-								char ch[255] = { 0 };
-								ImGui::Text("Name: ");
-								ImGui::SameLine();
-								memcpy(ch, &p.first[0], p.first.size());
-								if (ImGui::InputText("##hidelabel1", ch, sizeof(ch), ImGuiInputTextFlags_EnterReturnsTrue)) {
-									if (p.first != ch) {
-										recreate = true;
-									}
-								}
-								ImGui::Text("Texture: ");
-								ImGui::SameLine();
-								char ch1[255] = { 0 };
-								memcpy(ch1, &p.second.texture.lock()->GetName()[0], p.second.texture.lock()->GetName().size());
-								if (ImGui::InputText("##hidelabel2", ch1, sizeof(ch1), ImGuiInputTextFlags_EnterReturnsTrue)) {
-									if (p.second.texture.lock()->GetName() != ch1) {
-										recreate = true;
-									}
-								}
-
-								ImGui::Text("Texture Flags: ");
-								ImGui::SameLine();
-								int flags = p.second.texture.lock()->GetFlags();
-								if (ImGui::InputInt("##hidelabelflag", &flags)) {
-									if (p.second.texture.lock()->GetFlags() != flags)
-										recreate = true;
-								}
-
-								float sc[2] = { p.second.scale.x, p.second.scale.y };
-								ImGui::Text("Scale: ");
-								ImGui::SameLine();
-								if (ImGui::InputFloat2("##hidelabel3", sc)) {
-									if (p.second.offset != sc) {
-										recreate = true;
-									}
-								}
-
-								float sp = p.second.speed;
-
-								ImGui::Text("Speed: ");
-								ImGui::SameLine();
-								if (ImGui::InputFloat("##hidelabel4", &sp)) {
-									if (p.second.speed != sp) {
-										recreate = true;
-									}
-								}
-
-								float zO = p.second.zOrder;
-								ImGui::Text("zOrder: ");
-								ImGui::SameLine();
-								if (ImGui::InputFloat("##hidelabel5", &zO)) {
-									if (p.second.zOrder != zO) {
-										recreate = true;
-									}
-								}
-
-								float of[2] = { p.second.offset.x, p.second.offset.y };
-								ImGui::Text("Offset: ");
-								ImGui::SameLine();
-								if (ImGui::InputFloat2("##hidelabel6", of)) {
-									if (p.second.offset != of) {
-										recreate = true;
-									}
-								}
-
-								if (ImGui::Button("Destroy")) {
-									__e->RemoveParalaxBackground(p.first);
-								}
-
-								if (recreate) {
-									__e->RemoveParalaxBackground(p.first);
-									__e->AddParalaxBackground(ch, Texture2D::Create(ch1, flags), sc, sp, zO, of);
-								}
-
-								ImGui::TreePop();
-							}
-						}
-						if (ImGui::Button("Add Background")) {
-							__e->AddParalaxBackground("background", Texture2D::Create("batchBlank"), { 1,1 }, 1, 0, { 0,0 });
-						}
-					}
-					
-				}
-
-				if (show_e)
-				{
-					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.75, .75, .75, 1));
-					std::unordered_map<uint64_t, GEngine::Ref<GEngine::Component>> components = e.second->GetComponents();
-
-					for (const std::pair<uint64_t, GEngine::Ref<GEngine::Component>>& c : components) {
-						if (skip_c) continue;
-						std::string compName = typeid(*c.second.get()).name();
-						ImGuiTreeNodeFlags component_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-						if (hashSelected == c.second) {
-							component_base_flags |= ImGuiTreeNodeFlags_Selected;
-						}
-						bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s : %s (%ju)", c.second->m_tag.c_str(), typeid(*c.second.get()).name(), c.first);
-						if (ImGui::IsItemClicked()) {
-							b_component = true;
-							hashSelected = c.second;
-						}
-
-						if (compName == "class LightComponent") {
-							Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
-							if (ImGui::BeginPopupContextItem("Create Light")) {
-
-								if (ImGui::Button("Create Quad Light")) {
-									lightC->AddQuadLight({ 0,0 }, 1, { 1,1 }, { 1,1,1,.99f });
-								}
-
-								if (ImGui::Button("Create Cirlce Light")) {
-									lightC->AddCircleLight({ 0,0 }, 1, { 1,1 }, { 1,0,0,1.f });
-								}
-
-								ImGui::EndPopup();
-							}
-						}
-
-						if (compName == "class GEngine::QuadColliderComponent") {
-							Ref<class GEngine::QuadColliderComponent> quad = dynamic_pointer_cast<QuadColliderComponent>(c.second);
-							if (ImGui::BeginPopupContextItem("QuadColliderCreation")) {
-
-								if (ImGui::Button("Create Quad")) {
-									quad->CreateQuad({ 0,0 }, { 1,1 }, 1.f, 0.f, "Quad");
-									//quad->WakeBody();
-								}
-
-								if (ImGui::Button("Create Circle")) {
-									quad->CreateCircle({ 0,0 }, { 1,1 }, 1.f, 0.f, "Circle");
-									//quad->WakeBody();
-								}
-
-								ImGui::EndPopup();
-							}
-						}
-
-						if (compName == "class GEngine::SpriteComponent") {
-
-
-							GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
-
-							if (ImGui::BeginPopupContextItem("ShowCreatButton")) {
-
-								if (ImGui::Button("Create Textured Quad")) {
-									spriteComp->CreateQuad({ 0,0,0 });
-								}
-
-								if (ImGui::Button("Create SubTextured Quad")) {
-									spriteComp->CreateSubTexturedQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1,1,1,1 }, SubTexture2D::CreateFromCoords(Texture2D::Create("batchBlank"), { 0,0 }, { 1,1 }));
-								}
-
-								ImGui::EndPopup();
-							}
-
-						}
-
-						if (show_c) {
-							if (compName == "class LightComponent") {
-								Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
-								int i = 0;
-								while (i <= 1) {
-									std::vector<ShapeID> ids = i == 0 ? lightC->GetQuadLights() : lightC->GetCircleLights();
-									
-									for (const ShapeID& id : ids) {
-										bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)id, component_base_flags, "%s, %llu", (i == 0 ? "Quad Light" : "Circle Light"),  id);
-										Ref<BatchRenderer> batchRender = (i == 0 ? lightC->GetQuadRenderer() : lightC->GetCircleRenderer());
-										if (show_sid) {
-											Vector3f p = batchRender->GetShapePosition(id) - e.second->GetEntityPosition();
-											float v[3];
-											memcpy(v, p.data(), sizeof(float) * 3);
-											ImGui::Text("Position: ");
-											ImGui::SameLine();
-											if (ImGui::InputFloat3("Pos", v, 4)) {
-												if (Vector3f(v) != p) {
-													batchRender->SetPosition(id, (Vector2f(v) + e.second->GetEntityPosition().xy()));
-													if (v[2] != p.z) {
-														batchRender->SetZOrder(id, v[2] + e.second->GetEntityPosition().z);
-													}
-												}
-											}
-											float _rot = batchRender->GetShapeRotation(id);
-											float rot = _rot - e.second->GetEntityRotation().z;
-											ImGui::Text("Rotation: ");
-											ImGui::SameLine();
-											ImGui::InputFloat("rot", &rot);
-											if (rot != _rot - e.second->GetEntityRotation().z) {
-												batchRender->SetRotation(id, rot + e.second->GetEntityRotation().z);
-											}
-											float _s[2];
-											ImGui::Text("Scale: ");
-											ImGui::SameLine();
-											Vector2f s = batchRender->GetShapeScale(id);
-											Vector2f __s = e.second->GetEntityScale().xy();
-											s = { s.x / __s.x,s.y / __s.y };
-											memcpy(_s, s.data(), sizeof(float) * 2);
-											if (ImGui::InputFloat2("scale", _s, 4)) {
-												if (s != Vector2f(_s)) {
-													batchRender->SetScale(id, Vector2f(_s) * e.second->GetEntityScale().xy());
-												}
-											}
-											ImGui::Text("Color: ");
-											ImGui::SameLine();
-											Vector4f _c = batchRender->GetShapeColor(id);
-											float __c[4];
-											memcpy(__c, _c.data(), sizeof(float) * 4);
-											if (ImGui::InputFloat4("sColr", __c)) {
-												if (Vector4f(__c) != _c) {
-													batchRender->SetColor(id, __c);
-												}
-											}
-
-											ImGui::TreePop();
-										}
-
-									}
-									i++;
-								}
-							}
-							if (compName == "class GEngine::Transform") {
-								float v[3];
-								GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second);
-
-								if (!transform) return;
-
-								v[0] = transform->GetPosition().x;
-								v[1] = transform->GetPosition().y;
-								v[2] = transform->GetPosition().z;
-								ImGui::Text("Position: ");
-								ImGui::SameLine();
-								if (ImGui::InputFloat3("tPos", v, 4)) {
-									if (v[0] != transform->GetPosition().x || v[1] != transform->GetPosition().y || v[2] != transform->GetPosition().z) {
-										e.second->SetEntityPosition({ v[0], v[1], v[2] });
-									}
-								}
-								float r[3];
-								memcpy(r, e.second->GetEntityRotation().data(), sizeof(float) * 3);
-								ImGui::Text("Rotation: ");
-								ImGui::SameLine();
-								if (ImGui::InputFloat3("eRot", r)) {
-									if (transform->GetRotation() != Vector3f(r)) {
-										e.second->SetEntityRotation(r);
-									}
-								}
-
-								float s[3];
-								ImGui::Text("Scale: ");
-								ImGui::SameLine();
-								Vector3f _s = transform->GetScale();
-								memcpy(s, _s.data(), sizeof(float) * 3);
-								if (ImGui::InputFloat3("tScale", s)) {
-									if (_s != Vector3f(s)) {
-										e.second->SetEntityScale(Vector3f(s));
-									}
-								}
-
-							}
-							if (compName == "class GEngine::QuadColliderComponent") {
-								GEngine::Ref<GEngine::QuadColliderComponent> collider = dynamic_pointer_cast<GEngine::QuadColliderComponent>(c.second);
-								if (collider == nullptr) return;
-
-								bool phys = collider->HasPhysics();
-								ImGui::Text("Physics: ");
-								ImGui::SameLine();
-								if (ImGui::Checkbox("##hidelabelphysics", &phys)) {
-									collider->SetPhysics(phys);
-
-									Ref<Entity> ec = collider->GetEntity();
-									std::string xcml = QuadColliderComponentToCXML(collider);
-									collider->Destroy();
-									collider = GetNodeAsQuadColliderComponent(ec, cxml.GetNext(xcml.c_str()));
-								}
-								bool dyn = collider->IsDynamic();
-								ImGui::Text("Dynamic: ");
-								ImGui::SameLine();
-								if (ImGui::Checkbox("##hidelabeldynamic", &dyn)) {
-									collider->SetDynamic(dyn);
-
-									Ref<Entity> ec = collider->GetEntity();
-									std::string xcml = QuadColliderComponentToCXML(collider);
-									collider->Destroy();
-									collider = GetNodeAsQuadColliderComponent(ec, cxml.GetNext(xcml.c_str()));
-								}
-
-								ImGui::Text("Velocity: ");
-								ImGui::SameLine();
-								float vl[2];
-								Vector2f _vl = collider->GetLinearVelocity();
-								memcpy(vl, _vl.data(), sizeof(float) * 2);
-								ImGui::InputFloat2("__vl", vl);
-								if (_vl != Vector2f(vl)) {
-									collider->SetVelocity(vl[0], vl[1]);
-								}
-								bool b = collider->GetFixedRotation();
-								ImGui::Text("Fixed Rotation: ");
-								ImGui::SameLine();
-								if (ImGui::Checkbox("##hidelabel", &b)) {
-									collider->SetFixedRotation(b);
-								}
-
-								if (ImGui::Button("Wake Bodies")) {
-									collider->WakeBody(true);
-								}
-								ImGui::SameLine();
-								if (ImGui::Button("Sleep Bodies")) {
-									collider->WakeBody(false);
-								}
-
-								for (std::pair<const ColliderID, FColliderQuad >& c : collider->GetColliders()) {
-									bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s - %s : %llu", c.second.tag, (c.second.quad ? "QuadCollider" : "CircleCollider"),c.first);
-									if (show_sid) {
-										ImGui::Text("Tag: ");
-										ImGui::SameLine();
-										char buff[255] = { 0 };
-										memcpy(buff, &c.second.tag[0], c.second.tag.size());
-										if (ImGui::InputText("__", buff, sizeof(buff), ImGuiInputTextFlags_EnterReturnsTrue)) {
-											c.second.tag = std::string(buff);
-										}
-										ImGui::Text("Position: ");
-										ImGui::SameLine();
-										float p[2];
-										memcpy(p, c.second.position.data(), sizeof(float) * 2);
-										ImGui::InputFloat2("__f", p);
-										if (Vector2f(p) != c.second.position) {
-											c.second.position = Vector2f(p);
-										}
-										ImGui::Text("Rotation: ");
-										ImGui::SameLine();
-										ImGui::InputFloat("__r", &c.second.rotation);
-
-										ImGui::Text("Scale: ");
-										ImGui::SameLine();
-										float s[2];
-										memcpy(s, c.second.scale.data(), sizeof(float) * 2);
-										ImGui::InputFloat2("__s", s);
-										if (Vector2f(s) != c.second.scale) {
-											c.second.scale = Vector2f(s);
-										}
-										ImGui::Text("Mass: ");
-										ImGui::SameLine();
-										ImGui::InputFloat("__m", &c.second.mass);
-										ImGui::Text("Bounce: ");
-										ImGui::SameLine();
-										float bounce = c.second.bounce;
-										if (ImGui::InputFloat("__bo", &bounce)) {
-											collider->SetBounce(c.first, bounce);
-										}
-										if (ImGui::Button("Destroy")) {
-											collider->DestroyQuad(c.first);
-										}
-										
-										ImGui::TreePop();
-									}
-									
-								}
-
-								
-
-							}
-							if (compName == "class GEngine::SpriteComponent") {
-
-
-								GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
-
-								std::vector<ShapeID> ids = spriteComp->GetQuads();
-								Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
-								int counter = 0;
-								for (const ShapeID& id : ids) {
-									bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)ids[counter++], component_base_flags, "%s - %llu", batchRender->GetShapeTexture(id)->GetName().c_str(), id);
-
-									if (ImGui::BeginPopupContextItem("spriteComponentDupe")) {
-
-										if (ImGui::Button("Duplicate")) {
-											
-											if (batchRender->GetShapeSubTexture(id) != nullptr) {
-												Vector2f s = batchRender->GetShapeScale(id);
-												Vector2f __s = e.second->GetEntityScale().xy();
-												s = { s.x / __s.x,s.y / __s.y };
-												spriteComp->CreateSubTexturedQuad(batchRender->GetShapePosition(id) - e.second->GetEntityPosition(), batchRender->GetShapeRotation(id) - e.second->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeSubTexture(id), batchRender->GetTextureScale(id));
-											}
-											else {
-												Vector2f s = batchRender->GetShapeScale(id);
-												Vector2f __s = e.second->GetEntityScale().xy();
-												s = { s.x / __s.x,s.y / __s.y };
-												spriteComp->CreateQuad(batchRender->GetShapePosition(id) - e.second->GetEntityPosition(), batchRender->GetShapeRotation(id) - e.second->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeTexture(id), batchRender->GetTextureScale(id));
-											}
-												
-											ImGui::CloseCurrentPopup();
-										}
-
-										ImGui::EndPopup();
-									}
-
-									if (show_sid) {
-										Vector3f p = batchRender->GetShapePosition(id) - e.second->GetEntityPosition();
-										float v[3];
-										memcpy(v, p.data(), sizeof(float) * 3);
-										ImGui::Text("Position: ");
-										ImGui::SameLine();
-										if (ImGui::InputFloat3("Pos", v, 4)) {
-											if (Vector3f(v) != p) {
-												spriteComp->SetPosition(id, { v[0], v[1] });
-												if (v[2] != p.z) {
-													spriteComp->SetZOrder(id, v[2]);
-												}
-											}
-										}
-										float _rot = batchRender->GetShapeRotation(id);
-										float rot = _rot - e.second->GetEntityRotation().z;
-										ImGui::Text("Rotation: ");
-										ImGui::SameLine();
-										ImGui::InputFloat("rot", &rot);
-										if (rot != _rot - e.second->GetEntityRotation().z) {
-											spriteComp->SetRotation(id, rot);
-										}
-										float _s[2];
-										ImGui::Text("Scale: ");
-										ImGui::SameLine();
-										Vector2f s = batchRender->GetShapeScale(id);
-										Vector2f __s = e.second->GetEntityScale().xy();
-										s = { s.x / __s.x,s.y / __s.y };
-										memcpy(_s, s.data(), sizeof(float) * 2);
-										if (ImGui::InputFloat2("scale", _s, 4)) {
-											if (s != Vector2f(_s)) {
-												spriteComp->SetQuadScale(id, Vector2f(_s));
-											}
-										}
-										ImGui::Text("Color: ");
-										ImGui::SameLine();
-										Vector4f _c = batchRender->GetShapeColor(id);
-										float __c[4];
-										memcpy(__c, _c.data(), sizeof(float) * 4);
-										if (ImGui::InputFloat4("sColr", __c)) {
-											if (Vector4f(__c) != _c) {
-												batchRender->SetColor(id, __c);
-											}
-										}
-
-										ImGui::Text("Texture Scale: ");
-										ImGui::SameLine();
-
-										float _ts[2];
-										Vector2f __ts = batchRender->GetTextureScale(id);
-										memcpy(_ts, __ts.data(), sizeof(float) * 2);
-										if (ImGui::InputFloat2("ttscale", _ts)) {
-											if (__ts != Vector2f(_ts)) {
-												batchRender->SetTextureScale(id, _ts);
-											}
-										}
-
-										if (batchRender->GetShapeSubTexture(id)) {
-											uint64_t __id = id + 1;
-											bool show_subTId = ImGui::TreeNodeEx((void*)(intptr_t)__id, component_base_flags, "Sub Texture: %s", batchRender->GetShapeSubTexture(id)->GetTexture()->GetName().c_str());
-											if (show_subTId) {
-												bool change = false;
-												Ref<SubTexture2D> subT = batchRender->GetShapeSubTexture(id);
-												std::string tex = subT->GetTexture()->GetName();
-												char ch[512] = { 0 };
-												memcpy(ch, &tex[0], tex.size() * sizeof(char));
-												if (ImGui::InputText("texStr", ch, 255, ImGuiInputTextFlags_EnterReturnsTrue)) {
-													change = true;
-												}
-
-												int fl = subT->GetTexture()->GetFlags();
-												if (ImGui::InputInt("__flags", &fl)) {
-													if (fl != subT->GetTexture()->GetFlags())
-														change = true;
-												}
-
-												float coords[2];
-												memcpy(coords, subT->m_coords.data(), sizeof(float) * 2);
-												ImGui::Text("Coords: ");
-												ImGui::SameLine();
-												if (ImGui::InputFloat2("scoords", coords)) {
-													subT->SetCoords(coords, subT->m_cellSize, subT->m_spriteSize);
-													change = true;
-												}
-
-												float subSiz[2];
-												memcpy(subSiz, subT->m_cellSize.data(), sizeof(float) * 2);
-												ImGui::Text("Cell Size: ");
-												ImGui::SameLine();
-												if (ImGui::InputFloat2("subCell", subSiz)) {
-													subT->SetCoords(subT->m_coords, subSiz);
-													change = true;
-												}
-
-												float spSize[2];
-												memcpy(spSize, subT->m_spriteSize.data(), sizeof(float) * 2);
-												ImGui::Text("Sprite Size: ");
-												ImGui::SameLine();
-												if (ImGui::InputFloat2("sizeCell", spSize)) {
-													subT->SetCoords(subT->m_coords, subT->m_cellSize, spSize);
-													change = true;
-												}
-
-												if (change) {
-													subT = SubTexture2D::CreateFromCoords(Texture2D::Create(std::string(ch), 192),
-														subT->m_coords, subT->m_cellSize, subT->m_spriteSize);
-													batchRender->SetSubTexture(id, subT);
-												}
-												ImGui::TreePop();
-											}
-
-										}
-										else {
-											ImGui::Text("Texture: ");
-											ImGui::SameLine();
-											std::string tex = batchRender->GetShapeTexture(id)->GetName();
-											char ch[255] = { 0 };
-											memcpy(ch, &tex[0], tex.size() * sizeof(char));
-											if (ImGui::InputText("texStr", ch, 255, ImGuiInputTextFlags_EnterReturnsTrue)) {
-												batchRender->SetTexture(id, Texture2D::Create(std::string(ch), TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest));
-											}
-										}
-
-
-										if (ImGui::Button("Destroy")) {
-											spriteComp->RemoveQuad(id);
-										}
-
-										ImGui::TreePop();
-									}
-								}
-
-							}
-							ImGui::TreePop();
-						}
-					}
-					ImGui::PopStyleColor(1);
-
+				
+				if (show_e) {
 					ImGui::TreePop();
 				}
-				
 				ImGui::PopStyleColor(1);
+				
 			}
 
 			ImGui::TreePop();
@@ -925,6 +380,583 @@ void MapEditor::SceneMenu()
 	}
 	ImGui::End();
 #endif
+}
+
+static void Inspector() {
+	bool show_e = false;
+	bool skip_c = false;
+	Ref<Entity> e = nullptr;
+	e = dynamic_pointer_cast<Entity>(hashSelected);
+	ImGui::Begin("Inspector");
+	if (e)
+	{
+		ImGui::Text("%s", e->m_tag.c_str());
+		ImGui::Separator();
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(8.f, 8.f, 8.f, 1));
+		std::unordered_map<uint64_t, GEngine::Ref<GEngine::Component>> components = e->GetComponents();
+
+		if (auto __e = dynamic_pointer_cast<BackgroundEntity>(e)) {
+			skip_c = true;
+			for (auto p : __e->GetBackgrounds()) {
+				bool show_pp = ImGui::TreeNodeEx((void*)(intptr_t)std::hash<std::string>{}(p.first), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick, "%s bg", p.first.c_str());
+				if (ImGui::BeginPopupContextItem((std::string("backGroundDupe") + p.first).c_str())) {
+
+					if (ImGui::Button("Duplicate")) {
+						__e->AddParalaxBackground(p.first + "_Copy", p.second.texture.lock(), p.second.scale, p.second.speed, p.second.zOrder, p.second.offset);
+						ImGui::CloseCurrentPopup();
+					}
+
+					ImGui::EndPopup();
+				}
+				if (show_pp) {
+
+					bool recreate = false;
+					char ch[255] = { 0 };
+					ImGui::Text("Name: ");
+					ImGui::SameLine();
+					memcpy(ch, &p.first[0], p.first.size());
+					if (ImGui::InputText("##hidelabel1", ch, sizeof(ch), ImGuiInputTextFlags_EnterReturnsTrue)) {
+						if (p.first != ch) {
+							recreate = true;
+						}
+					}
+					ImGui::Text("Texture: ");
+					ImGui::SameLine();
+					char ch1[255] = { 0 };
+					memcpy(ch1, &p.second.texture.lock()->GetName()[0], p.second.texture.lock()->GetName().size());
+					if (ImGui::InputText("##hidelabel2", ch1, sizeof(ch1), ImGuiInputTextFlags_EnterReturnsTrue)) {
+						if (p.second.texture.lock()->GetName() != ch1) {
+							recreate = true;
+						}
+					}
+
+					ImGui::Text("Texture Flags: ");
+					ImGui::SameLine();
+					int flags = p.second.texture.lock()->GetFlags();
+					if (ImGui::InputInt("##hidelabelflag", &flags)) {
+						if (p.second.texture.lock()->GetFlags() != flags)
+							recreate = true;
+					}
+
+					float sc[2] = { p.second.scale.x, p.second.scale.y };
+					ImGui::Text("Scale: ");
+					ImGui::SameLine();
+					if (ImGui::InputFloat2("##hidelabel3", sc)) {
+						if (p.second.offset != sc) {
+							recreate = true;
+						}
+					}
+
+					float sp = p.second.speed;
+
+					ImGui::Text("Speed: ");
+					ImGui::SameLine();
+					if (ImGui::InputFloat("##hidelabel4", &sp)) {
+						if (p.second.speed != sp) {
+							recreate = true;
+						}
+					}
+
+					float zO = p.second.zOrder;
+					ImGui::Text("zOrder: ");
+					ImGui::SameLine();
+					if (ImGui::InputFloat("##hidelabel5", &zO)) {
+						if (p.second.zOrder != zO) {
+							recreate = true;
+						}
+					}
+
+					float of[2] = { p.second.offset.x, p.second.offset.y };
+					ImGui::Text("Offset: ");
+					ImGui::SameLine();
+					if (ImGui::InputFloat2("##hidelabel6", of)) {
+						if (p.second.offset != of) {
+							recreate = true;
+						}
+					}
+
+					if (ImGui::Button("Destroy")) {
+						__e->RemoveParalaxBackground(p.first);
+					}
+
+					if (recreate) {
+						__e->RemoveParalaxBackground(p.first);
+						__e->AddParalaxBackground(ch, Texture2D::Create(ch1, flags), sc, sp, zO, of);
+					}
+
+					ImGui::TreePop();
+				}
+			}
+			if (ImGui::Button("Add Background")) {
+				__e->AddParalaxBackground("background", Texture2D::Create("batchBlank"), { 1,1 }, 1, 0, { 0,0 });
+			}
+			
+
+		}
+
+		for (const std::pair<uint64_t, GEngine::Ref<GEngine::Component>>& c : components) {
+			if (skip_c) continue;
+			std::string compName = typeid(*c.second.get()).name();
+			ImGuiTreeNodeFlags component_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+			if (compSelected == c.second) {
+				component_base_flags |= ImGuiTreeNodeFlags_Selected;
+			}
+			bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s : %s (%ju)", c.second->m_tag.c_str(), typeid(*c.second.get()).name(), c.first);
+			if (ImGui::IsItemClicked()) {
+				compSelected = c.second;
+			}
+
+			if (compName == "class LightComponent") {
+				Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
+				if (ImGui::BeginPopupContextItem("Create Light")) {
+
+					if (ImGui::Button("Create Quad Light")) {
+						lightC->AddQuadLight({ 0,0 }, 1, { 1,1 }, { 1,1,1,.99f });
+					}
+
+					if (ImGui::Button("Create Cirlce Light")) {
+						lightC->AddCircleLight({ 0,0 }, 1, { 1,1 }, { 1,0,0,1.f });
+					}
+
+					ImGui::EndPopup();
+				}
+			}
+
+			if (compName == "class GEngine::QuadColliderComponent") {
+				Ref<class GEngine::QuadColliderComponent> quad = dynamic_pointer_cast<QuadColliderComponent>(c.second);
+				if (ImGui::BeginPopupContextItem("QuadColliderCreation")) {
+
+					if (ImGui::Button("Create Quad")) {
+						quad->CreateQuad({ 0,0 }, { 1,1 }, 1.f, 0.f, "Quad");
+						//quad->WakeBody();
+					}
+
+					if (ImGui::Button("Create Circle")) {
+						quad->CreateCircle({ 0,0 }, { 1,1 }, 1.f, 0.f, "Circle");
+						//quad->WakeBody();
+					}
+
+					ImGui::EndPopup();
+				}
+			}
+
+			if (compName == "class GEngine::SpriteComponent") {
+
+
+				GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
+
+				if (ImGui::BeginPopupContextItem("ShowCreatButton")) {
+
+					if (ImGui::Button("Create Textured Quad")) {
+						spriteComp->CreateQuad({ 0,0,0 });
+					}
+
+					if (ImGui::Button("Create SubTextured Quad")) {
+						spriteComp->CreateSubTexturedQuad({ 0,0,0 }, 0, { 1,1,1 }, { 1,1,1,1 }, SubTexture2D::CreateFromCoords(Texture2D::Create("batchBlank"), { 0,0 }, { 1,1 }));
+					}
+
+					ImGui::EndPopup();
+				}
+
+			}
+
+			if (show_c) {
+				if (compName == "class LightComponent") {
+					Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
+					int i = 0;
+					while (i <= 1) {
+						std::vector<ShapeID> ids = i == 0 ? lightC->GetQuadLights() : lightC->GetCircleLights();
+
+						for (const ShapeID& id : ids) {
+							bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)id, component_base_flags, "%s, %llu", (i == 0 ? "Quad Light" : "Circle Light"), id);
+							Ref<BatchRenderer> batchRender = (i == 0 ? lightC->GetQuadRenderer() : lightC->GetCircleRenderer());
+							if (show_sid) {
+								Vector3f p = batchRender->GetShapePosition(id) - e->GetEntityPosition();
+								float v[3];
+								memcpy(v, p.data(), sizeof(float) * 3);
+								ImGui::Text("Position: ");
+								ImGui::SameLine();
+								if (ImGui::InputFloat3("Pos", v, 4)) {
+									if (Vector3f(v) != p) {
+										batchRender->SetPosition(id, (Vector2f(v) + e->GetEntityPosition().xy()));
+										if (v[2] != p.z) {
+											batchRender->SetZOrder(id, v[2] + e->GetEntityPosition().z);
+										}
+									}
+								}
+								float _rot = batchRender->GetShapeRotation(id);
+								float rot = _rot - e->GetEntityRotation().z;
+								ImGui::Text("Rotation: ");
+								ImGui::SameLine();
+								ImGui::InputFloat("rot", &rot);
+								if (rot != _rot - e->GetEntityRotation().z) {
+									batchRender->SetRotation(id, rot + e->GetEntityRotation().z);
+								}
+								float _s[2];
+								ImGui::Text("Scale: ");
+								ImGui::SameLine();
+								Vector2f s = batchRender->GetShapeScale(id);
+								Vector2f __s = e->GetEntityScale().xy();
+								s = { s.x / __s.x,s.y / __s.y };
+								memcpy(_s, s.data(), sizeof(float) * 2);
+								if (ImGui::InputFloat2("scale", _s, 4)) {
+									if (s != Vector2f(_s)) {
+										batchRender->SetScale(id, Vector2f(_s) * e->GetEntityScale().xy());
+									}
+								}
+								ImGui::Text("Color: ");
+								ImGui::SameLine();
+								Vector4f _c = batchRender->GetShapeColor(id);
+								float __c[4];
+								memcpy(__c, _c.data(), sizeof(float) * 4);
+								if (ImGui::InputFloat4("sColr", __c)) {
+									if (Vector4f(__c) != _c) {
+										batchRender->SetColor(id, __c);
+									}
+								}
+
+								ImGui::TreePop();
+							}
+
+						}
+						i++;
+					}
+				}
+				if (compName == "class GEngine::Transform") {
+					float v[3];
+					GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second);
+
+					if (!transform) return;
+
+					v[0] = transform->GetPosition().x;
+					v[1] = transform->GetPosition().y;
+					v[2] = transform->GetPosition().z;
+					ImGui::Text("Position: ");
+					ImGui::SameLine();
+					if (ImGui::InputFloat3("tPos", v, 4)) {
+						if (v[0] != transform->GetPosition().x || v[1] != transform->GetPosition().y || v[2] != transform->GetPosition().z) {
+							e->SetEntityPosition({ v[0], v[1], v[2] });
+						}
+					}
+					float r[3];
+					memcpy(r, e->GetEntityRotation().data(), sizeof(float) * 3);
+					ImGui::Text("Rotation: ");
+					ImGui::SameLine();
+					if (ImGui::InputFloat3("eRot", r)) {
+						if (transform->GetRotation() != Vector3f(r)) {
+							e->SetEntityRotation(r);
+						}
+					}
+
+					float s[3];
+					ImGui::Text("Scale: ");
+					ImGui::SameLine();
+					Vector3f _s = transform->GetScale();
+					memcpy(s, _s.data(), sizeof(float) * 3);
+					if (ImGui::InputFloat3("tScale", s)) {
+						if (_s != Vector3f(s)) {
+							e->SetEntityScale(Vector3f(s));
+						}
+					}
+
+				}
+				if (compName == "class GEngine::QuadColliderComponent") {
+					GEngine::Ref<GEngine::QuadColliderComponent> collider = dynamic_pointer_cast<GEngine::QuadColliderComponent>(c.second);
+					if (collider == nullptr) return;
+
+					bool phys = collider->HasPhysics();
+					ImGui::Text("Physics: ");
+					ImGui::SameLine();
+					if (ImGui::Checkbox("##hidelabelphysics", &phys)) {
+						collider->SetPhysics(phys);
+
+						Ref<Entity> ec = collider->GetEntity();
+						std::string xcml = QuadColliderComponentToCXML(collider);
+						collider->Destroy();
+						collider = GetNodeAsQuadColliderComponent(ec, cxml.GetNext(xcml.c_str()));
+					}
+					bool dyn = collider->IsDynamic();
+					ImGui::Text("Dynamic: ");
+					ImGui::SameLine();
+					if (ImGui::Checkbox("##hidelabeldynamic", &dyn)) {
+						collider->SetDynamic(dyn);
+
+						Ref<Entity> ec = collider->GetEntity();
+						std::string xcml = QuadColliderComponentToCXML(collider);
+						collider->Destroy();
+						collider = GetNodeAsQuadColliderComponent(ec, cxml.GetNext(xcml.c_str()));
+					}
+
+					ImGui::Text("Velocity: ");
+					ImGui::SameLine();
+					float vl[2];
+					Vector2f _vl = collider->GetLinearVelocity();
+					memcpy(vl, _vl.data(), sizeof(float) * 2);
+					ImGui::InputFloat2("__vl", vl);
+					if (_vl != Vector2f(vl)) {
+						collider->SetVelocity(vl[0], vl[1]);
+					}
+					bool b = collider->GetFixedRotation();
+					ImGui::Text("Fixed Rotation: ");
+					ImGui::SameLine();
+					if (ImGui::Checkbox("##hidelabel", &b)) {
+						collider->SetFixedRotation(b);
+					}
+
+					if (ImGui::Button("Wake Bodies")) {
+						collider->WakeBody(true);
+					}
+					ImGui::SameLine();
+					if (ImGui::Button("Sleep Bodies")) {
+						collider->WakeBody(false);
+					}
+
+					for (std::pair<const ColliderID, FColliderQuad >& c : collider->GetColliders()) {
+						bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s - %s : %llu", c.second.tag, (c.second.quad ? "QuadCollider" : "CircleCollider"), c.first);
+						if (show_sid) {
+							ImGui::Text("Tag: ");
+							ImGui::SameLine();
+							char buff[255] = { 0 };
+							memcpy(buff, &c.second.tag[0], c.second.tag.size());
+							if (ImGui::InputText("__", buff, sizeof(buff), ImGuiInputTextFlags_EnterReturnsTrue)) {
+								c.second.tag = std::string(buff);
+							}
+							ImGui::Text("Position: ");
+							ImGui::SameLine();
+							float p[2];
+							memcpy(p, c.second.position.data(), sizeof(float) * 2);
+							ImGui::InputFloat2("__f", p);
+							if (Vector2f(p) != c.second.position) {
+								c.second.position = Vector2f(p);
+							}
+							ImGui::Text("Rotation: ");
+							ImGui::SameLine();
+							ImGui::InputFloat("__r", &c.second.rotation);
+
+							ImGui::Text("Scale: ");
+							ImGui::SameLine();
+							float s[2];
+							memcpy(s, c.second.scale.data(), sizeof(float) * 2);
+							ImGui::InputFloat2("__s", s);
+							if (Vector2f(s) != c.second.scale) {
+								c.second.scale = Vector2f(s);
+							}
+							ImGui::Text("Mass: ");
+							ImGui::SameLine();
+							ImGui::InputFloat("__m", &c.second.mass);
+							ImGui::Text("Bounce: ");
+							ImGui::SameLine();
+							float bounce = c.second.bounce;
+							if (ImGui::InputFloat("__bo", &bounce)) {
+								collider->SetBounce(c.first, bounce);
+							}
+							if (ImGui::Button("Destroy")) {
+								collider->DestroyQuad(c.first);
+							}
+
+							ImGui::TreePop();
+						}
+
+					}
+
+
+
+				}
+				if (compName == "class GEngine::SpriteComponent") {
+
+
+					GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
+
+					std::vector<ShapeID> ids = spriteComp->GetQuads();
+					Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
+					int counter = 0;
+					for (const ShapeID& id : ids) {
+						bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)ids[counter++], component_base_flags, "%s - %llu", batchRender->GetShapeTexture(id)->GetName().c_str(), id);
+
+						if (ImGui::BeginPopupContextItem("spriteComponentDupe")) {
+
+							if (ImGui::Button("Duplicate")) {
+
+								if (batchRender->GetShapeSubTexture(id) != nullptr) {
+									Vector2f s = batchRender->GetShapeScale(id);
+									Vector2f __s = e->GetEntityScale().xy();
+									s = { s.x / __s.x,s.y / __s.y };
+									spriteComp->CreateSubTexturedQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeSubTexture(id), batchRender->GetTextureScale(id));
+								}
+								else {
+									Vector2f s = batchRender->GetShapeScale(id);
+									Vector2f __s = e->GetEntityScale().xy();
+									s = { s.x / __s.x,s.y / __s.y };
+									spriteComp->CreateQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeTexture(id), batchRender->GetTextureScale(id));
+								}
+
+								ImGui::CloseCurrentPopup();
+							}
+
+							ImGui::EndPopup();
+						}
+
+						if (show_sid) {
+							Vector3f p = batchRender->GetShapePosition(id) - e->GetEntityPosition();
+							float v[3];
+							memcpy(v, p.data(), sizeof(float) * 3);
+							ImGui::Text("Position: ");
+							ImGui::SameLine();
+							if (ImGui::InputFloat3("Pos", v, 4)) {
+								if (Vector3f(v) != p) {
+									spriteComp->SetPosition(id, { v[0], v[1] });
+									if (v[2] != p.z) {
+										spriteComp->SetZOrder(id, v[2]);
+									}
+								}
+							}
+							float _rot = batchRender->GetShapeRotation(id);
+							float rot = _rot - e->GetEntityRotation().z;
+							ImGui::Text("Rotation: ");
+							ImGui::SameLine();
+							ImGui::InputFloat("rot", &rot);
+							if (rot != _rot - e->GetEntityRotation().z) {
+								spriteComp->SetRotation(id, rot);
+							}
+							float _s[2];
+							ImGui::Text("Scale: ");
+							ImGui::SameLine();
+							Vector2f s = batchRender->GetShapeScale(id);
+							Vector2f __s = e->GetEntityScale().xy();
+							s = { s.x / __s.x,s.y / __s.y };
+							memcpy(_s, s.data(), sizeof(float) * 2);
+							if (ImGui::InputFloat2("scale", _s, 4)) {
+								if (s != Vector2f(_s)) {
+									spriteComp->SetQuadScale(id, Vector2f(_s));
+								}
+							}
+							ImGui::Text("Color: ");
+							ImGui::SameLine();
+							Vector4f _c = batchRender->GetShapeColor(id);
+							float __c[4];
+							memcpy(__c, _c.data(), sizeof(float) * 4);
+							if (ImGui::InputFloat4("sColr", __c)) {
+								if (Vector4f(__c) != _c) {
+									batchRender->SetColor(id, __c);
+								}
+							}
+
+							ImGui::Text("Texture Scale: ");
+							ImGui::SameLine();
+
+							float _ts[2];
+							Vector2f __ts = batchRender->GetTextureScale(id);
+							memcpy(_ts, __ts.data(), sizeof(float) * 2);
+							if (ImGui::InputFloat2("ttscale", _ts)) {
+								if (__ts != Vector2f(_ts)) {
+									batchRender->SetTextureScale(id, _ts);
+								}
+							}
+
+							if (batchRender->GetShapeSubTexture(id)) {
+								uint64_t __id = id + 1;
+								bool show_subTId = ImGui::TreeNodeEx((void*)(intptr_t)__id, component_base_flags, "Sub Texture: %s", batchRender->GetShapeSubTexture(id)->GetTexture()->GetName().c_str());
+								if (show_subTId) {
+									bool change = false;
+									Ref<SubTexture2D> subT = batchRender->GetShapeSubTexture(id);
+									std::string tex = subT->GetTexture()->GetName();
+									char ch[512] = { 0 };
+									memcpy(ch, &tex[0], tex.size() * sizeof(char));
+									if (ImGui::InputText("texStr", ch, 255, ImGuiInputTextFlags_EnterReturnsTrue)) {
+										change = true;
+									}
+
+									int fl = subT->GetTexture()->GetFlags();
+									if (ImGui::InputInt("__flags", &fl)) {
+										if (fl != subT->GetTexture()->GetFlags())
+											change = true;
+									}
+
+									float coords[2];
+									memcpy(coords, subT->m_coords.data(), sizeof(float) * 2);
+									ImGui::Text("Coords: ");
+									ImGui::SameLine();
+									if (ImGui::InputFloat2("scoords", coords)) {
+										subT->SetCoords(coords, subT->m_cellSize, subT->m_spriteSize);
+										change = true;
+									}
+
+									float subSiz[2];
+									memcpy(subSiz, subT->m_cellSize.data(), sizeof(float) * 2);
+									ImGui::Text("Cell Size: ");
+									ImGui::SameLine();
+									if (ImGui::InputFloat2("subCell", subSiz)) {
+										subT->SetCoords(subT->m_coords, subSiz);
+										change = true;
+									}
+
+									float spSize[2];
+									memcpy(spSize, subT->m_spriteSize.data(), sizeof(float) * 2);
+									ImGui::Text("Sprite Size: ");
+									ImGui::SameLine();
+									if (ImGui::InputFloat2("sizeCell", spSize)) {
+										subT->SetCoords(subT->m_coords, subT->m_cellSize, spSize);
+										change = true;
+									}
+
+									if (change) {
+										subT = SubTexture2D::CreateFromCoords(Texture2D::Create(std::string(ch), 192),
+											subT->m_coords, subT->m_cellSize, subT->m_spriteSize);
+										batchRender->SetSubTexture(id, subT);
+									}
+									ImGui::TreePop();
+								}
+
+							}
+							else {
+								ImGui::Text("Texture: ");
+								ImGui::SameLine();
+								std::string tex = batchRender->GetShapeTexture(id)->GetName();
+								char ch[255] = { 0 };
+								memcpy(ch, &tex[0], tex.size() * sizeof(char));
+								if (ImGui::InputText("texStr", ch, 255, ImGuiInputTextFlags_EnterReturnsTrue)) {
+									batchRender->SetTexture(id, Texture2D::Create(std::string(ch), TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest));
+								}
+							}
+
+
+							if (ImGui::Button("Destroy")) {
+								spriteComp->RemoveQuad(id);
+							}
+
+							ImGui::TreePop();
+						}
+					}
+
+				}
+				ImGui::TreePop();
+			}
+		}
+		ImGui::PopStyleColor(1);
+	}
+	
+	if (hashSelected) {
+		ImGui::Dummy(ImVec2(0.0f, 10.0f));
+		ImGui::Separator();
+		if (ImGui::Button("Add Component")) {
+			b_component = true;
+			b_addObj = true;
+		}
+	}
+
+	if (compSelected) {
+		if (dynamic_pointer_cast<Transform>(compSelected) == nullptr) {
+			ImGui::SameLine();
+			if (ImGui::Button("Destroy Component")) {
+
+				dynamic_pointer_cast<Component>(compSelected)->Destroy();
+				compSelected = nullptr;
+			}
+		}
+	}
+		
+	ImGui::End();
 }
 
 
@@ -1023,7 +1055,7 @@ static std::string AudioListenerComponentToCXML(Ref<AudioListenerComponent> c) {
 
 
 static std::string BackgroundEntityToCXML(Ref<BackgroundEntity> e) {
-	std::string s = "<BackgroundEntity>\n";
+	std::string s = "<BackgroundEntity tag=\"" + e->m_tag + "\">\n";
 	const std::unordered_map<std::string, FParalaxBackground>& b = e->GetBackgrounds();
 	for (const std::pair<std::string, FParalaxBackground>& p : b) {
 		s += "<function>\n<AddParalaxBackground>\n" + StringToCXML(p.first) + Texture2DToCXML(p.second.texture.lock()) + Vec2fToCXML(p.second.scale) + FloatToCXML(p.second.speed) + FloatToCXML(p.second.zOrder) + Vec2fToCXML(p.second.offset);
@@ -1269,6 +1301,7 @@ static Ref<AudioListenerComponent> GetNodeAsAudioListener(Ref<Entity> e, const C
 static Ref<BackgroundEntity> GetNodeAsBackgroundEntity(Scene* s, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
 
 	Ref<BackgroundEntity> e = CreateGameObject<BackgroundEntity>();
+	e->m_tag = n.tags.at("tag");
 	s->AddEntity(e);
 
 	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());

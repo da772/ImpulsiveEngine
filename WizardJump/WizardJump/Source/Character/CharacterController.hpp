@@ -20,6 +20,7 @@ public:
     Ref<AudioComponent> leftFootSound;
 	Ref<AudioComponent> rightFootSound;
     Ref<AudioComponent> musicSound;
+	Ref<SpriteComponent> spriteComp;
     long long startTime;
 
 protected:
@@ -42,6 +43,11 @@ public:
 	bool bEnableInput = true;
 	bool bEnableJump = true;
 	bool bEnableWalk = true;
+	bool bdrawTrajectory = false;
+	float trajectoryZorder = 0.f;
+	float trajectoryOffset = 0.f;
+	float trajectorySize = 0.1f;
+	Vector4f trajectoryColor = Vector4f(1.f,0.f,0.f,1.f);
 	const float walkAnimThreshold = .03f;
 	const float maxWalkSpeed = 2.5f;
     const int walkDelay = 125;
@@ -61,6 +67,18 @@ public:
 	inline bool GetIsJumping() const {
 		return bJumping; 
 	};
+
+	Vector3f GetPredictedPosition() {
+		if (bdrawTrajectory && trajectory_pos.size() > 0) {
+			return &trajectory_pos[trajectory_pos.size() - 3];
+		}
+
+		return GetEntityPosition();
+	}
+
+	inline void ClearTrajectory() {
+		spriteComp->ClearQuads();
+	}
 
 	void ResetInput();
 

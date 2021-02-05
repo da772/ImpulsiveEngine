@@ -21,6 +21,7 @@ namespace GEngine {
 		static Vector2f normalize(const Vector2f& v);
 		static Vector2f reflect(const Vector2f& v, const Vector2f n);
 		static float ClosestMultiple(float x, float n);
+		static float RadToDeg(float r);
 		
 	};
 

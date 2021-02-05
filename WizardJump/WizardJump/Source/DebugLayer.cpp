@@ -17,8 +17,6 @@ DebugLayer::DebugLayer() : Layer("DebugLayer")
 
 }
 
-
-
 void DebugLayer::OnImGuiRender()
 {
 		if (DebugLayer::showLog)
@@ -134,7 +132,8 @@ void DebugLayer::ShowDock(bool p_open)
 			ImGui::DockBuilderDockWindow("ViewPort", ImGui::DockBuilderGetCentralNode(dock_up_id)->ID);
 			//ImGui::DockBuilderDockWindow("Actions", dock_up_id);
 			ImGui::DockBuilderDockWindow("Scene Hierarchy", dock_right_id);
-			ImGui::DockBuilderDockWindow("Graphics Debugger", dock_left_id);
+			ImGui::DockBuilderDockWindow("Inspector", dock_left_id);
+			//ImGui::DockBuilderDockWindow("Graphics Debugger", dock_left_id);
 			ImGui::DockBuilderDockWindow("Console Log", dock_down_id);
 			//ImGui::DockBuilderDockWindow("Project", dock_down_right_id);
 
@@ -158,7 +157,7 @@ void DebugLayer::ShowDock(bool p_open)
 
 	if (ImGui::BeginMenuBar())
 	{
-		if (ImGui::BeginMenu("Editor"))
+		if (ImGui::BeginMenu("File"))
 		{
 
 			if (ImGui::MenuItem("Refresh Assets", "CTRL-R", false)) {
@@ -171,13 +170,35 @@ void DebugLayer::ShowDock(bool p_open)
 			ImGui::EndMenu();
 		}
 
+
+
+		if (ImGui::BeginMenu("Edit")) {
+			ImGui::Text("Test");
+
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Window")) {
+
+			ImGui::Text("Test");
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMenuBar();
+
+
+
 	}
+	
+
 
 	ImGui::End();
 }
 
 GEngine::Ref<GEngine::GameObject> hashSelected = nullptr;
+GEngine::Ref<GEngine::GameObject> compSelected = nullptr;
 bool b_component = false;
 
 void DebugLayer::CreateSceneHierarchy()

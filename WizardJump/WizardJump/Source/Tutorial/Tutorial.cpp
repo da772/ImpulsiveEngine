@@ -37,7 +37,7 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 			}
 			else {
 				if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x < -2.f || characterEntity->GetEntityPosition().x < -6.f) {
-					dialog->Destroy();
+					
 					characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
 					characterEntity->m_characterComponent->bEnableInput = false;
 					Ref<DialogFrame> _dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Press and hold on the right side of the screen to move to the right!", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
@@ -50,6 +50,7 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 						//FPSuiComponent->SetScale(tutorialCover, { (float)frame * (1.f / 15.f),(float)frame * (2.f / 15.f),.0f });
 						});
 					s->AddEntity(_dialog);
+					dialog->Destroy();
 					_dialog->AddComponent(spriteAnim);
 					spriteAnim->Start();
 					characterEntity->m_characterComponent->bEnableInput = true;
@@ -60,12 +61,12 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 						}
 						else {
 							if (characterEntity->m_characterComponent->bodyComp->GetVelocity().x > 200.f || characterEntity->GetEntityPosition().x > -2.25f) {
-								_dialog->Destroy();
 								characterEntity->m_characterComponent->bodyComp->SetVelocityX(0);
 								characterEntity->m_characterComponent->bEnableInput = false;
 								characterEntity->m_characterComponent->bEnableWalk = false;
 								Ref<DialogFrame> __dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "There is a box in the way. Maybe there is a way to get around it?. \n(Tap here to continue...)", false, false);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 								s->AddEntity(__dialog);
+								_dialog->Destroy();
 								//FPSuiComponent->Remove(tutorialCover);
 								__dialog->SetOnDialogComplete([s,characterEntity]() {
 									characterEntity->m_characterComponent->bEnableInput = true;
@@ -77,22 +78,33 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 									Ref<DialogFrame> ___dialog = CreateGameObject<DialogFrame>(Vector3f(0, .5f, 5), 15.f, "Wizard", "Content/Textures/wiz10_face.png", "Click and drag to jump.", false, true);//aisdjiasjd aisdji asid jasid jaisdj aisdj ai aisdjiasjd->"));
 									___dialog->SetStickyFrame(true);
 									s->AddEntity(___dialog);
+									characterEntity->m_characterComponent->bdrawTrajectory = true;
+									characterEntity->m_characterComponent->trajectoryColor = { .2,.2,.2,1 };
+									characterEntity->m_characterComponent->trajectoryOffset = characterEntity->m_characterComponent->bodyComp->m_quadCollider->GetQuadCollider(characterEntity->m_characterComponent->bodyComp->circleColliderID).scale.x;
 									characterEntity->m_characterComponent->SetInputFilterFunction([characterEntity, ___dialog](const GEngine::FTouchInfo& touch) {
 										// ensure that we jumped
-										if ((touch.state == 0 || touch.state == 1) && touch.x >= (float)Application::GetWidth() / 2.f) {
-											return false;
-										}
-										else if (touch.state == 2 && characterEntity->m_characterComponent->GetIsJumping() ) {
-											GE_LOG_WARN("PREDICTED VEL: {0}", characterEntity->m_characterComponent->GetPredictedJumpVel(touch.y).y);
-											if (characterEntity->m_characterComponent->GetPredictedJumpVel(touch.y).y < .20f) {
-												
+										if (touch.state == 2 && characterEntity->m_characterComponent->GetIsJumping() ) {
+											
+											if (characterEntity->m_characterComponent->GetPredictedPosition().x < 0.81f) {
 												characterEntity->m_characterComponent->ResetInput();
 												return false;
 											}
 											___dialog->Destroy();
-											
+											characterEntity->m_characterComponent->trajectoryOffset = 0.f;
+											characterEntity->m_characterComponent->trajectoryColor = { 1,1,1,1 };
 											characterEntity->m_characterComponent->bEnableWalk = true;
+											characterEntity->m_characterComponent->ClearTrajectory();
+											characterEntity->m_characterComponent->bdrawTrajectory = false;
 											characterEntity->m_characterComponent->SetInputFilterFunction(nullptr);
+										}
+										else {
+											//GE_CORE_DEBUG("Predicted Pos: {0}",characterEntity->m_characterComponent->GetPredictedPosition().x);
+											if (characterEntity->m_characterComponent->GetPredictedPosition().x < 0.81f) {
+												characterEntity->m_characterComponent->trajectoryColor = { .2,.2,.2,1 };
+											}
+											else {
+												characterEntity->m_characterComponent->trajectoryColor = { 1,1,1,1 };
+											}
 										}
 
 										return true;
