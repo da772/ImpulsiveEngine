@@ -38,4 +38,3 @@ local.properties
 /premake5.lua
 /Podfile
 
-vendor/bin/premake/premake5
