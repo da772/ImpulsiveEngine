@@ -383,6 +383,7 @@ void MapEditor::SceneMenu()
 }
 
 static void Inspector() {
+#ifdef GE_CONSOLE_APP
 	bool show_e = false;
 	bool skip_c = false;
 	Ref<Entity> e = nullptr;
@@ -957,6 +958,7 @@ static void Inspector() {
 	}
 		
 	ImGui::End();
+#endif
 }
 
 
