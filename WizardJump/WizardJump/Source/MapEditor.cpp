@@ -736,7 +736,7 @@ static void Inspector() {
 					}
 
 					for (std::pair<const ColliderID, FColliderQuad >& c : collider->GetColliders()) {
-						bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s - %s : %llu", c.second.tag, (c.second.quad ? "QuadCollider" : "CircleCollider"), c.first);
+						bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s - %s : %llu", c.second.tag.c_str(), (c.second.quad ? "QuadCollider" : "CircleCollider"), c.first);
 						if (show_sid) {
 							ImGui::Text("Tag: ");
 							ImGui::SameLine();
@@ -1396,10 +1396,11 @@ static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, 
 
 void MapEditor::LoadScene(const std::string& scene)
 {
-
+#ifdef GE_CONSOLE_APP
 	for (auto p : entities) {
 		p.second->Destroy();
 	}
+#endif
 
 
 	Ref<Entity> lastEntity = nullptr;
