@@ -29,7 +29,6 @@ MapEditor::~MapEditor()
 void MapEditor::OnEvent(Event& e)
 {
 	m_CameraController->OnEvent(e);
-
 }
 
 Ref<CharacterEntity> MapEditor::characterEntity = nullptr;
@@ -65,8 +64,13 @@ void MapEditor::OnUpdate(Timestep timestep)
 	fpsId = uiComp->CreateText(std::to_string((int)
 		GEngine::Application::GetApp()->profile["FPS"]) + " fps", font, { -1, .9f,1 },
 		{ 1,1,1 }, { 1,1,1,1 });
+#else 
+	char ch[256] = { 0 };
+	sprintf(ch, "Wizard Jump - FPS: %d | %.3f ms", (int)GEngine::Application::GetApp()->profile["FPS"], GEngine::Application::GetApp()->profile["Run"]);
+	Application::GetApp()->GetWindow()->SetTitle(ch);
 #endif
 
+	
 }
 
 
@@ -200,7 +204,8 @@ void MapEditor::SetupCamera()
 	m_CameraController->SetOnEventFn([this](GEngine::Event& e) {
 		GEngine::EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<GEngine::MouseScrolledEvent>([this](GEngine::MouseScrolledEvent& e) {
-			m_CameraController->OnCameraZoom(e.GetXOffset(), e.GetYOffset(), .1f);
+			if (Application::InputEnabled())
+				m_CameraController->OnCameraZoom(e.GetXOffset(), e.GetYOffset(), .1f);
 			return false;
 			});
 
@@ -318,6 +323,7 @@ void MapEditor::SceneMenu()
 				__e->Destroy();
 				
 				hashSelected = nullptr;
+				compSelected = nullptr;
 				b_component = false;
 				ImGui::End();
 				return;
@@ -349,8 +355,8 @@ void MapEditor::SceneMenu()
 
 		ImGui::Separator();
 
-		ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-		if (ImGui::TreeNode("Entities"))
+		//ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+		if (true)
 		{
 			std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
 			for (const std::pair<uint64_t, GEngine::Ref<GEngine::Entity>>& e : entities)
@@ -358,7 +364,7 @@ void MapEditor::SceneMenu()
 				if (e.second->m_tag == "__EditorEntity")
 					continue;
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.8, .8, .8, 1));
-				ImGuiTreeNodeFlags entity_base_flags = ImGuiTreeNodeFlags_Bullet;
+				ImGuiTreeNodeFlags entity_base_flags = ImGuiTreeNodeFlags_Leaf;
 				if (hashSelected == e.second) {
 					entity_base_flags |= ImGuiTreeNodeFlags_Selected;
 				}
@@ -401,7 +407,7 @@ void MapEditor::SceneMenu()
 				
 			}
 
-			ImGui::TreePop();
+			//ImGui::TreePop();
 		}
 
 
@@ -1149,7 +1155,7 @@ static std::string TransformToCXML(Ref<Transform> trans) {
 
 void MapEditor::SaveScene(const std::string& location ) {
 
-	if (m_debugDrawer) {
+	if (Application::DebugTools() && m_debugDrawer) {
 		if (m_debugDrawer->GetEntity())
 			m_debugDrawer->GetEntity()->Destroy();
 		m_debugDrawer = nullptr;

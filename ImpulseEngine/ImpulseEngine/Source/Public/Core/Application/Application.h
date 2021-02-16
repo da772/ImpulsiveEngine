@@ -102,7 +102,8 @@ namespace GEngine {
 		{"FPS", 0.f},
 		{"OnUpdate", 0.f},
 		{"OnRender", 0.f},
-		{"FrameTime", 0.f}
+		{"FrameTime", 0.f},
+		{"Run", 0.f}
 		};
 
 		inline bool IsRunning() { return m_Running; }

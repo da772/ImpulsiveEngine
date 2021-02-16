@@ -174,7 +174,7 @@ namespace GEngine {
 }
 
 
-//#define GE_PROFILE 1
+#define GE_PROFILE 1
 
 #if GE_PROFILE
 // Resolve which function signature macro will be used. Note that this only
