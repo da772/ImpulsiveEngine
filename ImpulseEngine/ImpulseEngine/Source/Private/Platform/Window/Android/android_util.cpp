@@ -132,6 +132,7 @@ namespace AndroidUtil {
 		jmethodID mid = jni_env->GetStaticMethodID(androidInterface, "SetRewardAdID", "(Landroid/app/Activity;Ljava/lang/String;)V");
 		jni_env->CallStaticVoidMethod(androidInterface, mid, nativeActivity,jstr1);
 		jni_env->DeleteLocalRef(jstr1);
+		jni_env->DeleteLocalRef(cls);
 		CleanJNIEnv();
 	}
 
@@ -160,6 +161,7 @@ namespace AndroidUtil {
 		std::string s(_cStr);
 		jni_env->ReleaseStringUTFChars(val, _cStr);
 		jni_env->DeleteLocalRef(val);
+		jni_env->DeleteLocalRef(cls);
 		CleanJNIEnv();
 		int counter = 0;
 		int* arr[4] = { top, bottom, left, right };

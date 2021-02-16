@@ -203,13 +203,13 @@ namespace GEngine {
 		m_collider->SetEntity(static_pointer_cast<Entity>(entity.lock()));
 		m_collider->SetUIOnEvent([this](const Event& e) { if (m_onEvent) m_onEvent(e); });
 		m_collider->SetUICollisionStartFunction([this](float x, float y) {
-			GE_CORE_DEBUG("BUTTON COLLIDE START");
+			//GE_CORE_DEBUG("BUTTON COLLIDE START");
 			if (m_onCollide != nullptr) {
 				m_onCollide(x, y);
 			}
 			});
 		m_collider->SetUICollisionEndFunction([this](float x, float y) {
-			GE_CORE_DEBUG("BUTTON COLLIDE END");
+			//GE_CORE_DEBUG("BUTTON COLLIDE END");
 			if (m_endCollide != nullptr) {
 				m_endCollide(x,y);
 			}

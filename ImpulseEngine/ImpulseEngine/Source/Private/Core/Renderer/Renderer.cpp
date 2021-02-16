@@ -284,6 +284,8 @@ namespace GEngine {
 		GEngine::Renderer::SubmitArrays(s_ShapeData->shape_shader, s_ShapeData->box_vArray, transform);
 	}
 
+
+
 	void Renderer::DrawLine(const Vector3f& startPos, const Vector3f& endPos, const Vector4f& color)
 	{
 

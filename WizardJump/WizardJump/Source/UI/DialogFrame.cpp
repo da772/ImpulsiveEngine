@@ -98,7 +98,8 @@ void DialogFrame::OnBegin()
 	m_buttonComponent = CreateGameObject<ButtonComponent>(m_position, 0.f, Vector3f( dialogScale.x,  dialogScale.y, 1.f ), Vector4f(1, 0, 0, 0.f), Vector2f(0, 0));
 	AddComponent(m_buttonComponent);
 	m_buttonComponent->SetOnEvent([this](const Event& event) {
-		GE_LOG_DEBUG("Button Press: {0}, Animating: {1}", event.GetName(), isAnimating);
+
+		//GE_LOG_DEBUG("Button Press: {0}, Animating: {1}", event.GetName(), isAnimating);
 		if (isAnimating) return;
 		if (event.GetEventType() == EventType::MouseButtonReleased || event.GetEventType() == EventType::TouchReleased) {
 			if (m_textPos == m_uiComponent->GetTextSize(m_textId)) {

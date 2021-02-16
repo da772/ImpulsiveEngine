@@ -61,14 +61,14 @@ protected:
 		ColliderID id1 = m_groundCollider->CreateQuad(groundPos, groundScale, 1, 0, "characterBodyGround");
 
 		m_groundCollider->SetOnCollideFunction(id1, [this](Ref<PhysicsCollision> other) {
-			GE_CORE_DEBUG("COLLISION: {0}", other->tag);
+			//GE_CORE_DEBUG("COLLISION: {0}", other->tag);
 			if ( other->tag == "ground") {
 				groundedCount++;;
 			}
 			});
 
 		m_groundCollider->SetEndCollideFunction(id1, [this](Ref<PhysicsCollision> other) {
-			GE_CORE_DEBUG("COLLISION End: {0}", other->tag);
+			//GE_CORE_DEBUG("COLLISION End: {0}", other->tag);
 			if (other->tag == "ground") {
 				groundedCount--;;
 			}

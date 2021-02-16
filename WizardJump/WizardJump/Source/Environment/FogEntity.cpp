@@ -165,7 +165,7 @@ void FogEntity::OnUpdate(Timestep timestep)
 			}
 			int index = 0;
 			
-            if (true) {
+            if (noiseData) {
                 for (int y = 0; y < noiseDataSize; y++)
                 {
                     for (int x = 0; x < noiseDataSize; x++)

@@ -22,7 +22,7 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 		Ref<SpriteAnimationComponent> spriteAnim = CreateGameObject<SpriteAnimationComponent>();
 		dialog->AddComponent(spriteAnim);
 		spriteAnim->SetFrameAnimation(30, 15, false, [s](int frame) {
-			GE_LOG_DEBUG("FRAME ALPHA: {0}", (float)frame * (.9f / 15.f));
+			//GE_LOG_DEBUG("FRAME ALPHA: {0}", (float)frame * (.9f / 15.f));
 			//FPSuiComponent->SetColor(tutorialCover, { .0f,.0f,.0f,(float)frame * (.9f / 15.f) });
 			//FPSuiComponent->SetScale(tutorialCover, { (float)frame * (1.f / 15.f),(float)frame * (2.f / 15.f),.0f });
 			});
@@ -79,7 +79,7 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 									___dialog->SetStickyFrame(true);
 									s->AddEntity(___dialog);
 									characterEntity->m_characterComponent->bdrawTrajectory = true;
-									characterEntity->m_characterComponent->trajectoryColor = { .2,.2,.2,1 };
+									characterEntity->m_characterComponent->trajectoryColor = { .2,.2,.2,.25f };
 									characterEntity->m_characterComponent->trajectoryOffset = characterEntity->m_characterComponent->bodyComp->m_quadCollider->GetQuadCollider(characterEntity->m_characterComponent->bodyComp->circleColliderID).scale.x;
 									characterEntity->m_characterComponent->SetInputFilterFunction([characterEntity, ___dialog](const GEngine::FTouchInfo& touch) {
 										// ensure that we jumped
@@ -91,7 +91,7 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 											}
 											___dialog->Destroy();
 											characterEntity->m_characterComponent->trajectoryOffset = 0.f;
-											characterEntity->m_characterComponent->trajectoryColor = { 1,1,1,1 };
+											characterEntity->m_characterComponent->trajectoryColor = { 1,1,1,.25f };
 											characterEntity->m_characterComponent->bEnableWalk = true;
 											characterEntity->m_characterComponent->ClearTrajectory();
 											characterEntity->m_characterComponent->bdrawTrajectory = false;
@@ -100,10 +100,10 @@ void Tutorial::CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEn
 										else {
 											//GE_CORE_DEBUG("Predicted Pos: {0}",characterEntity->m_characterComponent->GetPredictedPosition().x);
 											if (characterEntity->m_characterComponent->GetPredictedPosition().x < 0.81f) {
-												characterEntity->m_characterComponent->trajectoryColor = { .2,.2,.2,1 };
+												characterEntity->m_characterComponent->trajectoryColor = { .2,.2,.2,.25f };
 											}
 											else {
-												characterEntity->m_characterComponent->trajectoryColor = { 1,1,1,1 };
+												characterEntity->m_characterComponent->trajectoryColor = { 1,1,1,.25f };
 											}
 										}
 

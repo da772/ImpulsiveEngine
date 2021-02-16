@@ -199,6 +199,8 @@ void DebugLayer::ShowDock(bool p_open)
 
 GEngine::Ref<GEngine::GameObject> hashSelected = nullptr;
 GEngine::Ref<GEngine::GameObject> compSelected = nullptr;
+
+
 bool b_component = false;
 
 void DebugLayer::CreateSceneHierarchy()

@@ -33,6 +33,7 @@ void MapEditor::OnEvent(Event& e)
 }
 
 Ref<CharacterEntity> MapEditor::characterEntity = nullptr;
+static Ref<SpriteComponent> m_debugDrawer = nullptr;
 Ref<Entity> fpsEnt;
 Ref<UIComponent> uiComp;
 Ref<Font> font;
@@ -86,12 +87,14 @@ void MapEditor::OnBegin()
 	fpsEnt->AddComponent(uiComp);
 	font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
 	font->LoadCharactersEN();
-	
 #endif
+
 	DebugLayer::showScene = false;
 	camera = m_CameraController->GetCamera().get();
 	GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
 	GEngine::Application::GetApp()->SetTargetCamera(camera);
+
+
 	if (!GEngine::Application::DebugTools()) {
 		LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
 		for (auto p : entities) {
@@ -237,6 +240,7 @@ void MapEditor::SetupCamera()
 
 static GEngine::Ref<GEngine::GameObject> hashSelected = nullptr;
 static GEngine::Ref<GEngine::GameObject> compSelected = nullptr;
+static uint64_t intHashSelected = 0;
 static bool b_component = false;
 static bool b_addObj = false;
 static bool b_showpopup = false;
@@ -351,6 +355,8 @@ void MapEditor::SceneMenu()
 			std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
 			for (const std::pair<uint64_t, GEngine::Ref<GEngine::Entity>>& e : entities)
 			{
+				if (e.second->m_tag == "__EditorEntity")
+					continue;
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.8, .8, .8, 1));
 				ImGuiTreeNodeFlags entity_base_flags = ImGuiTreeNodeFlags_Bullet;
 				if (hashSelected == e.second) {
@@ -528,6 +534,9 @@ static void Inspector() {
 			bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s : %s (%ju)", c.second->m_tag.c_str(), typeid(*c.second.get()).name(), c.first);
 			if (ImGui::IsItemClicked()) {
 				compSelected = c.second;
+				intHashSelected = 0;
+				if (m_debugDrawer)
+					m_debugDrawer->ClearQuads();
 			}
 
 			if (compName == "class LightComponent") {
@@ -795,7 +804,15 @@ static void Inspector() {
 					Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
 					int counter = 0;
 					for (const ShapeID& id : ids) {
-						bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)ids[counter++], component_base_flags, "%s - %llu", batchRender->GetShapeTexture(id)->GetName().c_str(), id);
+						ImGuiTreeNodeFlags sprite_component_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+						if (intHashSelected == id) {
+							sprite_component_flags |= ImGuiTreeNodeFlags_Selected;
+						}
+						bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)ids[counter++], sprite_component_flags, "%s - %llu", batchRender->GetShapeTexture(id)->GetName().c_str(), id);
+
+						if (ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) {
+							intHashSelected = id;
+						}
 
 						if (ImGui::BeginPopupContextItem("spriteComponentDupe")) {
 
@@ -818,6 +835,12 @@ static void Inspector() {
 							}
 
 							ImGui::EndPopup();
+						}
+
+
+						if (intHashSelected == id && m_debugDrawer) {
+							m_debugDrawer->ClearQuads();
+							m_debugDrawer->CreateQuad(Vector3f(batchRender->GetShapePosition(id).xy(), 1000), batchRender->GetShapeRotation(id), { batchRender->GetShapeScale(id), 1}, { 0,1,0,.25f });
 						}
 
 						if (show_sid) {
@@ -1126,8 +1149,13 @@ static std::string TransformToCXML(Ref<Transform> trans) {
 
 void MapEditor::SaveScene(const std::string& location ) {
 
-	std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
+	if (m_debugDrawer) {
+		if (m_debugDrawer->GetEntity())
+			m_debugDrawer->GetEntity()->Destroy();
+		m_debugDrawer = nullptr;
+	}
 
+	std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
 	std::string _scene;
 
 	for (const std::pair<uint64_t, Ref<Entity>>& e : entities) {
@@ -1397,11 +1425,18 @@ static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, 
 void MapEditor::LoadScene(const std::string& scene)
 {
 #ifdef GE_CONSOLE_APP
+	m_debugDrawer = nullptr;
 	for (auto p : entities) {
 		p.second->Destroy();
 	}
-#endif
 
+	Ref<Entity> e = CreateGameObject<Entity>();
+	e->m_tag = "__EditorEntity";
+	m_debugDrawer = CreateGameObject<SpriteComponent>();
+	AddEntity(e);
+	e->AddComponent(m_debugDrawer);
+
+#endif
 
 	Ref<Entity> lastEntity = nullptr;
 	CXML::CXML_Node n = cxml.GetNext(scene.c_str());

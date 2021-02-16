@@ -312,7 +312,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
                 float yDistance = (touch.y - startyPos + Application::GetHeight() * jumpThreshold) / Application::GetHeight();
 
                 float xDistance = 2.f * -(lastxpos - (float)Application::GetWidth() / 2.f) / (float)Application::GetWidth();
-                GE_CORE_DEBUG("Last Pos: {0}, Current Pos: {1}, Width: {2}, xDistance: {3}, yDistance: {4}", lastxpos, touch.x, Application::GetWidth(), xDistance, yDistance);
+                //GE_CORE_DEBUG("Last Pos: {0}, Current Pos: {1}, Width: {2}, xDistance: {3}, yDistance: {4}", lastxpos, touch.x, Application::GetWidth(), xDistance, yDistance);
                 if (yDistance < .08f) {
                     SetJumping(false);
                     graphicsComp->Idle();
@@ -491,12 +491,12 @@ void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> sp
         if (i < traj.size() - 3) {
             Vector3f pos2 = &traj[i+3];
             rot = GEMath::RadToDeg(atan2(pos.y - pos2.y, pos.x - pos2.x));
-            scale.x += abs(pos2.y - pos.y);
+            scale.x += abs(pos2.y - pos.y)/2.f;
         }
         else {
 			Vector3f pos2 = &traj[i - 3];
 			rot = GEMath::RadToDeg(atan2(pos2.y - pos.y, pos2.x - pos.x));
-			scale.x += abs(pos2.y - pos.y);
+			scale.x += abs(pos2.y - pos.y)/2.f;
         }
         /*
         if (i != traj.size() - 4) {
