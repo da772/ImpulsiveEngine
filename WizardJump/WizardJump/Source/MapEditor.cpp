@@ -532,7 +532,7 @@ static void Inspector() {
 
 		for (const std::pair<uint64_t, GEngine::Ref<GEngine::Component>>& c : components) {
 			if (skip_c) continue;
-			std::string compName = typeid(*c.second.get()).name();
+
 			ImGuiTreeNodeFlags component_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 			if (compSelected == c.second) {
 				component_base_flags |= ImGuiTreeNodeFlags_Selected;
@@ -545,8 +545,7 @@ static void Inspector() {
 					m_debugDrawer->ClearQuads();
 			}
 
-			if (compName == "class LightComponent") {
-				Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
+			if (Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second); lightC != nullptr) {
 				if (ImGui::BeginPopupContextItem("Create Light")) {
 
 					if (ImGui::Button("Create Quad Light")) {
@@ -561,8 +560,8 @@ static void Inspector() {
 				}
 			}
 
-			if (compName == "class GEngine::QuadColliderComponent") {
-				Ref<class GEngine::QuadColliderComponent> quad = dynamic_pointer_cast<QuadColliderComponent>(c.second);
+			if (Ref<class GEngine::QuadColliderComponent> quad = dynamic_pointer_cast<QuadColliderComponent>(c.second); quad != nullptr) {
+				
 				if (ImGui::BeginPopupContextItem("QuadColliderCreation")) {
 
 					if (ImGui::Button("Create Quad")) {
@@ -579,10 +578,10 @@ static void Inspector() {
 				}
 			}
 
-			if (compName == "class GEngine::SpriteComponent") {
+			if (GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second); spriteComp != nullptr) {
 
 
-				GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
+				
 
 				if (ImGui::BeginPopupContextItem("ShowCreatButton")) {
 
@@ -600,8 +599,8 @@ static void Inspector() {
 			}
 
 			if (show_c) {
-				if (compName == "class LightComponent") {
-					Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second);
+				if (Ref<LightComponent> lightC = dynamic_pointer_cast<LightComponent>(c.second); lightC != nullptr) {
+					
 					int i = 0;
 					while (i <= 1) {
 						std::vector<ShapeID> ids = i == 0 ? lightC->GetQuadLights() : lightC->GetCircleLights();
@@ -661,9 +660,9 @@ static void Inspector() {
 						i++;
 					}
 				}
-				if (compName == "class GEngine::Transform") {
+				if (GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second); transform != nullptr) {
 					float v[3];
-					GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second);
+					
 
 					if (!transform) return;
 
@@ -699,8 +698,8 @@ static void Inspector() {
 					}
 
 				}
-				if (compName == "class GEngine::QuadColliderComponent") {
-					GEngine::Ref<GEngine::QuadColliderComponent> collider = dynamic_pointer_cast<GEngine::QuadColliderComponent>(c.second);
+				if (GEngine::Ref<GEngine::QuadColliderComponent> collider = dynamic_pointer_cast<GEngine::QuadColliderComponent>(c.second); collider != nullptr) {
+					
 					if (collider == nullptr) return;
 
 					bool phys = collider->HasPhysics();
@@ -801,10 +800,10 @@ static void Inspector() {
 
 
 				}
-				if (compName == "class GEngine::SpriteComponent") {
+				if (GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second); spriteComp != nullptr) {
 
 
-					GEngine::Ref<GEngine::SpriteComponent> spriteComp = dynamic_pointer_cast<GEngine::SpriteComponent>(c.second);
+					
 
 					std::vector<ShapeID> ids = spriteComp->GetQuads();
 					Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
