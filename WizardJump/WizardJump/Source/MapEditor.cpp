@@ -66,7 +66,7 @@ void MapEditor::OnUpdate(Timestep timestep)
 		{ 1,1,1 }, { 1,1,1,1 });
 #else 
 	char ch[256] = { 0 };
-	sprintf(ch, "Wizard Jump - FPS: %d | %.3f ms", (int)GEngine::Application::GetApp()->profile["FPS"], GEngine::Application::GetApp()->profile["Run"]);
+	sprintf(ch, "Wizard Jump - FPS: %d | %.3f ms\0", (int)GEngine::Application::GetApp()->profile["FPS"], GEngine::Application::GetApp()->profile["Run"]);
 	Application::GetApp()->GetWindow()->SetTitle(ch);
 #endif
 
@@ -117,9 +117,6 @@ void MapEditor::OnBegin()
 	else {
 		pauseCallback = Application::GetApp()->AddOnGamePauseCallback([this](bool b) {
 			if (b) {
-				for (auto p : entities) {
-					p.second->Destroy();
-				}
 				tutorial = false;
 				LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
 			}
@@ -1178,16 +1175,33 @@ void MapEditor::SaveScene(const std::string& location ) {
 		}
 		else {
 			std::string s = typeid(*e.second.get()).name();
-			if (s.find("GEngine::Entity") != std::string::npos) {
+			if (s.find("GEngine::Entity") != std::string::npos || s.find("GEngine6Entity") != std::string::npos ) {
 				_scene += "<Entity tag=\"" + e.second->m_tag + "\">\n";
 			}
 			else {
+				#ifdef GE_PLATFORM_WINDOWS
 				s.erase(s.find("class "), 6);
+				#else
+				int index = 0;
+				if (s[0] == 'N') {
+					int counter = 0;
+					index++;
+					while (isdigit(s[index]) ) { index++; counter++;};
+					int nOffset = stoi(s.substr(1, counter));
+					index = 1+nOffset+counter;
+				}
+				int nIndex = index;
+				while (isdigit(s[nIndex]) ) { nIndex++;};
+				int nOffset = stoi(s.substr(index, nIndex-index));
+				s = s.substr(nIndex, nOffset);
+				#endif
 				_scene += "<" + s + " tag=\"" + e.second->m_tag + "\">\n";
 				_scene += Vec3fToCXML(e.second->GetEntityPosition()) + Vec3fToCXML(e.second->GetEntityRotation()) + Vec3fToCXML(e.second->GetEntityScale());
-				_scene += "</" + s + ">";
+				_scene += "</" + s + ">\n";
 				continue;
 			}
+			
+			
 		}
 
 		for (const std::pair<uint64_t, Ref<Component>>& c : e.second->GetComponents()) {
@@ -1415,7 +1429,6 @@ static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, 
 				Vector2f mssrot = cxml.GetNextAsFloats(__n.info.c_str(), 2, pos, &pos).data();
 				std::string t = cxml.GetNextAsString(__n.info.c_str(), pos, &pos);
 				float bounce = cxml.GetNextAsFloat(__n.info.c_str(), pos, &pos);
-				GE_CORE_DEBUG("BOUNCE: {0}", bounce);
 				ColliderID id = __n.type == "CreateQuad" ? c->CreateQuad(poss, scale, mssrot.x, mssrot.y, t) : c->CreateCircle(poss, scale, mssrot.x, mssrot.y, t);
 				c->SetBounce(id, bounce);
 				ThreadPool::AddMainThreadFunction([c]() {c->WakeBody(); });
@@ -1431,10 +1444,8 @@ void MapEditor::LoadScene(const std::string& scene)
 {
 #ifdef GE_CONSOLE_APP
 	m_debugDrawer = nullptr;
-	for (auto p : entities) {
-		p.second->Destroy();
-	}
-
+	characterEntity = nullptr;
+	entities.clear();
 	Ref<Entity> e = CreateGameObject<Entity>();
 	e->m_tag = "__EditorEntity";
 	m_debugDrawer = CreateGameObject<SpriteComponent>();
