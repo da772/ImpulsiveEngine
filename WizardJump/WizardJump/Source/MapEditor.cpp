@@ -366,7 +366,7 @@ void MapEditor::SceneMenu()
 					entity_base_flags |= ImGuiTreeNodeFlags_Selected;
 				}
 				
-				char ch[8] = { 0 };
+				char ch[9] = { 0 };
 				memcpy(ch, &e.first, sizeof(sizeof(uint64_t)));
 
 				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%s)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), ch);
