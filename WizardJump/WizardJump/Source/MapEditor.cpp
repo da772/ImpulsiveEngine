@@ -16,6 +16,10 @@ static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, 
 static std::string QuadColliderComponentToCXML(Ref<QuadColliderComponent> c);
 static CXML cxml;
 
+static std::string pauseCallback;
+static std::string savePath = "Content/Scenes/Scene.scene";
+static bool tutorial = false;
+
 MapEditor::MapEditor(const char* id, Camera* camera) : Scene(id, camera)
 {
 	
@@ -29,6 +33,18 @@ MapEditor::~MapEditor()
 void MapEditor::OnEvent(Event& e)
 {
 	m_CameraController->OnEvent(e);
+
+
+
+	if (e.GetEventType() == EventType::KeyReleased) {
+		GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
+		if (_e.GetKeyCode() == GE_KEY_R) {
+			LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
+			if (tutorial)
+				RunTutorial();
+		}
+	}
+
 }
 
 Ref<CharacterEntity> MapEditor::characterEntity = nullptr;
@@ -78,9 +94,7 @@ static void GamePauseCallback(bool b) {
 	
 }
 
-static std:: string pauseCallback;
-static std::string savePath = "Content/Scenes/Scene.scene";
-static bool tutorial = false;
+
 
 void MapEditor::OnBegin()
 {
@@ -101,13 +115,6 @@ void MapEditor::OnBegin()
 
 	if (!GEngine::Application::DebugTools()) {
 		LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
-		for (auto p : entities) {
-			Ref<CharacterEntity> c = dynamic_pointer_cast<CharacterEntity>(p.second);
-			if (c != nullptr) {
-				characterEntity = c;
-				break;
-			}
-		}
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(Vector3f(0.f));
 		//Application::PauseGame();
@@ -122,13 +129,6 @@ void MapEditor::OnBegin()
 			}
 			else {
 				if (Application::GetApp()->IsRunning()) {
-					for (auto p : entities) {
-						Ref<CharacterEntity> c = dynamic_pointer_cast<CharacterEntity>(p.second);
-						if (c) {
-							characterEntity = c;
-							break;
-						}
-					}
 					if (tutorial) RunTutorial();
 					GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
 					GEngine::Application::GetApp()->GetTargetCameraController()->SetPosition(Vector3f(0.f));
@@ -250,7 +250,14 @@ static std::string entityCreate = "Entity";
 static std::string componentCreate = "SpriteComponent";
 template <typename T, typename ... Args>
 static Ref<GameObject> mapEditorTemplate(Args&& ... args) { Ref<Entity> e = CreateGameObject<T>(std::forward<Args>(args)...); SceneManager::GetCurrentScene()->AddEntity(e); return e; }
-unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() {return mapEditorTemplate<CharacterEntity>(); }}, {"BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); }},{"Tutorial", []() {tutorial = true; return mapEditorTemplate<Tutorial>(); }},
+unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() {
+	Ref<CharacterEntity> e = CreateGameObject<CharacterEntity>();
+	SceneManager::GetCurrentScene()->AddEntity(e);
+	characterEntity = e;
+	GE_CORE_WARN("CHARACTER ENTITY CREATED");
+	return e;
+	} 
+}, { "BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); } }, { "Tutorial", []() {tutorial = true; return mapEditorTemplate<Tutorial>(); } },
 	{"FogEntity", []() {return mapEditorTemplate<FogEntity>(); }}
 };
 static unordered_map<std::string, std::function<Ref<GameObject>()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); return nullptr; } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); return nullptr; }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); return nullptr; }}
@@ -1496,9 +1503,8 @@ void MapEditor::LoadScene(const std::string& scene)
 					Vector3f pos = cxml.GetNextAsFloats(c.info.c_str(), 3, 0, &endPos).data();
 					Vector3f rot = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
 					Vector3f scale = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
-					Ref<Entity> e = CreateGameObject<CharacterEntity>();
+					Ref<Entity> e = dynamic_pointer_cast<Entity>(entityMap[n.type]());
 					e->m_tag = n.tags["tag"];
-					AddEntity(e);
 					e->SetEntityPosition(pos);
 					e->SetEntityRotation(rot);
 					e->SetEntityScale(scale);

@@ -220,6 +220,8 @@ namespace GEngine {
 	{
 		if (GetTextureID() == m_RendererID)
 			SetTextureID(0);
+		if (m_RendererID == 0)
+			return;
 		glDeleteTextures(1, (unsigned int*)&m_RendererID);
 	}
 

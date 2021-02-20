@@ -374,7 +374,7 @@ public:
 	inline void OnImGuiRender() override {
 
 #if defined(GE_CONSOLE_APP) && !defined(GE_DIST)
-
+		/*
 		if (!DebugLayer::showLog) return;
 
 		ImGui::Begin("FogDebug", &DebugLayer::showLog);
@@ -421,7 +421,7 @@ public:
 			fog->SetTickSpeed(tickSpeed);
 		}
 
-
+		*/
 
 		ImGui::Begin("Debug Info", &DebugLayer::showLog);
 		ImGui::Separator();

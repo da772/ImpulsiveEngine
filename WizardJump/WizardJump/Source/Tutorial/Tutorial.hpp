@@ -10,7 +10,7 @@ public:
 	inline Tutorial() { m_tag = "tutorial"; };
 	inline ~Tutorial() {};
 
-	static void CreateMainTutorial(Ref<Scene> s, Ref<CharacterEntity> characterEntity);
+	static void CreateMainTutorial(Weak<Scene> s, Weak<CharacterEntity> characterEntity);
 
 protected:
 	inline virtual void OnBegin() override {};
