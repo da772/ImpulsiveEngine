@@ -39,7 +39,7 @@ protected:
 	inline void OnBegin();
 	Ref<Shader> m_shader;
 	float m_time = 0;
-	Ref<Texture2D> m_texture = nullptr;
+	
 	
 	Ref<AudioComponent> m_audioComponent;
     

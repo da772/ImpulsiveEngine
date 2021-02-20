@@ -38,7 +38,7 @@ void MapEditor::OnEvent(Event& e)
 
 	if (e.GetEventType() == EventType::KeyReleased) {
 		GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
-		if (_e.GetKeyCode() == GE_KEY_R) {
+		if (_e.GetKeyCode() == GE_KEY_F5) {
 			LoadScene((char*)FileSystem::FileDataFromPath(savePath)->GetDataAsString());
 			if (tutorial)
 				RunTutorial();
@@ -250,14 +250,7 @@ static std::string entityCreate = "Entity";
 static std::string componentCreate = "SpriteComponent";
 template <typename T, typename ... Args>
 static Ref<GameObject> mapEditorTemplate(Args&& ... args) { Ref<Entity> e = CreateGameObject<T>(std::forward<Args>(args)...); SceneManager::GetCurrentScene()->AddEntity(e); return e; }
-unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() {
-	Ref<CharacterEntity> e = CreateGameObject<CharacterEntity>();
-	SceneManager::GetCurrentScene()->AddEntity(e);
-	characterEntity = e;
-	GE_CORE_WARN("CHARACTER ENTITY CREATED");
-	return e;
-	} 
-}, { "BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); } }, { "Tutorial", []() {tutorial = true; return mapEditorTemplate<Tutorial>(); } },
+unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() { Ref<CharacterEntity> e = CreateGameObject<CharacterEntity>(); SceneManager::GetCurrentScene()->AddEntity(e); characterEntity = e; return e; }  }, { "BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); } }, { "Tutorial", []() {tutorial = true; return mapEditorTemplate<Tutorial>(); } },
 	{"FogEntity", []() {return mapEditorTemplate<FogEntity>(); }}
 };
 static unordered_map<std::string, std::function<Ref<GameObject>()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); return nullptr; } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); return nullptr; }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); return nullptr; }}
@@ -372,7 +365,11 @@ void MapEditor::SceneMenu()
 				if (hashSelected == e.second) {
 					entity_base_flags |= ImGuiTreeNodeFlags_Selected;
 				}
-				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%ju)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), e.first);
+				
+				char ch[8] = { 0 };
+				memcpy(ch, &e.first, sizeof(sizeof(uint64_t)));
+
+				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%s)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), ch);
 				
 				if (ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) {
 					if (hashSelected != e.second) {
@@ -564,7 +561,7 @@ static void Inspector() {
 				}
 			}
 
-			if (Ref<class GEngine::QuadColliderComponent> quad = dynamic_pointer_cast<QuadColliderComponent>(c.second); quad != nullptr) {
+			if (Ref<GEngine::QuadColliderComponent> quad = dynamic_pointer_cast<QuadColliderComponent>(c.second); quad != nullptr) {
 				
 				if (ImGui::BeginPopupContextItem("QuadColliderCreation")) {
 
@@ -610,8 +607,16 @@ static void Inspector() {
 						std::vector<ShapeID> ids = i == 0 ? lightC->GetQuadLights() : lightC->GetCircleLights();
 
 						for (const ShapeID& id : ids) {
-							bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)id, component_base_flags, "%s, %llu", (i == 0 ? "Quad Light" : "Circle Light"), id);
+							ImGuiTreeNodeFlags sprite_component_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+							if (intHashSelected == id) {
+								sprite_component_flags |= ImGuiTreeNodeFlags_Selected;
+							}
+
+							bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)id, sprite_component_flags, "%s, %llu", (i == 0 ? "Quad Light" : "Circle Light"), id);
 							Ref<BatchRenderer> batchRender = (i == 0 ? lightC->GetQuadRenderer() : lightC->GetCircleRenderer());
+							if (ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) {
+								intHashSelected = id;
+							}
 							if (show_sid) {
 								Vector3f p = batchRender->GetShapePosition(id) - e->GetEntityPosition();
 								float v[3];
@@ -656,13 +661,33 @@ static void Inspector() {
 										batchRender->SetColor(id, __c);
 									}
 								}
-
+								if (i == 0) {
+									ImGui::Text("Texture: ");
+									ImGui::SameLine();
+									std::string tex = batchRender->GetShapeTexture(id)->GetName();
+									char ch[255] = { 0 };
+									memcpy(ch, &tex[0], tex.size() * sizeof(char));
+									if (ImGui::InputText("texStr", ch, 255, ImGuiInputTextFlags_EnterReturnsTrue)) {
+										batchRender->SetTexture(id, Texture2D::Create(std::string(ch), TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest));
+									}
+								}
+								if (ImGui::Button("Destroy")) {
+									if (i == 0) lightC->RemoveQuadLight(id);
+									else lightC->RemoveCircleLight(id);
+								}
 								ImGui::TreePop();
 							}
 
+							if (intHashSelected == id && m_debugDrawer) {
+								m_debugDrawer->ClearQuads();
+								m_debugDrawer->CreateQuad(Vector3f(batchRender->GetShapePosition(id).xy(), 1000), batchRender->GetShapeRotation(id), { batchRender->GetShapeScale(id), 1 }, { 0,1,0,.25f });
+							}
 						}
 						i++;
 					}
+
+
+
 				}
 				if (GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second); transform != nullptr) {
 					float v[3];
@@ -823,27 +848,29 @@ static void Inspector() {
 							intHashSelected = id;
 						}
 
-						if (ImGui::BeginPopupContextItem("spriteComponentDupe")) {
+						if (intHashSelected == id) {
+							if (ImGui::BeginPopupContextItem("spriteComponentDupe")) {
 
-							if (ImGui::Button("Duplicate")) {
+								if (ImGui::Button("Duplicate")) {
 
-								if (batchRender->GetShapeSubTexture(id) != nullptr) {
-									Vector2f s = batchRender->GetShapeScale(id);
-									Vector2f __s = e->GetEntityScale().xy();
-									s = { s.x / __s.x,s.y / __s.y };
-									spriteComp->CreateSubTexturedQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeSubTexture(id), batchRender->GetTextureScale(id));
+									if (batchRender->GetShapeSubTexture(id) != nullptr) {
+										Vector2f s = batchRender->GetShapeScale(id);
+										Vector2f __s = e->GetEntityScale().xy();
+										s = { s.x / __s.x,s.y / __s.y };
+										spriteComp->CreateSubTexturedQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeSubTexture(id), batchRender->GetTextureScale(id));
+									}
+									else {
+										Vector2f s = batchRender->GetShapeScale(id);
+										Vector2f __s = e->GetEntityScale().xy();
+										s = { s.x / __s.x,s.y / __s.y };
+										spriteComp->CreateQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeTexture(id), batchRender->GetTextureScale(id));
+									}
+
+									ImGui::CloseCurrentPopup();
 								}
-								else {
-									Vector2f s = batchRender->GetShapeScale(id);
-									Vector2f __s = e->GetEntityScale().xy();
-									s = { s.x / __s.x,s.y / __s.y };
-									spriteComp->CreateQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeTexture(id), batchRender->GetTextureScale(id));
-								}
 
-								ImGui::CloseCurrentPopup();
+								ImGui::EndPopup();
 							}
-
-							ImGui::EndPopup();
 						}
 
 
@@ -1450,6 +1477,10 @@ static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, 
 void MapEditor::LoadScene(const std::string& scene)
 {
 #ifdef GE_CONSOLE_APP
+	hashSelected = nullptr;
+	compSelected = nullptr;
+	intHashSelected = 0;
+	b_component = false;
 	m_debugDrawer = nullptr;
 	characterEntity = nullptr;
 	entities.clear();
