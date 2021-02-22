@@ -33,6 +33,19 @@ namespace GEngine {
 		return e;
 	};
 
+	template<class E, typename ... Args>
+	static inline std::shared_ptr<E> CreateGameObject_ID(uint64_t hash, Args&& ... args) {
+		std::shared_ptr<E> e = std::make_shared<E>(std::forward<Args>(args)...);
+		e->self = e;
+		if (hash == 0) {
+			hash = Time::GetEpochTimeNS();
+		}
+		e->hash = hash;
+		return e;
+	};
+
+
+
 
 	template<class E, typename ... Args>
 	static inline std::shared_ptr<E> CreateGameObjectServer(Args&& ... args) {

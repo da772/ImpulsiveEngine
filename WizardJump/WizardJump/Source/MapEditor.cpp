@@ -249,11 +249,11 @@ static bool b_showpopup = false;
 static std::string entityCreate = "Entity";
 static std::string componentCreate = "SpriteComponent";
 template <typename T, typename ... Args>
-static Ref<GameObject> mapEditorTemplate(Args&& ... args) { Ref<Entity> e = CreateGameObject<T>(std::forward<Args>(args)...); SceneManager::GetCurrentScene()->AddEntity(e); return e; }
-unordered_map<std::string, std::function<Ref<GameObject>()>> MapEditor::entityMap = { { "Entity", []() { return mapEditorTemplate<Entity>(); }}, {"CharacterEntity", []() { Ref<CharacterEntity> e = CreateGameObject<CharacterEntity>(); SceneManager::GetCurrentScene()->AddEntity(e); characterEntity = e; return e; }  }, { "BackgroundEntity", []() {return mapEditorTemplate<BackgroundEntity>(); } }, { "Tutorial", []() {tutorial = true; return mapEditorTemplate<Tutorial>(); } },
-	{"FogEntity", []() {return mapEditorTemplate<FogEntity>(); }}
+static Ref<GameObject> mapEditorTemplate(uint64_t id, Args&& ... args) { Ref<Entity> e = CreateGameObject_ID<T>(id, std::forward<Args>(args)...); SceneManager::GetCurrentScene()->AddEntity(e); return e; }
+unordered_map<std::string, std::function<Ref<GameObject>(uint64_t)>> MapEditor::entityMap = { { "Entity", [](uint64_t id) { return mapEditorTemplate<Entity>(id); }}, {"CharacterEntity", [](uint64_t id) { Ref<CharacterEntity> e = CreateGameObject_ID<CharacterEntity>(id); SceneManager::GetCurrentScene()->AddEntity(e); characterEntity = e; return e; }  }, { "BackgroundEntity", [](uint64_t id) {return mapEditorTemplate<BackgroundEntity>(id); } }, { "Tutorial", [](uint64_t id) {tutorial = true; return mapEditorTemplate<Tutorial>(id); } },
+	{"FogEntity", [](uint64_t id) {return mapEditorTemplate<FogEntity>(id); }}
 };
-static unordered_map<std::string, std::function<Ref<GameObject>()>> componentMap = { { "SpriteComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<SpriteComponent>()); return nullptr; } }, {"LightComponent", []() { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<LightComponent>()); return nullptr; }}, {"QuadColliderComponent", []() {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject<QuadColliderComponent>(false, true)); return nullptr; }}
+static unordered_map<std::string, std::function<Ref<GameObject>(uint64_t)>> componentMap = { { "SpriteComponent", [](uint64_t id) { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject_ID<SpriteComponent>(id)); return nullptr; } }, {"LightComponent", [](uint64_t id) { dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject_ID<LightComponent>(id)); return nullptr; }}, {"QuadColliderComponent", [](uint64_t id) {dynamic_pointer_cast<Entity>(hashSelected)->AddComponent(CreateGameObject_ID<QuadColliderComponent>(id, false, true)); return nullptr; }}
 };
 
 void MapEditor::SceneMenu()
@@ -268,8 +268,8 @@ void MapEditor::SceneMenu()
 		}
 		ImGui::SameLine();
 		if (ImGui::BeginCombo("", (hashSelected == nullptr ? entityCreate.c_str() : componentCreate.c_str()))) {
-			const unordered_map<std::string, std::function<Ref<GameObject>()>>& map = !b_component ? entityMap : componentMap;
-			for (const std::pair<std::string, std::function<Ref<GameObject>()>>& p : map) {
+			const unordered_map<std::string, std::function<Ref<GameObject>(uint64_t)>>& map = !b_component ? entityMap : componentMap;
+			for (const std::pair<std::string, std::function<Ref<GameObject>(uint64_t)>>& p : map) {
 				bool selected = (hashSelected == nullptr ? entityCreate : componentCreate) == p.first;
 				if (ImGui::Selectable(p.first.c_str(), selected)) {
 					(!b_component ? entityCreate : componentCreate) = p.first;
@@ -283,10 +283,10 @@ void MapEditor::SceneMenu()
 		if (ImGui::Button(!b_component ? "Add Entity" : "Add Component", { 200,30 })) {
 			bool ent = !b_component;
 			if (ent) {
-				entityMap[entityCreate]();
+				entityMap[entityCreate](0);
 			}
 			else {
-				componentMap[componentCreate]();
+				componentMap[componentCreate](0);
 				b_component = false;
 			}
 			b_addObj = false;
@@ -356,8 +356,16 @@ void MapEditor::SceneMenu()
 		if (true)
 		{
 			std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
-			for (const std::pair<uint64_t, GEngine::Ref<GEngine::Entity>>& e : entities)
+			std::vector<uint64_t> hashes;
+			for (const std::pair<uint64_t, GEngine::Ref<GEngine::Entity>>& e : entities) {
+				hashes.push_back(e.first);
+			}
+
+			std::sort(hashes.begin(), hashes.end());
+
+			for (const uint64_t& hash : hashes)
 			{
+				std::pair<uint64_t, Ref<Entity>> e = { hash, entities[hash] };
 				if (e.second->m_tag == "__EditorEntity")
 					continue;
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.8, .8, .8, 1));
@@ -369,7 +377,7 @@ void MapEditor::SceneMenu()
 				char ch[9] = { 0 };
 				memcpy(ch, &e.first, sizeof(sizeof(uint64_t)));
 
-				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%s)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), ch);
+				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%ull)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), e.first);
 				
 				if (ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) {
 					if (hashSelected != e.second) {
@@ -1074,7 +1082,7 @@ static std::string SubTexture2DToCXML(Ref<SubTexture2D> texture) {
 }
 
 static std::string SpriteComponentToCXML(Ref<SpriteComponent> spriteComp) {
-	std::string _scene = "<SpriteComponent tag=\"" + spriteComp->m_tag + "\">\n";
+	std::string _scene = "<SpriteComponent tag=\"" + spriteComp->m_tag + "\" hash=\"" + std::to_string(spriteComp->hash) + "\">\n";
 	std::vector<ShapeID> ids = spriteComp->GetQuads();
 	Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
 
@@ -1109,7 +1117,7 @@ static std::string SpriteComponentToCXML(Ref<SpriteComponent> spriteComp) {
 
 static std::string QuadColliderComponentToCXML(Ref<QuadColliderComponent> c) {
 
-	std::string s = "<QuadColliderComponent>\n<constructor>\n";
+	std::string s = "<QuadColliderComponent hash=\"" + std::to_string(c->hash) + "\">\n<constructor>\n";
 	int dynamic = c->IsDynamic() ? 1 : 0;
 	int physics = c->HasPhysics() ? 1 : 0;
 	s += IntToCXML(dynamic) + IntToCXML(physics) + Vec2fToCXML({0,0}) + IntToCXML((int)c->GetFixedRotation()) +std::string("</constructor>\n");
@@ -1125,20 +1133,20 @@ static std::string QuadColliderComponentToCXML(Ref<QuadColliderComponent> c) {
 }
 
 static std::string CharacterControllerToCXML(Ref<CharacterController> c) {
-	return "<CharacterController></CharacterController>\n";
+	return "<CharacterController hash=\"" + std::to_string(c->hash) + "\"></CharacterController>\n";
 }
 
 static std::string CharacterGraphicsToCXML(Ref<CharacterGraphics> c) {
-	return "<CharacterGraphics></CharacterGraphics>\n";
+	return "<CharacterGraphics hash=\"" + std::to_string(c->hash) + "\"></CharacterGraphics>\n";
 }
 
 static std::string AudioListenerComponentToCXML(Ref<AudioListenerComponent> c) {
-	return "<AudioListenerComponent></AudioListenerComponent>\n";
+	return "<AudioListenerComponent hash=\"" + std::to_string(c->hash) + "\"></AudioListenerComponent>\n";
 }
 
 
 static std::string BackgroundEntityToCXML(Ref<BackgroundEntity> e) {
-	std::string s = "<BackgroundEntity tag=\"" + e->m_tag + "\">\n";
+	std::string s = "<BackgroundEntity tag=\"" + e->m_tag + "\" hash=\""+std::to_string(e->hash)+"\">\n";
 	const std::unordered_map<std::string, FParalaxBackground>& b = e->GetBackgrounds();
 	for (const std::pair<std::string, FParalaxBackground>& p : b) {
 		s += "<function>\n<AddParalaxBackground>\n" + StringToCXML(p.first) + Texture2DToCXML(p.second.texture.lock()) + Vec2fToCXML(p.second.scale) + FloatToCXML(p.second.speed) + FloatToCXML(p.second.zOrder) + Vec2fToCXML(p.second.offset);
@@ -1151,7 +1159,7 @@ static std::string BackgroundEntityToCXML(Ref<BackgroundEntity> e) {
 
 
 static std::string LightComponentToCXML(Ref<LightComponent> lightComp) {
-	std::string s = "<LightComponent tag=\"" + lightComp->m_tag + "\">\n";
+	std::string s = "<LightComponent tag=\"" + lightComp->m_tag + "\" hash=\""+std::to_string(lightComp->hash)+"\">\n";
 
 	int i = 0;
 	while (i < 2) {
@@ -1176,7 +1184,7 @@ static std::string LightComponentToCXML(Ref<LightComponent> lightComp) {
 }
 
 static std::string TransformToCXML(Ref<Transform> trans) {
-	std::string t = "<TransformComponent>\n";
+	std::string t = "<TransformComponent hash=\""+std::to_string(trans->hash)+"\">\n";
 	t += Vec3fToCXML(trans->GetPosition()) + Vec3fToCXML(trans->GetRotation()) + Vec3fToCXML(trans->GetScale());
 	t += "</TransformComponent>\n";
 	return t;
@@ -1193,24 +1201,30 @@ void MapEditor::SaveScene(const std::string& location ) {
 
 	std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
 	std::string _scene;
-
+	std::vector<uint64_t> sortedHash;
 	for (const std::pair<uint64_t, Ref<Entity>>& e : entities) {
+		sortedHash.push_back(e.first);
+	}
+	std::sort(sortedHash.begin(), sortedHash.end());
 
 
-		if (auto _c = dynamic_pointer_cast<CharacterEntity>(e.second)) {
-			_scene += "<CharacterEntity tag=\"" + e.second->m_tag + "\">\n";
+	for (const uint64_t& hash: sortedHash) {
+		Ref<Entity> e = entities[hash];
+
+		if (auto _c = dynamic_pointer_cast<CharacterEntity>(e)) {
+			_scene += "<CharacterEntity tag=\"" + e->m_tag + "\" hash=\""+std::to_string(e->hash)+"\">\n";
 			_scene += TransformToCXML(_c->GetEntityTransformComponent());
 			_scene += "</CharacterEntity>\n";
 			continue;
 		}
-		else if (auto _c = dynamic_pointer_cast<BackgroundEntity>(e.second)) {
+		else if (auto _c = dynamic_pointer_cast<BackgroundEntity>(e)) {
 			_scene += BackgroundEntityToCXML(_c);
 			continue;
 		}
 		else {
-			std::string s = typeid(*e.second.get()).name();
+			std::string s = typeid(*e.get()).name();
 			if (s.find("GEngine::Entity") != std::string::npos || s.find("GEngine6Entity") != std::string::npos ) {
-				_scene += "<Entity tag=\"" + e.second->m_tag + "\">\n";
+				_scene += "<Entity tag=\"" + e->m_tag + "\" hash=\""+std::to_string(hash)+"\">\n";
 			}
 			else {
 				#ifdef GE_PLATFORM_WINDOWS
@@ -1229,8 +1243,8 @@ void MapEditor::SaveScene(const std::string& location ) {
 				int nOffset = stoi(s.substr(index, nIndex-index));
 				s = s.substr(nIndex, nOffset);
 				#endif
-				_scene += "<" + s + " tag=\"" + e.second->m_tag + "\">\n";
-				_scene += Vec3fToCXML(e.second->GetEntityPosition()) + Vec3fToCXML(e.second->GetEntityRotation()) + Vec3fToCXML(e.second->GetEntityScale());
+				_scene += "<" + s + " tag=\"" + e->m_tag + "\" hash=\"" + std::to_string(e->hash) + "\">\n";
+				_scene += Vec3fToCXML(e->GetEntityPosition()) + Vec3fToCXML(e->GetEntityRotation()) + Vec3fToCXML(e->GetEntityScale());
 				_scene += "</" + s + ">\n";
 				continue;
 			}
@@ -1238,7 +1252,7 @@ void MapEditor::SaveScene(const std::string& location ) {
 			
 		}
 
-		for (const std::pair<uint64_t, Ref<Component>>& c : e.second->GetComponents()) {
+		for (const std::pair<uint64_t, Ref<Component>>& c : e->GetComponents()) {
 			if (auto _c = dynamic_pointer_cast<CharacterController>(c.second)) {
 				_scene += CharacterControllerToCXML(_c);
 				continue;
@@ -1318,7 +1332,7 @@ static Ref<SubTexture2D> GetNodeAsSubTexture2D(const CXML::CXML_Node& n, size_t*
 static Ref<SpriteComponent> GetNodeAsSpriteComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
 	size_t endPos;
 	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
-	Ref<SpriteComponent> sprEnt = CreateGameObject<SpriteComponent>();
+	Ref<SpriteComponent> sprEnt = CreateGameObject_ID<SpriteComponent>(std::stoull(n.tags.at("hash")));
 	e->AddComponent(sprEnt);
 	while (CXML::ValidNode(_n)) {
 		if (_n.type == "function") {
@@ -1354,7 +1368,7 @@ static Ref<SpriteComponent> GetNodeAsSpriteComponent(Ref<Entity> e, const CXML::
 static Ref<LightComponent> GetNodeAsLightComponent(Ref<Entity> e, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
 	size_t endPos;
 	CXML::CXML_Node _n = cxml.GetNext(n.info.c_str());
-	Ref<LightComponent> sprEnt = CreateGameObject<LightComponent>();
+	Ref<LightComponent> sprEnt = CreateGameObject_ID<LightComponent>(std::stoull(n.tags.at("hash")));
 	e->AddComponent(sprEnt);
 	while (CXML::ValidNode(_n)) {
 		if (_n.type == "function") {
@@ -1380,7 +1394,7 @@ static Ref<LightComponent> GetNodeAsLightComponent(Ref<Entity> e, const CXML::CX
 }
 
 static Ref<CharacterController> GetNodeAsCharacterController(Ref<Entity> e, const CXML::CXML_Node& n, size_t* endPos = nullptr) {
-	Ref<CharacterController> c = CreateGameObject<CharacterController>();
+	Ref<CharacterController> c = CreateGameObject_ID<CharacterController>(std::stoull(n.tags.at("hash")));
 	e->AddComponent(c);
 	if(endPos)
 		*endPos = n.endPos;
@@ -1388,7 +1402,7 @@ static Ref<CharacterController> GetNodeAsCharacterController(Ref<Entity> e, cons
 }
 
 static Ref<CharacterGraphics> GetNodeAsCharacterGraphics(Ref<Entity> e, const CXML::CXML_Node& n, size_t* endPos = nullptr) {
-	Ref<CharacterGraphics> c = CreateGameObject<CharacterGraphics>();
+	Ref<CharacterGraphics> c = CreateGameObject_ID<CharacterGraphics>(std::stoull(n.tags.at("hash")));
 	e->AddComponent(c);
 	if (endPos)
 		*endPos = n.endPos;
@@ -1396,7 +1410,7 @@ static Ref<CharacterGraphics> GetNodeAsCharacterGraphics(Ref<Entity> e, const CX
 }
 
 static Ref<AudioListenerComponent> GetNodeAsAudioListener(Ref<Entity> e, const CXML::CXML_Node& n, size_t* endPos = nullptr) {
-	Ref<AudioListenerComponent> c = CreateGameObject<AudioListenerComponent>();
+	Ref<AudioListenerComponent> c = CreateGameObject_ID<AudioListenerComponent>(std::stoull(n.tags.at("hash")));
 	e->AddComponent(c);
 	if (endPos)
 		*endPos = n.endPos;
@@ -1405,7 +1419,7 @@ static Ref<AudioListenerComponent> GetNodeAsAudioListener(Ref<Entity> e, const C
 
 static Ref<BackgroundEntity> GetNodeAsBackgroundEntity(Scene* s, const CXML::CXML_Node& n, size_t* _endPos = nullptr) {
 
-	Ref<BackgroundEntity> e = CreateGameObject<BackgroundEntity>();
+	Ref<BackgroundEntity> e = CreateGameObject_ID<BackgroundEntity>(std::stoull(n.tags.at("hash")));
 	e->m_tag = n.tags.at("tag");
 	s->AddEntity(e);
 
@@ -1450,7 +1464,7 @@ static Ref<QuadColliderComponent> GetNodeAsQuadColliderComponent(Ref<Entity> e, 
 			Vector2<int> cc = cxml.GetNextAsInts(_n.info.c_str(), 2, pos, &pos).data();
 			Vector2f poss = cxml.GetNextAsFloats(_n.info.c_str(), 2, pos, &pos).data();
 			int rot = cxml.GetNextAsInt(_n.info.c_str(), pos, &pos);
-			c = CreateGameObject<QuadColliderComponent>((bool)cc.x, (bool)cc.y, poss, (bool)rot);
+			c = CreateGameObject_ID<QuadColliderComponent>(std::stoull(n.tags.at("hash")), (bool)cc.x, (bool)cc.y, poss, (bool)rot);
 			e->AddComponent(c);
 		}
 		if (_n.type == "function") {
@@ -1496,7 +1510,7 @@ void MapEditor::LoadScene(const std::string& scene)
 	CXML::CXML_Node n = cxml.GetNext(scene.c_str());
 	while (CXML::ValidNode(n)) {
 		if (n.type == "Entity") {
-			Ref<Entity> e = CreateGameObject<Entity>();
+			Ref<Entity> e = CreateGameObject_ID<Entity>(std::stoull(n.tags.at("hash")));
 			e->m_tag = n.tags["tag"];
 			AddEntity(e);
 			CXML::CXML_Node c = cxml.GetNext(n.info.c_str());
@@ -1534,7 +1548,7 @@ void MapEditor::LoadScene(const std::string& scene)
 					Vector3f pos = cxml.GetNextAsFloats(c.info.c_str(), 3, 0, &endPos).data();
 					Vector3f rot = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
 					Vector3f scale = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();
-					Ref<Entity> e = dynamic_pointer_cast<Entity>(entityMap[n.type]());
+					Ref<Entity> e = dynamic_pointer_cast<Entity>(entityMap[n.type](std::stoull(n.tags.at("hash"))));
 					e->m_tag = n.tags["tag"];
 					e->SetEntityPosition(pos);
 					e->SetEntityRotation(rot);
@@ -1551,7 +1565,7 @@ void MapEditor::LoadScene(const std::string& scene)
 			if (entityMap.find(n.type) != entityMap.end()) {
 				CXML::CXML_Node c = n;
 				size_t endPos = 0;
-				Ref<Entity> e = dynamic_pointer_cast<Entity>(entityMap[n.type]());
+				Ref<Entity> e = dynamic_pointer_cast<Entity>(entityMap[n.type](std::stoull(n.tags.at("hash"))));
 				e->m_tag = n.tags["tag"];
 				Vector3f pos = cxml.GetNextAsFloats(c.info.c_str(), 3, 0, &endPos).data();
 				Vector3f rot = cxml.GetNextAsFloats(c.info.c_str(), 3, endPos, &endPos).data();

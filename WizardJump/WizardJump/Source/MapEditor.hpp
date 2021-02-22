@@ -25,7 +25,7 @@ public:
 	ShapeID tutorialCover = 0;
 
 	static Ref<CharacterEntity> characterEntity;
-	static unordered_map<std::string, std::function<Ref<GameObject>()>> entityMap;
+	static unordered_map<std::string, std::function<Ref<GameObject>(uint64_t)>> entityMap;
 
 private:
 	GEngine::Scope<GEngine::Orthographic_CameraController> m_CameraController;
