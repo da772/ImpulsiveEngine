@@ -110,6 +110,8 @@ protected:
     uint64_t pcTouchTime = 0;
     int pcX = 0, pcY = 0, pcState = -1;
 
+	uint64_t trajDrawTimer = 0;
+
 	std::function<bool(const FTouchInfo& touch)> m_inputFilterFunc = nullptr;
 
 

@@ -87,9 +87,11 @@ GEngine::Vector2f CharacterController::GetPredictedJumpVel(float newY)
 
 void CharacterController::OnUpdate(Timestep timestep) {
 
-    if (bdrawTrajectory && trajectory_pos.size() > 0) {
+    trajDrawTimer += timestep.GetMilliseconds();
+    if (bdrawTrajectory && trajectory_pos.size() > 0 && trajDrawTimer > 16) {
         spriteComp->ClearQuads();
         DrawTrajectoryLines(trajectory_pos, spriteComp, trajectorySize,  trajectoryColor, {GetEntityPosition().xy(), -trajectoryZorder });
+        trajDrawTimer = 0;
     }
     //Renderer::DrawDebugLines(trajectory_pos, Vector4f(1, 0, 0, 1.f));
     const Vector2f& vel = bodyComp->GetVelocity();

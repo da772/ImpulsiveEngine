@@ -267,7 +267,7 @@ void MapEditor::SceneMenu()
 			}
 		}
 		ImGui::SameLine();
-		if (ImGui::BeginCombo("", (hashSelected == nullptr ? entityCreate.c_str() : componentCreate.c_str()))) {
+		if (ImGui::BeginCombo("", (!b_component ? entityCreate.c_str() : componentCreate.c_str()))) {
 			const unordered_map<std::string, std::function<Ref<GameObject>(uint64_t)>>& map = !b_component ? entityMap : componentMap;
 			for (const std::pair<std::string, std::function<Ref<GameObject>(uint64_t)>>& p : map) {
 				bool selected = (hashSelected == nullptr ? entityCreate : componentCreate) == p.first;
@@ -845,6 +845,7 @@ static void Inspector() {
 					std::vector<ShapeID> ids = spriteComp->GetQuads();
 					Ref<BatchRenderer> batchRender = spriteComp->GetBatchRenderer();
 					int counter = 0;
+					std::sort(ids.begin(), ids.end());
 					for (const ShapeID& id : ids) {
 						ImGuiTreeNodeFlags sprite_component_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 						if (intHashSelected == id) {
@@ -853,7 +854,8 @@ static void Inspector() {
 						bool show_sid = ImGui::TreeNodeEx((void*)(intptr_t)ids[counter++], sprite_component_flags, "%s - %llu", batchRender->GetShapeTexture(id)->GetName().c_str(), id);
 
 						if (ImGui::IsItemClicked() || ImGui::IsItemClicked(1)) {
-							intHashSelected = id;
+							if (intHashSelected == id && ImGui::IsItemClicked(0)) { if (m_debugDrawer) m_debugDrawer->ClearQuads(); intHashSelected = 0; }
+							else intHashSelected = id;
 						}
 
 						if (intHashSelected == id) {
@@ -880,7 +882,6 @@ static void Inspector() {
 								ImGui::EndPopup();
 							}
 						}
-
 
 						if (intHashSelected == id && m_debugDrawer) {
 							m_debugDrawer->ClearQuads();
@@ -1304,6 +1305,12 @@ void MapEditor::SaveScene(const std::string& location ) {
 		Ref<FileData> data = make_shared<FileData>(_scene.size() * sizeof(char), (unsigned char*)_scData);
 		FileSystem::AddToMemoryPak(location, data);
 	}
+
+	Ref<Entity> e = CreateGameObject<Entity>();
+	e->m_tag = "__EditorEntity";
+	m_debugDrawer = CreateGameObject<SpriteComponent>();
+	AddEntity(e);
+	e->AddComponent(m_debugDrawer);
 
 }
 

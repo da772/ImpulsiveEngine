@@ -131,8 +131,8 @@ void DebugLayer::ShowDock(bool p_open)
 
 			ImGui::DockBuilderDockWindow("ViewPort", ImGui::DockBuilderGetCentralNode(dock_up_id)->ID);
 			//ImGui::DockBuilderDockWindow("Actions", dock_up_id);
-			ImGui::DockBuilderDockWindow("Scene Hierarchy", dock_right_id);
-			ImGui::DockBuilderDockWindow("Inspector", dock_left_id);
+			ImGui::DockBuilderDockWindow("Scene Hierarchy", dock_left_id);
+			ImGui::DockBuilderDockWindow("Inspector", dock_right_id);
 			//ImGui::DockBuilderDockWindow("Graphics Debugger", dock_left_id);
 			ImGui::DockBuilderDockWindow("Console Log", dock_down_id);
 			//ImGui::DockBuilderDockWindow("Project", dock_down_right_id);
