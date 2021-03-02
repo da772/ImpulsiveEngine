@@ -35,6 +35,9 @@ namespace GEngine {
 		m_Texture->SetData(m_textureAtlas->data, 0, TEXTUREFLAGS_RED_CHANNEL | 
 			TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear | TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap);
 		m_loaded += std::string(string);
+
+		
+
 	}
 
 	GEngine::Ref<GEngine::SubTexture2D> OpenGL_Font::GetCharacterCoords(uint64_t c)

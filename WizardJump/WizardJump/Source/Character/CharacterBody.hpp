@@ -7,7 +7,7 @@ using namespace GEngine;
 class CharacterBody : public Component {
 public:
 	CharacterBody() {
-
+		bUpdates = true;
 	};
 	~CharacterBody() {};
 
@@ -50,6 +50,7 @@ protected:
 		Vector2f groundPos = Vector2f(0.f, -.85f);
 		Vector2f groundScale = Vector2f(.4f, .1f);
 		m_quadCollider = CreateGameObject<QuadColliderComponent>(true, true, Vector2f(0.f,0.f));
+		m_quadCollider->b_UpdatePos = false;
 		m_groundCollider = CreateGameObject<QuadColliderComponent>(true, false, Vector2f(0.f,0.f));
 
 		
@@ -95,7 +96,12 @@ protected:
 
 	void OnUpdate(Timestep timestep) override
 	{
-	
+		if (m_quadCollider) {
+			if (m_quadCollider->GetPhysicsBody()) {
+				GetEntity()->SetEntityPosition({ m_quadCollider->GetPhysicsBody()->GetPosition(), GetEntity()->GetEntityPosition().z });
+				GetEntity()->SetEntityRotation({ 0,0,m_quadCollider->GetPhysicsBody()->GetRotation() });
+			}
+		}
 	}
 
 	

@@ -307,6 +307,24 @@ namespace GEngine {
 		 batch->RefreshVertices();
 	 }
 
+	 void BatchRenderer::SetSafeParams(const uint64_t& id, const Vector2f& pos, const float& rot, const Vector2f& scale, const Vector4f& color)
+	 {
+		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
+			 return e.first == id;
+			 });
+
+		 Ref<Batch> batch = m_Batches[it->second.batchId];
+		 std::vector<float>& vertices = batch->GetVertices();
+		 it->second.scale = scale;
+		 it->second.position = { pos, it->second.position.z };
+		 it->second.color = color;
+		 it->second.rotation = rot;
+
+		 ReCreateShapeVertices(&it->second);
+		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
+		 batch->RefreshVertices();
+	 }
+
 	 void BatchRenderer::SetZOrder(const uint64_t id, float zOrder)
 	 {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {

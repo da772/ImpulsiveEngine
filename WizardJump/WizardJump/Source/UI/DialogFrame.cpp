@@ -3,7 +3,7 @@
 #include "UI/DialogFrame.hpp"
 
 
-DialogFrame::DialogFrame(const Vector3f& position, float textSpeed, const std::string& title,const std::string& icon, const std::string& text, bool animateOpen, bool animateClose) : m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon)
+DialogFrame::DialogFrame(const Vector3f& position, float textSpeed, const std::string& title,const std::string& icon, const Vector4f& color, const std::string& text, bool animateOpen, bool animateClose) : m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon), m_color(color)
 {
 	bUpdates = true;
 	m_font = Font::Create("Content/Fonts/Wizard.ttf", 120.f);
@@ -41,18 +41,23 @@ void DialogFrame::OnBegin()
 	dialogScale = m_uiComponent->GetQuadScale(m_dialogId);
 	
 	
-
 	m_iconId = m_uiComponent->CreateQuad({ m_position.x-.745f,m_position.y, m_position.z-1.f }, 0, { .5f, 0.f, 1 }, { 1,1,1,1 }, dialogTexture);
+	m_backgroundId = m_uiComponent->CreateQuad({ m_position.x - .745f,m_position.y, m_position.z - 2.f }, 0, { .5f, 0.f, 1 }, m_color, nullptr);
 	iconScale = m_uiComponent->GetQuadScale(m_iconId);
 	
 
 	if (animateOpen) {
 		isAnimating = true;
-		m_uiComponent->SetScale(m_dialogId, { 0,0,1 });
-		m_uiComponent->SetScale(m_iconId, { 0,0,1 });
+		m_uiComponent->SetColor (m_dialogId, { 1,1,1, 0 });
+		m_uiComponent->SetColor(m_iconId, { 1,1,1, 0 });
+		m_uiComponent->SetColor(m_backgroundId, { m_color.x,m_color.y,m_color.z, 0 });
+
 		m_spriteAnimComponent->SetFrameAnimation(30, 15, false, [this](int frame) {
-			m_uiComponent->SetScale(m_iconId, { (float)frame * iconScale.x / 15.f,(float)frame * iconScale.y / 15.f,1 });
-			m_uiComponent->SetScale(m_dialogId, { (float)frame * dialogScale.x / 15.f,(float)frame * dialogScale.y / 15.f,1 });
+			m_uiComponent->SetColor(m_dialogId, { 1,1,1, frame/15.f });
+			m_uiComponent->SetColor(m_iconId, { 1,1,1, frame/15.f });
+			m_uiComponent->SetColor(m_backgroundId, { m_color.x,m_color.y,m_color.z, m_color.w*(frame / 15.f)});
+			//m_uiComponent->SetScale(m_iconId, { (float)frame * iconScale.x / 15.f,(float)frame * iconScale.y / 15.f,1 });
+			//m_uiComponent->SetScale(m_dialogId, { (float)frame * dialogScale.x / 15.f,(float)frame * dialogScale.y / 15.f,1 });
 
 			if (frame >= 15) {
 				
@@ -110,8 +115,11 @@ void DialogFrame::OnBegin()
 						m_uiComponent->RemoveText(m_textId);
 						isAnimating = true;
 						m_spriteAnimComponent->SetFrameAnimation(30, 15, false, [this](int frame) {
-							m_uiComponent->SetScale(m_iconId, { iconScale.x - ((float)frame * iconScale.x / 15.f),iconScale.y - ((float)frame * iconScale.y / 15.f),1 });
-							m_uiComponent->SetScale(m_dialogId, { dialogScale.x - ((float)frame * dialogScale.x / 15.f), dialogScale.y - ((float)frame * dialogScale.y / 15.f),1 });
+							m_uiComponent->SetColor(m_dialogId, { 1,1,1, 1.f-(frame / 15.f) });
+							m_uiComponent->SetColor(m_iconId, { 1,1,1, 1.f-(frame / 15.f) });
+							m_uiComponent->SetColor(m_backgroundId, { m_color.x,m_color.y,m_color.z, m_color.w * (1.f - (frame / 15.f)) });
+							//m_uiComponent->SetScale(m_iconId, { iconScale.x - ((float)frame * iconScale.x / 15.f),iconScale.y - ((float)frame * iconScale.y / 15.f),1 });
+							//m_uiComponent->SetScale(m_dialogId, { dialogScale.x - ((float)frame * dialogScale.x / 15.f), dialogScale.y - ((float)frame * dialogScale.y / 15.f),1 });
 
 							if (frame >= 15) {
 								if (m_onComplete) {

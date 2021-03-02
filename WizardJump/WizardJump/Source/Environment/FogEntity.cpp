@@ -267,10 +267,11 @@ void FogEntity::OnUpdate(Timestep timestep)
 				m_texture->SetData(noiseData, noiseDataSize * noiseDataSize * 4, TEXTUREFLAGS_Mag_Linear_MipMap | TEXTUREFLAGS_Min_Linear_MipMap |  TEXTUREFLAGS_Wrap_ClampToEdge);
 				if (!m_init) {
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,0,15 }, 0, { 10,20, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
-					m_textureIds[0] = m_spriteComponent->CreateQuad({ -4.75f,-3.5f,15 }, 0, { 12.5f,7.5f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
-                    m_textureIds[1] = m_spriteComponent->CreateQuad({ 2.f,-3.5f,15 }, 0, { -1.f,7.5f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, 0 }, m_texture, { 1.f,1.f });
+					m_textureIds[0] = m_spriteComponent->CreateQuad({ -5.f,-.7f,15 }, 0, { 12.5f,2.f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,.160f });
+					m_textureIds[1] = m_spriteComponent->CreateQuad({ 30.650f,-22.f,-10.f }, 0, { 12.5f,12.5f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
+                    //m_textureIds[1] = m_spriteComponent->CreateQuad({ 2.f,-3.5f,15 }, 0, { -1.f,7.5f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, 0 }, m_texture, { 1.f,1.f });
 					
-                    m_textureIds[2] = m_spriteComponent->CreateQuad({ -4.75f,-17.25f* entYscale,15 }, 0, { 13.f,-20.f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
+                  //  m_textureIds[2] = m_spriteComponent->CreateQuad({ -4.75f,-17.25f* entYscale,15 }, 0, { 13.f,-20.f, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,0,15 }, 0, { 20,7.5, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,-3.75,15 }, 0, { 20,-7.5, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });
 					//m_spriteId = m_spriteComponent->CreateQuad({ 0,3.75,15 }, 0, { 20,7.5, 1 }, { 250.f / 255.f, 235.f / 255.f, 202.f / 255.f, m_alpha }, m_texture, { 1.f,1.f });

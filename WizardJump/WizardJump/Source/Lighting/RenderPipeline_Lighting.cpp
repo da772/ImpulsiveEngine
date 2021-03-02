@@ -25,10 +25,10 @@ RenderPipeline_Lighting::RenderPipeline_Lighting(const float renderScale) : Rend
 		//RenderCommand::BlendFunc(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
 	};
 	CreateGraphics();
-	m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting", renderScale);
-	m_frameBuffer_shadow = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear, "RenderPipeline_Lighting_Shadow", renderScale);
+	m_frameBuffer = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Nearest, "RenderPipeline_Lighting", renderScale);
+	m_frameBuffer_shadow = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Nearest, "RenderPipeline_Lighting_Shadow", renderScale);
 	m_frameBuffer_shadow->UpdateSize(Application::GetWidth(), Application::GetHeight());
-	m_frameBuffer_lights = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear,
+	m_frameBuffer_lights = FrameBuffer::Create(0, 0, TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Nearest | TEXTUREFLAGS_Min_Nearest,
 		"RenderPipeline_Lighting_Lights", renderScale);
 	m_frameBuffer_lights->UpdateSize(Application::GetWidth(), Application::GetHeight());
 	m_frameBuffer->UpdateSize(Application::GetWidth(), Application::GetHeight());

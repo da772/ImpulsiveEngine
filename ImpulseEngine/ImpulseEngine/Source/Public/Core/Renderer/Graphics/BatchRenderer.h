@@ -97,6 +97,7 @@ namespace GEngine {
 		void SetTexture(const uint64_t id, Ref<Texture2D>);
 		void SetTextureScale(const uint64_t id, const Vector2f& scale);
 
+		void SetSafeParams(const uint64_t& id, const Vector2f& pos, const float& rot, const Vector2f& scale, const Vector4f& color);
 
 		void UnloadGraphics();
 		void ReloadGraphics();

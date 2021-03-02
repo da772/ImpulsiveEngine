@@ -88,6 +88,8 @@ namespace GEngine {
 
 		inline bool IsDynamic() const { return m_dynamic; }
 		inline bool HasPhysics() const { return m_physics; }
+
+		bool b_UpdatePos = true;
 		
 		std::unordered_map<ColliderID, FColliderQuad>& GetColliders() { return m_quads; }
 

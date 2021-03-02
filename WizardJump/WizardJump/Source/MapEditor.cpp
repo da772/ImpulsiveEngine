@@ -867,7 +867,10 @@ static void Inspector() {
 										Vector2f s = batchRender->GetShapeScale(id);
 										Vector2f __s = e->GetEntityScale().xy();
 										s = { s.x / __s.x,s.y / __s.y };
-										spriteComp->CreateSubTexturedQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), batchRender->GetShapeSubTexture(id), batchRender->GetTextureScale(id));
+										
+										Ref<SubTexture2D> subT = batchRender->GetShapeSubTexture(id);
+										subT = SubTexture2D::CreateFromCoords(subT->GetTexture(), subT->m_coords, subT->m_cellSize, subT->m_spriteSize);
+										spriteComp->CreateSubTexturedQuad(batchRender->GetShapePosition(id) - e->GetEntityPosition(), batchRender->GetShapeRotation(id) - e->GetEntityRotation().z, { s, 1 }, batchRender->GetShapeColor(id), subT, batchRender->GetTextureScale(id));
 									}
 									else {
 										Vector2f s = batchRender->GetShapeScale(id);

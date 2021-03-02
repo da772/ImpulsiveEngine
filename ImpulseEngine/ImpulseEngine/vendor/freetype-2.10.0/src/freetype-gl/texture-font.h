@@ -397,6 +397,10 @@ typedef struct texture_font_t
   texture_font_get_glyph( texture_font_t * self,
                           const char * codepoint );
 
+  texture_glyph_t*
+	  texture_font_get_glyph_u32(texture_font_t* self,
+		  const uint32_t* codepoint);
+
 /**
  * Request an already loaded glyph from the font.
  *
@@ -409,6 +413,11 @@ typedef struct texture_font_t
  texture_font_find_glyph( texture_font_t * self,
                           const char * codepoint );
 
+
+ texture_glyph_t*
+	 texture_font_find_glyph_u32(texture_font_t* self,
+		 const uint32_t* codepoint);
+
 /**
  * Request the loading of a given glyph.
  *
@@ -420,6 +429,10 @@ typedef struct texture_font_t
   int
   texture_font_load_glyph( texture_font_t * self,
                            const char * codepoint );
+  
+  int 
+      texture_font_load_glyph_u32(texture_font_t* self,
+		  const uint32_t* codepoint);
 
 /**
  * Request the loading of several glyphs at once.
@@ -461,6 +474,9 @@ texture_font_enlarge_atlas( texture_font_t * self, size_t width_new,
 float
 texture_glyph_get_kerning( const texture_glyph_t * self,
                            const char * codepoint );
+
+float
+texture_glyph_get_kerning_u32(const texture_glyph_t* self, const uint32_t* codepoint);
 
 
 /**

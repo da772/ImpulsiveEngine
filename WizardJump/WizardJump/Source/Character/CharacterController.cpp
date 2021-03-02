@@ -88,8 +88,9 @@ GEngine::Vector2f CharacterController::GetPredictedJumpVel(float newY)
 void CharacterController::OnUpdate(Timestep timestep) {
 
     trajDrawTimer += timestep.GetMilliseconds();
-    if (bdrawTrajectory && trajectory_pos.size() > 0 && trajDrawTimer > 16) {
-        spriteComp->ClearQuads();
+    if (bdrawTrajectory && trajectory_pos.size() > 0 && trajDrawTimer > 16 && bRedrawTrajectory) {
+        bRedrawTrajectory = false;
+        //spriteComp->ClearQuads();
         DrawTrajectoryLines(trajectory_pos, spriteComp, trajectorySize,  trajectoryColor, {GetEntityPosition().xy(), -trajectoryZorder });
         trajDrawTimer = 0;
     }
@@ -270,7 +271,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
     const bool ground = bodyComp->isGrounded();
     for (const FTouchInfo& touch : m) {
 		if (m_inputFilterFunc) {
-			if (!m_inputFilterFunc(touch)) return;
+			if (!m_inputFilterFunc(touch)) continue;
 		}
         /*
             State 0:
@@ -416,6 +417,7 @@ void CharacterController::HandleMobileInput(const std::vector<FTouchInfo>& m, Ti
 }
 
 void CharacterController::PredictPath(float xDistance, float yDistance) {
+    bRedrawTrajectory = true;
     _realVel = CalculateJumpVelocity(xDistance, yDistance);
     // GE_LOG_WARN("PREDICTED VEL: {0},{1}", _realVel.x, _realVel.y);
     trajectory_pos.clear();
@@ -486,6 +488,8 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
 
 void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float _scale, const Vector4f& col, const Vector3f& offset)
 {
+    std::vector<ShapeID> quads = spriteComp->GetQuads();
+    int quadCounter = 0;
     for (int i = 0; i < traj.size(); i += 3) {
         Vector3f pos = &traj[i];
         float rot = 0;
@@ -505,10 +509,21 @@ void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> sp
             pos.magnitude()
         }
         */
-        
-        spriteComp->CreateQuad(pos - offset, rot, scale, col);
+        if (quadCounter < quads.size()) {
+            spriteComp->SetSafeParams(quads[quadCounter], pos - offset, rot, scale, col);
+        } else {
+            spriteComp->CreateQuad(pos - offset, rot, scale, col);
+        }
+        quadCounter++;
     }
-    
+
+    if (quadCounter < quads.size() - 1) {
+        int rmAmt = quads.size() - quadCounter;
+        for (int i = 0; i < rmAmt; i++) {
+            std::vector<ShapeID> __quads = spriteComp->GetQuads();
+            spriteComp->RemoveQuad(__quads[__quads.size()- 1]);
+        }
+    }
 }
 
 

@@ -45,6 +45,8 @@ namespace GEngine {
 		void SetRotation(const ShapeID id, const float rotation);
 		void SetQuadScale(const ShapeID id, const Vector2f& scale);
 
+		void SetSafeParams(const ShapeID& id, const Vector2f& pos, const float& rot, const Vector2f& scale, const Vector4f& color);
+
 		void SetTextureScale(const ShapeID id, const Vector2f& scale);
 
 		virtual void OnAttached(Ref<Entity> entity) override;

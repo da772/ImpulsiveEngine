@@ -129,6 +129,11 @@ namespace GEngine {
 		m_shapeFactory->SetScale(id, scale * entity.lock()->GetEntityScale().xy());
 	}
 
+	void SpriteComponent::SetSafeParams(const ShapeID& id, const Vector2f& pos, const float& rot, const Vector2f& scale, const Vector4f& color)
+	{
+		m_shapeFactory->SetSafeParams(id, pos + Vector2f(entity.lock()->GetEntityPosition().x, entity.lock()->GetEntityPosition().y), rot, scale * entity.lock()->GetEntityScale().xy(), color);
+	}
+
 	void SpriteComponent::SetPositionScript(const ShapeID id, const Ref<ScriptVector2>& position)
 	{
 		SetPosition(id, position->GetGlm());

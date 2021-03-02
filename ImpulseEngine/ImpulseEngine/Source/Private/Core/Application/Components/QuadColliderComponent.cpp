@@ -90,7 +90,7 @@ namespace GEngine {
 
 	void QuadColliderComponent::OnUpdate(Timestep ts)
 	{
-		if (m_physics && m_dynamic) {
+		if (m_physics && m_dynamic && b_UpdatePos) {
 			const Vector2f& pos = m_body->GetPosition();
 			const float rot = m_body->GetRotation();
 			m_movedSelf = true;
