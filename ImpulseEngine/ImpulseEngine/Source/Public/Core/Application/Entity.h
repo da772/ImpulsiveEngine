@@ -46,6 +46,7 @@ namespace GEngine {
 		bool RemoveComponent_ptr(Component* component);
 
 		void Update(Timestep timestep);
+		
 
 		void Begin();
 

@@ -13,7 +13,7 @@ namespace GEngine {
 
 
 	public:
-	
+
 		void Begin();
 		void Update(Timestep timestep);
 		void End();
@@ -41,7 +41,7 @@ namespace GEngine {
 		Entity* GetEntityPtr() {
 			return entity.lock().get();
 		}
-		void SetEntityPtr(Entity*  e);
+		void SetEntityPtr(Entity* e);
 
 
 
@@ -60,7 +60,7 @@ namespace GEngine {
 		virtual ~Component();
 		bool m_hasComponentParent = false;
 		static int refCount;
-		
+
 		const std::string& GetTag() { return m_tag; }
 		void SetTag(const std::string& tag) { m_tag = tag; }
 		std::string m_tag = "Component";
@@ -70,6 +70,7 @@ namespace GEngine {
 		virtual void OnBegin() {};
 		virtual void OnEnd() {};
 		virtual void OnUpdate(Timestep timestep) {};
+		virtual void OnFixedUpdate(Timestep ts) {};
 	
 		Weak<Entity> entity;
 		bool bInit = false;

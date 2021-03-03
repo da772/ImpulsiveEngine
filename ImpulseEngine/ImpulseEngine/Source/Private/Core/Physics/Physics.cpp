@@ -10,7 +10,8 @@
 namespace GEngine {
 
 	Ref<PhysicsContext> Physics::m_context;
-	uint64_t Physics::m_lastUpdate;
+	double Physics::m_lastUpdate;
+	int Physics::m_catchUp;
 
 	void Physics::Initalize()
 	{
@@ -70,15 +71,23 @@ namespace GEngine {
 	void Physics::Update(float dt)
 	{
 		GE_CORE_ASSERT(m_context, "PHYSICS CONTEXT NOT CREATED");
-		m_context->Simulate(dt);
-		/*uint64_t ct = Time::GetEpochTimeMS();
-		if (ct - m_lastUpdate >= 16) {
-		
-			m_lastUpdate = Time::GetEpochTimeMS();
+		double updatetime = 1.0/60.0;
+		m_lastUpdate += dt;
+		if (m_lastUpdate >= updatetime) {
+			int catchAmt = floor((m_lastUpdate) / updatetime);
+			m_catchUp += catchAmt;
+			//GE_CORE_DEBUG("TIME DIF: {0}, UPDATE AMT: {1}", (m_lastUpdate), updateAmt);
+			
+			m_lastUpdate -= updatetime*catchAmt;
+			if (m_lastUpdate < 0)
+				m_lastUpdate = 0;
 		}
-		*/
 
-		
+		if (m_catchUp) {
+			m_catchUp--;
+			m_context->Simulate(updatetime);
+		}
+
 	}
 
 	Vector2f Physics::GetVelocityToPosition(const Vector2f& startPos, const Vector2f& endPos)

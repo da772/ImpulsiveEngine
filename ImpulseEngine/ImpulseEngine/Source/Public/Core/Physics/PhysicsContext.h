@@ -24,7 +24,7 @@ namespace GEngine {
 		virtual void SetGravity(const Vector2f& gravity) = 0;
 		virtual void* GetNativeWorld() = 0;
 		virtual const Vector2f GetTrajectoryPoint2D(const Vector2f& startPos, const Vector2f& startVel, float step) = 0;
-		virtual void Simulate(float timeStep, int velIteration = 8, int posIteration = 2) = 0;
+		virtual void Simulate(float timeStep, int velIteration = 6, int posIteration = 3) = 0;
 		virtual Ref<RayCastInfo> RayCast2D(const Vector2f& startPos, const Vector2f& endPos, const std::vector<Weak<PhysicsBody>>& ignoreBodies) = 0;
 		virtual std::vector<Weak<PhysicsBody>> QueryCollision(const Vector2f& position, const Vector2f& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies) = 0;
 		virtual Vector2f GetVelocityToPosition(const Vector2f& startPos, const Vector2f& endPos) = 0;

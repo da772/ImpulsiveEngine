@@ -103,7 +103,7 @@ WizardJump::WizardJump()
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
-	GetWindow()->SetVSync(true);
+	GetWindow()->SetVSync(false);
 
 
 

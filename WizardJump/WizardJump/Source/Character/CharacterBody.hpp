@@ -32,7 +32,7 @@ public:
 		return m_quadCollider->GetLinearVelocity();
 	}
 
-	bool debug = false;
+	bool debug = true;
 	int groundedCount = 0;
 
 	bool isGrounded() { return groundedCount > 0; };
@@ -58,7 +58,7 @@ protected:
 		GetEntity()->AddComponent(m_groundCollider);
 		
 		quadColliderID = m_quadCollider->CreateQuad(pos, scale, 1, 0, "characterBody");
-		circleColliderID = m_quadCollider->CreateCircle({ 0.f,-.6f }, { .2f, .2f }, 1, 0, "characterBody");
+		circleColliderID = m_quadCollider->CreateCircle({ 0.f,-.65f }, { .2f, .2f }, 1, 0, "characterBody");
 		ColliderID id1 = m_groundCollider->CreateQuad(groundPos, groundScale, 1, 0, "characterBodyGround");
 
 		m_groundCollider->SetOnCollideFunction(id1, [this](Ref<PhysicsCollision> other) {
@@ -79,6 +79,7 @@ protected:
 			m_debugSprite = CreateGameObject<SpriteComponent>();
 			GetEntity()->AddComponent(m_debugSprite);
 			m_debugSprite->CreateQuad({ pos.x,pos.y,11.f }, 0, { scale.x,scale.y,1 }, { 1,0,0,.25f });
+			m_debugSprite->CreateQuad({ 0, -.65f, 12.f }, 0, { .4f,.4f,1.f }, { 0,0,1,.5f });
 			m_debugSprite->CreateQuad({ groundPos.x,groundPos.y,11}, 0, { groundScale.x,groundScale.y,1 }, { 0,1,0,.25f });
 		}
 

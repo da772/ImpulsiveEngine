@@ -368,6 +368,8 @@ namespace GEngine {
 		GE_PROFILE_TIMER("Application:Run", &profile["Run"]);
 		double time = Time::GetEpochTimeMS();
 		double timestep = (time - m_LastFrameTime)/1e3f;
+        if (m_LastFrameTime == 0)
+            timestep = 0;
         profile["FrameTime"] = timestep;
         m_LastFrameTime = time;
 		timer += timestep;
@@ -395,53 +397,56 @@ namespace GEngine {
 			
 		}
 
-		{
-			{
-				GE_PROFILE_TIMER("Application:OnUpdate", &profile["OnUpdate"]);
+        {
+            {
+                GE_PROFILE_TIMER("Application:OnUpdate", &profile["OnUpdate"]);
+
+
+
                 if (!m_Minimized && !m_pause) {
                     OnUpdate(timestep);
                     SceneManager::Update(timestep);
                 }
-				
-				{
-					std::queue<std::function<void()>>& f = ThreadPool::GetMainThreadFunctions();
-					if (!f.empty()) {
-						std::mutex& mut = ThreadPool::GetMainFunctionsMutex();
-						std::lock_guard<std::mutex> guard(mut);
-						while (!f.empty()) {
-							f.front()();
-							f.pop();
-						}
-					}
-				}
-				{
-					std::queue<std::function<void()>>& f = ThreadPool::GetEndThreadFunction();
-					if (!f.empty()) {
-						std::mutex& mut = ThreadPool::GetEndThreadFunctionsMutex();
-						std::lock_guard<std::mutex> guard(mut);
-						while (!f.empty()) {
-							f.front()();
-							f.pop();
-						}
-					}
-				}
-				
-			}
 
-            {
-                if (!m_pause) {
-                    Physics::Update(timestep);
-                    CollisionDetection::CheckCollision();
+                {
+                    std::queue<std::function<void()>>& f = ThreadPool::GetMainThreadFunctions();
+                    if (!f.empty()) {
+                        std::mutex& mut = ThreadPool::GetMainFunctionsMutex();
+                        std::lock_guard<std::mutex> guard(mut);
+                        while (!f.empty()) {
+                            f.front()();
+                            f.pop();
+                        }
+                    }
                 }
-            }
+                {
+                    std::queue<std::function<void()>>& f = ThreadPool::GetEndThreadFunction();
+                    if (!f.empty()) {
+                        std::mutex& mut = ThreadPool::GetEndThreadFunctionsMutex();
+                        std::lock_guard<std::mutex> guard(mut);
+                        while (!f.empty()) {
+                            f.front()();
+                            f.pop();
+                        }
+                    }
+                }
 
+            }
+        }
             {
                 if (!m_pause)
                  AudioManager::Update();
             }
-			
-			
-		}
+
+			{
+				GE_PROFILE_TIMER("Application:PhysicsUpdate", &profile["Physics"]);
+				{
+					if (!m_pause) {
+						Physics::Update(timestep);
+						CollisionDetection::CheckCollision();
+					}
+				}
+			}
 	
 		CleanDirtyApi();
     }

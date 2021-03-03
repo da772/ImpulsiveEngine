@@ -30,6 +30,7 @@ namespace GEngine {
 	public:
 		static Ref<Font> Create(std::string path, int size);
 		virtual void LoadCharacters(const char* string) = 0;
+		virtual void LoadCharacters_u32(const uint32_t* codepoint, const uint32_t size) = 0;
 		virtual void LoadCharacter_u32(const uint32_t codepoint) = 0;
 		virtual Ref<StringInfo> DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight) = 0;
 		virtual Ref<StringInfo> AppendString(Ref<StringInfo> info, const std::string& text, float maxWidth, int viewWidth, int viewHeight) = 0;

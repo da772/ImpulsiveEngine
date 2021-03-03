@@ -99,7 +99,7 @@ void Tutorial::CreateMainTutorial(Weak<Scene> s, Weak<CharacterEntity> character
 												characterEntity.lock()->m_characterComponent->bEnableWalk = true;
 												characterEntity.lock()->m_characterComponent->bEnableJump = true;
 												characterEntity.lock()->m_characterComponent->ClearTrajectory();
-												characterEntity.lock()->m_characterComponent->bdrawTrajectory = false;
+												//characterEntity.lock()->m_characterComponent->bdrawTrajectory = false;
 												characterEntity.lock()->m_characterComponent->SetInputFilterFunction(nullptr);
 											});
 											s.lock()->AddEntity(____dialog);

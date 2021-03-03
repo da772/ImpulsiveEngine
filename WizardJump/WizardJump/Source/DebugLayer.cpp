@@ -405,7 +405,7 @@ void DebugLayer::CreateGraphicsDebuggger()
 			if (textureSelected == a.first)
 				base_flags |= ImGuiTreeNodeFlags_Selected;
 			
-			bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)&a.first, base_flags, "%s", a.first.c_str());
+			bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)&a.first, base_flags, "%s : %d", a.first.c_str(), a.second.lock()->GetFlags());
 			if (ImGui::IsItemClicked()) {
 				textureSelected = a.first;
 			}

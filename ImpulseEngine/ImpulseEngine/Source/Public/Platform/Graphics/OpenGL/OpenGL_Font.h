@@ -18,6 +18,7 @@ namespace GEngine {
 		virtual Ref<SubTexture2D> GetCharacterCoords(const char c) override;
 		virtual Ref<SubTexture2D> GetCharacterCoords_u32(const uint32_t c) override;
 		virtual void LoadCharacter_u32(const uint32_t codepoint) override;
+		virtual void LoadCharacters_u32(const uint32_t* codepoint, const uint32_t size) override;
 
 		virtual Ref<StringInfo> DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight) override;
 		virtual Ref<StringInfo> AppendString(Ref<StringInfo> info, const std::string& text, float maxWidth, int viewWidth, int viewHeight) override;

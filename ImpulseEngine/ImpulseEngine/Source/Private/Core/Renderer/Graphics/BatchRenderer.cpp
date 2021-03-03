@@ -366,7 +366,7 @@ namespace GEngine {
 
 			 batch->RefreshVertices();
 
-			 ReCreateBatches();
+			 //ReCreateBatches();
 		 }
 		 else {
 			 it->second.texture = texture != nullptr ? texture->GetTexture() : m_BlankTexture;

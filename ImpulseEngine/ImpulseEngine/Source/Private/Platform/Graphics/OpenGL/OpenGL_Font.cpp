@@ -32,9 +32,6 @@ namespace GEngine {
 	void OpenGL_Font::LoadCharacters(const char* string)
 	{
 		uint64_t size = ftgl::texture_font_load_glyphs(m_textureFont, string);
-		/*DEBUGG*/
-		uint32_t c = 0x0041;
-		ftgl::texture_font_load_glyph_u32(m_textureFont, &c);
 
 		m_Texture->SetData(m_textureAtlas->data, 0, TEXTUREFLAGS_RED_CHANNEL | 
 			TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear | TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap);
@@ -47,6 +44,13 @@ namespace GEngine {
 		ftgl::texture_font_load_glyph_u32(m_textureFont, &codepoint);
 		m_Texture->SetData(m_textureAtlas->data, 0, TEXTUREFLAGS_RED_CHANNEL |
 			TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear | TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap);
+	}
+
+	void OpenGL_Font::LoadCharacters_u32(const uint32_t* codepoint, const uint32_t size)
+	{
+		for (int i = 0; i < size; i++) {
+			LoadCharacter_u32(codepoint[i]);
+		}
 	}
 
 	GEngine::Ref<GEngine::SubTexture2D> OpenGL_Font::GetCharacterCoords(const char c)
@@ -129,7 +133,7 @@ namespace GEngine {
 					info->data.lastSpace = i;
 					continue;
 				}
-				else if (character == 0x000A) {
+				else if (character == 0x000A/*\n*/) {
 					info->data.pen.y -= info->data.maxHeight > 0 ? info->data.maxHeight : (float)m_size / viewHeight;
 					info->data.maxHeight = 0;
 					info->data.pen.x = 0;

@@ -34,8 +34,6 @@ void MapEditor::OnEvent(Event& e)
 {
 	m_CameraController->OnEvent(e);
 
-
-
 	if (e.GetEventType() == EventType::KeyReleased) {
 		GEngine::KeyReleasedEvent& _e = (GEngine::KeyReleasedEvent&)e;
 		if (_e.GetKeyCode() == GE_KEY_F5) {
@@ -54,21 +52,27 @@ Ref<UIComponent> uiComp;
 Ref<Font> font;
 std::string fpsId;
 
+static double ts = 0;
+static double ts1 = 0;
+
 void MapEditor::OnUpdate(Timestep timestep)
 {
-
+	ts1 += timestep.GetMilliseconds();
 	if (characterEntity) {
-
 		Vector3f pos;
 		float dist = GEngine::GEMath::distance(m_CameraController->GetPosition(), characterEntity->GetEntityPosition());
-		if (dist > .01f) {
-			pos = GEngine::GEMath::lerp(m_CameraController->GetPosition(), characterEntity->GetEntityPosition(), 10.f * timestep);
+		if (dist > .1f) {
+			pos = Vector3f::lerp(m_CameraController->GetPosition(), characterEntity->GetEntityPosition(), 10.f * timestep);
+			m_CameraController->SetPosition(pos);
 		}
 		else {
 			pos = characterEntity->GetEntityPosition();
+			m_CameraController->SetPosition(pos);
 		}
+		
+		ts1 = 0;
 
-		m_CameraController->SetPosition(pos);
+		
 	}
 
 	m_CameraController->OnUpdate(timestep);
@@ -81,9 +85,14 @@ void MapEditor::OnUpdate(Timestep timestep)
 		GEngine::Application::GetApp()->profile["FPS"]) + " fps", font, { -1, .9f,1 },
 		{ 1,1,1 }, { 1,1,1,1 });
 #else 
-	char ch[256] = { 0 };
-	sprintf(ch, "Wizard Jump - FPS: %d | %.3f ms\0", (int)GEngine::Application::GetApp()->profile["FPS"], GEngine::Application::GetApp()->profile["Run"]);
-	Application::GetApp()->GetWindow()->SetTitle(ch);
+	ts += timestep.GetMilliseconds();
+
+	if (ts > 16) {
+		char ch[256] = { 0 };
+		sprintf(ch, "Wizard Jump - FPS: %d | %.3f ms\0", (int)GEngine::Application::GetApp()->profile["FPS"], GEngine::Application::GetApp()->profile["Run"]);
+		Application::GetApp()->GetWindow()->SetTitle(ch);
+		ts = 0;
+	}
 #endif
 
 	
@@ -106,16 +115,11 @@ void MapEditor::OnBegin()
 	//font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
 	font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f);
 	font->LoadCharactersEN();
-	std::wstring unicode = L"ٿ and څ then Ԭ $ next сука блять";
-	uint32_t str[unicode.size()];
-	for (int i = 0; i < unicode.size(); i++) {
-		font->LoadCharacter_u32((uint32_t)unicode[i]);
-		str[i] =(uint32_t)unicode[i];
-	}
-
-	uiComp->CreateText_u32(str, unicode.size(), font, { -.5f,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
+	std::u32string unicode = U"ٿ and څ then Ԭ $ next сука блять\n∞";
+	font->LoadCharacters_u32((uint32_t*)unicode.data(), unicode.size());
+	uiComp->CreateText_u32((uint32_t*)unicode.data(), unicode.size(), font, { -.5f,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
 #endif
-#if 1 && defined(GE_CONSOLE_APP)
+#if 0 && defined(GE_CONSOLE_APP)
 	fpsEnt = CreateGameObject<Entity>();
 	AddEntity(fpsEnt);
 	uiComp = CreateGameObject<UIComponent>();
@@ -123,15 +127,9 @@ void MapEditor::OnBegin()
 	//font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
 	font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f);
 	font->LoadCharactersEN();
-	std::wstring unicode = L"ٿ and څ then Ԭ $ next сука блять";
-	uint32_t* str = (uint32_t*)malloc(sizeof(uint32_t)*unicode.size());
-	for (int i = 0; i < unicode.size(); i++) {
-		font->LoadCharacter_u32((uint32_t)unicode[i]);
-		str[i] = (uint32_t)unicode[i];
-	}
-
-	uiComp->CreateText_u32(str, unicode.size(), font, { -.5f,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
-	delete str;
+	std::u32string unicode = U"ٿ and څ then Ԭ $ next сука блять\n∞";
+	font->LoadCharacters_u32((uint32_t*)unicode.data(), unicode.size());
+	uiComp->CreateText_u32((uint32_t*)unicode.data(), unicode.size(), font, { -.5f,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
 #endif
 	/*
 	fpsEnt = CreateGameObject<Entity>();
@@ -185,7 +183,8 @@ static void Inspector();
 
 void MapEditor::OnEnd()
 {
-	Application::GetApp()->RemoveOnGamePauseCallback(pauseCallback);
+	if (GEngine::Application::DebugTools())
+		Application::GetApp()->RemoveOnGamePauseCallback(pauseCallback);
 }
 
 void MapEditor::OnImGuiRender()
@@ -213,6 +212,7 @@ void MapEditor::SetupCamera()
 {
 	m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
 		(float)GEngine::Application::GetWidth() / (float)GEngine::Application::GetHeight()));
+
 	m_CameraController->SetOnUpdateFn([this](GEngine::Timestep timeStep, Vector3f& m_Position, Vector3f& m_Rotation, Vector2f& m_LastTouchPos,
 		uint64_t& m_lastTouchId, float& m_LastDistance) {
 			const float m_CameraMoveSpeed = 1.5f;
@@ -238,6 +238,7 @@ void MapEditor::SetupCamera()
 		});
 	m_CameraController->SetOnEventFn([this](GEngine::Event& e) {
 		GEngine::EventDispatcher dispatcher(e);
+
 		dispatcher.Dispatch<GEngine::MouseScrolledEvent>([this](GEngine::MouseScrolledEvent& e) {
 			if (Application::InputEnabled())
 				m_CameraController->OnCameraZoom(e.GetXOffset(), e.GetYOffset(), .1f);

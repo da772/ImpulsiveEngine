@@ -23,7 +23,7 @@ namespace GEngine {
 
 		virtual Ref<RayCastInfo> RayCast2D(const Vector2f& start, const Vector2f& end, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
 		virtual std::vector<Weak<PhysicsBody>> QueryCollision(const Vector2f& position, const Vector2f& scale, const std::vector<Weak<PhysicsBody>>& ignoreBodies) override;
-		void Simulate(float timeStep, int velIteration = 2, int posIteration = 3) override;
+		void Simulate(float timeStep, int velIteration = 8, int posIteration = 3) override;
 		virtual float GetVelocityMaxHeight(const Vector2f& velocity) override;
 		virtual Vector2f GetVelocityToPosition(const Vector2f& startPos, const Vector2f& endPos) override;
 		float CalculateVerticalVelocityForHeight(float height);

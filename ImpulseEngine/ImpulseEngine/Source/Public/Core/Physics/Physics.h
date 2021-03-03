@@ -29,7 +29,8 @@ namespace GEngine {
 
 	private:
 		static Ref<PhysicsContext> m_context;
-		static uint64_t m_lastUpdate;
+		static double m_lastUpdate;
+		static int m_catchUp;
 
 	};
 
