@@ -154,6 +154,30 @@ namespace GEngine {
 		return hash;
 	}
 
+	const std::string UIComponent::CreateText_u32(uint32_t* string, int len, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color)
+	{
+		/* Should use Framebuffer size of pipeline */
+		int width, height;
+		width = GEngine::Application::GetApp()->GetUIResolutionWidth();
+		height = GEngine::Application::GetApp()->GetUIResolutionHeight();
+
+		char hash[16];
+		Utility::GenerateHash(hash, 16);
+		while (m_text.find(hash) != m_text.end()) {
+			Utility::GenerateHash(hash, 16);
+		}
+
+		Ref<StringInfo> data = font->DrawString_u32(string, len, scale.z / scale.x, width, height);
+		std::vector<ShapeID> ids;
+
+		for (CharacterData& d : data->charData) {
+			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ids.push_back(id);
+		}
+		m_text[hash] = { data,std::move(ids), font };
+		return hash;
+	}
+
 	const void UIComponent::AddText(const std::string& id, const std::string& text, const Vector3f& pos, const Vector3f& scale, const Vector4f& color)
 	{
 		int width, height;

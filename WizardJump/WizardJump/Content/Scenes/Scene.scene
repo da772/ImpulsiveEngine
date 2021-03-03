@@ -1,5 +1,5 @@
 <Entity tag="InsideCastle (Objects)" hash="4218130450700">
-<TransformComponent hash="5138726383563388491">
+<TransformComponent hash="7442595606148769129">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
@@ -10,9 +10,34 @@
 <float> 1.000000 </float>
 <float> 1.000000 </float>
 </TransformComponent>
+<LightComponent tag="LightComponent" hash="4640226379700">
+<function>
+<CreateQuadLight>
+<float> 13.700000 </float>
+<float> -3.450000 </float>
+<float> 0.000000 </float>
+<float> 0.000000</float>
+<float> 5.125000 </float>
+<float> 5.031000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 0.700000 </float>
+<Texture2D>
+<constructor>
+<string>Content/Textures/windowLight01.png</string>
+<int>68</int>
+</constructor>
+</Texture2D>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</CreateQuadLight>
+</function>
+</LightComponent>
 <SpriteComponent tag="SpriteComponent" hash="4249913075300">
 <function>
-<CreateSubTexturedQuad id="10004559706500">
+<CreateSubTexturedQuad id="24399044426700">
 <float> 15.500000 </float>
 <float> -2.000000 </float>
 <float> 0.000000 </float>
@@ -45,50 +70,8 @@
 </CreateSubTexturedQuad>
 </function>
 </SpriteComponent>
-<LightComponent tag="LightComponent" hash="4640226379700">
-<function>
-<CreateQuadLight>
-<float> 13.700000 </float>
-<float> -3.450000 </float>
-<float> 0.000000 </float>
-<float> 0.000000</float>
-<float> 5.125000 </float>
-<float> 5.031000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 0.700000 </float>
-<Texture2D>
-<constructor>
-<string>Content/Textures/windowLight01.png</string>
-<int>68</int>
-</constructor>
-</Texture2D>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</CreateQuadLight>
-</function>
-</LightComponent>
 </Entity>
 <BackgroundEntity tag="BackgroundEntity" hash="239317005049000">
-<function>
-<AddParalaxBackground>
-<string>backR</string>
-<Texture2D>
-<constructor>
-<string>Content/Textures/MountainBackground/background1.png</string>
-<int>1093</int>
-</constructor>
-</Texture2D>
-<float> 16.000000 </float>
-<float> 8.000000 </float>
-<float> 0.700000</float>
-<float> -14.000000</float>
-<float> 0.000000 </float>
-<float> 3.000000 </float>
-</AddParalaxBackground>
-</function>
 <function>
 <AddParalaxBackground>
 <string>front</string>
@@ -121,6 +104,23 @@
 <float> -13.000000</float>
 <float> 0.000000 </float>
 <float> -2.000000 </float>
+</AddParalaxBackground>
+</function>
+<function>
+<AddParalaxBackground>
+<string>backR</string>
+<Texture2D>
+<constructor>
+<string>Content/Textures/MountainBackground/background1.png</string>
+<int>1093</int>
+</constructor>
+</Texture2D>
+<float> 16.000000 </float>
+<float> 8.000000 </float>
+<float> 0.700000</float>
+<float> -14.000000</float>
+<float> 0.000000 </float>
+<float> 3.000000 </float>
 </AddParalaxBackground>
 </function>
 <function>
@@ -249,6 +249,17 @@
 <float> 1.000000 </float>
 </Tutorial>
 <Entity tag="BackgroundColor" hash="239317008536400">
+<TransformComponent hash="4918621497790252900">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</TransformComponent>
 <LightComponent tag="LightComponent" hash="239317011596700">
 <function>
 <CreateQuadLight>
@@ -389,20 +400,9 @@
 </CreateQuadLight>
 </function>
 </LightComponent>
-<TransformComponent hash="5138983518878398026">
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</TransformComponent>
 <SpriteComponent tag="SpriteComponent" hash="239317013539700">
 <function>
-<CreateQuad id="10004563981000">
+<CreateQuad id="24399052683500">
 <float> 0.000000 </float>
 <float> 50.000000 </float>
 <float> -200.000000 </float>
@@ -425,7 +425,7 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004563995700">
+<CreateQuad id="24399052712000">
 <float> 0.000000 </float>
 <float> -50.000000 </float>
 <float> -200.000000 </float>
@@ -448,7 +448,7 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004564063400">
+<CreateQuad id="24399052801900">
 <float> -20.000000 </float>
 <float> -15.125000 </float>
 <float> 20.000000 </float>
@@ -471,7 +471,7 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004564078900">
+<CreateQuad id="24399052829200">
 <float> 0.000000 </float>
 <float> -15.125000 </float>
 <float> 20.000000 </float>
@@ -494,7 +494,7 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004564093300">
+<CreateQuad id="24399052858500">
 <float> 15.125000 </float>
 <float> -15.125000 </float>
 <float> 20.000000 </float>
@@ -519,7 +519,7 @@
 </SpriteComponent>
 </Entity>
 <Entity tag="Ground" hash="239317013770000">
-<TransformComponent hash="6013824239322092659">
+<TransformComponent hash="6364811547856696139">
 <float> 0.000000 </float>
 <float> -5.000000 </float>
 <float> 0.000000 </float>
@@ -532,7 +532,7 @@
 </TransformComponent>
 <SpriteComponent tag="SpriteComponent" hash="239317013868900">
 <function>
-<CreateQuad id="10004564123500">
+<CreateQuad id="24399052902200">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 10.000000 </float>
@@ -555,7 +555,7 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004564138300">
+<CreateQuad id="24399052919100">
 <float> 19.674999 </float>
 <float> 9.750000 </float>
 <float> 10.000000 </float>
@@ -587,7 +587,7 @@
 <int> 1 </int>
 </constructor>
 <function>
-<CreateQuad id="10004564160300">
+<CreateQuad id="24399052965400">
 <float> -10.250000 </float>
 <float> 9.750000 </float>
 <float> 0.500000 </float>
@@ -600,7 +600,7 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004564168800">
+<CreateQuad id="24399053003500">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 40.000000 </float>
@@ -615,7 +615,7 @@
 </QuadColliderComponent>
 </Entity>
 <Entity tag="BoxEntity (Outside)" hash="239317013911200">
-<TransformComponent hash="5850853560111940165">
+<TransformComponent hash="5138403048863772995">
 <float> 0.000000 </float>
 <float> -4.350000 </float>
 <float> 0.000000 </float>
@@ -635,7 +635,7 @@
 <int> 1 </int>
 </constructor>
 <function>
-<CreateQuad id="10004564195000">
+<CreateQuad id="24399053030900">
 <float> 0.000000 </float>
 <float> 0.100000 </float>
 <float> 1.000000 </float>
@@ -650,7 +650,7 @@
 </QuadColliderComponent>
 <SpriteComponent tag="SpriteComponent" hash="239317013925200">
 <function>
-<CreateSubTexturedQuad id="10004567283300">
+<CreateSubTexturedQuad id="24399055321700">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 1.000000 </float>
@@ -685,20 +685,9 @@
 </SpriteComponent>
 </Entity>
 <Entity tag="OutsideCastle" hash="239317016177300">
-<TransformComponent hash="5419089748902896694">
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 0.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-<float> 1.000000 </float>
-</TransformComponent>
 <SpriteComponent tag="SpriteComponent" hash="239317016203400">
 <function>
-<CreateSubTexturedQuad id="10004570409500">
+<CreateSubTexturedQuad id="24399057304300">
 <float> -8.500000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -731,7 +720,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004570439400">
+<CreateSubTexturedQuad id="24399057340000">
 <float> -5.500000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -764,7 +753,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004570464100">
+<CreateSubTexturedQuad id="24399057369000">
 <float> -2.500000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -797,7 +786,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004570488000">
+<CreateSubTexturedQuad id="24399057394300">
 <float> 0.500000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -830,7 +819,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004570550600">
+<CreateSubTexturedQuad id="24399057419500">
 <float> 3.500000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -863,7 +852,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004570575500">
+<CreateSubTexturedQuad id="24399057444900">
 <float> 10.500000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -896,7 +885,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004570600800">
+<CreateSubTexturedQuad id="24399057469600">
 <float> 6.500000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -929,7 +918,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004570627300">
+<CreateSubTexturedQuad id="24399057494900">
 <float> 9.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -962,9 +951,20 @@
 </CreateSubTexturedQuad>
 </function>
 </SpriteComponent>
+<TransformComponent hash="7224418607126047307">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</TransformComponent>
 </Entity>
 <CharacterEntity tag="CharacterEntity" hash="239317019231300">
-<TransformComponent hash="6427839913334829930">
+<TransformComponent hash="7020942835032011604">
 <float> -4.000000 </float>
 <float> 5.000000 </float>
 <float> 0.000000 </float>
@@ -977,7 +977,7 @@
 </TransformComponent>
 </CharacterEntity>
 <Entity tag="CastleWalls" hash="246194021080900">
-<TransformComponent hash="7945042900781971254">
+<TransformComponent hash="7093817353208221511">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
@@ -990,7 +990,7 @@
 </TransformComponent>
 <SpriteComponent tag="SpriteComponent" hash="246205754595800">
 <function>
-<CreateSubTexturedQuad id="10004578189300">
+<CreateSubTexturedQuad id="24399065354500">
 <float> 11.000000 </float>
 <float> -2.000000 </float>
 <float> 16.000000 </float>
@@ -1023,7 +1023,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578220100">
+<CreateSubTexturedQuad id="24399065412100">
 <float> 11.000000 </float>
 <float> -0.875000 </float>
 <float> 16.000000 </float>
@@ -1056,7 +1056,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578246900">
+<CreateSubTexturedQuad id="24399065458600">
 <float> 11.000000 </float>
 <float> 0.250000 </float>
 <float> 16.000000 </float>
@@ -1089,7 +1089,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578272800">
+<CreateSubTexturedQuad id="24399065501900">
 <float> 11.000000 </float>
 <float> 1.325000 </float>
 <float> 16.000000 </float>
@@ -1122,7 +1122,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578298800">
+<CreateSubTexturedQuad id="24399065544500">
 <float> 11.000000 </float>
 <float> 2.450000 </float>
 <float> 16.000000 </float>
@@ -1155,7 +1155,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578324400">
+<CreateSubTexturedQuad id="24399065587000">
 <float> 11.000000 </float>
 <float> 3.575000 </float>
 <float> 16.000000 </float>
@@ -1188,7 +1188,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578350200">
+<CreateSubTexturedQuad id="24399065631700">
 <float> 11.000000 </float>
 <float> 4.700000 </float>
 <float> 16.000000 </float>
@@ -1221,7 +1221,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578376400">
+<CreateSubTexturedQuad id="24399065675800">
 <float> 11.000000 </float>
 <float> 5.825000 </float>
 <float> 16.000000 </float>
@@ -1254,7 +1254,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578401700">
+<CreateSubTexturedQuad id="24399065718000">
 <float> 11.000000 </float>
 <float> 6.950000 </float>
 <float> 16.000000 </float>
@@ -1287,7 +1287,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578427500">
+<CreateSubTexturedQuad id="24399065760200">
 <float> 11.000000 </float>
 <float> 8.075000 </float>
 <float> 16.000000 </float>
@@ -1320,7 +1320,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578453700">
+<CreateSubTexturedQuad id="24399065802200">
 <float> 11.000000 </float>
 <float> 9.200000 </float>
 <float> 16.000000 </float>
@@ -1353,7 +1353,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578480100">
+<CreateSubTexturedQuad id="24399065844500">
 <float> 11.000000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1386,7 +1386,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578506600">
+<CreateSubTexturedQuad id="24399065886900">
 <float> 12.125000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1419,7 +1419,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578537000">
+<CreateSubTexturedQuad id="24399065929000">
 <float> 13.250000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1452,7 +1452,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578563300">
+<CreateSubTexturedQuad id="24399065978700">
 <float> 14.375000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1485,7 +1485,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578589900">
+<CreateSubTexturedQuad id="24399066024700">
 <float> 15.500000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1518,7 +1518,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578617800">
+<CreateSubTexturedQuad id="24399066069100">
 <float> 16.625000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1551,7 +1551,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578644700">
+<CreateSubTexturedQuad id="24399066112200">
 <float> 17.750000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1584,7 +1584,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578671200">
+<CreateSubTexturedQuad id="24399066155200">
 <float> 18.875000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1617,7 +1617,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578698000">
+<CreateSubTexturedQuad id="24399066198100">
 <float> 20.000000 </float>
 <float> 10.325000 </float>
 <float> 16.000000 </float>
@@ -1650,7 +1650,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578724500">
+<CreateSubTexturedQuad id="24399066241300">
 <float> 20.000000 </float>
 <float> 9.200000 </float>
 <float> 16.000000 </float>
@@ -1683,7 +1683,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578751100">
+<CreateSubTexturedQuad id="24399066283700">
 <float> 20.000000 </float>
 <float> 8.075000 </float>
 <float> 16.000000 </float>
@@ -1716,7 +1716,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578777900">
+<CreateSubTexturedQuad id="24399066326800">
 <float> 20.000000 </float>
 <float> 6.950000 </float>
 <float> 16.000000 </float>
@@ -1749,7 +1749,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578805100">
+<CreateSubTexturedQuad id="24399066375100">
 <float> 20.000000 </float>
 <float> 5.825000 </float>
 <float> 16.000000 </float>
@@ -1782,7 +1782,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578832000">
+<CreateSubTexturedQuad id="24399066418700">
 <float> 20.000000 </float>
 <float> 4.700000 </float>
 <float> 16.000000 </float>
@@ -1815,7 +1815,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578859200">
+<CreateSubTexturedQuad id="24399066462300">
 <float> 20.000000 </float>
 <float> 3.575000 </float>
 <float> 16.000000 </float>
@@ -1848,7 +1848,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578885400">
+<CreateSubTexturedQuad id="24399066505800">
 <float> 20.000000 </float>
 <float> 2.450000 </float>
 <float> 16.000000 </float>
@@ -1881,7 +1881,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578912300">
+<CreateSubTexturedQuad id="24399066549300">
 <float> 20.000000 </float>
 <float> 1.325000 </float>
 <float> 16.000000 </float>
@@ -1914,7 +1914,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578939000">
+<CreateSubTexturedQuad id="24399066593600">
 <float> 20.000000 </float>
 <float> 0.200000 </float>
 <float> 16.000000 </float>
@@ -1947,7 +1947,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578966000">
+<CreateSubTexturedQuad id="24399066637600">
 <float> 20.000000 </float>
 <float> -0.925000 </float>
 <float> 16.000000 </float>
@@ -1980,7 +1980,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004578992900">
+<CreateSubTexturedQuad id="24399066681300">
 <float> 20.000000 </float>
 <float> -2.050000 </float>
 <float> 16.000000 </float>
@@ -2013,7 +2013,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579020000">
+<CreateSubTexturedQuad id="24399066725300">
 <float> 20.000000 </float>
 <float> -3.175000 </float>
 <float> 16.000000 </float>
@@ -2046,7 +2046,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579047500">
+<CreateSubTexturedQuad id="24399066771900">
 <float> 20.000000 </float>
 <float> -4.300000 </float>
 <float> 16.000000 </float>
@@ -2079,7 +2079,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579109200">
+<CreateSubTexturedQuad id="24399066821400">
 <float> 20.000000 </float>
 <float> -4.600000 </float>
 <float> 16.000000 </float>
@@ -2121,11 +2121,11 @@
 <int> 1 </int>
 </constructor>
 <function>
-<CreateQuad id="10004579149600">
-<float> 11.025000 </float>
-<float> 4.000000 </float>
+<CreateQuad id="24399066865400">
+<float> 19.950001 </float>
+<float> 2.000000 </float>
 <float> 1.050000 </float>
-<float> 13.125000 </float>
+<float> 16.000000 </float>
 <float> 1.000000</float>
 <float> 0.000000</float>
 <string>wall</string>
@@ -2134,7 +2134,7 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004579135400">
+<CreateQuad id="24399066874000">
 <float> 15.500000 </float>
 <float> 10.300000 </float>
 <float> 10.000000 </float>
@@ -2147,11 +2147,11 @@
 </CreateQuad>
 </function>
 <function>
-<CreateQuad id="10004579143000">
-<float> 19.950001 </float>
-<float> 2.000000 </float>
+<CreateQuad id="24399066880600">
+<float> 11.025000 </float>
+<float> 4.000000 </float>
 <float> 1.050000 </float>
-<float> 16.000000 </float>
+<float> 13.125000 </float>
 <float> 1.000000</float>
 <float> 0.000000</float>
 <string>wall</string>
@@ -2162,7 +2162,7 @@
 </QuadColliderComponent>
 </Entity>
 <Entity tag="InsideCastle (Floor)" hash="685641045655600">
-<TransformComponent hash="8025784351502659172">
+<TransformComponent hash="8310361037230995777">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
@@ -2175,7 +2175,7 @@
 </TransformComponent>
 <SpriteComponent tag="SpriteComponent" hash="685654829211600">
 <function>
-<CreateSubTexturedQuad id="10004579209700">
+<CreateSubTexturedQuad id="24399066944700">
 <float> 11.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2208,7 +2208,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579238000">
+<CreateSubTexturedQuad id="24399066987500">
 <float> 12.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2241,7 +2241,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579266300">
+<CreateSubTexturedQuad id="24399067016900">
 <float> 13.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2274,7 +2274,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579294600">
+<CreateSubTexturedQuad id="24399067048500">
 <float> 14.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2307,7 +2307,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579322400">
+<CreateSubTexturedQuad id="24399067085400">
 <float> 15.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2340,7 +2340,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579350100">
+<CreateSubTexturedQuad id="24399067121100">
 <float> 16.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2373,7 +2373,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579379500">
+<CreateSubTexturedQuad id="24399067156400">
 <float> 17.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2406,7 +2406,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579406700">
+<CreateSubTexturedQuad id="24399067190500">
 <float> 18.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2439,7 +2439,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004579434500">
+<CreateSubTexturedQuad id="24399067221900">
 <float> 19.000000 </float>
 <float> -4.800000 </float>
 <float> 0.000000 </float>
@@ -2474,7 +2474,7 @@
 </SpriteComponent>
 </Entity>
 <Entity tag="InsideCastle (Wall)" hash="775569919953000">
-<TransformComponent hash="3705989068567038817">
+<TransformComponent hash="7022075413546353479">
 <float> 0.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
@@ -2487,7 +2487,7 @@
 </TransformComponent>
 <SpriteComponent tag="SpriteComponent" hash="775581353281800">
 <function>
-<CreateSubTexturedQuad id="10004585762300">
+<CreateSubTexturedQuad id="24399070575300">
 <float> 12.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -2520,7 +2520,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004585801700">
+<CreateSubTexturedQuad id="24399070611600">
 <float> 12.000000 </float>
 <float> 8.300000 </float>
 <float> 0.000000 </float>
@@ -2553,7 +2553,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004585832700">
+<CreateSubTexturedQuad id="24399070643200">
 <float> 12.000000 </float>
 <float> 7.300000 </float>
 <float> 0.000000 </float>
@@ -2586,7 +2586,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004585861700">
+<CreateSubTexturedQuad id="24399070673700">
 <float> 12.000000 </float>
 <float> 6.300000 </float>
 <float> 0.000000 </float>
@@ -2619,7 +2619,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004585890000">
+<CreateSubTexturedQuad id="24399070703100">
 <float> 12.000000 </float>
 <float> 5.300000 </float>
 <float> 0.000000 </float>
@@ -2652,7 +2652,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004585920400">
+<CreateSubTexturedQuad id="24399070733900">
 <float> 12.000000 </float>
 <float> 4.300000 </float>
 <float> 0.000000 </float>
@@ -2685,7 +2685,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004585950100">
+<CreateSubTexturedQuad id="24399070764900">
 <float> 12.000000 </float>
 <float> 3.300000 </float>
 <float> 0.000000 </float>
@@ -2718,7 +2718,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004585979100">
+<CreateSubTexturedQuad id="24399070796000">
 <float> 12.000000 </float>
 <float> 2.300000 </float>
 <float> 0.000000 </float>
@@ -2751,7 +2751,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004586009800">
+<CreateSubTexturedQuad id="24399070826500">
 <float> 12.000000 </float>
 <float> 1.300000 </float>
 <float> 0.000000 </float>
@@ -2784,7 +2784,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004586041500">
+<CreateSubTexturedQuad id="24399070857700">
 <float> 12.000000 </float>
 <float> 0.300000 </float>
 <float> 0.000000 </float>
@@ -2817,7 +2817,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004586071500">
+<CreateSubTexturedQuad id="24399070888100">
 <float> 12.000000 </float>
 <float> -0.700000 </float>
 <float> 0.000000 </float>
@@ -2850,7 +2850,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004586100800">
+<CreateSubTexturedQuad id="24399070918900">
 <float> 12.000000 </float>
 <float> -1.700000 </float>
 <float> 0.000000 </float>
@@ -2883,7 +2883,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004586130700">
+<CreateSubTexturedQuad id="24399070950000">
 <float> 12.000000 </float>
 <float> -2.700000 </float>
 <float> 0.000000 </float>
@@ -2916,7 +2916,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004586160000">
+<CreateSubTexturedQuad id="24399070980900">
 <float> 12.000000 </float>
 <float> -3.400000 </float>
 <float> 1.000000 </float>
@@ -2949,7 +2949,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004586189800">
+<CreateSubTexturedQuad id="24399071012400">
 <float> 12.000000 </float>
 <float> -4.400000 </float>
 <float> -2.000000 </float>
@@ -2982,7 +2982,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004589823800">
+<CreateSubTexturedQuad id="24399075445300">
 <float> 11.010000 </float>
 <float> -4.050000 </float>
 <float> -2.000000 </float>
@@ -3015,7 +3015,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004589859500">
+<CreateSubTexturedQuad id="24399075490300">
 <float> 11.010000 </float>
 <float> -3.050000 </float>
 <float> -2.000000 </float>
@@ -3048,7 +3048,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004589891500">
+<CreateSubTexturedQuad id="24399075524500">
 <float> 11.010000 </float>
 <float> -5.000000 </float>
 <float> -2.000000 </float>
@@ -3081,7 +3081,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004589922100">
+<CreateSubTexturedQuad id="24399075560400">
 <float> 13.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -3114,7 +3114,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004589952100">
+<CreateSubTexturedQuad id="24399075597000">
 <float> 14.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -3147,7 +3147,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004589982500">
+<CreateSubTexturedQuad id="24399075632300">
 <float> 15.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -3180,7 +3180,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590012300">
+<CreateSubTexturedQuad id="24399075665500">
 <float> 16.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -3213,7 +3213,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590043300">
+<CreateSubTexturedQuad id="24399075699100">
 <float> 17.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -3246,7 +3246,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590073000">
+<CreateSubTexturedQuad id="24399075745800">
 <float> 18.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -3279,7 +3279,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590102600">
+<CreateSubTexturedQuad id="24399075783600">
 <float> 19.000000 </float>
 <float> 9.300000 </float>
 <float> 0.000000 </float>
@@ -3312,7 +3312,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590132000">
+<CreateSubTexturedQuad id="24399075817600">
 <float> 19.000000 </float>
 <float> 8.300000 </float>
 <float> 0.000000 </float>
@@ -3345,7 +3345,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590161600">
+<CreateSubTexturedQuad id="24399075851700">
 <float> 19.000000 </float>
 <float> 7.300000 </float>
 <float> 0.000000 </float>
@@ -3378,7 +3378,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590191900">
+<CreateSubTexturedQuad id="24399075885400">
 <float> 19.000000 </float>
 <float> 6.300000 </float>
 <float> 0.000000 </float>
@@ -3411,7 +3411,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590221400">
+<CreateSubTexturedQuad id="24399075918800">
 <float> 19.000000 </float>
 <float> 5.300000 </float>
 <float> 0.000000 </float>
@@ -3444,7 +3444,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590251400">
+<CreateSubTexturedQuad id="24399075952200">
 <float> 19.000000 </float>
 <float> 4.300000 </float>
 <float> 0.000000 </float>
@@ -3477,7 +3477,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590281100">
+<CreateSubTexturedQuad id="24399075988000">
 <float> 19.000000 </float>
 <float> 3.300000 </float>
 <float> 0.000000 </float>
@@ -3510,7 +3510,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590310600">
+<CreateSubTexturedQuad id="24399076021400">
 <float> 19.000000 </float>
 <float> 2.300000 </float>
 <float> 0.000000 </float>
@@ -3543,7 +3543,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590340700">
+<CreateSubTexturedQuad id="24399076054700">
 <float> 19.000000 </float>
 <float> 1.300000 </float>
 <float> 0.000000 </float>
@@ -3576,7 +3576,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590370500">
+<CreateSubTexturedQuad id="24399076088400">
 <float> 19.000000 </float>
 <float> 0.300000 </float>
 <float> 0.000000 </float>
@@ -3609,7 +3609,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590400800">
+<CreateSubTexturedQuad id="24399076121900">
 <float> 19.000000 </float>
 <float> -0.700000 </float>
 <float> 0.000000 </float>
@@ -3642,7 +3642,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590437500">
+<CreateSubTexturedQuad id="24399076154800">
 <float> 19.000000 </float>
 <float> -1.700000 </float>
 <float> 0.000000 </float>
@@ -3675,7 +3675,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590473700">
+<CreateSubTexturedQuad id="24399076188300">
 <float> 19.000000 </float>
 <float> -2.700000 </float>
 <float> 0.000000 </float>
@@ -3708,7 +3708,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590508400">
+<CreateSubTexturedQuad id="24399076221800">
 <float> 19.000000 </float>
 <float> -3.700000 </float>
 <float> 0.000000 </float>
@@ -3741,7 +3741,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590542800">
+<CreateSubTexturedQuad id="24399076255600">
 <float> 19.000000 </float>
 <float> -4.200000 </float>
 <float> -2.000000 </float>
@@ -3774,7 +3774,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590574200">
+<CreateSubTexturedQuad id="24399076289900">
 <float> 18.000000 </float>
 <float> -4.200000 </float>
 <float> -2.000000 </float>
@@ -3807,7 +3807,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590604900">
+<CreateSubTexturedQuad id="24399076323600">
 <float> 18.000000 </float>
 <float> -3.200000 </float>
 <float> -2.000000 </float>
@@ -3840,7 +3840,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590636600">
+<CreateSubTexturedQuad id="24399076357700">
 <float> 18.000000 </float>
 <float> -2.200000 </float>
 <float> -2.000000 </float>
@@ -3873,7 +3873,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590672300">
+<CreateSubTexturedQuad id="24399076391700">
 <float> 18.000000 </float>
 <float> -1.200000 </float>
 <float> -2.000000 </float>
@@ -3906,7 +3906,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590706300">
+<CreateSubTexturedQuad id="24399076426200">
 <float> 18.000000 </float>
 <float> -0.200000 </float>
 <float> -2.000000 </float>
@@ -3939,7 +3939,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590738800">
+<CreateSubTexturedQuad id="24399076461600">
 <float> 18.000000 </float>
 <float> 0.800000 </float>
 <float> -2.000000 </float>
@@ -3972,7 +3972,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590771800">
+<CreateSubTexturedQuad id="24399076497200">
 <float> 18.000000 </float>
 <float> 1.800000 </float>
 <float> -2.000000 </float>
@@ -4005,7 +4005,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590804300">
+<CreateSubTexturedQuad id="24399076542900">
 <float> 18.000000 </float>
 <float> 2.800000 </float>
 <float> -2.000000 </float>
@@ -4038,7 +4038,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590836400">
+<CreateSubTexturedQuad id="24399076582400">
 <float> 18.000000 </float>
 <float> 3.800000 </float>
 <float> -2.000000 </float>
@@ -4071,7 +4071,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590868700">
+<CreateSubTexturedQuad id="24399076622700">
 <float> 18.000000 </float>
 <float> 4.800000 </float>
 <float> -2.000000 </float>
@@ -4104,7 +4104,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590900300">
+<CreateSubTexturedQuad id="24399076665400">
 <float> 18.000000 </float>
 <float> 5.800000 </float>
 <float> -2.000000 </float>
@@ -4137,7 +4137,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590932600">
+<CreateSubTexturedQuad id="24399076701600">
 <float> 18.000000 </float>
 <float> 6.800000 </float>
 <float> -2.000000 </float>
@@ -4170,7 +4170,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590964900">
+<CreateSubTexturedQuad id="24399076737900">
 <float> 18.000000 </float>
 <float> 7.800000 </float>
 <float> -2.000000 </float>
@@ -4203,7 +4203,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004590997600">
+<CreateSubTexturedQuad id="24399076774600">
 <float> 18.000000 </float>
 <float> 8.300000 </float>
 <float> -3.000000 </float>
@@ -4236,7 +4236,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591030800">
+<CreateSubTexturedQuad id="24399076810900">
 <float> 17.000000 </float>
 <float> 8.300000 </float>
 <float> -3.000000 </float>
@@ -4269,7 +4269,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591064700">
+<CreateSubTexturedQuad id="24399076847000">
 <float> 17.000000 </float>
 <float> 7.300000 </float>
 <float> -3.000000 </float>
@@ -4302,7 +4302,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591097500">
+<CreateSubTexturedQuad id="24399076883400">
 <float> 17.000000 </float>
 <float> 6.300000 </float>
 <float> -3.000000 </float>
@@ -4335,7 +4335,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591129900">
+<CreateSubTexturedQuad id="24399076919900">
 <float> 17.000000 </float>
 <float> 6.300000 </float>
 <float> -3.000000 </float>
@@ -4368,7 +4368,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591163400">
+<CreateSubTexturedQuad id="24399076958500">
 <float> 17.000000 </float>
 <float> 5.300000 </float>
 <float> -3.000000 </float>
@@ -4401,7 +4401,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591196300">
+<CreateSubTexturedQuad id="24399077000000">
 <float> 17.000000 </float>
 <float> 4.300000 </float>
 <float> -3.000000 </float>
@@ -4434,7 +4434,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591229200">
+<CreateSubTexturedQuad id="24399077036300">
 <float> 17.000000 </float>
 <float> 3.300000 </float>
 <float> -3.000000 </float>
@@ -4467,7 +4467,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591262100">
+<CreateSubTexturedQuad id="24399077073300">
 <float> 17.000000 </float>
 <float> 2.300000 </float>
 <float> -3.000000 </float>
@@ -4500,7 +4500,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591294800">
+<CreateSubTexturedQuad id="24399077117400">
 <float> 17.000000 </float>
 <float> 1.300000 </float>
 <float> -3.000000 </float>
@@ -4533,7 +4533,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591327400">
+<CreateSubTexturedQuad id="24399077159700">
 <float> 17.000000 </float>
 <float> 0.300000 </float>
 <float> -3.000000 </float>
@@ -4566,7 +4566,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591360500">
+<CreateSubTexturedQuad id="24399077201900">
 <float> 17.000000 </float>
 <float> -0.700000 </float>
 <float> -3.000000 </float>
@@ -4599,7 +4599,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591393900">
+<CreateSubTexturedQuad id="24399077244500">
 <float> 17.000000 </float>
 <float> -1.700000 </float>
 <float> -3.000000 </float>
@@ -4632,7 +4632,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591427400">
+<CreateSubTexturedQuad id="24399077281600">
 <float> 17.000000 </float>
 <float> -2.700000 </float>
 <float> -2.000000 </float>
@@ -4665,7 +4665,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591461000">
+<CreateSubTexturedQuad id="24399077318500">
 <float> 17.000000 </float>
 <float> -3.700000 </float>
 <float> -2.000000 </float>
@@ -4698,7 +4698,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591494500">
+<CreateSubTexturedQuad id="24399077356800">
 <float> 17.000000 </float>
 <float> -4.700000 </float>
 <float> -2.000000 </float>
@@ -4731,7 +4731,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591528200">
+<CreateSubTexturedQuad id="24399077395600">
 <float> 16.000000 </float>
 <float> -4.700000 </float>
 <float> -2.000000 </float>
@@ -4764,7 +4764,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591562000">
+<CreateSubTexturedQuad id="24399077432800">
 <float> 16.000000 </float>
 <float> -3.700000 </float>
 <float> -2.000000 </float>
@@ -4797,7 +4797,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591598700">
+<CreateSubTexturedQuad id="24399077487500">
 <float> 16.250000 </float>
 <float> -2.700000 </float>
 <float> -2.000000 </float>
@@ -4830,7 +4830,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591632100">
+<CreateSubTexturedQuad id="24399077529300">
 <float> 16.250000 </float>
 <float> -1.700000 </float>
 <float> -2.000000 </float>
@@ -4863,7 +4863,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591665600">
+<CreateSubTexturedQuad id="24399077566800">
 <float> 16.000000 </float>
 <float> -0.700000 </float>
 <float> -2.000000 </float>
@@ -4896,7 +4896,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591698700">
+<CreateSubTexturedQuad id="24399077604700">
 <float> 16.000000 </float>
 <float> 0.300000 </float>
 <float> -2.000000 </float>
@@ -4929,7 +4929,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591732000">
+<CreateSubTexturedQuad id="24399077666800">
 <float> 16.000000 </float>
 <float> 1.300000 </float>
 <float> -2.000000 </float>
@@ -4962,7 +4962,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591765100">
+<CreateSubTexturedQuad id="24399077715400">
 <float> 16.000000 </float>
 <float> 2.300000 </float>
 <float> -2.000000 </float>
@@ -4995,7 +4995,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591801400">
+<CreateSubTexturedQuad id="24399077762100">
 <float> 16.000000 </float>
 <float> 3.300000 </float>
 <float> -2.000000 </float>
@@ -5028,7 +5028,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591834700">
+<CreateSubTexturedQuad id="24399077807500">
 <float> 16.000000 </float>
 <float> 4.300000 </float>
 <float> -2.000000 </float>
@@ -5061,7 +5061,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591867900">
+<CreateSubTexturedQuad id="24399077848200">
 <float> 16.000000 </float>
 <float> 5.300000 </float>
 <float> -2.000000 </float>
@@ -5094,7 +5094,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591901000">
+<CreateSubTexturedQuad id="24399077885200">
 <float> 16.000000 </float>
 <float> 6.300000 </float>
 <float> -2.000000 </float>
@@ -5127,7 +5127,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591934200">
+<CreateSubTexturedQuad id="24399077922800">
 <float> 16.000000 </float>
 <float> 7.300000 </float>
 <float> -2.000000 </float>
@@ -5160,7 +5160,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004591968000">
+<CreateSubTexturedQuad id="24399077967300">
 <float> 16.000000 </float>
 <float> 8.300000 </float>
 <float> -2.000000 </float>
@@ -5193,7 +5193,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592003400">
+<CreateSubTexturedQuad id="24399078008700">
 <float> 15.000000 </float>
 <float> 8.300000 </float>
 <float> -2.000000 </float>
@@ -5226,7 +5226,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592038100">
+<CreateSubTexturedQuad id="24399078057800">
 <float> 14.000000 </float>
 <float> 8.300000 </float>
 <float> -2.000000 </float>
@@ -5259,7 +5259,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592073400">
+<CreateSubTexturedQuad id="24399078097000">
 <float> 13.000000 </float>
 <float> 8.300000 </float>
 <float> -2.000000 </float>
@@ -5292,7 +5292,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592108500">
+<CreateSubTexturedQuad id="24399078136300">
 <float> 13.000000 </float>
 <float> 7.300000 </float>
 <float> -2.000000 </float>
@@ -5325,7 +5325,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592146900">
+<CreateSubTexturedQuad id="24399078174800">
 <float> 14.000000 </float>
 <float> 7.300000 </float>
 <float> -2.000000 </float>
@@ -5358,7 +5358,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592181400">
+<CreateSubTexturedQuad id="24399078214600">
 <float> 15.000000 </float>
 <float> 7.300000 </float>
 <float> -2.000000 </float>
@@ -5391,7 +5391,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592215600">
+<CreateSubTexturedQuad id="24399078253300">
 <float> 15.000000 </float>
 <float> 6.300000 </float>
 <float> -2.000000 </float>
@@ -5424,7 +5424,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592252800">
+<CreateSubTexturedQuad id="24399078291300">
 <float> 14.000000 </float>
 <float> 6.300000 </float>
 <float> -2.000000 </float>
@@ -5457,7 +5457,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592288000">
+<CreateSubTexturedQuad id="24399078328200">
 <float> 13.000000 </float>
 <float> 6.300000 </float>
 <float> -2.000000 </float>
@@ -5490,7 +5490,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592324600">
+<CreateSubTexturedQuad id="24399078365000">
 <float> 13.000000 </float>
 <float> 5.300000 </float>
 <float> -2.000000 </float>
@@ -5523,7 +5523,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592358500">
+<CreateSubTexturedQuad id="24399078401400">
 <float> 14.000000 </float>
 <float> 5.300000 </float>
 <float> -2.000000 </float>
@@ -5556,7 +5556,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592394300">
+<CreateSubTexturedQuad id="24399078439500">
 <float> 15.000000 </float>
 <float> 5.300000 </float>
 <float> -2.000000 </float>
@@ -5589,7 +5589,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592429500">
+<CreateSubTexturedQuad id="24399078476300">
 <float> 15.000000 </float>
 <float> 4.300000 </float>
 <float> -2.000000 </float>
@@ -5622,7 +5622,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592465700">
+<CreateSubTexturedQuad id="24399078514100">
 <float> 14.000000 </float>
 <float> 4.300000 </float>
 <float> -2.000000 </float>
@@ -5655,7 +5655,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592501700">
+<CreateSubTexturedQuad id="24399078551600">
 <float> 13.000000 </float>
 <float> 4.300000 </float>
 <float> -2.000000 </float>
@@ -5688,7 +5688,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592536200">
+<CreateSubTexturedQuad id="24399078591500">
 <float> 13.000000 </float>
 <float> 3.300000 </float>
 <float> -2.000000 </float>
@@ -5721,7 +5721,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592570000">
+<CreateSubTexturedQuad id="24399078630000">
 <float> 14.000000 </float>
 <float> 3.300000 </float>
 <float> -2.000000 </float>
@@ -5754,7 +5754,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592604100">
+<CreateSubTexturedQuad id="24399078667200">
 <float> 15.000000 </float>
 <float> 3.300000 </float>
 <float> -2.000000 </float>
@@ -5787,7 +5787,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592638600">
+<CreateSubTexturedQuad id="24399078705100">
 <float> 15.000000 </float>
 <float> 2.300000 </float>
 <float> -2.000000 </float>
@@ -5820,7 +5820,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592678000">
+<CreateSubTexturedQuad id="24399078749700">
 <float> 14.000000 </float>
 <float> 2.300000 </float>
 <float> -2.000000 </float>
@@ -5853,7 +5853,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592714400">
+<CreateSubTexturedQuad id="24399078792300">
 <float> 13.000000 </float>
 <float> 2.300000 </float>
 <float> -2.000000 </float>
@@ -5886,7 +5886,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592750700">
+<CreateSubTexturedQuad id="24399078833200">
 <float> 13.000000 </float>
 <float> 1.300000 </float>
 <float> -2.000000 </float>
@@ -5919,7 +5919,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592786300">
+<CreateSubTexturedQuad id="24399078890300">
 <float> 14.000000 </float>
 <float> 1.300000 </float>
 <float> -2.000000 </float>
@@ -5952,7 +5952,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592822300">
+<CreateSubTexturedQuad id="24399078972000">
 <float> 15.000000 </float>
 <float> 1.300000 </float>
 <float> -2.000000 </float>
@@ -5985,7 +5985,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592860300">
+<CreateSubTexturedQuad id="24399079011100">
 <float> 15.000000 </float>
 <float> 0.300000 </float>
 <float> -2.000000 </float>
@@ -6018,7 +6018,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592896600">
+<CreateSubTexturedQuad id="24399079050200">
 <float> 14.000000 </float>
 <float> 0.300000 </float>
 <float> -2.000000 </float>
@@ -6051,7 +6051,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592932600">
+<CreateSubTexturedQuad id="24399079097400">
 <float> 13.000000 </float>
 <float> 0.300000 </float>
 <float> -2.000000 </float>
@@ -6084,7 +6084,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004592967800">
+<CreateSubTexturedQuad id="24399079137100">
 <float> 13.000000 </float>
 <float> -0.700000 </float>
 <float> -2.000000 </float>
@@ -6117,7 +6117,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593003200">
+<CreateSubTexturedQuad id="24399079175700">
 <float> 14.000000 </float>
 <float> -0.700000 </float>
 <float> -2.000000 </float>
@@ -6150,7 +6150,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593039200">
+<CreateSubTexturedQuad id="24399079214600">
 <float> 15.000000 </float>
 <float> -0.700000 </float>
 <float> -2.000000 </float>
@@ -6183,7 +6183,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593077700">
+<CreateSubTexturedQuad id="24399079255200">
 <float> 14.750000 </float>
 <float> -1.700000 </float>
 <float> -2.000000 </float>
@@ -6216,7 +6216,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593113400">
+<CreateSubTexturedQuad id="24399079294500">
 <float> 14.000000 </float>
 <float> -1.700000 </float>
 <float> -2.000000 </float>
@@ -6249,7 +6249,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593148800">
+<CreateSubTexturedQuad id="24399079336500">
 <float> 13.000000 </float>
 <float> -1.700000 </float>
 <float> -2.000000 </float>
@@ -6282,7 +6282,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593184100">
+<CreateSubTexturedQuad id="24399079376100">
 <float> 13.000000 </float>
 <float> -2.700000 </float>
 <float> -2.000000 </float>
@@ -6315,7 +6315,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593221200">
+<CreateSubTexturedQuad id="24399079415400">
 <float> 14.000000 </float>
 <float> -2.700000 </float>
 <float> -2.000000 </float>
@@ -6348,7 +6348,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593257700">
+<CreateSubTexturedQuad id="24399079454500">
 <float> 14.750000 </float>
 <float> -2.700000 </float>
 <float> -2.000000 </float>
@@ -6381,7 +6381,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593293400">
+<CreateSubTexturedQuad id="24399079493400">
 <float> 15.000000 </float>
 <float> -3.700000 </float>
 <float> -2.000000 </float>
@@ -6414,7 +6414,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593329100">
+<CreateSubTexturedQuad id="24399079533300">
 <float> 14.000000 </float>
 <float> -3.700000 </float>
 <float> -2.000000 </float>
@@ -6447,7 +6447,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593364600">
+<CreateSubTexturedQuad id="24399079572300">
 <float> 13.000000 </float>
 <float> -3.700000 </float>
 <float> -2.000000 </float>
@@ -6480,7 +6480,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593400700">
+<CreateSubTexturedQuad id="24399079613000">
 <float> 13.000000 </float>
 <float> -4.700000 </float>
 <float> -2.000000 </float>
@@ -6513,7 +6513,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593436900">
+<CreateSubTexturedQuad id="24399079652500">
 <float> 14.000000 </float>
 <float> -4.700000 </float>
 <float> -2.000000 </float>
@@ -6546,7 +6546,7 @@
 </CreateSubTexturedQuad>
 </function>
 <function>
-<CreateSubTexturedQuad id="10004593473800">
+<CreateSubTexturedQuad id="24399079691900">
 <float> 15.000000 </float>
 <float> -4.700000 </float>
 <float> -2.000000 </float>
@@ -6580,3 +6580,14 @@
 </function>
 </SpriteComponent>
 </Entity>
+<DialogFrame tag="Entity" hash="7806276841069507401">
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 0.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+<float> 1.000000 </float>
+</DialogFrame>

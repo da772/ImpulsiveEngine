@@ -163,7 +163,7 @@ namespace GEngine {
 		int _res = Z_OK;
 		unsigned long dstSize = fd->GetDataSize();
 		// Realloc increment size
-		unsigned long incSize = fd->GetDataSize() / 4.f;
+		unsigned long incSize = fd->GetDataSize() / 2.f;
 		// Wait until we reach end of stream
 		while (_res != Z_STREAM_END) {
 			// Check for errors

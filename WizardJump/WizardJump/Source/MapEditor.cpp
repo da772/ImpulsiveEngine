@@ -1,4 +1,4 @@
-#include "MapEditor.hpp"
+﻿#include "MapEditor.hpp"
 #include "DebugLayer.h"
 #include "Environment/SpriteEntity.hpp"
 #include "Lighting/LightComponent.h"
@@ -103,9 +103,47 @@ void MapEditor::OnBegin()
 	AddEntity(fpsEnt);
 	uiComp = CreateGameObject<UIComponent>();
 	fpsEnt->AddComponent(uiComp);
-	font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
+	//font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
+	font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f);
 	font->LoadCharactersEN();
+	std::wstring unicode = L"ٿ and څ then Ԭ $ next сука блять";
+	uint32_t str[unicode.size()];
+	for (int i = 0; i < unicode.size(); i++) {
+		font->LoadCharacter_u32((uint32_t)unicode[i]);
+		str[i] =(uint32_t)unicode[i];
+	}
+
+	uiComp->CreateText_u32(str, unicode.size(), font, { -.5f,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
 #endif
+#if 1 && defined(GE_CONSOLE_APP)
+	fpsEnt = CreateGameObject<Entity>();
+	AddEntity(fpsEnt);
+	uiComp = CreateGameObject<UIComponent>();
+	fpsEnt->AddComponent(uiComp);
+	//font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
+	font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f);
+	font->LoadCharactersEN();
+	std::wstring unicode = L"ٿ and څ then Ԭ $ next сука блять";
+	uint32_t* str = (uint32_t*)malloc(sizeof(uint32_t)*unicode.size());
+	for (int i = 0; i < unicode.size(); i++) {
+		font->LoadCharacter_u32((uint32_t)unicode[i]);
+		str[i] = (uint32_t)unicode[i];
+	}
+
+	uiComp->CreateText_u32(str, unicode.size(), font, { -.5f,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
+	delete str;
+#endif
+	/*
+	fpsEnt = CreateGameObject<Entity>();
+	AddEntity(fpsEnt);
+	uiComp = CreateGameObject<UIComponent>();
+	font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f);
+	fpsEnt->AddComponent(uiComp);
+	//font->LoadCharactersEN();
+	font->LoadCharacter_u32(0x0686);
+	uint32_t str[1] = { 0x0686 };
+	uiComp->CreateText_u32(str, 1, font, { 0,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
+	*/
 
 	DebugLayer::showScene = false;
 	camera = m_CameraController->GetCamera().get();

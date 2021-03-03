@@ -32,19 +32,46 @@ namespace GEngine {
 	void OpenGL_Font::LoadCharacters(const char* string)
 	{
 		uint64_t size = ftgl::texture_font_load_glyphs(m_textureFont, string);
+		/*DEBUGG*/
+		uint32_t c = 0x0041;
+		ftgl::texture_font_load_glyph_u32(m_textureFont, &c);
+
 		m_Texture->SetData(m_textureAtlas->data, 0, TEXTUREFLAGS_RED_CHANNEL | 
 			TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear | TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap);
 		m_loaded += std::string(string);
 
-		
-
 	}
 
-	GEngine::Ref<GEngine::SubTexture2D> OpenGL_Font::GetCharacterCoords(uint64_t c)
+	void OpenGL_Font::LoadCharacter_u32(const uint32_t codepoint)
+	{
+		ftgl::texture_font_load_glyph_u32(m_textureFont, &codepoint);
+		m_Texture->SetData(m_textureAtlas->data, 0, TEXTUREFLAGS_RED_CHANNEL |
+			TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear | TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap);
+	}
+
+	GEngine::Ref<GEngine::SubTexture2D> OpenGL_Font::GetCharacterCoords(const char c)
 	{
 		Ref<SubTexture2D> tex = SubTexture2D::CreateFromCoords(m_Texture, { 0, 0 }, { 0, 0 });
 		texture_glyph_t* glyph = texture_font_get_glyph(m_textureFont, (const char*)&c);
 		
+		float s0 = glyph->s0;
+		float t0 = glyph->t0;
+		float s1 = glyph->s1;
+		float t1 = glyph->t1;
+
+		tex->m_TexCoords[3] = { s0, t0 };
+		tex->m_TexCoords[0] = { s0, t1 };
+		tex->m_TexCoords[1] = { s1, t1 };
+		tex->m_TexCoords[2] = { s1, t0 };
+
+		return tex;
+	}
+
+	GEngine::Ref<GEngine::SubTexture2D> OpenGL_Font::GetCharacterCoords_u32(uint32_t c)
+	{
+		Ref<SubTexture2D> tex = SubTexture2D::CreateFromCoords(m_Texture, { 0, 0 }, { 0, 0 });
+		texture_glyph_t* glyph = texture_font_get_glyph_u32(m_textureFont, &c);
+
 		float s0 = glyph->s0;
 		float t0 = glyph->t0;
 		float s1 = glyph->s1;
@@ -84,6 +111,95 @@ namespace GEngine {
 	Ref<StringInfo> OpenGL_Font::DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight)
 	{
 		return AppendString(make_shared<StringInfo>(), s, maxWidth, viewWidth, viewHeight);
+	}
+
+	GEngine::Ref<GEngine::StringInfo> OpenGL_Font::DrawString_u32(uint32_t* s, int len, float maxWidth, int viewWidth, int viewHeight)
+	{
+		return AppendString_u32(make_shared<StringInfo>(), s, len, maxWidth, viewWidth, viewHeight);
+	}
+
+	GEngine::Ref<GEngine::StringInfo> OpenGL_Font::AppendString_u32(Ref<StringInfo> info, uint32_t* text, int len, float maxWidth, int viewWidth, int viewHeight)
+	{
+			for (int i = 0; i < len; i++) {
+				Ref<SubTexture2D> texture = SubTexture2D::CreateFromCoords(m_Texture, { 0, 0 }, { 0, 0 });
+				uint32_t character = text[i];
+
+				if (character == 0x0020) {
+					info->data.pen.x += (float)m_size / 2.f / viewWidth;
+					info->data.lastSpace = i;
+					continue;
+				}
+				else if (character == 0x000A) {
+					info->data.pen.y -= info->data.maxHeight > 0 ? info->data.maxHeight : (float)m_size / viewHeight;
+					info->data.maxHeight = 0;
+					info->data.pen.x = 0;
+					continue;
+				}
+
+				texture_glyph_t* glyph = texture_font_get_glyph_u32(m_textureFont, &character);
+
+				if (glyph != NULL)
+				{
+
+					float s0 = glyph->s0;
+					float t0 = glyph->t0;
+					float s1 = glyph->s1;
+					float t1 = glyph->t1;
+
+					texture->m_TexCoords[3] = { s0, t0 };
+					texture->m_TexCoords[0] = { s0, t1 };
+					texture->m_TexCoords[1] = { s1, t1 };
+					texture->m_TexCoords[2] = { s1, t0 };
+
+					float kerning = 0.f;
+
+					float h = ((float)glyph->height / viewHeight) + (m_size / 2.f / viewHeight);
+
+					if (h > info->data.maxHeight)
+						info->data.maxHeight = h;
+
+					if (i > 0) {
+						char _s = text[i - 1];
+						kerning = texture_glyph_get_kerning(glyph, &_s);
+					}
+					else if (info->charData.size() > 0) {
+						uint32_t _s = info->charData[info->charData.size() - 1].character;
+						kerning = texture_glyph_get_kerning_u32(glyph, &_s);
+					}
+
+					info->data.pen.x += kerning / (float)viewWidth;
+
+					float x0 = info->data.pen.x + ((float)glyph->offset_x / viewWidth);
+					float y0 = info->data.pen.y + ((float)glyph->offset_y / viewHeight);
+					float x1 = x0 + ((float)glyph->width / viewWidth);
+					float y1 = y0 + ((float)glyph->height / viewHeight);
+
+
+					Vector2f pos = { (x1 + x0) / 2.f , y0 - (y1 - y0) / 2.f };
+					Vector2f scale = { x1 - x0, y1 - y0 };
+
+					if (pos.x > maxWidth) {
+						info->data.pen.x = 0;
+						info->data.pen.y -= info->data.maxHeight;
+						info->data.maxHeight = h;
+						for (int j = 0; j < i - info->data.lastSpace - 1; j++)
+							info->charData.erase(info->charData.end() - 1);
+						i = info->data.lastSpace;
+						continue;
+					}
+
+					info->data.pen.x += (float)glyph->advance_x / viewWidth;//(float)glyph->advance_x / viewWidth;
+
+					info->data.lastAdvance = (float)glyph->advance_x / viewWidth;
+
+					info->charData.push_back({ character, pos,scale, texture });
+				}
+				else {
+					GE_CORE_ERROR("INVALID CHARACTER: {0}", text[i]);
+				}
+			}
+			info->data.lastSpace = 0;
+			return info;
 	}
 
 	GEngine::Ref<GEngine::StringInfo> OpenGL_Font::AppendString(Ref<StringInfo> info, const std::string& s, float maxWidth, int viewWidth, int viewHeight)
@@ -160,7 +276,7 @@ namespace GEngine {
 
 				info->data.lastAdvance = (float)glyph->advance_x / viewWidth;
 
-				info->charData.push_back({ character, pos,scale, texture });
+				info->charData.push_back({ (uint32_t)character, pos,scale, texture });
 			}
 			else {
 				GE_CORE_ERROR("INVALID CHARACTER: {0}", s[i]);

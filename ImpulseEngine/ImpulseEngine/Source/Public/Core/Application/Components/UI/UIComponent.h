@@ -35,6 +35,7 @@ namespace GEngine {
 
 		const ShapeID CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale = Vector2f(1,1), const float alphaChannel = 4);
 		const std::string CreateText(const std::string& string, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
+		const std::string CreateText_u32(uint32_t* string, int len, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
 		const void AddText(const std::string& id, const std::string& text, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
 		void RemoveText(const std::string& id);
 		void SetTextColor(const std::string& id, const Vector4f& color, int index, int count = 1);

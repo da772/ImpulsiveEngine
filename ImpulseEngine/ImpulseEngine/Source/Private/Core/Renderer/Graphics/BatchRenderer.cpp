@@ -512,7 +512,6 @@ namespace GEngine {
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
-
 		 m_SortedObjects.erase(it);
 		 ReCreateBatches();
 	 }

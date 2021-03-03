@@ -7,7 +7,7 @@ namespace GEngine {
 	class SubTexture2D;
 
 	struct CharacterData {
-		char character;
+		uint32_t character;
 		Vector2f position;
 		Vector2f scale;
 		Ref<SubTexture2D> texture;
@@ -30,10 +30,14 @@ namespace GEngine {
 	public:
 		static Ref<Font> Create(std::string path, int size);
 		virtual void LoadCharacters(const char* string) = 0;
+		virtual void LoadCharacter_u32(const uint32_t codepoint) = 0;
 		virtual Ref<StringInfo> DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight) = 0;
 		virtual Ref<StringInfo> AppendString(Ref<StringInfo> info, const std::string& text, float maxWidth, int viewWidth, int viewHeight) = 0;
 		inline Ref<Texture2D> GetTexture() { return m_Texture; };
-		virtual Ref<SubTexture2D> GetCharacterCoords(uint64_t c) = 0;
+		virtual Ref<SubTexture2D> GetCharacterCoords(const char c) = 0;
+		virtual Ref<SubTexture2D> GetCharacterCoords_u32(const uint32_t c) = 0;
+		virtual Ref<StringInfo> DrawString_u32(uint32_t* s, int len, float maxWidth, int viewWidth, int viewHeight) = 0;
+		virtual Ref<StringInfo> AppendString_u32(Ref<StringInfo> info, uint32_t* text, int len, float maxWidth, int viewWidth, int viewHeight) = 0;
 
 		static void UnloadGraphics();
 		static void ReloadGraphics();
