@@ -17,7 +17,7 @@
 @implementation GameViewController
 
 static UITextField* txt;
-static GLKView *view
+static GLKView *view;
 
 void GEngine::Mobile_Interface::GetSafeArea(int* top, int* bottom, int* left, int* right)
 {
@@ -52,7 +52,7 @@ void GEngine::Mobile_Interface::SetKeyboardValue(const std::string& s) {
 }
 
 const float GEngine::Mobile_Interface::GetTime() {
-	return (double)self.timeSinceLastUpdate;
+    return 0;
 }
 
 - (void)viewDidLoad
