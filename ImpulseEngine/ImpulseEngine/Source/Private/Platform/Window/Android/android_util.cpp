@@ -24,6 +24,8 @@
 
 #include "Public/Core/Util/ThreadPool.h"
 
+#include "Public/Platform/Window/Mobile/Mobile_Interface.h"
+
 namespace AndroidUtil {
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "Android3.NativeActivity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "Android3.NativeActivity", __VA_ARGS__))
@@ -136,33 +138,67 @@ namespace AndroidUtil {
 		CleanJNIEnv();
 	}
 
-	struct safeArea {
-		int* top, bottom, left, right;
-	};
+	void ShowKeyboard()
+	{
+		AndroidUtil::jni_env = AndroidUtil::GetJNIEnv();
+		jobject nativeActivity = AndroidUtil::m_engine->app->activity->clazz;
+		jclass acl = AndroidUtil::jni_env->GetObjectClass(nativeActivity);
+		jmethodID getClassLoader = AndroidUtil::jni_env->GetMethodID(acl, "getClassLoader", "()Ljava/lang/ClassLoader;");
+		jobject cls = AndroidUtil::jni_env->CallObjectMethod(nativeActivity, getClassLoader);
+		jclass classLoader = AndroidUtil::jni_env->FindClass("java/lang/ClassLoader");
+		jmethodID findClass = AndroidUtil::jni_env->GetMethodID(classLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+		jstring strClassName = AndroidUtil::jni_env->NewStringUTF("com.helper.JavaInterface");
+		jclass androidInterface = (jclass)(AndroidUtil::jni_env->CallObjectMethod(cls, findClass, strClassName));
+		AndroidUtil::jni_env->DeleteLocalRef(strClassName);
+
+		jmethodID mid = AndroidUtil::jni_env->GetStaticMethodID(androidInterface, "showKeyboard", "(Landroid/app/Activity;)V");
+		AndroidUtil::jni_env->CallStaticVoidMethod(androidInterface, mid, nativeActivity);
+
+		jni_env->DeleteLocalRef(cls);
+	}
+
+	void HideKeyboard()
+	{
+		AndroidUtil::jni_env = AndroidUtil::GetJNIEnv();
+		jobject nativeActivity = AndroidUtil::m_engine->app->activity->clazz;
+		jclass acl = AndroidUtil::jni_env->GetObjectClass(nativeActivity);
+		jmethodID getClassLoader = AndroidUtil::jni_env->GetMethodID(acl, "getClassLoader", "()Ljava/lang/ClassLoader;");
+		jobject cls = AndroidUtil::jni_env->CallObjectMethod(nativeActivity, getClassLoader);
+		jclass classLoader = AndroidUtil::jni_env->FindClass("java/lang/ClassLoader");
+		jmethodID findClass = AndroidUtil::jni_env->GetMethodID(classLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+		jstring strClassName = AndroidUtil::jni_env->NewStringUTF("com.helper.JavaInterface");
+		jclass androidInterface = (jclass)(AndroidUtil::jni_env->CallObjectMethod(cls, findClass, strClassName));
+		AndroidUtil::jni_env->DeleteLocalRef(strClassName);
+
+		jmethodID mid = AndroidUtil::jni_env->GetStaticMethodID(androidInterface, "hideKeyboard", "(Landroid/app/Activity;)V");
+		AndroidUtil::jni_env->CallStaticVoidMethod(androidInterface, mid, nativeActivity);
+
+		jni_env->DeleteLocalRef(cls);
+	}
 
 	void GetSafeArea(int* top, int* bottom, int* left, int* right)
 	{
-		jni_env = GetJNIEnv();
-		jobject nativeActivity = m_engine->app->activity->clazz;
-		jclass acl = jni_env->GetObjectClass(nativeActivity);
-		jmethodID getClassLoader = jni_env->GetMethodID(acl, "getClassLoader", "()Ljava/lang/ClassLoader;");
-		jobject cls = jni_env->CallObjectMethod(nativeActivity, getClassLoader);
-		jclass classLoader = jni_env->FindClass("java/lang/ClassLoader");
-		jmethodID findClass = jni_env->GetMethodID(classLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
-		jstring strClassName = jni_env->NewStringUTF("com.helper.JavaInterface");
-		jclass androidInterface = (jclass)(jni_env->CallObjectMethod(cls, findClass, strClassName));
-		jni_env->DeleteLocalRef(strClassName);
+		AndroidUtil::jni_env = AndroidUtil::GetJNIEnv();
+		jobject nativeActivity = AndroidUtil::m_engine->app->activity->clazz;
+		jclass acl = AndroidUtil::jni_env->GetObjectClass(nativeActivity);
+		jmethodID getClassLoader = AndroidUtil::jni_env->GetMethodID(acl, "getClassLoader", "()Ljava/lang/ClassLoader;");
+		jobject cls = AndroidUtil::jni_env->CallObjectMethod(nativeActivity, getClassLoader);
+		jclass classLoader = AndroidUtil::jni_env->FindClass("java/lang/ClassLoader");
+		jmethodID findClass = AndroidUtil::jni_env->GetMethodID(classLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+		jstring strClassName = AndroidUtil::jni_env->NewStringUTF("com.helper.JavaInterface");
+		jclass androidInterface = (jclass)(AndroidUtil::jni_env->CallObjectMethod(cls, findClass, strClassName));
+		AndroidUtil::jni_env->DeleteLocalRef(strClassName);
 
-		jmethodID mid = jni_env->GetStaticMethodID(androidInterface, "GetSafeArea", "(Landroid/app/Activity;)Ljava/lang/String;");
-		jstring val = (jstring)jni_env->CallStaticObjectMethod(androidInterface, mid, nativeActivity);
+		jmethodID mid = AndroidUtil::jni_env->GetStaticMethodID(androidInterface, "GetSafeArea", "(Landroid/app/Activity;)Ljava/lang/String;");
+		jstring val = (jstring)AndroidUtil::jni_env->CallStaticObjectMethod(androidInterface, mid, nativeActivity);
 
-		const char* _cStr = jni_env->GetStringUTFChars(val, 0);
-		uint32_t cSize = (uint32_t)jni_env->GetStringLength(val);
+		const char* _cStr = AndroidUtil::jni_env->GetStringUTFChars(val, 0);
+		uint32_t cSize = (uint32_t)AndroidUtil::jni_env->GetStringLength(val);
 		std::string s(_cStr);
-		jni_env->ReleaseStringUTFChars(val, _cStr);
-		jni_env->DeleteLocalRef(val);
-		jni_env->DeleteLocalRef(cls);
-		CleanJNIEnv();
+		AndroidUtil::jni_env->ReleaseStringUTFChars(val, _cStr);
+		AndroidUtil::jni_env->DeleteLocalRef(val);
+		AndroidUtil::jni_env->DeleteLocalRef(cls);
+		AndroidUtil::CleanJNIEnv();
 		int counter = 0;
 		int* arr[4] = { top, bottom, left, right };
 		std::string _s;
@@ -184,6 +220,12 @@ namespace AndroidUtil {
 		*right = *arr[3];
 		GE_CORE_DEBUG("TOP:{0} BOTTOM:{1} LEFT:{2} RIGHT:{3}", *top, *bottom, *left, *right);
 	}
+
+	struct safeArea {
+		int* top, bottom, left, right;
+	};
+
+	
 
 	class LoggingRewardedVideoListener
 		: public firebase::admob::rewarded_video::Listener {
@@ -223,4 +265,39 @@ namespace AndroidUtil {
 	}
 
 }
+
+
+void GEngine::Mobile_Interface::GetSafeArea(int* top, int* bottom, int* left, int* right)
+{
+	AndroidUtil::GetSafeArea(top, bottom, left, right);
+}
+
+ViewContext GEngine::Mobile_Interface::GetViewContext() {
+	return AndroidUtil::GetAndroidActivity();
+}
+
+void GEngine::Mobile_Interface::BindView() {
+
+}
+
+void GEngine::Mobile_Interface::ShowKeyboard() {
+	AndroidUtil::ShowKeyboard();
+}
+
+void GEngine::Mobile_Interface::HideKeyboard() {
+	AndroidUtil::HideKeyboard();
+}
+
+std::string GEngine::Mobile_Interface::GetKeyboardValue() {
+	return "";
+}
+
+void GEngine::Mobile_Interface::SetKeyboardValue(const std::string& s) {
+
+}
+
+const float GEngine::Mobile_Interface::GetTime() {
+	return 0;
+}
+
 #endif

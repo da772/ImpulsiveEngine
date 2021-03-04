@@ -4,7 +4,8 @@
 #include "Public/Core/Renderer/Renderer.h"
 #include "Public/Core/Events/ApplicationEvent.h"
 #include "Public/Core/Events/TouchEvent.h"
-#include "Public/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Core/Events/KeyEvent.h"
+#include "Public/Platform/Window/Mobile/Mobile_Interface.h"
 #include "Public/Core/Util/GEMath.h"
 
 #ifdef GE_PLATFORM_ANDROID
@@ -68,35 +69,59 @@ namespace GEngine {
             
 		}
 
+       
+		void MobileWindow::KeyEvent(uint32_t action, uint32_t keycode)
+		{
+
+            switch (action) {
+			default:
+			case 0: {
+				KeyPressedEvent e(keycode, 0);
+				m_Data.EventCallback(e);
+				break;
+			}
+			case 1: {
+				KeyReleasedEvent e(keycode);
+				m_Data.EventCallback(e);
+				break;
+			}
+            }
+		}
+
 		void MobileWindow::ShowKeyboard()
 		{
-            Mobile_Input_Callback::ShowKeyboard();
+            Mobile_Interface::ShowKeyboard();
 		}
 
 		std::string MobileWindow::GetKeyboardString() const
 		{
-            return Mobile_Input_Callback::GetKeyboardValue();
+            return Mobile_Interface::GetKeyboardValue();
 		}
 
 		void MobileWindow::SetKeyboardString(const std::string& text)
 		{
-            Mobile_Input_Callback::SetKeyboardValue(text);
+            Mobile_Interface::SetKeyboardValue(text);
 		}
 
 		void MobileWindow::HideKeyboard() 
 		{
-            Mobile_Input_Callback::HideKeyboard();
+            Mobile_Interface::HideKeyboard();
 		}
 
 		void MobileWindow::GetSafeArea(int* top, int* bottom, int* left, int* right)
 		{
+            Mobile_Interface::GetSafeArea(top, bottom, left, right);
+            /*
+            
 #ifdef GE_PLATFORM_ANDROID
             AndroidUtil::GetSafeArea(top, bottom, left, right);
 #endif
 #ifdef GE_PLATFORM_IOS
-            /** ADD IOS SUPPORT **/
-            Mobile_Input_Callback::GetSafeArea(top, bottom, left, right);
+          Mobile_Input_Callback::GetSafeArea(top, bottom, left, right);
 #endif
+*/
+    
+
 		}
 
 		void MobileWindow::Shutdown()
@@ -105,7 +130,7 @@ namespace GEngine {
         
         float const MobileWindow::GetTime() const
         {
-            return Mobile_Input_Callback::GetTime();
+            return Mobile_Interface::GetTime();
         }
         
         void MobileWindow::OnUpdate(bool m_Minimized)
@@ -129,13 +154,16 @@ namespace GEngine {
         {
             m_Data.Width = width;
             m_Data.Height = height;
-#ifdef GE_PLATFORM_ANDROID
+            Mobile_Interface::GetSafeArea(&m_Data.safe_top, &m_Data.safe_bottom, &m_Data.safe_left, &m_Data.safe_right);
+            /*#ifdef GE_PLATFORM_ANDROID
 			AndroidUtil::GetSafeArea(&m_Data.safe_top, &m_Data.safe_bottom, &m_Data.safe_left, &m_Data.safe_right);
 #endif
 #ifdef GE_PLATFORM_IOS
             Mobile_Input_Callback::GetSafeArea(&m_Data.safe_top, &m_Data.safe_bottom, &m_Data.safe_left, &m_Data.safe_right);
             GE_CORE_DEBUG("SAFE AREA {0}, {1}, {2}, {3}", m_Data.safe_top, m_Data.safe_bottom, m_Data.safe_left, m_Data.safe_right);
 #endif
+*/
+
 			WindowResizeEvent event(width, height);
             m_Data.EventCallback(event);
         }

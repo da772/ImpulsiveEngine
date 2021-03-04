@@ -117,6 +117,10 @@ WizardJump::WizardJump()
 	EnableImGui(false);
 #endif
 	
+	MobileWindow* window = dynamic_cast< GEngine::MobileWindow*>(GetWindow());
+	if (window) {
+		window->ShowKeyboard();
+	}
 	
 
 #ifdef GE_MOBILE_APP

@@ -94,7 +94,7 @@ namespace GEngine {
 			m_app =
 				firebase::App::Create(firebase::AppOptions(),
 					AndroidUtil::GetJNIEnv(),
-					Mobile_Input_Callback::GetViewContext());
+					Mobile_Interface::GetViewContext());
 #endif
 #ifdef GE_PLATFORM_IOS
 			m_app = firebase::App::Create(firebase::AppOptions());
@@ -263,7 +263,7 @@ namespace GEngine {
 
 			rewarded_video_listener->SetRewardCallback(rewardCallback);
 			rewarded_video_listener->SetStateChangeCallback(endCallback);
-			firebase::Future<void> f = firebase::admob::rewarded_video::Show(Mobile_Input_Callback::GetViewContext());
+			firebase::Future<void> f = firebase::admob::rewarded_video::Show(Mobile_Interface::GetViewContext());
 			
 			if (f.error() != 0) {
 				GE_CORE_ERROR("Error: {0}", f.error_message());

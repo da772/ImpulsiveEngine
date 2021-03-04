@@ -3,6 +3,7 @@
 #include <GEngine.h>
 #include <EntryPoint.h>
 #include "Public/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Platform/Window/Mobile/Mobile_Interface.h"
 
 
 @interface GameViewController () {}
@@ -15,66 +16,64 @@
 
 @implementation GameViewController
 
+static UITextField* txt;
+static GLKView *view
 
+void GEngine::Mobile_Interface::GetSafeArea(int* top, int* bottom, int* left, int* right)
+{
+	*top = view.safeAreaInsets.top*view.contentScaleFactor;
+    *bottom = view.safeAreaInsets.bottom*view.contentScaleFactor;
+    *left =  view.safeAreaInsets.left*view.contentScaleFactor;
+    *right = view.safeAreaInsets.right*view.contentScaleFactor;
+}
+
+ViewContext GEngine::Mobile_Interface::GetViewContext() {
+	return (UIView*)view;
+}
+
+void GEngine::Mobile_Interface::BindView() {
+    [view bindDrawable];
+}
+
+void GEngine::Mobile_Interface::ShowKeyboard() {
+	 txt.becomeFirstResponder;
+}
+
+void GEngine::Mobile_Interface::HideKeyboard() {
+	 txt.resignFirstResponder;
+}
+
+std::string GEngine::Mobile_Interface::GetKeyboardValue() {
+    return std::string([txt.text UTF8String]);
+}
+
+void GEngine::Mobile_Interface::SetKeyboardValue(const std::string& s) {
+    txt.text = [NSString stringWithUTF8String:s.c_str()];
+}
+
+const float GEngine::Mobile_Interface::GetTime() {
+	return (double)self.timeSinceLastUpdate;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-    UITextField* txt = (UITextField*)[self.view viewWithTag:1];
-    
-    GEngine::Mobile_Input_Callback::SetShowKeyboardFunc([txt](){
-        txt.becomeFirstResponder;
-    });
-    GEngine::Mobile_Input_Callback::SetHideKeyboardFunc([txt](){
-        txt.resignFirstResponder;
-    });
+    txt = (UITextField*)[self.view viewWithTag:1];
     
     
-    
-    GEngine::Mobile_Input_Callback::SetKeyboardTextFunc([txt](std::string text) {
-        txt.text = [NSString stringWithUTF8String:text.c_str()];
-    });
-    
-   GEngine::Mobile_Input_Callback::SetGetKeyboardTextFunc([txt]() {
-       return std::string([txt.text UTF8String]);
-    });
-    
-    GEngine::Mobile_Input_Callback::SetGetTimeFunc([self]() {
-        return (double)self.timeSinceLastUpdate;
-    });
-        
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
 
        if (!self.context) {
            NSLog(@"Failed to create ES context");
        }
        
-    GLKView *view = (GLKView *)self.view;
+    view = (GLKView *)self.view;
     view.context = self.context;
     [view bindDrawable];
     
-    GEngine::Mobile_Input_Callback::SetSetBindView([view](){
-        [view bindDrawable];
-    });
 
-    
-   
-    GEngine::Mobile_Input_Callback::SetGetViewContext([view](){
-        return (UIView*)view;
-    });
-    
-    GEngine::Mobile_Input_Callback::SetGetSafeArea([self](int* top, int* bottom, int* left, int* right) {
-        *top = self.view.safeAreaInsets.top*self.view.contentScaleFactor;
-        *bottom = self.view.safeAreaInsets.bottom*self.view.contentScaleFactor;
-        *left =  self.view.safeAreaInsets.left*self.view.contentScaleFactor;
-        *right = self.view.safeAreaInsets.right*self.view.contentScaleFactor;
-    } );
-
-          
     [self setupGL];
-    
-   
     
    
 }
@@ -184,7 +183,7 @@
         UITouch* touch = (UITouch*)obj;
         CGPoint touchPoint = [touch locationInView:touch.view];
         uint64_t addr = reinterpret_cast<uint64_t>(obj);
-        GEngine::Mobile_Input_Callback::Touched(addr, 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+        GEngine::Mobile_Touch_Callback::Touched(addr, 0, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
 
@@ -198,7 +197,7 @@
             continue;
         
         uint64_t addr = reinterpret_cast<uint64_t>(obj);
-        GEngine::Mobile_Input_Callback::Touched(addr, 1, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+        GEngine::Mobile_Touch_Callback::Touched(addr, 1, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
         }
     }
 
@@ -207,7 +206,7 @@ for (NSObject* obj : touches) {
     UITouch* touch = (UITouch*)obj;
     CGPoint touchPoint = [touch locationInView:touch.view];
     uint64_t addr = reinterpret_cast<uint64_t>(obj);
-    GEngine::Mobile_Input_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+    GEngine::Mobile_Touch_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
    
@@ -216,7 +215,7 @@ for (NSObject* obj : touches) {
     UITouch* touch = (UITouch*)obj;
     CGPoint touchPoint = [touch locationInView:touch.view];
     uint64_t addr = reinterpret_cast<uint64_t>(obj);
-    GEngine::Mobile_Input_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
+    GEngine::Mobile_Touch_Callback::Touched(addr, 2, touchPoint.x*touch.view.contentScaleFactor,touchPoint.y*touch.view.contentScaleFactor, touch.force);
     }
 }
 

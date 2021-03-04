@@ -41,6 +41,11 @@ void MapEditor::OnEvent(Event& e)
 			if (tutorial)
 				RunTutorial();
 		}
+#ifdef GE_MOBILE_APP
+		if (_e.GetKeyCode() == GE_KEY_C) {
+			((MobileWindow*)Application::GetApp()->GetWindow())->HideKeyboard();
+		}
+#endif
 	}
 
 }

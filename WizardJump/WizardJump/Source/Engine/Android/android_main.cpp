@@ -21,6 +21,7 @@
 #include <errno.h>
 #include "Public/Platform/Window/Android/android_util.h"
 #include "Public/Platform/Window/Mobile/Mobile_Input.h"
+#include "Public/Platform/Window/Mobile/Mobile_Interface.h"
 #include "GEngine.h"
 #include <EntryPoint.h>
 
@@ -207,11 +208,11 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_KEY) {
 		uint32_t action = AKeyEvent_getAction(event);
 		uint32_t keyCode = AKeyEvent_getKeyCode(event);
+		GEngine::Mobile_Touch_Callback::ProcessKeyboard(action, keyCode);
 		GE_CORE_DEBUG("Action: {0} Keycode: {1}", action, keyCode);
 	}
 
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-		
 		
 		uint32_t cnt = AMotionEvent_getPointerCount(event);
 		for (int i = 0; i < cnt; i++) {
@@ -229,7 +230,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
 					if (action == 3 || action == 2) {
 						touch_map.erase(id);
 					}
-					GEngine::Mobile_Input_Callback::Touched(_id, action, x, y, pressure);
+					GEngine::Mobile_Touch_Callback::Touched(_id, action, x, y, pressure);
 					continue;
 				}
 			}
@@ -238,7 +239,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
 				_id++;
 			}
 			touch_map[id] = _id;
-			GEngine::Mobile_Input_Callback::Touched(touch_map[id], action, x, y, pressure);
+			GEngine::Mobile_Touch_Callback::Touched(touch_map[id], action, x, y, pressure);
 			continue;
 			
 			
@@ -432,7 +433,6 @@ void main_loop() {
 }
 
 
-
 void resume_loop(ANativeActivity* a) {
 	SetActivityStatus(false);
 	LOGW("RESUME LOOP");
@@ -453,13 +453,12 @@ void pause_loop(ANativeActivity* a) {
 * android_native_app_glue.  It runs in its own thread, with its own
 * event loop for receiving input events and doing other things.
 */
+
+
 void android_main(struct android_app* state) {
 
 
-	GEngine::Mobile_Input_Callback::SetGetViewContext([]() {
-		return AndroidUtil::GetAndroidActivity();
-	});
-
+	
 	if (enginePtr != nullptr) {
 		main_loop();
 		return;

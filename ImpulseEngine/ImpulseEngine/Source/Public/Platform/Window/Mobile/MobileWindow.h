@@ -31,6 +31,7 @@ namespace GEngine {
         virtual void Init(const WindowData& props) override;
         
         virtual void TouchEvent(uint64_t id, uint16_t state, int16_t x, int16_t y);
+        void KeyEvent(uint32_t action, uint32_t keycode);
 
         virtual void ShowKeyboard();
 

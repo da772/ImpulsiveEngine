@@ -27,6 +27,9 @@ namespace AndroidUtil {
 
 	void SetRewardUserId_Google(std::string id);
 
+	void ShowKeyboard();
+	void HideKeyboard();
+
 	void GetSafeArea(int* top, int* bottom, int* left, int* right);
 
 

@@ -1,6 +1,7 @@
 package com.helper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.view.DisplayCutout;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -15,6 +17,8 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.lang.reflect.Method;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class JavaInterface {
 
@@ -38,6 +42,18 @@ public class JavaInterface {
                 }
             }
         });
+    }
+
+    static void showKeyboard(Activity a)
+    {
+        InputMethodManager imm = ( InputMethodManager )a.getSystemService( Context.INPUT_METHOD_SERVICE );
+        imm.showSoftInput( a.getWindow().getDecorView(), InputMethodManager.SHOW_FORCED );
+    }
+
+    static void hideKeyboard(Activity a)
+    {
+        InputMethodManager imm = ( InputMethodManager )a.getSystemService( Context.INPUT_METHOD_SERVICE );
+        imm.hideSoftInputFromWindow( a.getWindow().getDecorView().getWindowToken(), 0 );
     }
 
     static String GetSafeArea(Activity a) {

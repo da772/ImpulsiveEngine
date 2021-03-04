@@ -12,36 +12,28 @@
 
 namespace GEngine {
 
-	std::function<void()> Mobile_Input_Callback::showKeyboardFunc;
-    std::function<void(int*,int*,int*,int*)> Mobile_Input_Callback::getSafeView;
-	std::function<void()> Mobile_Input_Callback::hideKeyboardFunc;
-	std::function<void(std::string)> Mobile_Input_Callback::setKeyboardTextFunc;
-	std::function<std::string()> Mobile_Input_Callback::getKeyboardTextFunc;
-	std::function<double()> Mobile_Input_Callback::getTimeFunc;
-    std::function<void()> Mobile_Input_Callback::setBindView;
-    std::function<ViewContext()> Mobile_Input_Callback::getViewContext;
-	bool Mobile_Input_Callback::keyboardOpen = false;
-	bool Mobile_Input_Callback::touchDown = false;
-	int16_t Mobile_Input_Callback::xPos = -1;
-	int16_t Mobile_Input_Callback::yPos = -1;
-	std::mutex Mobile_Input_Callback::touchMutex;
-	std::unordered_map<uint64_t, FTouchInfo> Mobile_Input_Callback::touches;
+	bool Mobile_Touch_Callback::keyboardOpen = false;
+	bool Mobile_Touch_Callback::touchDown = false;
+	std::mutex Mobile_Touch_Callback::touchMutex;
+	std::unordered_map<uint64_t, FTouchInfo> Mobile_Touch_Callback::touches;
 
 
 	bool Mobile_Input::IsKeyPressedImpl(int keycode)
 	{
+		/*TODO*/
+
 		return false;
 	}
 
 	bool Mobile_Input::IsMouseButtonPressedImpl(uint64_t button)
 	{
-        std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Input_Callback::GetTouches();
+        std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Touch_Callback::GetTouches();
         return t.find(button) != t.end();
 	}
 
 	float Mobile_Input::GetMouseXImpl(uint64_t id)
 	{
-		std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Input_Callback::GetTouches();
+		std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Touch_Callback::GetTouches();
         if (t.find(id) != t.end()) {
             return t[id].x;
         }
@@ -49,12 +41,12 @@ namespace GEngine {
 	}
 
     void Mobile_Input::ClearTouches() {
-        Mobile_Input_Callback::ClearTouches();
+		Mobile_Touch_Callback::ClearTouches();
     }
 
 	float Mobile_Input::GetMouseYImpl(uint64_t id)
 	{
-        std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Input_Callback::GetTouches();
+        std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Touch_Callback::GetTouches();
         if (t.find(id) != t.end()) {
             return t[id].y;
         }
@@ -63,7 +55,7 @@ namespace GEngine {
 
 	std::pair<float, float> Mobile_Input::GetMousePositionImpl(uint64_t id)
 	{
-        std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Input_Callback::GetTouches();
+        std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Touch_Callback::GetTouches();
            if (t.find(id) != t.end()) {
                return {t[id].x, t[id].y};
            }
@@ -95,10 +87,9 @@ namespace GEngine {
 					-GEMath::MapRange(event.GetY() / (float)height, 0, 1, -1, 1));
 			}
 		}
-		
 	}
 
-void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, float force)
+void Mobile_Touch_Callback::Touched(uint64_t id, int state, float x, float y, float force)
 {
 	if (GEngine::Application::GetApp()->GetWindow() != nullptr) {
 		
@@ -110,40 +101,40 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 				// Touch begin
 				case 0: {
                     std::lock_guard<std::mutex> lock(touchMutex);
-					if (Mobile_Input_Callback::touches.find(id) == Mobile_Input_Callback::touches.end()) {
+					if (Mobile_Touch_Callback::touches.find(id) == Mobile_Touch_Callback::touches.end()) {
                         FTouchInfo info(id, state, x, y,force, Time::GetEpochTimeNS());
-                        Mobile_Input_Callback::touches[id] = std::move(info);
+						Mobile_Touch_Callback::touches[id] = std::move(info);
 					}
 					break;
 				}
 				// Touch move
 				case 1: {
                     std::lock_guard<std::mutex> lock(touchMutex);
-                    Mobile_Input_Callback::touches[id].state = state;
-                    Mobile_Input_Callback::touches[id].x = x;
-                    Mobile_Input_Callback::touches[id].y = y;
+					Mobile_Touch_Callback::touches[id].state = state;
+					Mobile_Touch_Callback::touches[id].x = x;
+					Mobile_Touch_Callback::touches[id].y = y;
 					break;
 				}
 				// Touch end
 				case 2: {
-                    Mobile_Input_Callback::touches[id].state = state;
-                    Mobile_Input_Callback::touches[id].x = x;
-                    Mobile_Input_Callback::touches[id].y = y;
+					Mobile_Touch_Callback::touches[id].state = state;
+					Mobile_Touch_Callback::touches[id].x = x;
+					Mobile_Touch_Callback::touches[id].y = y;
                     std::lock_guard<std::mutex> lock(touchMutex);
                     ThreadPool::AddMainThreadFunction([id](){
                         std::lock_guard<std::mutex> lock(touchMutex);
-                        Mobile_Input_Callback::touches.erase(id);
+						Mobile_Touch_Callback::touches.erase(id);
                     });
                     break;
 				}
 				// Touch Cancel
 				case 3: {
-                    Mobile_Input_Callback::touches[id].state = state;
-                                       Mobile_Input_Callback::touches[id].x = x;
-                                       Mobile_Input_Callback::touches[id].y = y;
+					Mobile_Touch_Callback::touches[id].state = state;
+					Mobile_Touch_Callback::touches[id].x = x;
+					Mobile_Touch_Callback::touches[id].y = y;
                     ThreadPool::AddMainThreadFunction([id](){
                         std::lock_guard<std::mutex> lock(touchMutex);
-                        Mobile_Input_Callback::touches.erase(id);
+						Mobile_Touch_Callback::touches.erase(id);
                     });
 					//Mobile_Input_Callback::touches[id].CallTouchEndFunctions(&Mobile_Input_Callback::touches[id]);
 					
@@ -158,5 +149,13 @@ void Mobile_Input_Callback::Touched(uint64_t id, int state, float x, float y, fl
 }
 
 
+
+void Mobile_Touch_Callback::ProcessKeyboard(uint32_t action, uint32_t keycode)
+{
+	GEngine::MobileWindow* mb = static_cast<GEngine::MobileWindow*>(GEngine::Application::GetApp()->GetWindow());
+	if (mb)
+		mb->KeyEvent(action, keycode);
+
+}
 
 }
