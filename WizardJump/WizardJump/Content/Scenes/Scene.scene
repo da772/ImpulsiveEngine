@@ -555,7 +555,7 @@
 <float> 1.000000 </float>
 <float> 0.000000 </float>
 <float> 0.000000 </float>
-<float> 1.000000 </float>
+<float> 0.000000 </float>
 <Texture2D>
 <constructor>
 <string>batchBlank</string>

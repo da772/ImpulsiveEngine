@@ -39,20 +39,24 @@ namespace GEngine {
 	}
 
     void Font::RemoveFont(const std::string &name) {
-        Font::m_FontList.erase(name);
+        if (Font::m_FontList.find(name) != Font::m_FontList.end())
+            Font::m_FontList.erase(name);
     }
 
 	void Font::UnloadGraphics()
 	{
 		for (std::pair<std::string, Weak<Font>> p : Font::m_FontList) {
-            p.second.lock()->Unload();
+            if (p.second.lock()) {
+                p.second.lock()->Unload();
+            }
 		}
 	}
 
 	void Font::ReloadGraphics()
 	{
 		for (std::pair<std::string, Weak<Font>> p : Font::m_FontList) {
-			p.second.lock()->Reload();
+			
+            if (p.second.lock()) p.second.lock()->Reload();
 		}
 	}
 

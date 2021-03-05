@@ -32,7 +32,7 @@ public:
 		return m_quadCollider->GetLinearVelocity();
 	}
 
-	bool debug = true;
+	bool debug = false;
 	int groundedCount = 0;
 
 	bool isGrounded() { return groundedCount > 0; };

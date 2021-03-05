@@ -1,4 +1,4 @@
-﻿#include "MapEditor.hpp"
+#include "MapEditor.hpp"
 #include "DebugLayer.h"
 #include "Environment/SpriteEntity.hpp"
 #include "Lighting/LightComponent.h"
@@ -117,12 +117,14 @@ void MapEditor::OnBegin()
 	AddEntity(fpsEnt);
 	uiComp = CreateGameObject<UIComponent>();
 	fpsEnt->AddComponent(uiComp);
-	//font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
+	font = GEngine::Font::Create("Content/Fonts/Wizard.ttf", 120.f);
+    /*
 	font = GEngine::Font::Create("Content/Fonts/arial.ttf", 120.f);
 	font->LoadCharactersEN();
 	std::u32string unicode = U"ٿ and څ then Ԭ $ next сука блять\n∞";
 	font->LoadCharacters_u32((uint32_t*)unicode.data(), unicode.size());
 	uiComp->CreateText_u32((uint32_t*)unicode.data(), unicode.size(), font, { -.5f,0,20 }, { 2.f,2.f,1 }, { 1,0,0,1 });
+     */
 #endif
 #if 0 && defined(GE_CONSOLE_APP)
 	fpsEnt = CreateGameObject<Entity>();

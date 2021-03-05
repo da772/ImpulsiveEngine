@@ -119,7 +119,7 @@ WizardJump::WizardJump()
 	
 	MobileWindow* window = dynamic_cast< GEngine::MobileWindow*>(GetWindow());
 	if (window) {
-		window->ShowKeyboard();
+		//window->ShowKeyboard();
 	}
 	
 
