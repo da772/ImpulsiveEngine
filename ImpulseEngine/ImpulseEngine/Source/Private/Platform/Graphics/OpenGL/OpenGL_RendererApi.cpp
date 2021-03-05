@@ -148,6 +148,11 @@ namespace GEngine {
 		glDrawElements(GL_TRIANGLES, _size, GL_UNSIGNED_INT, nullptr);
 	}
 
+	void OpenGL_RendererApi::DrawIndexedInstanced(const Ref<VertexArray>& vertexArray, u32 size, int amount)
+	{
+		glDrawElementsInstanced(GL_TRIANGLES, size, GL_UNSIGNED_INT, nullptr, amount);
+	}
+
 	void OpenGL_RendererApi::DrawArrays(const Ref<VertexArray>& vertexArray)
 	{
 		glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetVertexCount());

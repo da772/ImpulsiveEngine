@@ -144,18 +144,20 @@ void Mobile_Touch_Callback::Touched(uint64_t id, int state, float x, float y, fl
 			mb->TouchEvent(id, state, x, y);
 
 		}
+
+
+		void Mobile_Touch_Callback::ProcessKeyboard(uint32_t action, uint32_t keycode)
+		{
+			GEngine::MobileWindow* mb = static_cast<GEngine::MobileWindow*>(GEngine::Application::GetApp()->GetWindow());
+			if (mb)
+				mb->KeyEvent(action, keycode);
+
+		}
 #endif
 	}
 }
 
 
 
-void Mobile_Touch_Callback::ProcessKeyboard(uint32_t action, uint32_t keycode)
-{
-	GEngine::MobileWindow* mb = static_cast<GEngine::MobileWindow*>(GEngine::Application::GetApp()->GetWindow());
-	if (mb)
-		mb->KeyEvent(action, keycode);
-
-}
 
 }

@@ -40,8 +40,8 @@ void ExampleLayer::OnAttach()
 	GEngine::SceneManager::AddScene("mainGame", s2);
 	GEngine::SceneManager::AddScene("menuScene", s3);
 	GEngine::SceneManager::AddScene("mapEditor", s4);
-	GEngine::SceneManager::SetCurrentScene("mapEditor");
-	//GEngine::SceneManager::SetCurrentScene("splashScreen");
+	//GEngine::SceneManager::SetCurrentScene("mapEditor");
+	GEngine::SceneManager::SetCurrentScene("mainGame");
 
 
 }
@@ -81,7 +81,7 @@ WizardJump::WizardJump()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
-	s_debugTools = true;
+	s_debugTools = false;
 	
 	
 	if (s_debugTools) {
@@ -104,12 +104,6 @@ WizardJump::WizardJump()
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
 	GetWindow()->SetVSync(false);
-
-
-
-
-
-
 
 #if defined(GE_CONSOLE_APP)
 	EnableImGui(s_debugTools);

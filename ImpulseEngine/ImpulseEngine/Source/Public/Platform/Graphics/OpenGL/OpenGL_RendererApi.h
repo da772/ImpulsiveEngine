@@ -14,6 +14,7 @@ namespace GEngine {
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, u32 size = 0) override;
 		virtual void DrawArrays(const Ref<VertexArray>& vertexArray) override;
 		virtual void DrawArraysInstanced(const Ref<VertexArray>& vertexArray, int amount) override;
+		virtual void DrawIndexedInstanced(const Ref<VertexArray>& vertexArray, u32 size ,int amount) override;
 		virtual void DrawArraysLines(const Ref<VertexArray>& vertexArray) override;
 		virtual void DrawText3D(const char* txt, const Vector4f& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center) override;
 		virtual void DrawText3D_Billboard(const char* txt, const Vector4f& color, const float& scale, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, bool center) override;

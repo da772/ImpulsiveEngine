@@ -23,6 +23,7 @@
 
 
 #include "Lighting/LightComponent.h"
+#include "Gfx/ParticleSystem2D.h"
 
 
 class MainGameScene : public GEngine::Scene {
@@ -42,9 +43,11 @@ public:
 
 	inline void OnUpdate(GEngine::Timestep timestep) override
 	{
+		
 		long long time = GEngine::Time::GetEpochTimeMS();
 		m_CameraController->OnUpdate(timestep);
 		Vector3f pos;
+		
 		float dist = GEngine::GEMath::distance(m_CameraController->GetPosition(), characterEntity->GetEntityPosition());
 		if (dist > .01f) {
 			pos = GEngine::GEMath::lerp(m_CameraController->GetPosition(), characterEntity->GetEntityPosition(), 10.f * timestep);
@@ -100,9 +103,9 @@ public:
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
 		GEngine::Application::GetApp()->GetTargetCameraController()->SetCameraZoom(10.f);
-		m_CameraController->SetPosition({ 0,6.5,0 });
+		m_CameraController->SetPosition({ 0,0,0 });
 		m_CameraController->SetRotation({ 0,0,0 });
-
+		
 		FPSuiComponent = GEngine::CreateGameObject<GEngine::UIComponent>();
 
 		GEngine::Ref<GEngine::Entity> eFPS = GEngine::CreateGameObject<GEngine::Entity>();
@@ -254,7 +257,14 @@ public:
 		comp->CreateQuad({ -15.7f,-13.8f,3 }, 0, { 9.25f,11.78f,0 }, { .4f,.4f,.4f,1.f }, Texture2D::Create("Content/Textures/towerUnder.png", TEXTUREFLAGS_Wrap_ClampToEdge));
 		comp->CreateQuad({ -15.7f,-2.8f,3 }, 0, { 9.25f,11.78f,0 }, { .4f,.4f,.4f,1.f }, Texture2D::Create("Content/Textures/towerUnder.png", TEXTUREFLAGS_Wrap_ClampToEdge));
 		comp->CreateQuad({ -15.7f,8.8f,3 }, 0, { 9.25f,11.78f,0 }, { .4f,.4f,.4f,1.f }, Texture2D::Create("Content/Textures/towerUnder.png", TEXTUREFLAGS_Wrap_ClampToEdge));
+		
 
+		Ref<Entity> particleSystem = CreateGameObject<Entity>();
+		AddEntity(particleSystem);
+		Ref<ParticleSystem2D> ps = CreateGameObject<ParticleSystem2D>(50, Vector3f( -5,0,100 ), Vector2f( 0,-1) , Vector2f(1, 1), Vector2f(1, 1), nullptr, Shader::Create("Content/shaders/ParticleSystem2D.glsl"), Vector4f(1,0,0,1), Vector4f(0,0,0,0), 5.f, false);
+		particleSystem->AddComponent(ps);
+
+		return;
 
 		/**
 		 * END CHUNK
