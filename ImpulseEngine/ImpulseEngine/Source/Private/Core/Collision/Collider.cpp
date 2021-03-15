@@ -67,11 +67,10 @@ namespace GEngine {
 	{
 		std::vector<Collider*>::iterator it = m_lastCollide.begin();
 		while (it != m_lastCollide.end()) {
-			return;
-			//if (*it == this) {
-			//	m_lastCollide.erase(it);
-			//	return;
-			//}
+			if (*it == this) {
+				m_lastCollide.erase(it);
+				return;
+			}
 			it++;
 		}
 		
