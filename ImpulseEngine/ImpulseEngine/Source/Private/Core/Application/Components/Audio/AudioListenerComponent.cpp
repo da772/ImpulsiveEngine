@@ -7,9 +7,9 @@
 namespace GEngine {
 
 
-	AudioListenerComponent::AudioListenerComponent()
+	AudioListenerComponent::AudioListenerComponent(Entity* e) : Component(e)
 	{
-
+		go_tag = "Audio Listener Component";
 	}
 
 	AudioListenerComponent::~AudioListenerComponent()
@@ -42,27 +42,19 @@ namespace GEngine {
 		return AudioManager::GetListenerVolume();
 	}
 
-	void AudioListenerComponent::OnAttached(Ref<Entity> entity)
+	void AudioListenerComponent::OnBegin()
 	{
-		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
+		AudioManager::SetListenerPosition(m_entity->GetPosition());
+		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
 			if (IsInitialized()) {
 				AudioManager::SetListenerPosition(transform->GetPosition());
 			}
 			});
 	}
 
-	void AudioListenerComponent::DeAttached(Ref<Entity> entity)
-	{
-		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
-	}
-
-	void AudioListenerComponent::OnBegin()
-	{
-		AudioManager::SetListenerPosition(entity.lock()->GetEntityPosition());
-	}
-
 	void AudioListenerComponent::OnEnd()
 	{
+		m_entity->RemoveTransformCallback(this);
 		Vector3f pos = Vector3f(0, 0, 0);
 		AudioManager::SetListenerPosition(pos);
 	}

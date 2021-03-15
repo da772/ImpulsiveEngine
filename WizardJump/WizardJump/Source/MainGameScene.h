@@ -1,3 +1,4 @@
+#if 0
 #pragma once
 #include <GEngine.h>
 #include "DebugLayer.h"
@@ -587,3 +588,4 @@ private:
 	};
 
 };
+#endif

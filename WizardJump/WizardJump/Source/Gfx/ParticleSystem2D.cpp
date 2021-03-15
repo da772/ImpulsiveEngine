@@ -3,8 +3,8 @@
 
 
 
-ParticleSystem2D::ParticleSystem2D(const uint32_t& count, const Vector3f& startPos, const Vector2f& vel, const Vector2f& startScale, const Vector2f& endScale, Ref<Texture2D> texture, Ref<Shader> shader, const Vector4f& startColor, const Vector4f& endColor, const float& lifespan, bool loop /*= true*/)
-	: m_particleCount(count), m_startPosition(startPos), m_velocity(vel), m_startColor(startColor), m_endColor(endColor), m_loop(loop), m_lifeSpan(lifespan), m_texture(texture), m_startScale(startScale),
+ParticleSystem2D::ParticleSystem2D(Entity* e,const uint32_t& count, const Vector3f& startPos, const Vector2f& vel, const Vector2f& startScale, const Vector2f& endScale, Ref<Texture2D> texture, Ref<Shader> shader, const Vector4f& startColor, const Vector4f& endColor, const float& lifespan, bool loop /*= true*/)
+	: Component(e), m_particleCount(count), m_startPosition(startPos), m_velocity(vel), m_startColor(startColor), m_endColor(endColor), m_loop(loop), m_lifeSpan(lifespan), m_texture(texture), m_startScale(startScale),
 	m_endScale(endScale), m_shader(shader)
 {
 	

@@ -10,7 +10,7 @@ class ParticleSystem2D : public Component {
 
 
 public:
-	ParticleSystem2D(const uint32_t& count, const Vector3f& startPos, const Vector2f& vel, const Vector2f& startScale, const Vector2f& endScale, Ref<Texture2D> m_texture, Ref<Shader> m_shader, const Vector4f& startColor, const Vector4f& endColor, const float& lifespan, bool loop = true);
+	ParticleSystem2D(Entity* e, const uint32_t& count, const Vector3f& startPos, const Vector2f& vel, const Vector2f& startScale, const Vector2f& endScale, Ref<Texture2D> m_texture, Ref<Shader> m_shader, const Vector4f& startColor, const Vector4f& endColor, const float& lifespan, bool loop = true);
 	~ParticleSystem2D();
 
 	inline Vector4f GetStartColor() const { return m_startColor; }

@@ -20,39 +20,9 @@ namespace GEngine {
 	Ref < BatchRenderer >SpriteComponent::s_ShapeFactory = nullptr;
 	
 
-	void SpriteComponent::OnAttached(Ref<Entity> entity)
+	SpriteComponent::SpriteComponent(Entity* e, Ref<Shader> shader, const std::function<void()>& shaderFunc, const std::string& pipelineId) : Component(e)
 	{
-		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
-			if (IsInitialized()) {
-				for (ShapeID id : m_ids) {
-					Vector3f pos = m_shapeFactory->GetShapePosition(id);
-					Vector3f nPos = pos - transData.position + transform->GetPosition();
-					if (pos != nPos)
-						m_shapeFactory->SetPosition(id, nPos.xy());
-					float rot = m_shapeFactory->GetShapeRotation(id);
-					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
-					if (rot != nRot)
-						m_shapeFactory->SetRotation(id, nRot);
-					Vector2f _scale = m_shapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, transform->GetScale().z);
-					Vector3f nScale = scale / transData.scale;
-					if (scale != nScale* transform->GetScale().xy()) {
-						m_shapeFactory->SetScale(id, transform->GetScale().xy() * nScale.xy());
-					}
-				}
-			}
-			});
-	}
-
-	void SpriteComponent::DeAttached(Ref<Entity> entity)
-	{
-		if (!entity) return;
-		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
-	}
-
-	SpriteComponent::SpriteComponent(Ref<Shader> shader, const std::function<void()>& shaderFunc, const std::string& pipelineId)
-	{
-		m_tag = "SpriteComponent";
+		go_tag = "Sprite Component";
 		if (shader != nullptr || pipelineId.size() > 0) {
 			if (shader == nullptr) {
 				std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
@@ -71,7 +41,6 @@ namespace GEngine {
 		}
 		m_shapeFactory = s_ShapeFactory;
 	}
-
 
 	void SpriteComponent::ReloadGraphics() {
 		if (m_shapeFactory) {
@@ -94,10 +63,9 @@ namespace GEngine {
 	const ShapeID SpriteComponent::CreateQuad(const Vector3f& _pos, const float rotation, const Vector3f& scale, const Vector4f& _color,
 		const Ref<Texture2D> texture, const Vector2f& textureScale)
 	{
-		Ref<Entity> e = entity.lock();
-		Vector3f _scale = scale * e->GetEntityScale();
+		Vector3f _scale = scale * m_entity->GetScale();
 
-		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rotation + e->GetEntityRotation().z, _scale.xy(), _color, texture, textureScale);
+		ShapeID id = m_shapeFactory->AddShape(_pos + m_entity->GetPosition(), rotation + m_entity->GetRotation().z, _scale.xy(), _color, texture, textureScale);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -121,17 +89,17 @@ namespace GEngine {
 
 	void SpriteComponent::SetPosition(const ShapeID id, const Vector2f& position)
 	{
-		m_shapeFactory->SetPosition(id, position + Vector2f( entity.lock()->GetEntityPosition().x, entity.lock()->GetEntityPosition().y ) );
+		m_shapeFactory->SetPosition(id, position + Vector2f(m_entity->GetPosition().x, m_entity->GetPosition().y ) );
 	}
 
 	void SpriteComponent::SetQuadScale(const ShapeID id, const Vector2f& scale)
 	{
-		m_shapeFactory->SetScale(id, scale * entity.lock()->GetEntityScale().xy());
+		m_shapeFactory->SetScale(id, scale * m_entity->GetScale().xy());
 	}
 
 	void SpriteComponent::SetSafeParams(const ShapeID& id, const Vector2f& pos, const float& rot, const Vector2f& scale, const Vector4f& color)
 	{
-		m_shapeFactory->SetSafeParams(id, pos + Vector2f(entity.lock()->GetEntityPosition().x, entity.lock()->GetEntityPosition().y), rot, scale * entity.lock()->GetEntityScale().xy(), color);
+		m_shapeFactory->SetSafeParams(id, pos + Vector2f(m_entity->GetPosition().x, m_entity->GetPosition().y), rot, scale * m_entity->GetScale().xy(), color);
 	}
 
 	void SpriteComponent::SetPositionScript(const ShapeID id, const Ref<ScriptVector2>& position)
@@ -146,7 +114,7 @@ namespace GEngine {
 
 	void SpriteComponent::SetZOrder(const ShapeID id, const float zOrder)
 	{
-		m_shapeFactory->SetZOrder(id, zOrder+entity.lock()->GetEntityPosition().z);
+		m_shapeFactory->SetZOrder(id, zOrder+ m_entity->GetPosition().z);
 	}
 
 	void SpriteComponent::SetQuadColor(const ShapeID id, const Vector4f& color)
@@ -173,8 +141,7 @@ namespace GEngine {
 	ShapeID SpriteComponent::CreateSubTexturedQuad(const Vector3f& _pos, const float rot /*= 0*/, const Vector3f& scale /*= { 1,1,1 }*/,
 		const Vector4f& _color /*= { 1,1,1,1.f }*/, const Ref<SubTexture2D>& texture /*= nullptr*/, const Vector2f& textureScale/*= 1*/)
 	{
-		Ref<Entity> e = entity.lock();
-		ShapeID id = m_shapeFactory->AddShape(_pos + e->GetEntityPosition(), rot + e->GetEntityRotation().z, (scale * e->GetEntityScale()).xy(), _color, texture, textureScale);
+		ShapeID id = m_shapeFactory->AddShape(_pos + m_entity->GetPosition(), rot + m_entity->GetRotation().z, (scale * m_entity->GetScale()).xy(), _color, texture, textureScale);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -199,12 +166,32 @@ namespace GEngine {
 
 	void SpriteComponent::OnBegin()
 	{
-	
+		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+			if (IsInitialized()) {
+				for (ShapeID id : m_ids) {
+					Vector3f pos = m_shapeFactory->GetShapePosition(id);
+					Vector3f nPos = pos - transData.position + transform->GetPosition();
+					if (pos != nPos)
+						m_shapeFactory->SetPosition(id, nPos.xy());
+					float rot = m_shapeFactory->GetShapeRotation(id);
+					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
+					if (rot != nRot)
+						m_shapeFactory->SetRotation(id, nRot);
+					Vector2f _scale = m_shapeFactory->GetShapeScale(id);
+					Vector3f scale(_scale.x, _scale.y, transform->GetScale().z);
+					Vector3f nScale = scale / transData.scale;
+					if (scale != nScale * transform->GetScale().xy()) {
+						m_shapeFactory->SetScale(id, transform->GetScale().xy() * nScale.xy());
+					}
+				}
+			}
+			});
 		
 	}
 
 	void SpriteComponent::OnEnd()
 	{
+		m_entity->RemoveTransformCallback(this);
 		ClearQuads();
 	}
 

@@ -13,6 +13,8 @@ namespace GEngine {
 
 
 	public:
+		Component(Entity* e);
+		virtual ~Component();
 
 		void Begin();
 		void Update(Timestep timestep);
@@ -32,47 +34,15 @@ namespace GEngine {
 		inline bool GetShouldUpdate() {
 			return bUpdates && bInit;
 		}
-
-		Ref<Entity> GetEntity() {
-			return entity.lock();
-		}
-		void SetEntity(Weak<Entity>  e);
-
-		Entity* GetEntityPtr() {
-			return entity.lock().get();
-		}
-		void SetEntityPtr(Entity* e);
-
-
-
-
-		Vector3f GetEntityPosition();
-
-		virtual void OnAttached(Ref<Entity> entity) { };
-		virtual void DeAttached(Ref<Entity> entity) { };
-
-		Ref<Component> GetParentComponent() { return nullptr; };
-
-		Component* GetSelf() { return static_pointer_cast<Component>(self.lock()).get(); }
-		void SetSelf(Ref<Component> r) { }
-
-		Component();
-		virtual ~Component();
-		bool m_hasComponentParent = false;
-		static int refCount;
-
-		const std::string& GetTag() { return m_tag; }
-		void SetTag(const std::string& tag) { m_tag = tag; }
-		std::string m_tag = "Component";
 		void Destroy();
+		Entity* GetEntity() const;
 
 	protected:
 		virtual void OnBegin() {};
 		virtual void OnEnd() {};
 		virtual void OnUpdate(Timestep timestep) {};
-		virtual void OnFixedUpdate(Timestep ts) {};
 	
-		Weak<Entity> entity;
+		Entity* m_entity;
 		bool bInit = false;
 		bool bUpdates = false;
 

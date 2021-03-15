@@ -7,19 +7,19 @@
 #include "Public/Core/Events/Event.h"
 
 
+
+
 namespace GEngine {
 
 	Scene::Scene(const char* id, Camera* camera) : id(id), camera(camera)
 	{
-
+		Load();
 	}
 
 	Scene::~Scene()
 	{
 		Unload();
-		for (std::pair < uint64_t, Ref<Entity> > e : entities) {
-			e.second->Destroy();
-		}
+		GE_CORE_DEBUG("SCENE DESTROYED");
 	}
 
 	GEngine::Camera* Scene::GetCamera() const
@@ -32,39 +32,12 @@ namespace GEngine {
 		camera = _camera;
 	}
 
-	bool Scene::AddEntity(Ref<Entity> entity)
-	{
-		if (entity) {
-			std::unordered_map<uint64_t, Ref<Entity> >::const_iterator it = entities.find(entity->hash);
-			if (it == entities.end()) {
-				entities[entity->hash] = entity;
-				entity->SetScene(std::static_pointer_cast<Scene>(self.lock()));
-				if (b_init) {
-					entity->Begin();
-				}
-				return true;
-			}
-		}
-		GE_CORE_ASSERT(false, "Invalid Entity");
-		return false;
-	}
-
-	bool Scene::RemoveEntity(Ref<Entity> entity)
-	{
-		if (entity) {
-			std::unordered_map<uint64_t, Ref<Entity> >::const_iterator it = entities.find(entity->hash);
-			if (it != entities.end()) {
-				entities.erase(it);
-				entity.reset();
-				entity = nullptr;
-				return true; 
-			}
-			GE_CORE_ASSERT(false, "Entity not found");
-			return false;
-		}
-
-		GE_CORE_ASSERT(false, "Invalid Entity");
-		return false;
+	Entity* Scene::DestroyEntity(Entity* actor) {
+		m_registry.remove_all((entt::entity)actor->GetHash());
+		m_registry.destroy((entt::entity)actor->GetHash());
+		delete entities[actor->GetHash()];
+		entities.erase(actor->GetHash());
+		return nullptr;
 	}
 
 	void Scene::Begin()
@@ -73,7 +46,7 @@ namespace GEngine {
 			Load();
 		b_init = true;
 		OnBegin();
-		for (std::pair<u64, Ref<Entity>> e : entities) {
+		for (std::pair<u32, Entity*> e : entities) {
 			if (!e.second->IsInitialized())
 				e.second->Begin();
 		}
@@ -83,38 +56,41 @@ namespace GEngine {
 	{
 		if (b_init) {
 			OnUpdate(timestep);
-			for (std::pair<u64, Ref<Entity>> e : entities) {
+			for (std::pair<u32, Entity*> e : entities) {
 				if (e.second->GetShouldUpdate())
 					e.second->Update(timestep);
 			}
+			/* UPDATE COMPONENTS */
+
 		}
 	}
 
 	void Scene::UnloadGraphics() {
-		for (std::pair<u64, Ref<Entity>> e : entities) {
+		for (std::pair<u32, Entity*> e : entities) {
 			e.second->UnloadGraphics();
 		}
 	}
 
 	void Scene::ReloadGraphics() {
-		for (std::pair<u64, Ref<Entity>> e : entities) {
+		for (std::pair<u32, Entity*> e : entities) {
 			e.second->ReloadGraphics();
 		}
 	}
 
 	void Scene::RemoveAllEntities() {
-		for (std::pair<u64, Ref<Entity>> e : entities) {
-			RemoveEntity(e.second);
+		m_registry.clear();
+		for (std::pair<u32, Entity*> e : entities) {
+			e.second->End();
+		}
+		for (std::pair<u32, Entity*> e : entities) {
+			delete e.second;
 		}
 	}
 
 	void Scene::End()
 	{
 		OnEnd();
-		for (std::pair<u64, Ref<Entity>> e : entities) {
-			e.second->End();
-		}
-		Clean();
+		RemoveAllEntities();
 		b_init = false;
 		if (b_loaded)
 			Unload();
@@ -123,10 +99,6 @@ namespace GEngine {
 	bool Scene::IsLoaded()
 	{
 		return b_loaded;
-	}
-
-	void Scene::LoadAsync()
-	{
 	}
 
 	void Scene::Load()
@@ -147,17 +119,11 @@ namespace GEngine {
 
 	void Scene::Pause(bool b)
 	{
-		if (SceneManager::GetCurrentScene() == this->self.lock()) {
+		if (SceneManager::GetCurrentScene() == this) {
 			b_paused = b;
 			SceneManager::Pause(b_paused);
 		}
 	}
-	void Scene::Clean()
-	{
-		for (std::pair<u64, Ref<Entity>> e : entities) {
-			e.second = nullptr;
-		}
-		entities.clear();
-	}
+
 
 }

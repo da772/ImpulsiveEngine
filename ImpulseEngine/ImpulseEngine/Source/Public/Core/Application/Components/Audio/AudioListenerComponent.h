@@ -7,7 +7,7 @@ namespace GEngine {
 
 	class AudioListenerComponent : public Component {
 	public:
-		AudioListenerComponent();
+		AudioListenerComponent(Entity* e);
 		virtual ~AudioListenerComponent();
 		
 		void SetPitch(float f);
@@ -17,9 +17,6 @@ namespace GEngine {
 
 		const float GetPitch();
 		const float GetVolume();
-
-		void OnAttached(Ref<Entity> entity) override;
-		void DeAttached(Ref<Entity> entity) override;
 
 	protected:
 		void OnBegin() override;

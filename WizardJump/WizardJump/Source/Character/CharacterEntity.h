@@ -10,13 +10,13 @@ class CharacterGraphics;
 class CharacterEntity : public Entity {
 
 public:
-	CharacterEntity(const Vector2f& position = Vector2f(0,0));
+	CharacterEntity(const uint32_t& id);
 	~CharacterEntity() {};
 
 
-	GEngine::Ref<CharacterController> m_characterComponent;
-	GEngine::Ref<CharacterGraphics> m_spriteComponent;
-	GEngine::Ref<AudioListenerComponent> m_audioComponent;
+	CharacterController* m_characterComponent;
+	CharacterGraphics* m_spriteComponent;
+	AudioListenerComponent* m_audioComponent;
 
 
 protected:

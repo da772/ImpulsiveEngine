@@ -18,14 +18,14 @@
 
 namespace GEngine {
 
-	QuadColliderComponent::QuadColliderComponent(bool dynamic, bool physics, const Vector2f& position, bool fixedRotation, float bounce) : Component(),
+	QuadColliderComponent::QuadColliderComponent(Entity* e, bool dynamic, bool physics, const Vector2f& position, bool fixedRotation, float bounce) : Component(e),
 		m_position(position),
 		m_dynamic(dynamic), m_physics(physics), m_bounce(bounce), m_fixedRotation(fixedRotation)
 	{
 		if (dynamic)
 			bUpdates = true;
 
-		m_tag = "QuadColliderComponent";
+		go_tag = "Quad Collider Component";
 	}
 
 	QuadColliderComponent::~QuadColliderComponent()
@@ -35,18 +35,48 @@ namespace GEngine {
 
 	void QuadColliderComponent::OnBegin()
 	{
-		Ref<Entity> e = entity.lock();
-		m_worldPosition = Vector2f(m_position.x + e->GetEntityPosition().x, m_position.y + e->GetEntityPosition().y);
-		m_worldScale = Vector2f(m_scale.x * e->GetEntityScale().x, m_scale.y * e->GetEntityScale().y);
-		m_worldRotation = m_rotation + e->GetEntityRotation().z;
+		Entity* e = m_entity;
+		m_worldPosition = Vector2f(m_position.x + e->GetPosition().x, m_position.y + e->GetPosition().y);
+		m_worldScale = Vector2f(m_scale.x * e->GetScale().x, m_scale.y * e->GetScale().y);
+		m_worldRotation = m_rotation + e->GetRotation().z;
 
 		PhysicsInfo info;
 		info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Kinematic;
-		info.position = Vector2f(e->GetEntityPosition().x, e->GetEntityPosition().y);
-		info.rotation = glm::radians(e->GetEntityRotation().z);
+		info.position = Vector2f(e->GetPosition().x, e->GetPosition().y);
+		info.rotation = glm::radians(e->GetRotation().z);
 		info.fixedRotation = m_fixedRotation;
 		m_body = Physics::CreateBody(info);
-		m_body->SetComponent(std::static_pointer_cast<Component>(self.lock()));
+		m_body->SetComponent(this);
+
+		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+			if (IsInitialized()) {
+				Vector3f pos = Vector3f(m_position.x, m_position.y, 1);
+				pos = pos + transform->GetPosition();
+				m_worldPosition = pos;
+				if (!m_physics) {
+					m_body->SetPosition(transform->GetPosition());
+					m_body->SetAwake(true);
+				}
+				else if (!m_movedSelf) {
+					m_body->SetPosition(transform->GetPosition());
+					m_body->SetAwake(true);
+				}
+
+				Vector3f scale = Vector3f(m_scale.x, m_scale.y, 1);
+				scale = scale * transform->GetScale();
+				m_worldScale = Vector2f(scale.x, scale.y);
+				m_body->SetScale(m_worldScale);
+
+
+
+				Vector3f rotation = Vector3f(0, 0, m_rotation);
+				rotation = rotation + transData.rotation;
+				rotation.x = 0;
+				rotation.y = 0;
+				m_worldRotation = rotation.z;
+			}
+			});
+
 	}
 
 
@@ -85,6 +115,7 @@ namespace GEngine {
 
 	void QuadColliderComponent::OnEnd()
 	{
+		m_entity->RemoveTransformCallback(this);
 		m_body = nullptr;
 	}
 
@@ -94,22 +125,20 @@ namespace GEngine {
 			const Vector2f& pos = m_body->GetPosition();
 			const float rot = m_body->GetRotation();
 			m_movedSelf = true;
-			entity.lock()->SetEntityPosition(Vector3f(pos.x, pos.y, 1.f));
-			entity.lock()->SetEntityRotation(Vector3f(0.f, 0.f, glm::degrees(rot)));
+			m_entity->SetPosition(Vector3f(pos.x, pos.y, 1.f));
+			m_entity->SetRotation(Vector3f(0.f, 0.f, glm::degrees(rot)));
 			m_movedSelf = false;
 		}
 	}
 
 	void QuadColliderComponent::SetPosition(const float x, const float y)
 	{
-		Ref<Entity> e = entity.lock();
-		m_position = Vector2f(x + e->GetEntityPosition().x, y + e->GetEntityPosition().y);
+		m_position = Vector2f(x + m_entity->GetPosition().x, y + m_entity->GetPosition().y);
 	}
 
 	void QuadColliderComponent::SetScale(const float x, const float y)
 	{
-		Ref<Entity> e = entity.lock();
-		m_scale = Vector2f(x * e->GetEntityScale().x, y * e->GetEntityScale().y);
+		m_scale = Vector2f(x * m_entity->GetScale().x, y * m_entity->GetScale().y);
 		
 		//m_collider->SetScale(Vector3f(m_scale.x, m_scale.y,1));
 	}
@@ -118,8 +147,7 @@ namespace GEngine {
 
 	void QuadColliderComponent::SetRotation(const float rot)
 	{
-		Ref<Entity> e = entity.lock();
-		m_rotation = rot + e->GetEntityRotation().z;
+		m_rotation = rot + m_entity->GetRotation().z;
 	}
 
 	const Vector2f QuadColliderComponent::GetPosition()
@@ -134,17 +162,17 @@ namespace GEngine {
 
 	const GEngine::Vector2f QuadColliderComponent::GetLocalPosition()
 	{
-		return m_worldPosition - GetEntityPosition().xy();
+		return m_worldPosition - m_entity->GetPosition().xy();
 	}
 
 	const GEngine::Vector2f QuadColliderComponent::GetLocalScale()
 	{
-		return m_worldScale / GetEntity()->GetEntityScale().xy();
+		return m_worldScale / m_entity->GetScale().xy();
 	}
 
 	const float QuadColliderComponent::GetLocalRotation()
 	{
-		return m_worldRotation - GetEntity()->GetEntityRotation().z;
+		return m_worldRotation - m_entity->GetRotation().z;
 	}
 
 	void QuadColliderComponent::SetGravityScale(const float f)
@@ -257,50 +285,6 @@ namespace GEngine {
 	{
 		m_body->SetOnCollideEndFunction(id, onCollideFunc);
 	}
-
-
-	void QuadColliderComponent::OnAttached(Ref<Entity> entity)
-	{
-		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
-			if (IsInitialized()) {
-				Vector3f pos = Vector3f(m_position.x, m_position.y, 1);
-				pos = pos + transform->GetPosition();
-				m_worldPosition = pos;
-				if (!m_physics) {
-					m_body->SetPosition(transform->GetPosition());
-					m_body->SetAwake(true);
-				}
-				else if (!m_movedSelf ) {
-					m_body->SetPosition(transform->GetPosition());
-					m_body->SetAwake(true);
-				}
-					
-				
-
-
-			
-				Vector3f scale = Vector3f(m_scale.x, m_scale.y, 1);
-				scale = scale * transform->GetScale();
-				m_worldScale = Vector2f(scale.x, scale.y);
-				m_body->SetScale(m_worldScale);
-
-					
-
-				Vector3f rotation = Vector3f(0, 0, m_rotation);
-				rotation = rotation + transData.rotation;
-				rotation.x = 0;
-				rotation.y = 0;
-				m_worldRotation = rotation.z;
-			}
-			});
-	}
-
-	void QuadColliderComponent::DeAttached(Ref<Entity> entity)
-	{
-		if (!entity) return;
-		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
-	}
-
 
 
 }

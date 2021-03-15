@@ -5,7 +5,7 @@ static unsigned char* m_lastNoiseData = nullptr;;
 static uint64_t m_textureIds[3];
 static float m_alpha = 1.f;
 static uint16_t noiseDataSize = 128;
-static Ref<SpriteComponent> m_spriteComponent;
+static SpriteComponent* m_spriteComponent = nullptr;
 static uint64_t m_frame = 0;
 static uint64_t m_frameProcessed = 0;
 static uint8_t m_threadCount = 0;
@@ -18,10 +18,10 @@ static FastNoiseLite noise;
 static Ref<Texture2D> m_texture = nullptr;
 static float entYscale = 1;
 
-FogEntity::FogEntity()
+FogEntity::FogEntity(const uint32_t& id) : Entity(id)
 {
 	bUpdates = true;
-	m_tag = "Fog";
+	go_tag = "Fog";
 	m_frame = 0; 
 }
 
@@ -105,10 +105,9 @@ void FogEntity::OnBegin()
 		pipeline->SetSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
 	}
 	*/
-	SetEntityPosition({ 0,0,0 });
+	SetPosition({ 0,0,0 });
 	//m_shader = Shader::Create("Content/shaders/FogShader.glsl");
-	m_spriteComponent = CreateGameObject<SpriteComponent>();
-	AddComponent(m_spriteComponent);
+	m_spriteComponent = AddComponent<SpriteComponent>(this);
 	//m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/windLoop.ogg", true, true, true, .25f, .75f);
 	//AddComponent(m_audioComponent);
 	
@@ -147,15 +146,10 @@ void FogEntity::OnUpdate(Timestep timestep)
 	m_time += timestep;
 	
 
-	if (m_audioComponent && Time::GetEpochTimeMS() - m_pitchAdjust > 2500) {
-		m_audioComponent->SetPitch(Random::FloatRange(.75f, 1.f));
-		m_pitchAdjust = Time::GetEpochTimeMS();
-	}
-
 	while (m_threadCount < 1) {
 		{
 			std::lock_guard<std::mutex> guard(m_mutex);
-			entYscale = GetEntityScale().y;
+			entYscale = GetScale().y;
 			m_threadCount++;
 		}
 		

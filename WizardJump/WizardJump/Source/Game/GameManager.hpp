@@ -6,7 +6,7 @@ using namespace GEngine;
 
 class GameManagerComponent : public Component {
 public:
-	GameManagerComponent() {
+	GameManagerComponent(Entity* e) : Component(e) {
 		bUpdates = false;
 	};
 	~GameManagerComponent() {};
@@ -35,35 +35,5 @@ protected:
 
 };
 
-class GameManagerEntity : public Entity {
-public:
-	GameManagerEntity() {
-		bUpdates = true;
-	};
-	~GameManagerEntity() {};
-	
 
-protected:
-	inline void OnBegin() override
-	{
-		gameManager = CreateGameObject<GameManagerComponent>();
-		AddComponent(gameManager);
-	}
-
-	void OnUpdate(Timestep timestep) override
-	{
-
-	}
-
-	inline void OnEnd() override
-	{
-		gameManager = nullptr;
-	}
-
-	
-
-private:
-	Ref<GameManagerComponent> gameManager;
-
-};
 

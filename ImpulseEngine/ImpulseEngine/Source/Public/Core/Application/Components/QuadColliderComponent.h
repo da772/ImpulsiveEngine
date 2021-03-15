@@ -23,11 +23,8 @@ namespace GEngine {
 
 	class QuadColliderComponent : public Component {
 	public:
-		QuadColliderComponent(bool dyamic = false, bool physics = false, const Vector2f& position = Vector2f(0,0), bool fixedRotation = true, float bounce = 0.f);
+		QuadColliderComponent(Entity* e, bool dyamic = false, bool physics = false, const Vector2f& position = Vector2f(0,0), bool fixedRotation = true, float bounce = 0.f);
 		~QuadColliderComponent();
-
-		virtual void OnAttached(Ref<Entity> entity) override;
-		inline virtual void DeAttached(Ref<Entity> entity) override;
 
 		virtual void OnBegin() override;
 		virtual void OnEnd() override;

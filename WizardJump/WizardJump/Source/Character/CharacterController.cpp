@@ -10,25 +10,21 @@ const float CharacterController::jumpYDragClamp = .3f;
 const float CharacterController::jumpYMultipler = 10.f;
 const float CharacterController::jumpXMultipler = 4.f;
 
-static void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float scale = .1f, const Vector4f& color = Vector4f(0.f), const Vector3f& offset = Vector3f(0.f), Ref<Texture2D> texture = nullptr);
+static void DrawTrajectoryLines(const std::vector<float>& traj, SpriteComponent* spriteComp, float scale = .1f, const Vector4f& color = Vector4f(0.f), const Vector3f& offset = Vector3f(0.f), Ref<Texture2D> texture = nullptr);
 
 void CharacterController::OnBegin()
 {
 	startTime = Time::GetEpochTimeNS();
-	bodyComp = CreateGameObject<CharacterBody>();
-    spriteComp = CreateGameObject<SpriteComponent>();
-	jumpSound = CreateGameObject<AudioComponent>("Content/Audio/jumpRustling.ogg", false, false, true, .75f);
-    leftFootSound = CreateGameObject<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
-    rightFootSound = CreateGameObject<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
 	//musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
 
-	GetEntity()->AddComponent(spriteComp);
-	GetEntity()->AddComponent(bodyComp);
-	GetEntity()->AddComponent(leftFootSound);
-	GetEntity()->AddComponent(rightFootSound);
-	GetEntity()->AddComponent(jumpSound);
+	spriteComp = GetEntity()->AddComponent<SpriteComponent>(GetEntity());
+    bodyComp = GetEntity()->AddComponent<CharacterBody>(GetEntity());
+    leftFootSound = GetEntity()->AddComponent<AudioComponent>(GetEntity(), "Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
+    rightFootSound = GetEntity()->AddComponent<AudioComponent>(GetEntity(), "Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
+    jumpSound = GetEntity()->AddComponent<AudioComponent>(GetEntity(), "Content/Audio/jumpRustling.ogg", false, false, true, .75f);
+	
 	//GetEntity()->AddComponent(musicSound);
-	graphicsComp = static_pointer_cast<CharacterEntity>(GetEntity())->m_spriteComponent;
+	graphicsComp = dynamic_cast<CharacterEntity*>(GetEntity())->m_spriteComponent;
 
     graphicsComp->footDownCallback = [this](uint8_t foot) {
         switch (foot) {
@@ -90,7 +86,7 @@ void CharacterController::OnUpdate(Timestep timestep) {
     trajDrawTimer += timestep.GetMilliseconds();
     if (bdrawTrajectory && trajectory_pos.size() > 0 && trajDrawTimer > 16 && bRedrawTrajectory) {
         bRedrawTrajectory = false;
-        DrawTrajectoryLines(trajectory_pos, spriteComp, trajectorySize,  trajectoryColor, {GetEntityPosition().xy(), -trajectoryZorder }, trajectoryTexture);
+        DrawTrajectoryLines(trajectory_pos, spriteComp, trajectorySize,  trajectoryColor, {GetEntity()->GetPosition().xy(), -trajectoryZorder }, trajectoryTexture);
         trajDrawTimer = 0;
     }
     //Renderer::DrawDebugLines(trajectory_pos, Vector4f(1, 0, 0, 1.f));
@@ -422,7 +418,7 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
     trajectory_pos.clear();
     std::vector<Weak<PhysicsBody>> ignoreBodies = { bodyComp->m_groundCollider->GetPhysicsBody(), bodyComp->m_quadCollider->GetPhysicsBody() };
     FColliderQuad quad = bodyComp->m_quadCollider->GetQuadCollider(bodyComp->quadColliderID);
-    Vector2f _startPos = { GetEntityPosition().x, GetEntityPosition().y + quad.position.y - (quad.scale.y/2.f) - trajectoryOffset };
+    Vector2f _startPos = { GetEntity()->GetPosition().x, GetEntity()->GetPosition().y + quad.position.y - (quad.scale.y/2.f) - trajectoryOffset };
     for (int i = 0; i < 180; i++) {
         Vector2f newPos = Physics::GetTrajectoryPoint2D(_startPos,
             _realVel, i);
@@ -485,7 +481,7 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
     }
 }
 
-void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float _scale, const Vector4f& col, const Vector3f& offset, Ref<Texture2D> texture)
+void DrawTrajectoryLines(const std::vector<float>& traj, SpriteComponent* spriteComp, float _scale, const Vector4f& col, const Vector3f& offset, Ref<Texture2D> texture)
 {
     std::vector<ShapeID> quads = spriteComp->GetQuads();
     int quadCounter = 0;

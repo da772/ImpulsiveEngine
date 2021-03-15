@@ -15,7 +15,7 @@ namespace GEngine {
 	class ButtonComponent : public Component {
 	public:
 
-		ButtonComponent(const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale = { 1,1 });
+		ButtonComponent(Entity* e, const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale = { 1,1 });
 		virtual ~ButtonComponent();
 
 		void SetImageSubTexture(Ref<SubTexture2D> texture);
@@ -43,9 +43,6 @@ namespace GEngine {
 		inline void RemoveEndMouseCollideFunction() { m_endCollide = nullptr; }
 
 
-		void OnAttached(Ref<Entity> entity) override;
-		void DeAttached(Ref<Entity> entity) override;
-
 	protected:
 		void OnBegin() override;
 		void OnEnd() override;
@@ -56,7 +53,7 @@ namespace GEngine {
 		float m_imageRotation, m_colliderRotation;
 		Vector2f m_imageScale, m_colliderScale;
 		Vector4f m_color;
-		Ref<Collider2D> m_collider;
+		Collider2D* m_collider;
 		Ref<Texture2D> m_texture = nullptr;
 		Ref<Shader> m_Shader = nullptr;
 		Ref<SubTexture2D> m_subTexture = nullptr;

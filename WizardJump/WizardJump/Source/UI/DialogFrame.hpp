@@ -8,7 +8,7 @@ using namespace GEngine;
 
 class DialogFrame : public Entity {
 public:
-	DialogFrame(const Vector3f& position, float textSpeed, const std::string& title, const std::string& icon, const Vector4f& color, const std::string& text, bool animateOpen = true, bool animateClose = true);
+	DialogFrame(const uint32_t& id, const Vector3f& position, float textSpeed, const std::string& title, const std::string& icon, const Vector4f& color, const std::string& text, bool animateOpen = true, bool animateClose = true);
 	~DialogFrame();
 
 	void SetOnDialogComplete(const std::function<void()>& f );
@@ -24,10 +24,10 @@ protected:
 	bool animateOpen = true;
 	bool animateClose = true;
 	Vector4f m_color;
-	Ref<UIComponent> m_uiComponent;
-	Ref<AudioComponent> m_audioComponent;
-	Ref<SpriteAnimationComponent> m_spriteAnimComponent;
-	Ref<ButtonComponent> m_buttonComponent;
+	UIComponent* m_uiComponent;
+	AudioComponent* m_audioComponent;
+	SpriteAnimationComponent* m_spriteAnimComponent;
+	ButtonComponent* m_buttonComponent;
 	float m_characterPerSecond = 20.f;
 	bool m_sticky = false;
 	bool isAnimating = false;

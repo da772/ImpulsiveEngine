@@ -9,23 +9,22 @@
 
 namespace GEngine {
 
-	std::vector<Ref<Collider>> CollisionDetection::s_uiColliders;
+	std::vector<Collider*> CollisionDetection::s_uiColliders;
 	
-	std::unordered_set<Ref<Collider>> CollisionDetection::s_GameColliders;
-	std::unordered_set<Ref<Collider>> CollisionDetection::s_GameColliders_dynamic;
-	Weak<Collider> CollisionDetection::s_lastUICollision;
+	std::unordered_set<Collider*> CollisionDetection::s_GameColliders;
+	std::unordered_set<Collider*> CollisionDetection::s_GameColliders_dynamic;
+	Collider* CollisionDetection::s_lastUICollision = nullptr;
 	bool CollisionDetection::s_lastCollider;
 	std::mutex CollisionDetection::s_uiMutex;
 	
 
 	void CollisionDetection::CheckCollision()
 	{
-		unordered_set<Ref<Collider>> cList;
+		unordered_set<Collider*> cList;
 
-		for (Ref<Collider> c : s_GameColliders_dynamic) {
+		for (Collider* c : s_GameColliders_dynamic) {
 			{
-				for (Weak<Collider> _lastC : c->GetLastCollide()) {
-					Ref<Collider> lastC = _lastC.lock();
+				for (Collider* lastC : c->GetLastCollide()) {
 					if (lastC != nullptr) {
 						if (c->CheckCollision(lastC)) {
 							cList.insert(lastC);
@@ -40,7 +39,7 @@ namespace GEngine {
 					}
 				}
 			}
-			for (Ref<Collider> _c : s_GameColliders) {
+			for (Collider* _c : s_GameColliders) {
 				if ( c != _c && cList.find(_c) == cList.end()) {
 					if (c->CheckCollision(_c)) {
 						c->AddLastCollide(_c);
@@ -54,10 +53,10 @@ namespace GEngine {
 
 	}
 
-	std::vector<Ref<Collider>> CollisionDetection::CheckPoint(const float x, const float y)
+	std::vector<Collider*> CollisionDetection::CheckPoint(const float x, const float y)
 	{
-		std::vector<Ref<Collider>> cList;
-		for (Ref<Collider> c : s_GameColliders) {
+		std::vector<Collider*> cList;
+		for (Collider* c : s_GameColliders) {
 			if (c->CheckCollisionPoint(x, y)) {
 				cList.push_back(c);
 			}
@@ -65,12 +64,12 @@ namespace GEngine {
 		return cList;
 	}
 
-	std::vector<GEngine::Ref<GEngine::QuadColliderComponent>> CollisionDetection::CheckPointComponent(const float x, const float y)
+	std::vector<GEngine::QuadColliderComponent*> CollisionDetection::CheckPointComponent(const float x, const float y)
 	{
-		std::vector<Ref< QuadColliderComponent>> v;
-		for (Ref<Collider> c : s_GameColliders) {
+		std::vector<QuadColliderComponent*> v;
+		for (Collider* c : s_GameColliders) {
 			if (c->CheckCollisionPoint(x, y)) {
-				v.push_back(static_pointer_cast<QuadColliderComponent>(c->GetComponent().lock()));
+				v.push_back(dynamic_cast<QuadColliderComponent*>(c->GetComponent()));
 			}
 		}		
 		return v;
@@ -82,7 +81,7 @@ namespace GEngine {
 		float _x = GEMath::MapRange(x / Application::GetWidth(), 0, 1, -1, 1);
 		float _y = -GEMath::MapRange(y / Application::GetHeight(), 0, 1, -1, 1);
 		std::lock_guard<std::mutex> guard(s_uiMutex);
-		for (Ref<Collider> c : s_uiColliders) {
+		for (Collider* c : s_uiColliders) {
 			if (c->CheckCollisionPoint(_x, _y)) {
 				return true;
 			}
@@ -90,12 +89,12 @@ namespace GEngine {
 		return b;
 	}
 
-	void CollisionDetection::AddCollider(Ref<Collider> collider)
+	void CollisionDetection::AddCollider(Collider* collider)
 	{
 		if (collider->GetColliderLayer() == EColliderLayer::UI) {
 			std::lock_guard<std::mutex> guard(s_uiMutex);
 			s_uiColliders.push_back(collider);
-			std::sort(s_uiColliders.begin(), s_uiColliders.end(), [](const Ref<Collider>& l, const Ref<Collider>& r) { return l->GetPosition().z < l->GetPosition().z; });
+			std::sort(s_uiColliders.begin(), s_uiColliders.end(), [](const Collider* l, const Collider* r) { return l->GetPosition().z < l->GetPosition().z; });
 		}
 		else if (collider->GetColliderLayer() == EColliderLayer::Game) {
 			s_GameColliders.insert(collider);
@@ -105,33 +104,33 @@ namespace GEngine {
 		}
 	}
 
-	void CollisionDetection::RemoveCollider(Ref<Collider> collider)
+	void CollisionDetection::RemoveCollider(Collider* collider)
 	{
 		if (collider->GetColliderLayer() == EColliderLayer::UI) {
 			std::lock_guard<std::mutex> guard(s_uiMutex);
-			std::vector<Ref<Collider>>::iterator it = std::find(s_uiColliders.begin(), s_uiColliders.end(), collider);
+			std::vector<Collider*>::iterator it = std::find(s_uiColliders.begin(), s_uiColliders.end(), collider);
 			s_uiColliders.erase(it);
 			return;
 		}
-		std::unordered_set<Ref<Collider>>::iterator it = s_GameColliders.find(collider);
+		std::unordered_set<Collider*>::iterator it = s_GameColliders.find(collider);
 		
 		if (it != s_GameColliders.end()) {
 			s_GameColliders.erase(it);
 			if (collider->GetColliderType() == EColliderType::Dynamic) {
-				std::unordered_set<Ref<Collider>>::iterator it2 = s_GameColliders_dynamic.find(collider);
+				std::unordered_set<Collider*>::iterator it2 = s_GameColliders_dynamic.find(collider);
 				s_GameColliders_dynamic.erase(it2);
 			}
 		}
 
 	}
 
-	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionUI(const float x, const float y)
+	GEngine::Collider* CollisionDetection::InteractionUI(const float x, const float y)
 	{
 		{
 
 			std::lock_guard<std::mutex> guard(s_uiMutex);
-			Ref<Collider> lastC = s_lastUICollision.lock();
-			for (const Ref<Collider>& c : s_uiColliders) {
+			Collider* lastC = s_lastUICollision;
+			for (Collider* c : s_uiColliders) {
 				if (c->CheckCollisionPoint(x, y)) {
 					
 					if (!lastC)
@@ -140,7 +139,7 @@ namespace GEngine {
 					//	x, y, c->GetPosition().x, c->GetPosition().y, c->GetScale().x, c->GetScale().y);
 					if (!s_lastCollider || c != lastC) {
 							c->UIMouseCollideStart(x,y);
-							if (s_lastCollider && lastC && s_lastUICollision.lock() != c)
+							if (s_lastCollider && lastC && s_lastUICollision != c)
 								lastC->UIMouseCollideEnd(x,y);
 							s_lastUICollision = c;
 							s_lastCollider = true;
@@ -152,39 +151,39 @@ namespace GEngine {
 			}
 		}
 
-		Ref<Collider> lastC = s_lastUICollision.lock();
+		Collider* lastC = s_lastUICollision;
 		if (s_lastCollider) {
 			if (lastC) lastC->UIMouseCollideEnd(x,y);
 			s_lastCollider = false;
-			s_lastUICollision.reset();
+			s_lastUICollision = nullptr;
 		}
 		return nullptr;
 	}
 
-	GEngine::Ref<GEngine::Collider> CollisionDetection::InteractionEndUI(const float x, const float y)
+	GEngine::Collider* CollisionDetection::InteractionEndUI(const float x, const float y)
 	{
 
         std::lock_guard<std::mutex> guard(s_uiMutex);
         if (s_lastCollider) {
-            if (s_lastUICollision.lock())
-                s_lastUICollision.lock()->UIMouseCollideEnd(x,y);
-            s_lastUICollision.reset();
+            if (s_lastUICollision)
+                s_lastUICollision->UIMouseCollideEnd(x,y);
+			s_lastUICollision = nullptr;
             s_lastCollider = false;
         }
 		return nullptr;
 	}
 
-	bool CollisionDetection::CheckLastUI(Ref<Collider> c)
+	bool CollisionDetection::CheckLastUI(Collider* c)
 	{
-		return s_lastUICollision.lock() == c;
+		return s_lastUICollision == c;
 	}
 
 	void CollisionDetection::OnEvent(const Event& e)
 	{
-		if (s_lastCollider && s_lastUICollision.lock())
-			s_lastUICollision.lock()->UIOnEvent(e);
+		if (s_lastCollider && s_lastUICollision)
+			s_lastUICollision->UIOnEvent(e);
 		else if (!s_lastCollider) {
-			s_lastUICollision.reset();
+			s_lastUICollision = nullptr;
 			s_lastCollider = false;
 		}
 			
@@ -193,10 +192,10 @@ namespace GEngine {
 	void CollisionDetection::Reset()
 	{
 		s_lastCollider = false;
-		s_lastUICollision.reset();
+		s_lastUICollision = nullptr;
 	}
 
-	bool UIComparator::operator()(Ref<Collider>left, Ref<Collider> right) const
+	bool UIComparator::operator()(Collider*left, Collider* right) const
 	{
 		return left->GetPosition().z < right->GetPosition().z;
 	}

@@ -11,40 +11,33 @@
 
 namespace GEngine {
 
-	std::unordered_map<std::string, Ref<Scene>> SceneManager::scenes;
-	Ref<Scene> SceneManager::scene;
+	std::unordered_map<std::string, std::function<Scene*()>> SceneManager::scenes;
+	Scene* SceneManager::scene = nullptr;
 	std::vector<std::function<void()>> SceneManager::m_FlushFunctions;
 	bool SceneManager::b_started = false;
 	bool SceneManager::b_paused = false;
 
 
-	void SceneManager::AddScene(const std::string& name, Ref<Scene> scene)
-	{
-		SceneManager::scenes[name] = scene;
-	}
 
-	GEngine::Ref<Scene> SceneManager::GetCurrentScene()
+	Scene* SceneManager::GetCurrentScene()
 	{
 		return SceneManager::scene;
 	}
 
-	void SceneManager::SetCurrentScene(const std::string& name, bool unload)
+	void SceneManager::SetCurrentScene(const std::string& name)
 	{
-		ThreadPool::AddEndFrameFunction([name, unload]() {
+		ThreadPool::AddEndFrameFunction([name]() {
 			CollisionDetection::Reset();
 			if (SceneManager::scene != nullptr) {
 				scene->End();
-				if (unload)
-					scene->Unload();
 				SceneManager::m_FlushFunctions.clear();
+				delete SceneManager::scene;
+				SceneManager::scene = nullptr;
 			}
 
 			if (SceneManager::scenes.find(name.c_str()) != SceneManager::scenes.end()) {
-				SceneManager::scene = SceneManager::scenes[name];
-				if (SceneManager::b_started)
-					scene->Begin();
-				else
-					Begin();
+				SceneManager::scene = SceneManager::scenes[name]();
+				Begin();
 			}
 			});
 	}
@@ -86,15 +79,14 @@ namespace GEngine {
 			scene->UnloadGraphics();
 		}
 	}
-	
 
-
-	GEngine::Ref<GEngine::Scene> SceneManager::GetScene(const char* name)
+	void SceneManager::Shutdown()
 	{
-		if (SceneManager::scenes.find(name) != SceneManager::scenes.end())
-			return SceneManager::scenes[name];
-		else
-			return nullptr;
+		End();
+		if (scene) {
+			delete scene;
+			scene = nullptr;
+		}
 	}
 
 	void SceneManager::OnEvent(Event& e)

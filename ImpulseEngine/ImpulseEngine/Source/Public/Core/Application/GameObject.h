@@ -9,18 +9,14 @@ namespace GEngine {
 
 	class GameObject {
 	public:
-		inline virtual ~GameObject() {
-			Factory::RemoveHash(hash); 
-		};
-		Weak<GameObject> self;
-		uint64_t hash;
-
-		std::string m_tag = "GameObject";
-		
-
+		inline const uint32_t GetHash() const { return go_hash; }
+		inline const std::string GetTag() const { return go_tag; }
+		inline void SetTag(const std::string& tag) { go_tag = tag; }
 	protected:
+		uint32_t go_hash;
+		std::string go_tag;
 		inline std::string GetClassName() {
-			return typeid(*self.lock().get()).name();
+			return typeid(this).name();
 		}
 
 	};

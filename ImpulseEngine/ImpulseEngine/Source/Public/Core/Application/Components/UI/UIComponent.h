@@ -25,8 +25,8 @@ namespace GEngine {
 	class UIComponent : public Component {
 
 	public:
-		UIComponent();
-		UIComponent(Ref<Shader> shader);
+		UIComponent(Entity* e);
+		UIComponent(Entity* e, Ref<Shader> shader);
 		virtual ~UIComponent();
 		const ShapeID CreateQuad(const  Vector3f& _pos, const float rot = 0, const Vector3f& scale = { 1,1,1 }, const Vector4f& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, bool aspectRatio = true, const Vector2f& textureScale = Vector2f(1, 1), const float alphaChannel = 4);
 
@@ -60,15 +60,12 @@ namespace GEngine {
 
 		virtual void OnBegin() override;
 		virtual void OnEnd() override;
-		virtual void OnAttached(Ref<Entity> entity) override;
-		virtual void DeAttached(Ref<Entity> entity) override;
 
 		virtual void UnloadGraphics() override;
 		virtual void ReloadGraphics() override;
 
 		static Ref<BatchRenderer> s_ShapeFactory;
 	private:
-		static void RemoveQuads(ShapeID id);
 		
 
 		uint32_t m_textCounter = 0;

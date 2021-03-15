@@ -27,8 +27,7 @@ void BackgroundEntity::OnBegin()
 	}
 
 	m_camera = SceneManager::GetCurrentScene()->GetCamera();
-	m_backgroundSprite = CreateGameObject<SpriteComponent>();
-	AddComponent(m_backgroundSprite);
+	m_backgroundSprite = AddComponent<SpriteComponent>(this);
 
 	for (const std::pair<std::string, FParalaxBackground>& p : m_backgrounds) {
 		if (p.second.bInit) continue;

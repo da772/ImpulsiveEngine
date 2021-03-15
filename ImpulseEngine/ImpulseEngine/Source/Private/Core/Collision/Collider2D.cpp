@@ -18,11 +18,11 @@ namespace GEngine {
 		return AABBPointCheck(x, y);
 	}
 
-	bool Collider2D::CheckCollision(Ref<Collider> collider)
+	bool Collider2D::CheckCollision(Collider* collider)
 	{
 		EColliderShape shape = GetColliderShape();
 		EColliderShape otherShape = collider->GetColliderShape();
-		Ref<Collider2D> _collider = dynamic_pointer_cast<Collider2D>(collider);
+		Collider2D* _collider = dynamic_cast<Collider2D*>(collider);
 
 		switch (otherShape) {
 			case EColliderShape::Quad: {
@@ -54,7 +54,7 @@ namespace GEngine {
 
 	}
 
-	bool Collider2D::AABBCheck(Ref<Collider2D> collider)
+	bool Collider2D::AABBCheck(Collider2D* collider)
 	{
 		Vector3f _position = collider->GetPosition();
 		Vector3f _scale = collider->GetScale();

@@ -1,5 +1,5 @@
 #pragma once
-
+#if 0
 #include <GEngine.h>
 
 class SplashScreenScene : public GEngine::Scene {
@@ -117,3 +117,4 @@ private:
 	bool bSceneLoaded = false;
 
 };
+#endif

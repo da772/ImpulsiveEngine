@@ -3,6 +3,7 @@
 #define GE_FACTORY_INCLUDE
 #include "Public/Core/Util/Time.h"
 #include "Public/Core/Util/Utility.h"
+#if 0
 
 namespace GEngine {
 
@@ -71,4 +72,5 @@ namespace GEngine {
 
 }
 
+#endif
 #endif

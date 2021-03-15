@@ -12,7 +12,7 @@ class FogEntity : public Entity {
 
 
 public:
-	FogEntity();
+	FogEntity(const uint32_t& id);
 	~FogEntity();
 
 	//inline FastNoiseLite& GetNoise() { return { }; }
@@ -40,14 +40,12 @@ protected:
 	Ref<Shader> m_shader;
 	float m_time = 0;
 	
-	
-	Ref<AudioComponent> m_audioComponent;
     
     virtual void OnUnloadGraphics() override;
     virtual void OnReloadGraphics() override;
 
 	
-    
+  
     
 
 
@@ -59,9 +57,6 @@ protected:
 	uint64_t m_pitchAdjust = 0;
 
 	
-	
-
-
 
 	const char* m_pipelineId = "background";
 

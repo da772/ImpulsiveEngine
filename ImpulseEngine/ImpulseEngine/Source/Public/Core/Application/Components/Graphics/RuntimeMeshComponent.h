@@ -15,7 +15,7 @@ namespace GEngine {
 	class RuntimeMeshComponent : public Component {
 
 	public:
-		RuntimeMeshComponent();
+		RuntimeMeshComponent(Entity* e);
 		virtual ~RuntimeMeshComponent();
 
 		virtual void OnBegin() override;
@@ -35,8 +35,6 @@ namespace GEngine {
 
 		std::vector<float> m_Vertices;
 		std::vector<u32> m_Indices;
-
-
 	};
 
 

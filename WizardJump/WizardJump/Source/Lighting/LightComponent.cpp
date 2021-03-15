@@ -7,7 +7,7 @@ Ref < BatchRenderer >LightComponent::s_CircleShapeFactory = nullptr;
 Ref < BatchRenderer >LightComponent::s_QuadShapeFactory = nullptr;
 
 
-LightComponent::LightComponent() {
+LightComponent::LightComponent(Entity* e) : Component(e) {
     bUpdates = false;
     if (s_CircleShapeFactory == nullptr) {
         std::string path = std::string("Content/shaders/CircleLight_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
@@ -21,7 +21,7 @@ LightComponent::LightComponent() {
 			5000, Shader::Create("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots()) + "Batch.glsl"), "lighting"));
     }
 		
-    m_tag = "LightComponent";
+    go_tag = "LightComponent";
 }
 
 
@@ -30,82 +30,54 @@ LightComponent::~LightComponent() {
 }
 
 
-PolygonLightRendererable::PolygonLightRendererable(const Vector3f& position, const std::vector<float>& _vertices, const std::vector<uint32_t>& _indices, Ref<BufferLayout> layout, const Vector4f& color)
-{
-    vertices = _vertices;
-    indices = _indices;
-    m_bufferLayout = layout;
-    m_color = color;
-    m_position = position;
-    
-    m_Priority = 10;
-
-    m_Shader = Shader::Create("Content/shaders/PolygonLight.glsl");
-
-    CreateGraphics();
-}
-
-PolygonLightRendererable::~PolygonLightRendererable()
-{
-    m_vertexArray = nullptr;
-    m_vertexBuffer = nullptr;
-    m_indexBuffer = nullptr;
-}
-
-void PolygonLightRendererable::Render()
-{
-    //RenderCommand::BlendEquationSeparate(0x8006, 0x8007); // GL_FUNC_ADD, GL_MIN
-    m_Shader->Bind();
-    m_Shader->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
-    glm::mat4 pos = glm::translate(glm::mat4(1.f), glm::vec3(m_position.x, m_position.y, m_position.z));
-    m_Shader->UploadUniformMat4("u_Transform", pos);
-    m_Shader->UploadUniformFloat4("u_Color", m_color);
-    m_vertexArray->Bind();
-    RenderCommand::DrawIndexed(m_vertexArray);
-    //RenderCommand::BlendEquationSeparate(0x8006, 0x8006); // GL_FUNC_ADD, GL_MIN
-}
-
-
-void PolygonLightRendererable::Unload()
-{
-	m_vertexArray = nullptr;
-	m_indexBuffer = nullptr;
-	m_vertexBuffer = nullptr;
-}
-
-void PolygonLightRendererable::Reload()
-{
-    CreateGraphics();
-}
-
-void PolygonLightRendererable::CreateGraphics()
-{
-	m_vertexBuffer = Ref<VertexBuffer>(VertexBuffer::Create((float*)vertices.data(), (uint32_t)vertices.size() * sizeof(float)));
-	m_indexBuffer = Ref<IndexBuffer>(IndexBuffer::Create((uint32_t*)indices.data(), (uint32_t)indices.size()));
-	m_vertexBuffer->SetLayout(m_bufferLayout);
-
-	m_vertexArray = Ref<VertexArray>(VertexArray::Create());
-
-	m_vertexArray->AddVertexBuffer(m_vertexBuffer);
-	m_vertexArray->SetIndexBuffer(m_indexBuffer);
-
-}
-
 void LightComponent::OnBegin()
 {
-    
+	m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+		if (IsInitialized()) {
+			for (const ShapeID id : m_Circleids) {
+				Vector3f pos = s_CircleShapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.position + transform->GetPosition();
+				if (pos != nPos)
+					s_CircleShapeFactory->SetPosition(id, nPos);
+				float rot = s_CircleShapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
+				if (rot != nRot)
+					s_CircleShapeFactory->SetRotation(id, nRot);
+				Vector2f _scale = s_CircleShapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, 1);
+				Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
+				if (scale != nScale)
+					s_CircleShapeFactory->SetScale(id, { nScale.x, nScale.y });
+			}
+			for (const ShapeID id : m_Quadids) {
+				Vector3f pos = s_QuadShapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.position + transform->GetPosition();
+				if (pos != nPos)
+					s_QuadShapeFactory->SetPosition(id, nPos);
+				float rot = s_QuadShapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
+				if (rot != nRot)
+					s_QuadShapeFactory->SetRotation(id, nRot);
+				Vector2f _scale = s_QuadShapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, 1);
+				Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
+				if (scale != nScale)
+					s_QuadShapeFactory->SetScale(id, { nScale.x, nScale.y });
+			}
+		}
+		});
 }
 
 const ShapeID LightComponent::AddCircleLight(const Vector2f& position, float intensity, const Vector2f& scale, const Vector4f& color) {
     Ref<Texture2D> t = nullptr;
-    const ShapeID id = LightComponent::s_CircleShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
+    const ShapeID id = LightComponent::s_CircleShapeFactory->AddShape({ m_entity->GetPosition().x + position.x, m_entity->GetPosition().y+position.y, intensity}, 0, scale, color, t, scale, 4.f);
     m_Circleids.push_back(id);
     return id;
 }
 
 const ShapeID LightComponent::AddQuadLight(const Vector2f& position, float intensity, const Vector2f& scale, const Vector4f& color, Ref<Texture2D> texture)
 {
-    const ShapeID id = s_QuadShapeFactory->AddShape({ GetEntityPosition().x + position.x, GetEntityPosition().y + position.y, intensity
+    const ShapeID id = s_QuadShapeFactory->AddShape({ m_entity->GetPosition().x + position.x, m_entity->GetPosition().y + position.y, intensity
         }, 0, scale, color, texture);
     m_Quadids.push_back(id);
     return id;
@@ -121,16 +93,6 @@ void LightComponent::EditCircleSize(const ShapeID id, const Vector2f& size)
     s_CircleShapeFactory->SetScale(id, size);
 }
 
-const ShapeID LightComponent::AddPolygonLight(const Vector3f& position, const std::vector<float>& vertices, const std::vector<uint32_t>& indices, Ref<BufferLayout> layout, const Vector4f& color)
-{
-    Ref<PolygonLightRendererable> l = make_shared<PolygonLightRendererable>(GetEntityPosition()+position, vertices, indices, layout, color);
-    m_polygonLights.push_back(l);
-
-    Renderer::GetPipeline("lighting")->Add(l);
-    const ShapeID id = ++m_polygonLightCounter;
-    m_polygonLightMap[id] = l;
-    return id;
-}
 
 void LightComponent::RemoveQuadLight(const ShapeID id)
 {
@@ -138,18 +100,6 @@ void LightComponent::RemoveQuadLight(const ShapeID id)
     s_QuadShapeFactory->RemoveShape(id);
 }
 
-void LightComponent::RemovePolygonLight(const ShapeID id)
-{
-    Ref<PolygonLightRendererable> l = m_polygonLightMap[id].lock();
-    m_polygonLightMap.erase(id);
-
-    if (l) {
-        m_polygonLights.erase(std::find(m_polygonLights.begin(), m_polygonLights.end(), l));
-    }
-
-    if (m_polygonLights.size() == 0)
-        m_polygonLightCounter = 0;
-}
 
 void LightComponent::RemoveCircleLight(const ShapeID id)
 {
@@ -160,6 +110,8 @@ void LightComponent::RemoveCircleLight(const ShapeID id)
 void LightComponent::OnEnd()
 {
     
+    m_entity->RemoveTransformCallback(this);
+
     for (const ShapeID id : m_Circleids)
         LightComponent::s_CircleShapeFactory->RemoveShape(id);
 
@@ -167,11 +119,8 @@ void LightComponent::OnEnd()
         s_QuadShapeFactory->RemoveShape(id);
 
     Ref<RenderPipeline> pipeline = Renderer::GetPipeline("lighting");
-    for (Ref<PolygonLightRendererable> p : m_polygonLights) {
-        pipeline->Remove(p);
-    }
 
-    m_polygonLights.end();
+
     
     
 }
@@ -181,49 +130,6 @@ void LightComponent::OnUpdate(Timestep timestep)
 	
 }
 
-void LightComponent::OnAttached(Ref<Entity> entity)
-{
-	entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
-		if (IsInitialized()) {
-			for (const ShapeID id : m_Circleids) {
-				Vector3f pos = s_CircleShapeFactory->GetShapePosition(id);
-				Vector3f nPos = pos - transData.position + transform->GetPosition();
-				if (pos != nPos)
-                    s_CircleShapeFactory->SetPosition(id, nPos);
-				float rot = s_CircleShapeFactory->GetShapeRotation(id);
-				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
-				if (rot != nRot)
-                    s_CircleShapeFactory->SetRotation(id, nRot);
-				Vector2f _scale = s_CircleShapeFactory->GetShapeScale(id);
-				Vector3f scale(_scale.x, _scale.y, 1);
-				Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
-				if (scale != nScale)
-                    s_CircleShapeFactory->SetScale(id, { nScale.x, nScale.y });
-			}
-			for (const ShapeID id : m_Quadids) {
-				Vector3f pos = s_QuadShapeFactory->GetShapePosition(id);
-				Vector3f nPos = pos - transData.position + transform->GetPosition();
-				if (pos != nPos)
-                    s_QuadShapeFactory->SetPosition(id, nPos);
-				float rot = s_QuadShapeFactory->GetShapeRotation(id);
-				float nRot = rot - transData.rotation.z + transform->GetRotation().z;
-				if (rot != nRot)
-                    s_QuadShapeFactory->SetRotation(id, nRot);
-				Vector2f _scale = s_QuadShapeFactory->GetShapeScale(id);
-				Vector3f scale(_scale.x, _scale.y, 1);
-				Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
-				if (scale != nScale)
-                    s_QuadShapeFactory->SetScale(id, { nScale.x, nScale.y });
-			}
-		}
-		});
-}
-
-void LightComponent::DeAttached(Ref<Entity> entity)
-{
-    if (!entity) return;
-	entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
-}
 
 
 void LightComponent::CreateGraphics() {
@@ -237,9 +143,7 @@ void LightComponent::ReloadGraphics() {
     if (s_QuadShapeFactory) {
         s_QuadShapeFactory->ReloadGraphics();
     }
-	for (const Ref<PolygonLightRendererable>& p : m_polygonLights) {
-		p->Reload();
-	}
+
 }
 
 void LightComponent::UnloadGraphics() {
@@ -251,9 +155,6 @@ void LightComponent::UnloadGraphics() {
         s_QuadShapeFactory->UnloadGraphics();
 	}
 
-    for (const Ref<PolygonLightRendererable>& p : m_polygonLights) {
-        p->Unload();
-    }
 }
 
 /*

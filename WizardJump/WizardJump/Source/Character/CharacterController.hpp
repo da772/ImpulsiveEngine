@@ -8,19 +8,19 @@ using namespace GEngine;
 
 class CharacterController : public Component {
 public:
-	CharacterController() : Component() { 
-
+	CharacterController(Entity* e) : Component(e) { 
+		go_tag = "Character Controller";
 		bUpdates = true;
-	
 	};
+
 	~CharacterController() {};
 
-	Ref<CharacterBody> bodyComp;
-    Ref<AudioComponent> jumpSound;
-    Ref<AudioComponent> leftFootSound;
-	Ref<AudioComponent> rightFootSound;
-    Ref<AudioComponent> musicSound;
-	Ref<SpriteComponent> spriteComp;
+	CharacterBody* bodyComp;
+    AudioComponent* jumpSound;
+    AudioComponent* leftFootSound;
+	AudioComponent* rightFootSound;
+    AudioComponent* musicSound;
+	SpriteComponent* spriteComp;
     long long startTime;
 
 protected:
@@ -29,11 +29,6 @@ protected:
 
 	void OnEnd() override
 	{
-		bodyComp = nullptr;
-		graphicsComp = nullptr;
-        jumpSound = nullptr;
-		leftFootSound = nullptr;
-		rightFootSound = nullptr;
 
 	}
 public:
@@ -75,7 +70,7 @@ public:
 			return &trajectory_pos[trajectory_pos.size() - 3];
 		}
 
-		return GetEntityPosition();
+		return GetEntity()->GetPosition();
 	}
 
 	inline void ClearTrajectory() {
@@ -133,8 +128,8 @@ protected:
 
 
 	
-	Ref<CharacterGraphics> graphicsComp;
-	Ref<QuadColliderComponent> groundComp;
+	CharacterGraphics* graphicsComp;
+	QuadColliderComponent* groundComp;
 	float startxPos = -1.f;
 	float startyPos = -1.f;
 	float lastxpos = -1;

@@ -20,7 +20,7 @@ struct FParalaxBackground {
 class BackgroundEntity : public Entity {
 
 public:
-	BackgroundEntity() { m_tag = "BackgroundEntity"; bUpdates = true; };
+	BackgroundEntity(const uint32_t& id) : Entity(id) { go_tag = "BackgroundEntity"; bUpdates = true; };
 	~BackgroundEntity() {};
 
 	void AddParalaxBackground(const std::string& name, Ref<Texture2D> texture, const Vector2f& scale, float speed, float zOrder, const Vector2f& offset = Vector2f(0,0));
@@ -40,7 +40,7 @@ protected:
 
 	void OnUpdate(Timestep timestep) override;
 
-	Ref<SpriteComponent> m_backgroundSprite;
+	SpriteComponent* m_backgroundSprite;
 	Camera* m_camera;
 
 };

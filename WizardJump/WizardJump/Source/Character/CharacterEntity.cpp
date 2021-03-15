@@ -3,37 +3,26 @@
 #include "Character/CharacterGraphics.hpp"
 #include "Character/CharacterBody.hpp"
 
-CharacterEntity::CharacterEntity(const Vector2f& position) : m_position(position)
+CharacterEntity::CharacterEntity(const uint32_t& id) : Entity(id)
 {
 
 }
 
 
 void CharacterEntity::OnBegin()
-	{
+{
 
-		SetEntityPosition({ m_position.x, m_position.y,0.f });
+		SetPosition({ m_position.x, m_position.y,0.f });		
 
-		m_characterComponent = CreateGameObject<CharacterController>();
-		m_spriteComponent = CreateGameObject<CharacterGraphics>();
-		m_audioComponent = CreateGameObject<AudioListenerComponent>();
+		m_characterComponent = AddComponent<CharacterController>(this);
+		m_spriteComponent = AddComponent<CharacterGraphics>(this);
+		m_audioComponent = AddComponent<AudioListenerComponent>(this);
+}
 
+void CharacterEntity::OnEnd()
+{
+}
 
-		
-
-        AddComponent(m_spriteComponent);
-		AddComponent(m_characterComponent);
-		AddComponent(m_audioComponent);
-	}
-
-	void CharacterEntity::OnEnd()
-	{
-		m_characterComponent = nullptr;
-		m_spriteComponent = nullptr;
-		m_audioComponent = nullptr;
-	}
-
-	void CharacterEntity::OnUpdate(Timestep timestep)
-	{
-
-	}
+void CharacterEntity::OnUpdate(Timestep timestep)
+{
+}

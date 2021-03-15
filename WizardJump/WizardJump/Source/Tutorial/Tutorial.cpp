@@ -1,3 +1,5 @@
+
+#if 0
 #include "Tutorial/Tutorial.hpp"
 #include "UI/DialogFrame.hpp"
 #include "Character/CharacterEntity.h"
@@ -139,3 +141,5 @@ void Tutorial::CreateMainTutorial(Weak<Scene> s, Weak<CharacterEntity> character
 		});
 	s.lock()->AddEntity(dialog);
 }
+
+#endif

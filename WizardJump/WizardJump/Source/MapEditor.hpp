@@ -1,5 +1,5 @@
 #pragma once
-
+#if 0
 #include <GEngine.h>
 
 using namespace GEngine;
@@ -36,3 +36,5 @@ private:
 	void LoadScene(const std::string& scene);
 
 };
+
+#endif

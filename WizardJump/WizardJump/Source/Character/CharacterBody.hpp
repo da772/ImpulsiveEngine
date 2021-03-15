@@ -6,7 +6,8 @@ using namespace GEngine;
 
 class CharacterBody : public Component {
 public:
-	CharacterBody() {
+	CharacterBody(Entity* e) : Component(e) {
+		go_tag = "Character Body";
 		bUpdates = true;
 	};
 	~CharacterBody() {};
@@ -37,8 +38,8 @@ public:
 
 	bool isGrounded() { return groundedCount > 0; };
 
-	Ref<QuadColliderComponent> m_quadCollider;
-	Ref<QuadColliderComponent> m_groundCollider;
+	QuadColliderComponent* m_quadCollider;
+	QuadColliderComponent* m_groundCollider;
 	ColliderID circleColliderID = 0;
 	ColliderID quadColliderID = 0;
 protected:
@@ -49,13 +50,11 @@ protected:
 
 		Vector2f groundPos = Vector2f(0.f, -.85f);
 		Vector2f groundScale = Vector2f(.4f, .1f);
-		m_quadCollider = CreateGameObject<QuadColliderComponent>(true, true, Vector2f(0.f,0.f));
-		m_quadCollider->b_UpdatePos = false;
-		m_groundCollider = CreateGameObject<QuadColliderComponent>(true, false, Vector2f(0.f,0.f));
 
 		
-		GetEntity()->AddComponent(m_quadCollider);
-		GetEntity()->AddComponent(m_groundCollider);
+		m_quadCollider = m_entity->AddComponent<QuadColliderComponent>(m_entity, true, true, Vector2f(0.f, 0.f));
+		m_quadCollider->b_UpdatePos = false;
+		m_groundCollider = m_entity->AddComponent<QuadColliderComponent>(m_entity, true, false, Vector2f(0.f, 0.f));
 		
 		quadColliderID = m_quadCollider->CreateQuad(pos, scale, 1, 0, "characterBody");
 		circleColliderID = m_quadCollider->CreateCircle({ 0.f,-.65f }, { .2f, .2f }, 1, 0, "characterBody");
@@ -76,8 +75,7 @@ protected:
 			});
 
 		if (debug) {
-			m_debugSprite = CreateGameObject<SpriteComponent>();
-			GetEntity()->AddComponent(m_debugSprite);
+			m_debugSprite = m_entity->AddComponent<SpriteComponent>(m_entity);
 			m_debugSprite->CreateQuad({ pos.x,pos.y,11.f }, 0, { scale.x,scale.y,1 }, { 1,0,0,.25f });
 			m_debugSprite->CreateQuad({ 0, -.65f, 12.f }, 0, { .4f,.4f,1.f }, { 0,0,1,.5f });
 			m_debugSprite->CreateQuad({ groundPos.x,groundPos.y,11}, 0, { groundScale.x,groundScale.y,1 }, { 0,1,0,.25f });
@@ -99,8 +97,8 @@ protected:
 	{
 		if (m_quadCollider) {
 			if (m_quadCollider->GetPhysicsBody()) {
-				GetEntity()->SetEntityPosition({ m_quadCollider->GetPhysicsBody()->GetPosition(), GetEntity()->GetEntityPosition().z });
-				GetEntity()->SetEntityRotation({ 0,0,m_quadCollider->GetPhysicsBody()->GetRotation() });
+				m_entity->SetPosition({ m_quadCollider->GetPhysicsBody()->GetPosition(), m_entity->GetPosition().z });
+				m_entity->SetPosition({ 0,0,m_quadCollider->GetPhysicsBody()->GetRotation() });
 			}
 		}
 	}
@@ -108,6 +106,6 @@ protected:
 	
 
 	
-	Ref<SpriteComponent> m_debugSprite;
+	SpriteComponent* m_debugSprite;
 
 };

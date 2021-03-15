@@ -3,7 +3,7 @@
 #include "UI/DialogFrame.hpp"
 
 
-DialogFrame::DialogFrame(const Vector3f& position, float textSpeed, const std::string& title,const std::string& icon, const Vector4f& color, const std::string& text, bool animateOpen, bool animateClose) : m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon), m_color(color)
+DialogFrame::DialogFrame(const uint32_t& id, const Vector3f& position, float textSpeed, const std::string& title,const std::string& icon, const Vector4f& color, const std::string& text, bool animateOpen, bool animateClose) : Entity(id), m_position(position), m_characterPerSecond(textSpeed), m_title(title), m_text(text), m_icon(icon), m_color(color) 
 {
 	bUpdates = true;
 	m_font = Font::Create("Content/Fonts/Wizard.ttf", 120.f);
@@ -24,14 +24,10 @@ void DialogFrame::SetOnDialogComplete(const std::function<void()>& f)
 
 void DialogFrame::OnBegin()
 {
-
-	m_uiComponent = CreateGameObject<UIComponent>();
-	m_spriteAnimComponent = CreateGameObject<SpriteAnimationComponent>();
-	m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/keyPress.ogg", false, false, true, 1.f, 1.f);
 	
-	AddComponent(m_spriteAnimComponent);
-	AddComponent(m_uiComponent);
-	AddComponent(m_audioComponent);
+	m_spriteAnimComponent = AddComponent<SpriteAnimationComponent>(this);
+	m_uiComponent = AddComponent<UIComponent>(this);
+	m_audioComponent = AddComponent<AudioComponent>(this, "Content/Audio/keyPress.ogg", false, false, true, 1.f, 1.f);
 	m_audioComponent->SetPitch(2.f);
 
 
@@ -100,8 +96,7 @@ void DialogFrame::OnBegin()
 			});
 	}
 
-	m_buttonComponent = CreateGameObject<ButtonComponent>(m_position, 0.f, Vector3f( dialogScale.x,  dialogScale.y, 1.f ), Vector4f(1, 0, 0, 0.f), Vector2f(0, 0));
-	AddComponent(m_buttonComponent);
+	m_buttonComponent = AddComponent<ButtonComponent>(this, m_position, 0.f, Vector3f(dialogScale.x, dialogScale.y, 1.f), Vector4f(1, 0, 0, 0.f), Vector2f(0, 0));
 	m_buttonComponent->SetOnEvent([this](const Event& event) {
 
 		//GE_LOG_DEBUG("Button Press: {0}, Animating: {1}", event.GetName(), isAnimating);

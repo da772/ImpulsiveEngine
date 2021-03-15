@@ -9,7 +9,7 @@ namespace GEngine {
 
 	class SpriteAnimationComponent : public Component {
 	public:
-		inline SpriteAnimationComponent() { bUpdates = true; };
+		inline SpriteAnimationComponent(Entity* e) : Component(e) { go_tag = "Sprite Animation Component"; bUpdates = true; };
 		virtual ~SpriteAnimationComponent();
 		void SetFrameAnimation(const uint8_t fps, const uint8_t maxFrames, bool loop = true, const std::function<void(int)> animateFrameFunction = nullptr);
 		void SetFrameAnimation_Script(uint8_t fps, uint8_t maxFrames, bool loop = true, Ref<ScriptObject> scriptFunction = nullptr);

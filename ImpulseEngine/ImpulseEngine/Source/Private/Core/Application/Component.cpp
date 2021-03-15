@@ -6,33 +6,24 @@
 
 namespace GEngine {
 
-	int Component::refCount = 0;
+	Component::Component(Entity* e) : GameObject(), m_entity(e)
+	{
+
+	}
+
+	Component::~Component()
+	{
+		GE_CORE_DEBUG("COMPONENT DESTROYED");
+	}
+
+	Entity* Component::GetEntity() const {
+		return m_entity;
+	}
 
 	void Component::Destroy()
 	{
-		entity.lock()->RemoveComponent(static_pointer_cast<GEngine::Component>(self.lock()));
+		m_entity->RemoveComponent(this);
 	}
-
-	void Component::SetEntity(Weak<Entity> e)
-	{
-		if (entity.lock() == nullptr) {
-			this->entity = e;
-			return;
-		}
-		GE_CORE_ASSERT(false, "Entity already set");
-	}
-
-	void Component::SetEntityPtr(Entity* e)
-	{
-		if (entity.lock() == nullptr) {
-			this->entity = Ref<Entity>(e);
-			return;
-		}
-
-		GE_CORE_ASSERT(false, "Entity already set");
-	}
-
-
 	
 	void Component::Begin()
 	{
@@ -56,20 +47,7 @@ namespace GEngine {
 		bInit = false;
 	}
 
-	GEngine::Vector3f Component::GetEntityPosition()
-	{
-		return entity.lock()->GetEntityPosition();
-	}
 
-	Component::Component()
-	{
-		Component::refCount++;
-	}
 
-	Component::~Component()
-	{
-		End();
-		Component::refCount--;
-	}
 
 }

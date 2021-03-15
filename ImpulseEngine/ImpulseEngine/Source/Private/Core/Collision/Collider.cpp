@@ -6,14 +6,14 @@
 
 namespace GEngine {
 
-	void Collider::CollideStart(Ref<Collider> collider)
+	void Collider::CollideStart(Collider* collider)
 	{
 		OnCollision(collider);
 		if (m_collisionFunctionStart)
 			m_collisionFunctionStart(collider);
 	}
 
-	void Collider::CollideEnd(Ref<Collider> collider)
+	void Collider::CollideEnd(Collider* collider)
 	{
 		OnCollisionEnd(collider);
 		if (m_collisionFunctionEnd)
@@ -34,45 +34,44 @@ namespace GEngine {
 			m_uiCollisionFunctionEnd(x, y);
 	}
 
-	GEngine::Weak<GEngine::Entity> Collider::GetEntity()
+	GEngine::Entity* Collider::GetEntity()
 	{
 		return entity;
 	}
 
-	GEngine::Weak<GEngine::Component> Collider::GetComponent()
+	GEngine::Component* Collider::GetComponent()
 	{
 		return component;
 	}
 
-	void Collider::SetEntity(Weak<Entity> e)
+	void Collider::SetEntity(Entity* e)
 	{
 		entity = e;
 	}
 
-	void Collider::SetComponent(Weak<Component> c)
+	void Collider::SetComponent(Component* c)
 	{
 		component = c;
 	}
 
-	void Collider::AddLastCollide(Weak<Collider> c)
+	void Collider::AddLastCollide(Collider* c)
 	{
-		Ref<Collider> __c = c.lock();
-		for (Weak<Collider> _c : m_lastCollide) {
-			if (_c.lock() == __c)
+		for (Collider* _c : m_lastCollide) {
+			if (_c== this)
 				return;
 		}
 		m_lastCollide.push_back(c);
 	}
 
-	void Collider::RemoveLastCollide(Weak<Collider> c)
+	void Collider::RemoveLastCollide(Collider* c)
 	{
-		std::vector<Weak<Collider>>::iterator it = m_lastCollide.begin();
-		Ref<Collider> _c = c.lock();
+		std::vector<Collider*>::iterator it = m_lastCollide.begin();
 		while (it != m_lastCollide.end()) {
-			if (it->lock() == _c) {
-				m_lastCollide.erase(it);
-				return;
-			}
+			return;
+			//if (*it == this) {
+			//	m_lastCollide.erase(it);
+			//	return;
+			//}
 			it++;
 		}
 		

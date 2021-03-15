@@ -1,6 +1,7 @@
+#if 0
+
 #include "MapEditor.hpp"
 #include "DebugLayer.h"
-#include "Environment/SpriteEntity.hpp"
 #include "Lighting/LightComponent.h"
 #include <CXML/CXML.hpp>
 #include "Character/CharacterEntity.h"
@@ -1636,3 +1637,4 @@ void MapEditor::LoadScene(const std::string& scene)
 	}
 	
 }
+#endif

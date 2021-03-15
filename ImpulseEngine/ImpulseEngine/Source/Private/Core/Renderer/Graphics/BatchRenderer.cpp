@@ -70,7 +70,7 @@ namespace GEngine {
 		 if (m_IndexCount > 0) {
 
 			 m_Shader->Bind();
-			 m_Shader->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
+			 m_Shader->UploadUniformMat4("u_ViewProjection", Application::GetApp()->GetTargetCamera()->GetViewProjectionMatrix());
 			 if (m_shaderFunction) m_shaderFunction();
 			 for (int i = 0; i < m_TextureIds.size(); i++) {
 				 if (m_TextureIds[i] != -1)

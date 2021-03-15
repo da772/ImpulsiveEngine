@@ -4,6 +4,8 @@
 #include "Public/Core/Core.h"
 #include "Public/Core/Util/Timestep.h"
 #include "Public/Core/Application/GameObject.h"
+#include "entt.hpp"
+
 
 namespace GEngine {
 
@@ -18,28 +20,26 @@ namespace GEngine {
 
 		virtual ~Scene();
 
-		template <class C = Entity>
-		inline std::vector<Ref<Entity>> FindComponentOfType() {
-			std::vector<Ref<Entity>> c;
-			for (std::pair<uint32_t, Ref<Entity>> _c : entities) {
-				if (dynamic_cast<C*>(_c.second.get()) != nullptr) {
-					c.push_back(_c.second);
-				}
-			}
-			return c;
-		}
 		inline const char* GetId() const { return id.c_str(); }
 		inline void SetId(const char* _id) { }
 		Camera* GetCamera() const;
 		void SetCamera(Camera* _camera);
-		bool AddEntity(Ref<Entity> actor);
-		bool RemoveEntity(Ref<Entity> actor);
+		template<typename E = Entity>
+		inline E* CreateEntity() {
+			const uint32_t entity = (uint32_t)m_registry.create();
+			E* e = new E(entity);
+			entities[entity] = e;
+			if (b_init) {
+				e->Begin();
+			}
+			return e;
+		}
+		Entity* DestroyEntity(Entity* actor);
 		void Begin();
 		void Update(Timestep timestep);
 		void RemoveAllEntities();
 		void End();
 		bool IsLoaded();
-		void LoadAsync();
 		void Load();
 		void Unload();
 		void Pause(bool b);
@@ -59,7 +59,9 @@ namespace GEngine {
 		inline virtual bool GetLoaded() { return b_loaded; }
 		inline virtual void SetLoaded(bool bLoaded) {  }
 
-		inline const std::unordered_map<uint64_t, Ref<Entity>>& GetEntities() const { return entities; }
+		inline const std::unordered_map<uint32_t, Entity*>& GetEntities() const { return entities; }
+
+		inline entt::registry& GetRegistry() { return m_registry; }
 
 		
 	protected:
@@ -67,11 +69,11 @@ namespace GEngine {
 		Camera* camera;
 		bool b_loaded = false;
 		bool b_init = false;
-		std::unordered_map<uint64_t, Ref<Entity>> entities;
+		std::unordered_map<uint32_t, Entity*> entities;
 		bool b_paused = false;
+		entt::registry m_registry;
 
 	private:
-		void Clean();
 
 	};
 

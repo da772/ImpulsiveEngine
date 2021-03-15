@@ -324,7 +324,7 @@ namespace GEngine {
         CollisionDetection::Reset();
         Texture2D::GetLoadedTexturesRaw().clear();
         Physics::Shutdown();
-        SceneManager::End();
+        SceneManager::Shutdown();
         AdManager::Shutdown();
         AudioManager::Shutdown();
         Application::s_Instance = nullptr;

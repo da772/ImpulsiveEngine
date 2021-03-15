@@ -63,10 +63,10 @@ namespace GEngine {
 		inline virtual void SetCategory(const ColliderID id, const uint16_t bits) { m_categoryBits = bits; }
 		inline virtual void SetGroupIndex(const ColliderID id, const int16_t index) { m_groupIndex = index; }
 
-		inline virtual void SetComponent(Weak<Component> c) { m_component = c; }
+		inline virtual void SetComponent(Component* c) { m_component = c; }
 		inline virtual void SetSelf(Weak<PhysicsBody> self) { m_self.parent = self; }
 
-		inline virtual Ref<Component> GetComponent() { return m_component.lock(); }
+		inline virtual Component* GetComponent() { return m_component; }
 
 		virtual void SetOnCollideStartFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) = 0;
 		virtual void SetOnCollideEndFunction(const ColliderID id, std::function<void(Ref<PhysicsCollision>)> f) = 0;
@@ -100,7 +100,7 @@ namespace GEngine {
 		int16_t m_groupIndex = PHYSICS_LAYER_DEFAULT | PHYSICS_LAYER_01;
 
 		PhysicsParent m_self;
-		Weak<Component> m_component;
+		Component* m_component;
 
 
 		// Fixture

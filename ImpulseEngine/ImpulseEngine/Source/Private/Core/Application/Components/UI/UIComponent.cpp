@@ -21,8 +21,9 @@ namespace GEngine {
 	Ref<BatchRenderer> UIComponent::s_ShapeFactory = nullptr;
 
 
-	UIComponent::UIComponent(Ref<Shader> shader)
+	UIComponent::UIComponent(Entity* e, Ref<Shader> shader) : Component(e)
 	{
+		go_tag = "UI Component";
 		if (s_ShapeFactory == nullptr) {
 			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
 			m_Shader = shader != nullptr ? shader : Ref<Shader>(Shader::Create(path));
@@ -32,8 +33,9 @@ namespace GEngine {
 	}
 
 
-	UIComponent::UIComponent() : Component()
+	UIComponent::UIComponent(Entity* e) : Component(e)
 	{
+		go_tag = "UI Component";
 		if (s_ShapeFactory == nullptr) {
 			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
 			m_Shader = Ref<Shader>(Shader::Create(path));
@@ -99,19 +101,19 @@ namespace GEngine {
 	const ShapeID UIComponent::CreateQuad(const Vector3f& _pos, const float rot /*= 0*/, const Vector3f& scale /*= { 1,1,1 }*/, const Vector4f& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, bool aspectRatio, const Vector2f& textureScale /*= 1*/, const float alphaChannel)
 	{
 
-		Vector3f _scale = scale * GetEntity()->GetEntityTransformComponent()->GetScale();
+		Vector3f _scale = scale * m_entity->GetScale();
 
 		float tWidth = texture ? texture->GetWidth() : 1.f;
 		float tHeight = texture ? texture->GetHeight() : 1.f;
 		if (aspectRatio)
 			_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
 		else {
-			_scale = scale * GetEntity()->GetEntityTransformComponent()->GetScale();
+			_scale = scale * m_entity->GetScale();
 		}
 
 		_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
 
-		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, _scale.xy(), _color, texture, textureScale, alphaChannel);
+		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetPosition(), rot, _scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -124,7 +126,7 @@ namespace GEngine {
 
 	const ShapeID UIComponent::CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale /*= 1.f*/, const float alphaChannel)
 	{
-		const ShapeID id = s_ShapeFactory->AddShape(_pos+GetEntityPosition(), rot, scale.xy(), _color, texture, textureScale, alphaChannel);
+		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetPosition(), rot, scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -147,7 +149,7 @@ namespace GEngine {
 		std::vector<ShapeID> ids;
 
 		for (CharacterData& d : data->charData) {
-			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ShapeID id = CreateSubTexturedQuad(m_entity->GetPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
 		m_text[hash] = { data,std::move(ids), font };
@@ -171,7 +173,7 @@ namespace GEngine {
 		std::vector<ShapeID> ids;
 
 		for (CharacterData& d : data->charData) {
-			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ShapeID id = CreateSubTexturedQuad(m_entity->GetPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
 		m_text[hash] = { data,std::move(ids), font };
@@ -190,7 +192,7 @@ namespace GEngine {
 		int newSize = ids.info->charData.size();
 		for (int i = lastSize; i < newSize; i++) {
 			const CharacterData& d = ids.info->charData[i];
-			ShapeID id = CreateSubTexturedQuad(GetEntityPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ShapeID id = CreateSubTexturedQuad(m_entity->GetPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.shapes.push_back(id);
 		}
 
@@ -255,7 +257,7 @@ namespace GEngine {
 	void UIComponent::SetZOrder(ShapeID id, float zOrder)
 	{
 		if (id > 0) {
-			s_ShapeFactory->SetZOrder(id, zOrder + entity.lock()->GetEntityPosition().z);
+			s_ShapeFactory->SetZOrder(id, zOrder + m_entity->GetPosition().z);
 		}
 	}
 
@@ -302,19 +304,9 @@ namespace GEngine {
 
 	void UIComponent::OnBegin()
 	{
-
-	}
-
-	void UIComponent::OnEnd()
-	{
-		ClearQuads();
-	}
-
-	void UIComponent::OnAttached(Ref<Entity> entity)
-	{
-		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
+		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
 			if (IsInitialized()) {
-			//	GE_CORE_DEBUG("{0}, {1}, {2}", transData.position.x, transData.position.y, transData.position.z);
+				//	GE_CORE_DEBUG("{0}, {1}, {2}", transData.position.x, transData.position.y, transData.position.z);
 				for (ShapeID id : m_ids) {
 					Vector3f pos = s_ShapeFactory->GetShapePosition(id);
 					Vector3f nPos = pos - transData.position + transform->GetPosition();
@@ -334,9 +326,10 @@ namespace GEngine {
 			});
 	}
 
-	void UIComponent::DeAttached(Ref<Entity> entity)
+	void UIComponent::OnEnd()
 	{
-		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
+		m_entity->RemoveTransformCallback(this);
+		ClearQuads();
 	}
 
 }

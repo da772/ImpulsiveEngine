@@ -10,13 +10,18 @@ namespace GEngine {
 	class SceneManager {
 	
 	public:
-		static void AddScene(const std::string& name, Ref<Scene> scene);
-		static Ref<Scene> GetCurrentScene();
-		static void SetCurrentScene(const std::string& name, bool unload = true);
+		template<typename S = Scene>
+		static inline void AddScene(const std::string& name) {
+			SceneManager::scenes[name] = [name]() {
+				S* s = new S(name.c_str(), nullptr);
+				return s;
+			};
+		};
+		static Scene* GetCurrentScene();
+		static void SetCurrentScene(const std::string& name);
 		static void Update(Timestep ts);
 		static void Begin();
 		static void End();
-		static Ref<Scene> GetScene(const char* name);
 		static void OnEvent(Event& e);
 		static glm::mat4 GetCurrentViewProjectionMatrix();
 		static void ImGuiRender();
@@ -24,11 +29,11 @@ namespace GEngine {
 		static void ResetScene();
 		static void ReloadGraphics();
 		static void UnloadGraphics();
-
+		static void Shutdown();
 
 	private:
-		static std::unordered_map<std::string, Ref<Scene>> scenes;
-		static Ref<Scene> scene;
+		static std::unordered_map<std::string, std::function<Scene*()>> scenes;
+		static Scene* scene;
 		static std::vector < std::function<void()> > m_FlushFunctions;
 		static bool b_started;
 		static bool b_paused;

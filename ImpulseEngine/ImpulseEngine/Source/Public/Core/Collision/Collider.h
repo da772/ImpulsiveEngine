@@ -29,7 +29,7 @@ namespace GEngine {
 		Collider() {};
 		~Collider() {};
 		virtual bool CheckCollisionPoint(const float x,const float y) { return false; }
-		virtual bool CheckCollision(Ref<Collider> collider) { return false; };
+		virtual bool CheckCollision(Collider* collider) { return false; };
 		
 		inline const EColliderShape GetColliderShape() const { return m_shape; }
 		inline void SetColliderShape(EColliderShape shape) { m_shape = shape; }
@@ -38,16 +38,16 @@ namespace GEngine {
 		inline const EColliderType  GetColliderType() const { return m_type; }
 		inline void SetColliderType(EColliderType shape) { m_type = shape; }
 
-		inline void SetCollisionStartFunction(std::function<void(Ref<Collider>)> func) { m_collisionFunctionStart = func; }
-		inline void SetCollisionEndFunction(std::function<void(Ref<Collider>)> func) { m_collisionFunctionEnd = func; }
+		inline void SetCollisionStartFunction(std::function<void(Collider*)> func) { m_collisionFunctionStart = func; }
+		inline void SetCollisionEndFunction(std::function<void(Collider*)> func) { m_collisionFunctionEnd = func; }
 
 		inline void SetUICollisionStartFunction(std::function<void(float, float)> func) { m_uiCollisionFunctionStart = func; }
 		inline void SetUICollisionEndFunction(std::function<void(float, float)> func) { m_uiCollisionFunctionEnd = func; }
 		inline void SetUIOnEvent(std::function<void(const Event&)> func) { m_uiEvent = func; }
 
 
-		void CollideStart(Ref<Collider> collider);
-		void CollideEnd(Ref<Collider> collider);
+		void CollideStart(Collider* collider);
+		void CollideEnd(Collider* collider);
 
 		void UIMouseCollideStart(const float x,const float y);
 		void UIMouseCollideEnd(const float x,const float y);
@@ -61,20 +61,20 @@ namespace GEngine {
 		void SetScale(const Vector3f& scale) { this->scale = scale; }
 		void SetRotation(const Vector3f& rot) { rotation = rot; }
 
-		Weak<Entity> GetEntity();
-		Weak<Component> GetComponent();
+		Entity* GetEntity();
+		Component* GetComponent();
 
-		void SetEntity(Weak<Entity> e);
-		void SetComponent(Weak<Component> c);
+		void SetEntity(Entity* e);
+		void SetComponent(Component* c);
 
-		inline std::vector<Weak<Collider>>& GetLastCollide() { return m_lastCollide; }
+		inline std::vector<Collider*>& GetLastCollide() { return m_lastCollide; }
 		
-		void AddLastCollide(Weak<Collider> c);
-		void RemoveLastCollide(Weak<Collider> c);
+		void AddLastCollide(Collider* c);
+		void RemoveLastCollide(Collider* c);
 
 	protected:
-		inline virtual void OnCollision(Ref<Collider> collider) {};
-		inline virtual void OnCollisionEnd(Ref<Collider> collider) {};
+		inline virtual void OnCollision(Collider* collider) {};
+		inline virtual void OnCollisionEnd(Collider* collider) {};
 		inline virtual void OnUIMouseCollision(const float x,const float y) {};
 		inline virtual void OnUIMouseCollisionEnd(const float x,const float y) {};
 		EColliderShape m_shape;
@@ -84,18 +84,18 @@ namespace GEngine {
 		Vector3f scale;
 		
 		Vector3f rotation;
-		std::function<void(Ref<Collider>)> m_collisionFunctionStart;
-		std::function<void(Ref<Collider>)> m_collisionFunctionEnd;
+		std::function<void(Collider*)> m_collisionFunctionStart;
+		std::function<void(Collider*)> m_collisionFunctionEnd;
 		
 
 		std::function<void(float, float)> m_uiCollisionFunctionStart;
 		std::function<void(float, float)> m_uiCollisionFunctionEnd;
 		std::function<void(const Event& e)> m_uiEvent = nullptr;
 
-		std::vector<Weak<Collider>> m_lastCollide;
+		std::vector<Collider*> m_lastCollide;
 
-		Weak<Entity> entity;
-		Weak<Component> component;
+		Entity* entity;
+		Component* component;
 		
 
 

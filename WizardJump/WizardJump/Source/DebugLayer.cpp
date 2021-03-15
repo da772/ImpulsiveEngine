@@ -197,8 +197,8 @@ void DebugLayer::ShowDock(bool p_open)
 	ImGui::End();
 }
 
-GEngine::Ref<GEngine::GameObject> hashSelected = nullptr;
-GEngine::Ref<GEngine::GameObject> compSelected = nullptr;
+GEngine::GameObject* hashSelected = nullptr;
+GEngine::GameObject* compSelected = nullptr;
 
 
 bool b_component = false;
@@ -222,11 +222,11 @@ void DebugLayer::CreateSceneHierarchy()
 			if (ImGui::Button("Destroy")) {
 				
 				if (b_component) {
-					GEngine::Ref<GEngine::Component> __c = static_pointer_cast<GEngine::Component>(hashSelected);
+					Component* __c = static_cast<Component*>(hashSelected);
 					__c->Destroy();
 				}
 				else {
-					GEngine::Ref<GEngine::Entity> __e = static_pointer_cast<GEngine::Entity>(hashSelected);
+					Entity* __e = static_cast<Entity*>(hashSelected);
 					__e->Destroy();
 				}
 
@@ -241,15 +241,15 @@ void DebugLayer::CreateSceneHierarchy()
 		ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 		if (ImGui::TreeNode("Entities"))
 		{
-			std::unordered_map<uint64_t, GEngine::Ref<GEngine::Entity>> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
-			for ( const std::pair<uint64_t, GEngine::Ref<GEngine::Entity>>& e : entities )
+			std::unordered_map<uint32_t, Entity*> entities = GEngine::SceneManager::GetCurrentScene()->GetEntities();
+			for ( const std::pair<uint32_t, Entity*>& e : entities )
 			{
 				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 1, 0, 1));
 				ImGuiTreeNodeFlags entity_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 				if (hashSelected == e.second) {
 					entity_base_flags |= ImGuiTreeNodeFlags_Selected;
 				}
-				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%ju)", e.second->m_tag.c_str(), typeid(*e.second.get()).name(), e.first);
+				bool show_e = ImGui::TreeNodeEx((void*)(intptr_t)e.first, entity_base_flags, "%s : %s (%ju)", e.second->GetTag().c_str(), typeid(*e.second).name(), e.first);
 				if (ImGui::IsItemClicked()) {
 					b_component = false;
 					hashSelected = e.second;
@@ -258,26 +258,26 @@ void DebugLayer::CreateSceneHierarchy()
 				if (show_e)
 				{
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(.75, .75, .75, 1));
-					std::unordered_map<uint64_t, GEngine::Ref<GEngine::Component>> components = e.second->GetComponents();
+					std::set<Component*> components = e.second->GetComponents();
 
 					
 
-					for (const std::pair<uint64_t, GEngine::Ref<GEngine::Component>>& c : components) {
-						std::string compName = typeid(*c.second.get()).name();
+					for (Component* c : components) {
+						std::string compName = typeid(*c).name();
 						ImGuiTreeNodeFlags component_base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-						if (hashSelected == c.second) {
+						if (hashSelected == c) {
 							component_base_flags |= ImGuiTreeNodeFlags_Selected;
 						}
-						bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)c.first, component_base_flags, "%s : %s (%ju)", c.second->m_tag.c_str(), typeid(*c.second.get()).name(), c.first);
+						bool show_c = ImGui::TreeNodeEx((void*)(intptr_t)c, component_base_flags, "%s : %s (%ju)", c->GetTag().c_str(), typeid(*c).name(), c);
 						if (ImGui::IsItemClicked()) {
 							b_component = true;
-							hashSelected = c.second;
+							hashSelected = c;
 						}
 						if (show_c) {
 							
 							if (compName == "class GEngine::Transform") {
 								float v[3];
-								GEngine::Ref<GEngine::Transform> transform = dynamic_pointer_cast<GEngine::Transform>(c.second);
+								Transform* transform = dynamic_cast<GEngine::Transform*>(c);
 
 								if (!transform) return;
 
@@ -288,7 +288,7 @@ void DebugLayer::CreateSceneHierarchy()
 								ImGui::SameLine();
 								if (ImGui::InputFloat3("", v,  4)) {
 									if (v[0] != transform->GetPosition().x || v[1] != transform->GetPosition().y || v[2] != transform->GetPosition().z) {
-										e.second->SetEntityPosition({ v[0], v[1], v[2] });
+										e.second->SetPosition({ v[0], v[1], v[2] });
 									}
 								}
 							}

@@ -3,8 +3,8 @@
 
 namespace GEngine {
 
-    Transform::Transform() : Component() {
-        m_tag = "Transform";
+    Transform::Transform(Entity* e) : Component(e) {
+        go_tag = "Transform Component";
     }
 
     Transform::~Transform() {

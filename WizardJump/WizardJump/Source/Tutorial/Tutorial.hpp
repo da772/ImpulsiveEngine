@@ -1,13 +1,13 @@
 #pragma once
 #include <GEngine.h>
-
+#if 0
 using namespace GEngine;
 class CharacterEntity;
 
 
 class Tutorial : public Entity {
 public:
-	inline Tutorial() { m_tag = "tutorial"; };
+	inline Tutorial() { go_tag = "tutorial"; };
 	inline ~Tutorial() {};
 
 	static void CreateMainTutorial(Weak<Scene> s, Weak<CharacterEntity> characterEntity);
@@ -20,4 +20,5 @@ protected:
 
 };
 
+#endif
 

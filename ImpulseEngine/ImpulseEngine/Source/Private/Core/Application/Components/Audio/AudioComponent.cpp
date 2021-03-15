@@ -8,8 +8,9 @@
 
 namespace GEngine {
 
-	AudioComponent::AudioComponent(const std::string& fileName, bool playing, bool looping, bool bStatic, float volume, float pitch, bool fromPak /*= true*/, bool relative /*= true*/)
+	AudioComponent::AudioComponent(Entity* e, const std::string& fileName, bool playing, bool looping, bool bStatic, float volume, float pitch, bool fromPak /*= true*/, bool relative /*= true*/) : Component(e)
 	{
+		go_tag = "Audio Component";
 		m_fileName = fileName;
 		m_fromPak = fromPak;
 		m_relative = relative;
@@ -88,36 +89,27 @@ namespace GEngine {
 		return m_audioSource->GetStatic();
 	}
 
-	void AudioComponent::OnAttached(Ref<Entity> entity)
-	{
-		entity->AddTransformCallback(std::static_pointer_cast<Component>(self.lock()), [this](Ref<Transform> transform, TransformData transData) {
-			if (IsInitialized()) {
-				m_audioSource->SetPosition(transform->GetPosition());
-			}
-			});
-	}
-
-	void AudioComponent::DeAttached(Ref<Entity> entity)
-	{
-		if (!entity) return;
-		entity->RemoveTransformCallback(std::static_pointer_cast<Component>(self.lock()));
-	}
-
 	void AudioComponent::OnBegin()
 	{
 		GE_CORE_ASSERT(m_audioSource == nullptr, "AUDIO SOURCE ALREADY INSTANTIATED");
 		m_audioSource = AudioManager::Load_OGG(m_fileName, m_fromPak, m_relative);
-		m_audioSource->SetPosition(entity.lock()->GetEntityPosition());
+		m_audioSource->SetPosition(m_entity->GetPosition());
 		m_audioSource->SetPitch(m_pitch);
 		m_audioSource->SetVolume(m_volume);
 		m_audioSource->SetStatic(m_static);
 		m_audioSource->MaxDistance(50.f);
 		SetPlaying(m_playing);
 		SetLooping(m_looping);
+		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+			if (IsInitialized()) {
+				m_audioSource->SetPosition(transform->GetPosition());
+			}
+			});
 	}
 
 	void AudioComponent::OnEnd()
 	{
+		m_entity->RemoveTransformCallback(this);
 		m_audioSource->Destroy();
 		m_audioSource = nullptr;
 	}

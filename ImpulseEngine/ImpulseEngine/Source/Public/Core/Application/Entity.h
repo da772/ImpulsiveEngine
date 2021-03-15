@@ -3,6 +3,9 @@
 #define GE_ENTITY_DEFINE
 #include "Public/Core/Util/Timestep.h"
 #include "Public/Core/Application/GameObject.h"
+#include "Public/Core/Application/Scene.h"
+#include "Public/Core/Application/SceneManager.h"
+#include "entt.hpp"
 
 
 namespace GEngine {
@@ -17,24 +20,33 @@ namespace GEngine {
 	class GE_API Entity : public GameObject {
 
 	public:
-		Entity(Vector3f position);
+		Entity(const uint32_t&);
 		virtual ~Entity();
-		std::string m_tag = "Entity";
-		template <class C = Component>
-		inline std::vector<Ref<Component>> FindComponentOfType() {
-			std::vector<Ref<Component>> c;
-            for (std::pair<uint32_t, Ref<Component>> _c : components) {
-                if (std::dynamic_pointer_cast<C>(_c.second) != nullptr) {
-                    c.push_back(_c.second);
-				}
+
+		template<class C, typename ... Args>
+		inline C* AddComponent(Args&& ... args) {
+			entt::registry& r = SceneManager::GetCurrentScene()->GetRegistry();
+			//r.emplace<C>((entt::entity)go_hash, std::forward<Args>(args)...);
+			C* c = new C(std::forward<Args>(args)...);
+			components.insert(c);
+			if (bInit) {
+				c->Begin();
 			}
 			return c;
 		}
 
-		bool AddComponent(Ref<Component> component);
-		bool RemoveComponent(Ref<Component> component);
 
-		std::vector<Ref<Component>> GetComponentsByTag(std::string tag);
+		template<class C>
+		inline C* RemoveComponent(C* component)
+		{
+			if (bInit)
+				component->End();
+			components.erase(component);
+			//entt::registry& r = SceneManager::GetCurrentScene()->GetRegistry();
+			//r.remove<C>((entt::entity)go_hash);
+			delete component;
+			return nullptr;
+		}
 
 		void UnloadGraphics();
 		void ReloadGraphics();
@@ -42,26 +54,9 @@ namespace GEngine {
         virtual void OnUnloadGraphics() {};
         virtual void OnReloadGraphics() {};
 
-		bool AddComponent_ptr(Component* component);
-		bool RemoveComponent_ptr(Component* component);
-
 		void Update(Timestep timestep);
-		
-
 		void Begin();
-
 		void End();
-
-		/**
-		 * Warning: Should only be called by scene class
-		 */
-		inline void SetScene(Weak<Scene> scene) {
-			this->scene = scene;
-		}
-
-		inline Ref<Scene> GetScene() {
-			return this->scene.lock();
-		}
 
 		inline void SetShouldUpdate(bool b) {
 			bUpdates = b;
@@ -75,50 +70,31 @@ namespace GEngine {
 			return bInit;
 		}
 
-		inline Ref<Transform> GetEntityTransformComponent() {
-			return transform;
-		};
 
-        const Vector3f GetEntityPosition();
-        const Vector3f GetEntityRotation();
-        const Vector3f GetEntityScale();
-		void SetEntityPosition(const Vector3f& position);
-		void SetEntityScale(const Vector3f& scale);
-		void SetEntityRotation(const Vector3f& rot);
+        const Vector3f GetPosition();
+        const Vector3f GetRotation();
+        const Vector3f GetScale();
+		void SetPosition(const Vector3f& position);
+		void SetScale(const Vector3f& scale);
+		void SetRotation(const Vector3f& rot);
 
-		Ref<ScriptVector3> GetEntityPositionScript();
-		Ref<ScriptVector3> GetEntityRotationScript();
-		Ref<ScriptVector3> GetEntityScaleScript();
-		void SetEntityPositionScript(Ref<ScriptVector3> position);
-		void SetEntityScaleScript(Ref<ScriptVector3> scale);
-		void SetEntityRotationScript(Ref<ScriptVector3> rot);
-
-		void AddTransformCallback(Ref<Component> c, std::function<void(Ref<Transform>, TransformData)> func);
-		void RemoveTransformCallback(Ref<Component> c);
-
+		void AddTransformCallback(Component*, std::function<void(Transform*, TransformData)> func);
+		void RemoveTransformCallback(Component* c);
 		void Destroy();
-		
 
-		Entity();
-
-		inline const std::unordered_map<uint64_t, Ref<Component>>& GetComponents() const { return components; }
+		inline const const std::set<Component*>& GetComponents() const { return components; }
 
 		static int refCount;
 
 	private:
 		void Clean();
-		Ref<Transform> transform;
-		std::unordered_map<Ref<Component>, std::function<void(Ref<Transform>, TransformData)>> m_TransformCallback;
+		std::unordered_map<Component*, std::function<void(Transform*, TransformData)>> m_TransformCallback;
 
 
 
 	protected:
-		void UpdateComponentPosition();
-		
-		Weak<Scene> scene;
-
-		std::unordered_map<uint64_t, Ref<Component>> components;
-
+		std::set<Component*> components;
+		Transform* transform;
 		inline virtual void OnBegin() {};
 		inline virtual void OnEnd() {}
 		virtual void OnUpdate(Timestep timestep) {};

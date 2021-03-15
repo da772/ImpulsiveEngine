@@ -13,7 +13,7 @@ namespace GEngine {
 
     class Transform : public Component {
         public:
-            Transform();
+            Transform(Entity* e);
             ~Transform();
 
             Vector3f GetPosition() const;

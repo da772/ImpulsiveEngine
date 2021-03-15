@@ -27,9 +27,9 @@
 
 namespace GEngine {
 
-	RuntimeMeshComponent::RuntimeMeshComponent() : Component()
+	RuntimeMeshComponent::RuntimeMeshComponent(Entity* e) : Component(e)
 	{
-
+		go_tag = "Runtime Mesh Component";
 	}
 
 	RuntimeMeshComponent::~RuntimeMeshComponent()

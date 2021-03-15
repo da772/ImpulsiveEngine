@@ -20,7 +20,7 @@ enum class MovementAnim {
 class CharacterGraphics : public SpriteComponent {
 
 public:
-	CharacterGraphics() {};
+	CharacterGraphics(Entity* e) : SpriteComponent(e) {};
 	~CharacterGraphics() {};
 
 
@@ -285,8 +285,7 @@ protected:
 		directionIndicator = CreateQuad(directionIndicatorPos, 0.f, directionIndicatorScale, directionIndicatorColor, Texture2D::Create("Content/Textures/halfCircle.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest));
 		powerIndicator = CreateSubTexturedQuad(powerIndicatorPos, 0.f, powerIndicatorScale, powerIndicatorColor,
 			powerIndicatorTexture);
-		m_animationComp = CreateGameObject<SpriteAnimationComponent>();
-		GetEntity()->AddComponent(m_animationComp);
+		m_animationComp = GetEntity()->AddComponent<SpriteAnimationComponent>(GetEntity());
 		Idle();
 		
 	}
@@ -312,7 +311,7 @@ protected:
 
 	
 
-	Ref<SpriteAnimationComponent> m_animationComp;
+	SpriteAnimationComponent* m_animationComp;
 	Ref<SubTexture2D> m_characterSpriteSheet;
 	ShapeID quad = -1;
 	

@@ -32,16 +32,10 @@ void ExampleLayer::OnImGuiRender()
 
 void ExampleLayer::OnAttach()
 {
-	GEngine::Ref<SplashScreenScene> s = GEngine::CreateGameObject<SplashScreenScene>("splashScreen", nullptr);
-	GEngine::SceneManager::AddScene("splashScreen",s);
-	GEngine::Ref<MainGameScene> s2 = GEngine::CreateGameObject<MainGameScene>("mainGame", nullptr);
-	GEngine::Ref<MenuScene> s3 = GEngine::CreateGameObject<MenuScene>("menuScene", nullptr);
-	GEngine::Ref<MapEditor> s4 = GEngine::CreateGameObject<MapEditor>("mapEditor", nullptr);
-	GEngine::SceneManager::AddScene("mainGame", s2);
-	GEngine::SceneManager::AddScene("menuScene", s3);
-	GEngine::SceneManager::AddScene("mapEditor", s4);
-	//GEngine::SceneManager::SetCurrentScene("mapEditor");
-	GEngine::SceneManager::SetCurrentScene("mainGame");
+	//GEngine::SceneManager::AddScene<SplashScreenScene>("splashScreen");
+	//GEngine::SceneManager::AddScene<MainGameScene>("mainGame");
+	GEngine::SceneManager::AddScene<MenuScene>("menuScene");
+	GEngine::SceneManager::SetCurrentScene("menuScene");
 
 
 }

@@ -9,7 +9,7 @@ namespace GEngine {
 	class AudioComponent : public Component {
 	public:
 
-		AudioComponent(const std::string& fileName, bool playing = false, bool looping = false, bool bStatic = false, float volume = 1.f, float pitch = 1.f, bool fromPak = true, bool relative = true);
+		AudioComponent(Entity* e, const std::string& fileName, bool playing = false, bool looping = false, bool bStatic = false, float volume = 1.f, float pitch = 1.f, bool fromPak = true, bool relative = true);
 		virtual ~AudioComponent();
 
 		bool IsPlaying();
@@ -26,8 +26,6 @@ namespace GEngine {
 		inline float GetPitch() { return m_pitch; }
 		inline float GetVolume() { return m_volume; }
 
-		void OnAttached(Ref<Entity> entity) override;
-		void DeAttached(Ref<Entity> entity) override;
 
 	protected:
 		void OnBegin() override;
