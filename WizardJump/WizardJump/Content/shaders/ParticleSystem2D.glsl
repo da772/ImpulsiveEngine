@@ -30,6 +30,7 @@ void main() {
     v_TexSlot = a_TexSlot;
     v_TexCoord = a_TexCoord;
     v_TexScale = a_TexScale;
+    /*
     float time = u_Time - floor(gl_InstanceID/5.0);
     if (time < 0) {
         return;
@@ -41,8 +42,12 @@ void main() {
     float r = rand(vec2(gl_InstanceID+floor(u_Time/u_Lifespan),gl_InstanceID+floor(u_Time/u_Lifespan)) );
     float xVar = (r*4)-2;
     float yVar = r;
-    v_Color = (u_EndColor - a_Color) * time / u_Lifespan + a_Color;
     gl_Position = u_ViewProjection * vec4( vec2(a_Position.x+((u_Vel.x+xVar)*time), a_Position.y+((u_Vel.y+yVar)*time)), 1.0,1.0);
+    */
+    float time = u_Time - floor(gl_InstanceID/5.0);
+    v_Color = (u_EndColor - a_Color) * time / u_Lifespan + a_Color;
+    gl_Position = u_ViewProjection * vec4(a_Position.xy+(u_Vel*time), a_Position.z, 1.0);
+    
 }
 
 #type fragment

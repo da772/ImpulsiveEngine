@@ -98,6 +98,7 @@ void Tutorial::CreateMainTutorial(Weak<Scene> s, Weak<CharacterEntity> character
 												characterEntity.lock()->m_characterComponent->trajectoryOffset = 0.f;
 												characterEntity.lock()->m_characterComponent->bEnableWalk = true;
 												characterEntity.lock()->m_characterComponent->bEnableJump = true;
+												characterEntity.lock()->m_characterComponent->trajectoryTexture = nullptr;
 												characterEntity.lock()->m_characterComponent->ClearTrajectory();
 												//characterEntity.lock()->m_characterComponent->bdrawTrajectory = false;
 												characterEntity.lock()->m_characterComponent->SetInputFilterFunction(nullptr);
@@ -110,7 +111,7 @@ void Tutorial::CreateMainTutorial(Weak<Scene> s, Weak<CharacterEntity> character
 												characterEntity.lock()->m_characterComponent->trajectoryColor = { .2,.2,.2,1.f };
 											}
 											else {
-												characterEntity.lock()->m_characterComponent->trajectoryColor = { 1,1,1,1.f };
+												characterEntity.lock()->m_characterComponent->trajectoryColor = { 0,.9f,.95f,1.f };
 											}
 										}
 

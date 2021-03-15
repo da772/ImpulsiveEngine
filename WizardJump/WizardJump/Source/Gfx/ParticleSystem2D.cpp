@@ -63,23 +63,23 @@ ParticleSystem2D_Renderable::ParticleSystem2D_Renderable(ParticleSystem2D* syste
 
 void ParticleSystem2D_Renderable::Render()
 {
-
-	m_totalTime += (Time::GetEpochTimeMS() - m_lastTime) / 1e3f;
+	double timeMS = Time::GetEpochTimeMS();
+	double timeStep = (timeMS - m_lastTime) / 1e3f;
+	m_totalTime += timeStep;
 	if (m_system->DoesLoop() && m_totalTime > m_system->GetLifeSpan()) {
 		m_totalTime = 0;
 	}
-
-	m_lastTime = Time::GetEpochTimeMS();
 	m_system->GetShader()->Bind();
 	m_system->GetShader()->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentViewProjectionMatrix());
 	m_system->GetShader()->UploadUniformFloat("u_Time", m_totalTime);
 	m_system->GetShader()->UploadUniformFloat("u_Lifespan", m_system->GetLifeSpan());
 	m_system->GetShader()->UploadUniformFloat2("u_Vel", m_system->GetVelocity());
 	m_system->GetShader()->UploadUniformFloat4("u_EndColor", m_system->GetEndColor());
-
 	m_system->GetTexture()->Bind();
 	m_vertexArray->Bind();
 	RenderCommand::DrawIndexedInstanced(m_vertexArray, m_indexBuffer->GetIndexCount(), m_system->GetParticleCount());
+
+	m_lastTime = timeMS;
 }
 
 ParticleSystem2D_Renderable::~ParticleSystem2D_Renderable()

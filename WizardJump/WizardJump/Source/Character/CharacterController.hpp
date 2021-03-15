@@ -45,6 +45,7 @@ public:
 	bool bEnableWalk = true;
 	bool bdrawTrajectory = false;
 	bool bRedrawTrajectory = false;
+	Ref<Texture2D> trajectoryTexture = nullptr;
 	float trajectoryZorder = 0.f;
 	float trajectoryOffset = 0.f;
 	float trajectorySize = 0.1f;

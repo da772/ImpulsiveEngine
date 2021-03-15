@@ -10,7 +10,7 @@ const float CharacterController::jumpYDragClamp = .3f;
 const float CharacterController::jumpYMultipler = 10.f;
 const float CharacterController::jumpXMultipler = 4.f;
 
-static void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float scale = .1f, const Vector4f& color = Vector4f(0.f), const Vector3f& offset = Vector3f(0.f));
+static void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float scale = .1f, const Vector4f& color = Vector4f(0.f), const Vector3f& offset = Vector3f(0.f), Ref<Texture2D> texture = nullptr);
 
 void CharacterController::OnBegin()
 {
@@ -90,8 +90,7 @@ void CharacterController::OnUpdate(Timestep timestep) {
     trajDrawTimer += timestep.GetMilliseconds();
     if (bdrawTrajectory && trajectory_pos.size() > 0 && trajDrawTimer > 16 && bRedrawTrajectory) {
         bRedrawTrajectory = false;
-        //spriteComp->ClearQuads();
-        DrawTrajectoryLines(trajectory_pos, spriteComp, trajectorySize,  trajectoryColor, {GetEntityPosition().xy(), -trajectoryZorder });
+        DrawTrajectoryLines(trajectory_pos, spriteComp, trajectorySize,  trajectoryColor, {GetEntityPosition().xy(), -trajectoryZorder }, trajectoryTexture);
         trajDrawTimer = 0;
     }
     //Renderer::DrawDebugLines(trajectory_pos, Vector4f(1, 0, 0, 1.f));
@@ -486,7 +485,7 @@ void CharacterController::PredictPath(float xDistance, float yDistance) {
     }
 }
 
-void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float _scale, const Vector4f& col, const Vector3f& offset)
+void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> spriteComp, float _scale, const Vector4f& col, const Vector3f& offset, Ref<Texture2D> texture)
 {
     std::vector<ShapeID> quads = spriteComp->GetQuads();
     int quadCounter = 0;
@@ -504,24 +503,20 @@ void DrawTrajectoryLines(const std::vector<float>& traj, Ref<SpriteComponent> sp
 			rot = GEMath::RadToDeg(atan2(pos2.y - pos.y, pos2.x - pos.x));
 			scale.x += abs(pos2.y - pos.y)/2.f;
         }
-        /*
-        if (i != traj.size() - 4) {
-            pos.magnitude()
-        }
-        */
         if (quadCounter < quads.size()) {
             spriteComp->SetSafeParams(quads[quadCounter], pos - offset, rot, scale, col);
         } else {
-            spriteComp->CreateQuad(pos - offset, rot, scale, col);
+            spriteComp->CreateQuad(pos - offset, rot, scale, col, texture);
         }
         quadCounter++;
     }
 
-    if (quadCounter < quads.size() - 1) {
+    if (quadCounter < quads.size()) {
         int rmAmt = quads.size() - quadCounter;
-        for (int i = 0; i < rmAmt; i++) {
-            std::vector<ShapeID> __quads = spriteComp->GetQuads();
-            spriteComp->RemoveQuad(__quads[__quads.size()- 1]);
+        std::vector<ShapeID> __quads = spriteComp->GetQuads();
+        int sz = __quads.size();
+        while (rmAmt > 0) {
+            spriteComp->RemoveQuad(__quads[sz - rmAmt--]);
         }
     }
 }

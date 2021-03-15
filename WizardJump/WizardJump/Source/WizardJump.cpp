@@ -103,7 +103,7 @@ WizardJump::WizardJump()
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
-	GetWindow()->SetVSync(false);
+	GetWindow()->SetVSync(true);
 
 #if defined(GE_CONSOLE_APP)
 	EnableImGui(s_debugTools);
