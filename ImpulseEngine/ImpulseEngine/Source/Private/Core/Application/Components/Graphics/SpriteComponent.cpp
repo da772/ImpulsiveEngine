@@ -6,7 +6,6 @@
 #include "Public/Core/Renderer/RenderCommand.h"
 
 #include "Public/Core/Renderer/Graphics/BatchRenderer.h"
-#include "Public/Core/Scripting/ScriptObject.h"
 #include "Public/Core/Application/Components/TransformComponent.h"
 #include "Public/Core/Application/Entity.h"
 
@@ -70,17 +69,7 @@ namespace GEngine {
 		return id;
 	}
 
-	ShapeID SpriteComponent::CreateQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale, const Ref<ScriptVector4>& _color,
-		const Ref<Texture2D>& texture, const Vector2f& textureScale)
-	{
-		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture,textureScale);
-	}
 
-	ShapeID SpriteComponent::CreateSubTexturedQuadScript(const Ref<ScriptVector3>& _pos, const float rot, const Ref<ScriptVector3>& scale,
-		const Ref<ScriptVector4>& _color,const Ref<SubTexture2D>& texture, const Vector2f& textureScale)
-	{
-		return CreateSubTexturedQuad(_pos->GetGlm(), rot , scale->GetGlm(), _color->GetGlm(), texture, textureScale);
-	}
 
 	void SpriteComponent::SetSubTexture(const ShapeID id, const Ref<SubTexture2D>& texture)
 	{
@@ -102,16 +91,6 @@ namespace GEngine {
 		m_shapeFactory->SetSafeParams(id, pos + Vector2f(m_entity->GetPosition().x, m_entity->GetPosition().y), rot, scale * m_entity->GetScale().xy(), color);
 	}
 
-	void SpriteComponent::SetPositionScript(const ShapeID id, const Ref<ScriptVector2>& position)
-	{
-		SetPosition(id, position->GetGlm());
-	}
-
-	void SpriteComponent::SetScaleScript(const ShapeID id,const Ref<ScriptVector2>& scale)
-	{
-		m_shapeFactory->SetScale(id, scale->GetGlm());
-	}
-
 	void SpriteComponent::SetZOrder(const ShapeID id, const float zOrder)
 	{
 		m_shapeFactory->SetZOrder(id, zOrder+ m_entity->GetPosition().z);
@@ -120,11 +99,6 @@ namespace GEngine {
 	void SpriteComponent::SetQuadColor(const ShapeID id, const Vector4f& color)
 	{
 		m_shapeFactory->SetColor(id, color);
-	}
-
-	void SpriteComponent::SetQuadColorScript(const ShapeID id, const Ref<ScriptVector4>& color)
-	{
-		SetQuadColor(id, color->GetGlm());
 	}
 
 	void SpriteComponent::SetRotation(const ShapeID id, const float rotation)

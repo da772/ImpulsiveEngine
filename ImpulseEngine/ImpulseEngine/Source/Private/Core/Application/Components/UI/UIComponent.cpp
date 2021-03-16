@@ -10,8 +10,6 @@
 #include "Public/Core/Application/Application.h"
 #include "Public/Core/Application/Components/TransformComponent.h"
 #include "Public/Core/Application/Entity.h"
-
-#include "Public/Core/Scripting/ScriptObject.h"
 #include "Public/Core/Util/Utility.h"
 
 #include "Public/Core/Renderer/Graphics/Texture.h"
@@ -116,11 +114,6 @@ namespace GEngine {
 		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetPosition(), rot, _scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
-	}
-
-	const ShapeID UIComponent::CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture)
-	{
-		return CreateQuad(_pos->GetGlm(), rot, scale->GetGlm(), _color->GetGlm(), texture);
 	}
 
 
@@ -245,11 +238,6 @@ namespace GEngine {
 		}
 	}
 
-	void UIComponent::SetPositionScript(ShapeID id, Ref<ScriptVector2> position)
-	{
-		SetPosition(id, position->GetGlm());
-	}
-
     Vector2f UIComponent::GetQuadScale(const ShapeID& id) {
         return s_ShapeFactory->GetShapeScale(id);
     }
@@ -271,6 +259,11 @@ namespace GEngine {
 	void UIComponent::SetColor(const ShapeID id, const Vector4f& color)
 	{
 		s_ShapeFactory->SetColor(id, color);
+	}
+
+	GEngine::Ref<GEngine::Texture2D> UIComponent::GetTexture(const ShapeID id)
+	{
+		return s_ShapeFactory->GetShapeTexture(id);
 	}
 
 	void UIComponent::Remove(ShapeID id)

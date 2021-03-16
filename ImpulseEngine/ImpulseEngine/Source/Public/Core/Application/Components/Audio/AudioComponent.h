@@ -27,7 +27,7 @@ namespace GEngine {
 		inline float GetVolume() { return m_volume; }
 
 
-	protected:
+	public:
 		void OnBegin() override;
 
 

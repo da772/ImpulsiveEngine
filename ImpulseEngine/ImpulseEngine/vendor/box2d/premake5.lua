@@ -1,7 +1,11 @@
 project "box2d"
     kind "StaticLib"
     language "C++"
-    staticruntime "on"
+    if _OPTIONS['hot-reload'] then
+		staticruntime "off"
+	else
+		staticruntime "on"
+	end
     cppdialect "C++17"
 			
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")

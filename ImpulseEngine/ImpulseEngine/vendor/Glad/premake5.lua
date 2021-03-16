@@ -1,7 +1,11 @@
 project "Glad"
     kind "StaticLib"
     language "C"
-	staticruntime "on"
+    if _OPTIONS['hot-reload'] then
+		staticruntime "off"
+	else
+		staticruntime "on"
+	end
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")

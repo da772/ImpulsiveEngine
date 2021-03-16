@@ -9,7 +9,7 @@ namespace GEngine {
 	class AudioManager {
 
 	public:
-		static void Initalize();
+		static void Initialize();
 		static void Shutdown();
 		static void SetListenerPosition(const Vector3f& pos);
 		static const Vector3f GetListenerPosition();

@@ -31,10 +31,6 @@ namespace GEngine {
 		void UnloadGraphics() override;
 		void ReloadGraphics() override;
 
-		void SetOnMouseEndCollideScript(Ref<ScriptObject> obj);
-		void SetOnMouseStartCollideScript(Ref<ScriptObject> obj);
-
-
 		inline void SetOnMouseStartCollide(const std::function<void(float, float)> f) { m_onCollide = f; };
 		inline void SetOnMouseEndCollide(const std::function<void(float, float)> f) { m_endCollide = f; };
 		inline void SetOnEvent(const std::function<void(const Event&)> f) { m_onEvent = f; }
@@ -43,10 +39,11 @@ namespace GEngine {
 		inline void RemoveEndMouseCollideFunction() { m_endCollide = nullptr; }
 
 
-	protected:
+	public:
 		void OnBegin() override;
 		void OnEnd() override;
 		void OnUpdate(Timestep timestep) override;
+	protected:
 		ShapeID m_ids[2] = { 0,0};
 		static Ref<BatchRenderer> s_ShapeFactory;
 		Vector3f m_imagePosition, m_colliderPosition;

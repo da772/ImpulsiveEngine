@@ -1,6 +1,7 @@
 #!/bin/bash
 here="`dirname \"$0\"`"
 cd "$here"
+cd ..
 cp -rf ./Podfile_ios ../Podfile
 python ReloadProject.py
 cd ..

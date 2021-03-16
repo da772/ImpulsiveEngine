@@ -18,7 +18,7 @@ namespace GEngine {
 		const float GetPitch();
 		const float GetVolume();
 
-	protected:
+	public:
 		void OnBegin() override;
 
 

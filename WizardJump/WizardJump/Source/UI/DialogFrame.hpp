@@ -44,11 +44,12 @@ protected:
 
 	ShapeID m_dialogId, m_iconId, m_backgroundId;
 
+
 	
 
 	std::string m_titleId, m_textId = "";
 
-
+public:
 	virtual void OnBegin() override;
 	virtual void OnEnd() override;
 	virtual void OnUpdate(Timestep timestep) override;

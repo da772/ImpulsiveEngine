@@ -8,7 +8,6 @@ class MenuScene : public GEngine::Scene {
 
 
 public:
-
 	inline MenuScene(const char* id, GEngine::Camera* camera = nullptr) : Scene(id, camera) {
 		m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
 			(float)GEngine::Application::GetApp()->GetWindow()->GetWidth() / (float)GEngine::Application::GetApp()->GetWindow()->GetHeight()));
@@ -26,8 +25,14 @@ public:
 		startButton = buttonsEntity->AddComponent<ButtonComponent>(buttonsEntity, Vector3f(0, 0, 10), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
 		startButton->SetImageTexture(buttonTexture);
 
-		textComponent->CreateQuad({ 0,0,2 }, 0, { 1.5,2,1 }, { 1,1,1,1 }, Texture2D::Create("Content/Textures/sky_01.png"));
+		textComponent->CreateQuad({ 0,0,2 }, 0, { 2.5,2,1 }, { 1,1,1,1.f }, Texture2D::Create("Content/Textures/sky_01.png"));
+		
+		buttonsEntity->AddComponent<NativeScriptComponent>(buttonsEntity, "TestScript");
 
+		// TEMP FOR ANDROID UNLOADING TEXTURES FIX
+		SpriteComponent* s = buttonsEntity->AddComponent<SpriteComponent>(buttonsEntity);
+
+		//s->CreateQuad({ 0,-1,10 }, 0, { 1 }, { 1 }, Texture2D::Create("Content/Textures/bricks_01.png", 192));
 
 		startButton->SetOnEvent([](const Event& e) {
 
@@ -60,32 +65,25 @@ public:
 	inline void OnBegin() override
 	{
 
-
-		
 	
 	}
 
 
 	inline void OnEnd() override
 	{
-		buttonsEntity = nullptr; 
-		textComponent = nullptr;
-		startButton = nullptr;
+
 	}
 
 
 	inline void OnLoad() override
 	{
-		m_CameraController = std::unique_ptr<GEngine::Orthographic_CameraController>(new GEngine::Orthographic_CameraController(
-			(float)GEngine::Application::GetApp()->GetWindow()->GetWidth() / (float)GEngine::Application::GetApp()->GetWindow()->GetHeight()));
-        buttonTexture = GEngine::Texture2D::Create("Content/Textures/play_button.png");
+
 	}
 
 
 	inline void OnUnload() override
 	{
-        buttonTexture = nullptr;
-		m_CameraController = nullptr;
+
 	}
 
 private:

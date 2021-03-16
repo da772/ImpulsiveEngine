@@ -2,7 +2,11 @@ project "ImGui"
     kind "StaticLib"
     language "C++"
 	cppdialect "C++17"
-    staticruntime "On"
+    if _OPTIONS['hot-reload'] then
+		staticruntime "off"
+	else
+		staticruntime "on"
+	end
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")

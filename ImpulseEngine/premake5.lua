@@ -4,6 +4,11 @@ newoption {
 	description = "builds open al"
 }
 
+newoption {
+	trigger = "hot-reload",
+	description = "allows for hot reloading on the fly"
+}
+
 IncludeDir = {}
 IncludeDir["GLFW"] = "ImpulseEngine/vendor/GLFW/include"
 IncludeDir["ENET"] = "ImpulseEngine/vendor/Enet/include"
@@ -24,6 +29,7 @@ IncludeDir["OpenAL"] = "ImpulseEngine/vendor/OpenAL/include"
 IncludeDir["Vorbis"] = "ImpulseEngine/vendor/Vorbis/include"
 IncludeDir["zlib"] = "ImpulseEngine/vendor/zlib/include"
 IncludeDir["vector"] = "ImpulseEngine/Modules/IE_VECTOR/include"
+IncludeDir["reflection"] = "ImpulseEngine/Modules/Reflection/include"
 
 
 group "Dependencies"
@@ -49,7 +55,11 @@ project "ImpulseEngine"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	if _OPTIONS['hot-reload'] then
+		staticruntime "off"
+	else
+		staticruntime "on"
+	end
 
 
 	targetdir ("%{prj.name}/Bin/" .. outputdir .. "/%{prj.name}")
@@ -96,15 +106,13 @@ project "ImpulseEngine"
 		"%{IncludeDir.Vorbis}",
 		"%{IncludeDir.zlib}",
 		"%{IncludeDir.vector}",
-
+		"%{IncludeDir.reflection}",
 	}
 
 	libdirs 
 	{
 		"%{IncludeDir.Vulkan}/lib"
 	}
-	
-	
 
 	links
 	{
@@ -365,9 +373,9 @@ project "ImpulseEngine"
 			"GLFW_INCLUDE_NONE",
 			"GE_WINDOW_GLFW",
 			"GE_PLATFORM_WINDOWS",
-			"GL_WITH_GLAD"
+			"GL_WITH_GLAD",
+			"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 		}
-		
 
 		links 
 		{
@@ -375,6 +383,7 @@ project "ImpulseEngine"
 			"vulkan-1.lib",
 			"Glad",
 			"GLFW",
+			"Ws2_32.lib"
 		}
 
 		filter "configurations:Debug"

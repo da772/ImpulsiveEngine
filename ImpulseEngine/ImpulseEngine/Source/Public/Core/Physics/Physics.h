@@ -13,7 +13,7 @@ namespace GEngine {
 	class Physics {
 
 	public:
-		static void Initalize();
+		static void Initialize();
 		static void Shutdown();
 		static void* GetWorld();
 		static void SetGravity(const Vector2f& gravity);

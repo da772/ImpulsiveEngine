@@ -56,6 +56,7 @@ bool checkResize = false;
 bool ActivityPaused = false;
 bool running = false;
 bool appCreated = false;
+bool firstReload = false;
 void main_loop();
 void SetActivityStatus(bool b);
 
@@ -182,7 +183,7 @@ static void engine_term_display(struct engine* engine) {
 		App_UnloadGraphics();
 		eglMakeCurrent(engine->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 		if (engine->context != EGL_NO_CONTEXT) {
-			GE_CORE_DEBUG("DESTROYING EGL CONTEXT");
+			if (appCreated) GE_CORE_DEBUG("DESTROYING EGL CONTEXT");
 			eglDestroyContext(engine->display, engine->context);
 		}
 		if (engine->surface != EGL_NO_SURFACE) {
@@ -267,7 +268,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 		break;
 	case APP_CMD_INIT_WINDOW:
 		// The window is being shown, get it ready.
-		LOGW("APP_CMD_INIT_WINDOW!");
+		if (appCreated) GE_CORE_DEBUG("APP_CMD_INIT_WINDOW!");
 		if (engine->app->window != NULL) {
 			engine_init_display(engine);
 			//App_Create(engine->width, engine->height);
@@ -276,7 +277,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 		break;
 	case APP_CMD_TERM_WINDOW:
 		// The window is being hidden or closed, clean it up.
-		//GE_LOG_WARN("APP ENDING");
+		if (appCreated) GE_LOG_WARN("APP ENDING");
 		//App_Shutdown();
 		engine_term_display(engine);
 		break;
@@ -310,22 +311,24 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 	}
 	case APP_CMD_PAUSE:
 	{
-		//ActivityPaused = true;
+		if (appCreated) GE_CORE_DEBUG("PAUSE ACTIVITY");
+		
 		break;
 	}
 	case APP_CMD_RESUME:
 	{
 		//ActivityPaused = false;
-		LOGW("RESUME ACTIVITY GLU");
+		if (appCreated) GE_CORE_DEBUG("RESUME ACTIVITY");
 		//main_loop();
 		break;
 	}
 	
 	case APP_CMD_WINDOW_RESIZED:
 	{
+		//App_Resize(engine->width, engine->height);
 		break;
 	}
-		//App_Resize(engine->width, engine->height);
+		
 		
 	}
 }

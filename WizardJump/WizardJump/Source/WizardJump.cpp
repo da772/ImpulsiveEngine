@@ -9,6 +9,10 @@
 
 #include "Lighting/Lighting.hpp"
 
+#include "Reflection.map.generated.h"
+
+
+
 ExampleLayer::ExampleLayer()
 
 : Layer("ExampleLayer"), app(GEngine::Application::GetApp())
@@ -32,17 +36,21 @@ void ExampleLayer::OnImGuiRender()
 
 void ExampleLayer::OnAttach()
 {
+#ifdef GE_HOT_RELOAD
+	ScriptApi::OutputDir_Native(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Scripts/CPP/Generated/");
+	ScriptApi::Load(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Scripts/CPP/Scripts/", ".h");
+#else 
+	__ReflectionMap__loadGeneratedFiles(ScriptApi::GetStorage_Native());
+#endif
 	//GEngine::SceneManager::AddScene<SplashScreenScene>("splashScreen");
 	//GEngine::SceneManager::AddScene<MainGameScene>("mainGame");
 	GEngine::SceneManager::AddScene<MenuScene>("menuScene");
 	GEngine::SceneManager::SetCurrentScene("menuScene");
-
-
 }
 
 void ExampleLayer::OnDetach()
 {
-	
+
 }
 
 void ExampleLayer::OnUpdate(GEngine::Timestep timeStep)

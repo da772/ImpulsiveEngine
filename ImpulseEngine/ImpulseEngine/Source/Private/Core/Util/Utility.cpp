@@ -37,7 +37,7 @@ namespace GEngine {
 
 	std::string Utility::IPV4ToString(uint32_t ip)
 	{
-#if defined( GE_PLATFORM_WINDOWS) && !defined(GE_MINGW_)
+#if defined( GE_PLATFORM_WINDOWS)
 		char ch[255];
 		inet_ntop(AF_INET, &ip, ch, 255);
 		return std::string(ch);

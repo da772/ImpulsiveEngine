@@ -16,6 +16,7 @@
 #include "Public/Platform/Window/Mobile/Mobile_Input.h"
 #include "Public/Platform/Window/Mobile/MobileWindow.h"
 //#include "Public/Platform/Window/Mobile/Mobile_Interface.h"
+#include "reflection/macros.h"
 #include "Public/Core/Util/Random.h"
 
 #include "Public/Core/Application/Components/UI/UIComponent.h"
@@ -59,9 +60,8 @@
 #include "Public/Core/Util/Utility.h"
 #include "Public/Core/Util/ThreadPool.h"
 
-#include "Public/Core/Scripting/ScriptManager.h"
-#include "Public/Core/Scripting/ScriptApi.h"
-#include "Public/Core/Scripting/ScriptObject.h"
+#include "Public/Platform/Scripting/NativeScriptComponent.h"
+#include "Public/Platform/Scripting/ScriptApi.h"
 
 #include "Public/Core/FileSystem/FileSystem.h"
 

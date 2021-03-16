@@ -5,8 +5,6 @@ workspace "WizardJump"
 
 	startproject "WizardJump"
 
-	
-
 	configurations
 	{
 		"Debug",
@@ -39,21 +37,30 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 
 include "ImpulseEngine"
-
+include "WizardJump/WizardJump/Scripts/CPP"
 
 project "WizardJump"
 	location "WizardJump"
 	kind "ConsoleApp"
 	language "C++"
-			cppdialect "C++17"
+		cppdialect "C++17"
+	if _OPTIONS['hot-reload'] then
+	staticruntime "off"
+	defines 
+	{
+		"GE_HOT_RELOAD"
+	}
+	else
 	staticruntime "on"
+	end
 
 	targetdir ("%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{prj.location}/Bin-Obj/" .. outputdir .. "/%{prj.name}")
 
 	defines 
 	{
-		"GE_PROJECT_WizardJump"
+		"GE_PROJECT_WizardJump",
+		"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 	}
 	
 	files 
@@ -83,12 +90,14 @@ project "WizardJump"
 		"ImpulseEngine/%{IncludeDir.entt}",	
 		"ImpulseEngine/%{IncludeDir.cr}",
 		"ImpulseEngine/%{IncludeDir.vector}",
+		"ImpulseEngine/%{IncludeDir.reflection}",
 		"%{prj.location}/%{prj.name}/Source/",
-		"%{prj.location}/%{prj.name}/include/"
+		"%{prj.location}/%{prj.name}/include/",
+		"%{prj.location}/%{prj.name}/Scripts/CPP/Generated"
 
 	}
 
-	libdirs 
+	libdirs
 	{
 		"ImpulseEngine/%{IncludeDir.Vulkan}/lib"
 	}
@@ -97,9 +106,20 @@ project "WizardJump"
 	{
 		"ImpulseEngine"
 	}
-	
 
+	if _OPTIONS["hot-reload"] then
+	else
+	links
+	{
+	"Scripts_CPP"
+	}
+	end
 
+	filter "platforms:x86_64"
+		defines 
+		{
+			"BUILD_ARCHITECTURE=\"x86_64\""
+		}
 
 	filter "system:windows"
 		systemversion "latest"
@@ -119,74 +139,23 @@ project "WizardJump"
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"$(TargetDir)Data\""
 		}
 
-		if _OPTIONS['with-hot-reload'] then
-			filter "configurations:Debug"
-				defines "GE_DEBUG"
-				runtime "Debug"
-				symbols "On"
-				kind "SharedLib"
-			filter "configurations:Release"
-				defines "GE_RELEASE"
-				runtime "Release"
-				optimize "On"
-				kind "SharedLib"
-			filter "configurations:Dist"
-				defines "GE_DIST"
-				runtime "Release"
-				optimize "On"
-				kind "WindowedApp"
-		else 
-			filter "configurations:Debug"
-				defines "GE_DEBUG"
-				runtime "Debug"
-				symbols "On"
-				kind "ConsoleApp"
-			filter "configurations:Release"
-				defines "GE_RELEASE"
-				runtime "Release"
-				optimize "On"
-			filter "configurations:Dist"
-				defines "GE_DIST"
-				runtime "Release"
-				optimize "On"
-		end
-		filter { "system:windows", "action:gmake2" }
-			cppdialect "gnu++17"
-			defines
-			{
-				"GE_MINGW_",
-				"GE_PLATFORM_WINDOWS"
-			}
-			
-			
-			links 
-			{
-				"ImGui",
-				"Enet",
-				"miniupnpc",
-				"freetype",
-				"box2d",
-				"Vorbis",
-				"opengl32",
-				"Glad",
-				"GLFW",
-				"pthread",
-				"vulkan-1",
-				"openal",
-				"gdi32",
-				"zlib",
-				"user32",
-				"kernel32",
-				"winspool",
-				"comdlg32",
-				"advapi32",
-				"shell32",
-				"ole32",
-				"oleaut32",
-				"uuid",
-				"odbc32",
-				"odbccp32"
-			}
+
+		filter "configurations:Debug"
+			defines "GE_DEBUG"
+			runtime "Debug"
+			symbols "On"
+			kind "ConsoleApp"
+		filter "configurations:Release"
+			defines "GE_RELEASE"
+			runtime "Release"
+			optimize "On"
+			kind "WindowedApp"
+		filter "configurations:Dist"
+			defines "GE_DIST"
+			runtime "Release"
+			optimize "On"
+			kind "WindowedApp"
+
 
 		filter "system:linux"
 			linkgroups 'on'
@@ -230,37 +199,32 @@ project "WizardJump"
 	
 			
 	
-			if _OPTIONS['with-hot-reload'] then
-				filter "configurations:Debug"
-					defines "GE_DEBUG"
-					runtime "Debug"
-					symbols "On"
-					kind "SharedLib"
-				filter "configurations:Release"
-					defines "GE_RELEASE"
-					runtime "Release"
-					optimize "On"
-					kind "SharedLib"
-				filter "configurations:Dist"
-					defines "GE_DIST"
-					runtime "Release"
-					optimize "On"
-					kind "WindowedApp"
-			else 
-				filter "configurations:Debug"
-					defines "GE_DEBUG"
-					runtime "Debug"
-					symbols "On"
-					kind "ConsoleApp"
-				filter "configurations:Release"
-					defines "GE_RELEASE"
-					runtime "Release"
-					optimize "On"
-				filter "configurations:Dist"
-					defines "GE_DIST"
-					runtime "Release"
-					optimize "On"
-			end
+			
+			filter "configurations:Debug"
+				defines "GE_DEBUG"
+				runtime "Debug"
+				symbols "On"
+				kind "ConsoleApp"
+				defines 
+				{
+					"BUILD_CONFIG=\"Debug\""
+				}
+			filter "configurations:Release"
+				defines "GE_RELEASE"
+				runtime "Release"
+				optimize "On"
+				defines 
+				{
+					"BUILD_CONFIG=\"Release\""
+				}
+			filter "configurations:Dist"
+				defines "GE_DIST"
+				runtime "Release"
+				optimize "On"
+				defines 
+				{
+					"BUILD_CONFIG=\"Dist\""
+				}					
 
 	filter "system:ios"
 		architecture "ARM"
@@ -324,17 +288,28 @@ project "WizardJump"
 			defines "GE_DEBUG"
 			runtime "Debug"
 			symbols "On"
-			
+			defines 
+            {
+                "BUILD_CONFIG=\"Debug\""
+            }
 			
 		filter "configurations:Release"
 			defines "GE_RELEASE"
 			runtime "Release"
 			optimize "On"
+			defines 
+            {
+                "BUILD_CONFIG=\"Release\""
+            }
 			
 		filter "configurations:Dist"
 			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
+			defines
+			{
+                "BUILD_CONFIG=\"Dist\""
+            }
 	
 	filter "system:android"
 		architecture "ARM"
@@ -453,12 +428,6 @@ project "WizardJump"
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 
-		
-	
-
-		
-
-
 	filter "system:macosx"
 		systemversion "latest"
 		kind "WindowedApp"
@@ -501,20 +470,30 @@ project "WizardJump"
 			--"cp -rf ${PROJECT_DIR}/%{prj.name}/\"Res\" ${TARGET_BUILD_DIR}",
 		}
 
+		
 		filter "configurations:Debug"
 			defines "GE_DEBUG"
 			runtime "Debug"
 			symbols "On"
-			
-			
+			defines 
+            {
+                "BUILD_CONFIG=\"Debug\""
+            }
 		filter "configurations:Release"
 			defines "GE_RELEASE"
 			runtime "Release"
 			optimize "On"
-			
+			defines 
+            {
+                "BUILD_CONFIG=\"Release\""
+            }
 		filter "configurations:Dist"
 			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
+			defines 
+            {
+                "BUILD_CONFIG=\"Dist\""
+            }
 				
 

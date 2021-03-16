@@ -11,7 +11,6 @@
 #include "Public/Core/Util/Time.h"
 
 #include "Public/Core/Renderer/Pipeline/RenderPipeline.h"
-#include "Public/Core/Scripting/ScriptManager.h"
 #include "Public/Core/Collision/CollisionDetection.h"
 
 #include "Public/Core/Renderer/Graphics/Shader.h"
@@ -26,6 +25,10 @@
 #include "Public/Core/Audio/AudioManager.h"
 
 #include "Public/Core/Util/Utility.h"
+
+#include "Public/Core/Networking/Networking.h"
+
+#include "Public/Platform/Scripting/ScriptApi.h"
 
 /*DEBUG*/
 
@@ -313,8 +316,12 @@ namespace GEngine {
     
 	void Application::Setup()
 	{
-        AudioManager::Initalize();
-        Physics::Initalize();
+		Log::Init();
+		ThreadPool::Setup();
+		Networking::Init();
+        AudioManager::Initialize();
+        Physics::Initialize();
+        ScriptApi::Initialize();
         SceneManager::Begin();
 	}
 
@@ -327,6 +334,9 @@ namespace GEngine {
         SceneManager::Shutdown();
         AdManager::Shutdown();
         AudioManager::Shutdown();
+        ScriptApi::Shutdown();
+		Networking::Shutdown();
+		ThreadPool::Shutdown();
         Application::s_Instance = nullptr;
 	}
 

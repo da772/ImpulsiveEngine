@@ -4,7 +4,6 @@
 #include "Public/Core/Application/Entity.h"
 #include "Public/Core/Collision/Collider2D.h"
 #include "Public/Core/Collision/CollisionDetection.h"
-#include "Public/Core/Scripting/ScriptObject.h"
 
 #include "Public/Core/Physics/Physics.h"
 #include "Public/Core/Physics/PhysicsStructures.h"
@@ -189,20 +188,6 @@ namespace GEngine {
 		return Vector2f(0.f);
 	}
 
-	Ref<ScriptVector2> QuadColliderComponent::GetLinearVelocityScript()
-	{
-		return make_shared<ScriptVector2>(GetLinearVelocity());
-	}
-
-	Ref<GEngine::ScriptVector2> QuadColliderComponent::GetPositionScript()
-	{
-		return make_unique<ScriptVector2>(GetPosition());
-	}
-
-	Ref<ScriptVector2> QuadColliderComponent::GetScaleScript()
-	{
-		return make_unique<ScriptVector2>(GetScale());
-	}
 
 	void QuadColliderComponent::SetBounce(const ColliderID id,const float bounce)
 	{

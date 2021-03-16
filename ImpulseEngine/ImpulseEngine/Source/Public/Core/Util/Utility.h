@@ -13,7 +13,6 @@ namespace GEngine {
 		static std::string GenerateHash(const int len);
 		static void GenerateHash(char* str, const int len);
 
-
 	};
 	
 

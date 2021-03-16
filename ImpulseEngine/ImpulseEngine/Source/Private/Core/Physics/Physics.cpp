@@ -13,7 +13,7 @@ namespace GEngine {
 	double Physics::m_lastUpdate;
 	int Physics::m_catchUp;
 
-	void Physics::Initalize()
+	void Physics::Initialize()
 	{
 		GE_CORE_ASSERT(!m_context, "PHYSICS CONTEXT ALREADY CREATED");
 		if (m_context == nullptr) {

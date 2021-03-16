@@ -1,7 +1,6 @@
 #include "gepch.h"
 #include "Public/Core/Application/Components/SpriteAnimationComponent.h"
 #include "Public/Core/Util/Time.h"
-#include "Public/Core/Scripting/ScriptObject.h"
 #include "Public/Core/FileSystem/FileSystem.h"
 
 namespace GEngine {
@@ -24,12 +23,6 @@ namespace GEngine {
 			m_animateFrameFunction = animateFrameFunction;
 		}
 	}
-
-	void SpriteAnimationComponent::SetFrameAnimation_Script(uint8_t fps, uint8_t maxFrames, bool loop /*= true*/, Ref<ScriptObject> scriptFunction /*= nullptr*/)
-	{
-		SetFrameAnimation(fps, maxFrames, loop, [scriptFunction](int frame) { scriptFunction->CallSelf(frame); if (ScriptObject::HasError()) GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(scriptFunction->GetPath())); });
-	}
-
 
 	void SpriteAnimationComponent::SetFrameAnimationFPS(uint8_t fps)
 	{

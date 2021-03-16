@@ -30,11 +30,8 @@ static inline void App_Create(int width, int height) {
     
     if (MobileEntry::App == nullptr) {
        
-        GEngine::Log::Init();
-        GEngine::ThreadPool::Setup();
-        GEngine::Networking::Init();
+        GEngine::Application::Setup();
         MobileEntry::App = GEngine::CreateApplication();
-        MobileEntry::App->Setup();
         GE_CORE_DEBUG("Window Size: {0}, {1}", width, height);
         MobileEntry::App->GetWindow()->SetSize(width, height);
     }
@@ -73,8 +70,6 @@ static inline void App_ReloadGraphics() {
 static inline void App_Shutdown() {
     MobileEntry::App->Shutdown();
     GE_CORE_DEBUG("APP DELETED");
-    GEngine::Networking::Shutdown();
-    GEngine::ThreadPool::Shutdown();
     delete MobileEntry::App;
     MobileEntry::App = nullptr;
 }

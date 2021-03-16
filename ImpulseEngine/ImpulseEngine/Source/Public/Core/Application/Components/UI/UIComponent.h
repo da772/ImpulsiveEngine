@@ -30,7 +30,6 @@ namespace GEngine {
 		virtual ~UIComponent();
 		const ShapeID CreateQuad(const  Vector3f& _pos, const float rot = 0, const Vector3f& scale = { 1,1,1 }, const Vector4f& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, bool aspectRatio = true, const Vector2f& textureScale = Vector2f(1, 1), const float alphaChannel = 4);
 
-		const ShapeID CreateQuadScript(Ref<ScriptVector3> _pos, const float rot, Ref<ScriptVector3> scale, Ref<ScriptVector4> _color, Ref<Texture2D> texture );
 		
 
 		const ShapeID CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale = Vector2f(1,1), const float alphaChannel = 4);
@@ -43,7 +42,6 @@ namespace GEngine {
 		uint32_t GetTextSize(const std::string& id);
 
 		void SetPosition(const ShapeID id, const Vector2f& position);
-		void SetPositionScript(const ShapeID id, Ref<ScriptVector2> position);
 		void SetZOrder(const ShapeID id, const float zOrder);
 		void SetScale(const ShapeID id, const Vector3f& scale);
 
@@ -51,6 +49,7 @@ namespace GEngine {
         Vector2f GetQuadScale(const ShapeID& id);
 
 		void SetColor(const ShapeID id, const Vector4f& color);
+		Ref<Texture2D> GetTexture(const ShapeID id);
 
 		void Remove(const ShapeID id);
 		void Remove(const std::string& hash);

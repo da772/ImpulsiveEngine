@@ -12,7 +12,6 @@ namespace GEngine {
 		inline SpriteAnimationComponent(Entity* e) : Component(e) { go_tag = "Sprite Animation Component"; bUpdates = true; };
 		virtual ~SpriteAnimationComponent();
 		void SetFrameAnimation(const uint8_t fps, const uint8_t maxFrames, bool loop = true, const std::function<void(int)> animateFrameFunction = nullptr);
-		void SetFrameAnimation_Script(uint8_t fps, uint8_t maxFrames, bool loop = true, Ref<ScriptObject> scriptFunction = nullptr);
 		void SetFrameAnimationFPS(uint8_t fps);
 		void RemoveFrameAnimation();
 		inline int GetFrameAnimation() { return m_currentFrame; }
@@ -34,13 +33,9 @@ namespace GEngine {
 		long long m_startTime = -1;
 
 
-	protected:
+	public:
 		virtual void OnBegin() override;
-
-
 		virtual void OnEnd() override;
-
-
 		virtual void OnUpdate(Timestep timestep) override;
 
 	};

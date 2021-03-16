@@ -5,8 +5,6 @@
 namespace GEngine {
 
 	class Collider2D;
-	class ScriptObject;
-	struct ScriptVector2;
 	class PhysicsBody;
 	class PhysicsCollision;
 
@@ -51,9 +49,6 @@ namespace GEngine {
 
 		const Vector2f GetLinearVelocity();
 
-		Ref<ScriptVector2> GetLinearVelocityScript();
-		Ref<ScriptVector2> GetPositionScript();
-		Ref<ScriptVector2> GetScaleScript();
 
 		void SetBounce(const ColliderID id, const float bounce);
 		const float GetBounce(const ColliderID id);

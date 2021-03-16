@@ -37,11 +37,11 @@ namespace GEngine {
 		void Destroy();
 		Entity* GetEntity() const;
 
-	protected:
+	public:
 		virtual void OnBegin() {};
 		virtual void OnEnd() {};
 		virtual void OnUpdate(Timestep timestep) {};
-	
+	protected:
 		Entity* m_entity;
 		bool bInit = false;
 		bool bUpdates = false;

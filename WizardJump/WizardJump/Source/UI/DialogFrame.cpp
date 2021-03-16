@@ -96,6 +96,7 @@ void DialogFrame::OnBegin()
 			});
 	}
 
+
 	m_buttonComponent = AddComponent<ButtonComponent>(this, m_position, 0.f, Vector3f(dialogScale.x, dialogScale.y, 1.f), Vector4f(1, 0, 0, 0.f), Vector2f(0, 0));
 	m_buttonComponent->SetOnEvent([this](const Event& event) {
 

@@ -1,7 +1,11 @@
 project "miniupnpc"
     kind "StaticLib"
     language "C"
-    staticruntime "On"
+    if _OPTIONS['hot-reload'] then
+		staticruntime "off"
+	else
+		staticruntime "on"
+	end
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")

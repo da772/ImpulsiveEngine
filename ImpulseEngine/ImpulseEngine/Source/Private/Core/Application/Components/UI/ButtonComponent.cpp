@@ -5,8 +5,6 @@
 #include "Public/Core/Application/Application.h"
 #include "Public/Core/Application/Components/TransformComponent.h"
 #include "Public/Core/Application/Entity.h"
-
-#include "Public/Core/Scripting/ScriptObject.h"
 #include "Public/Core/FileSystem/FileSystem.h"
 
 #include "Public/Core/Renderer/Graphics/Shader.h"
@@ -113,25 +111,6 @@ namespace GEngine {
 			s_ShapeFactory->ReloadGraphics();
 	}
 
-	void ButtonComponent::SetOnMouseEndCollideScript(Ref<ScriptObject> obj)
-	{
-		SetOnMouseEndCollide([obj](float f1, float f2) {
-			obj->CallSelf(f1,f2);
-			if (ScriptObject::HasError()) { 
-				GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(obj->GetPath()));
-			}
-			});
-	}
-
-	void ButtonComponent::SetOnMouseStartCollideScript(Ref<ScriptObject> obj)
-	{
-		SetOnMouseStartCollide([obj](float f1, float f2) {
-			obj->CallSelf(f1, f2);
-			if (ScriptObject::HasError()) {
-				GE_CORE_ERROR("{0} at (\"{1}\")", ScriptObject::GetError(), FileSystem::FilePath(obj->GetPath()));
-			}
-			});
-	}
 
 
 	void ButtonComponent::OnBegin()

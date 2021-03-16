@@ -7,7 +7,7 @@ namespace GEngine {
 
 	Ref<AudioContext> AudioManager::s_audioContext;
 
-	void AudioManager::Initalize()
+	void AudioManager::Initialize()
 	{
 		s_audioContext = AudioContext::Create();
 	}

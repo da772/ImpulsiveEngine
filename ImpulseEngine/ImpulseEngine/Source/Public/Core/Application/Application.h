@@ -86,7 +86,7 @@ namespace GEngine {
 
 		inline static const bool IsGamePaused() { return s_Instance->m_pause; };
 
-		void Setup();
+		static void Setup();
 		void Shutdown();
         void Update(float ts = 0);
         void Draw();

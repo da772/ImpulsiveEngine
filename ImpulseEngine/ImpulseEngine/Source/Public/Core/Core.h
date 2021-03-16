@@ -3,6 +3,15 @@
 #ifndef GE_CORE_DEF
 #define GE_CORE_DEF
 
+#ifndef UFUNCTION
+#define UFUNCTION()
+#endif
+#ifndef UCONSTRUCTOR
+#define UCONSTRUCTOR()
+#endif
+#ifndef UPROPERTY
+#define UPROPERTY()
+#endif
 
 
 #ifndef GE_PHYSICS_DEFINED
