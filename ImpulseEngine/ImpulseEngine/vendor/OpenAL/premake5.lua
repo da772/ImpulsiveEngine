@@ -3,9 +3,9 @@ project "OpenAL"
     language "C++"
 	cppdialect "C++17"
     if _OPTIONS['hot-reload'] then
-		staticruntime "off"
+	staticruntime "off"
 	else
-		staticruntime "on"
+	staticruntime "on"
 	end
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")

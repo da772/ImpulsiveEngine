@@ -13,7 +13,7 @@ namespace GEngine {
 
 	Component::~Component()
 	{
-		GE_CORE_DEBUG("COMPONENT DESTROYED");
+		//GE_CORE_DEBUG("COMPONENT DESTROYED");
 	}
 
 	Entity* Component::GetEntity() const {
@@ -29,7 +29,7 @@ namespace GEngine {
 	{
 		if (bInit)
 			return;
-		GE_CORE_ASSERT(!bInit, "Component already initialized");
+		//GE_CORE_ASSERT(!bInit, "Component already initialized");
 		bInit = true;
         OnBegin();
 

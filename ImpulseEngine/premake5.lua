@@ -56,9 +56,13 @@ project "ImpulseEngine"
 	language "C++"
 	cppdialect "C++17"
 	if _OPTIONS['hot-reload'] then
-		staticruntime "off"
+	staticruntime "off"
+	defines
+	{
+		"GE_HOT_RELOAD"
+	}
 	else
-		staticruntime "on"
+	staticruntime "on"
 	end
 
 

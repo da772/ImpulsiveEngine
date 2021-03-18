@@ -37,6 +37,8 @@ void ExampleLayer::OnImGuiRender()
 void ExampleLayer::OnAttach()
 {
 #ifdef GE_HOT_RELOAD
+	ScriptApi::SetBuild_Native(FileSystem::GetParentExecuteableDir(3) + "WizardJump/Scripts/CPP/", "Scripts_CPP");
+	ScriptApi::SetMake_Native(FileSystem::GetParentExecuteableDir(3) + "Project/", "GenerateProject_Scripting");
 	ScriptApi::OutputDir_Native(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Scripts/CPP/Generated/");
 	ScriptApi::Load(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Scripts/CPP/Scripts/", ".h");
 #else 

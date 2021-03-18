@@ -4,7 +4,7 @@
 
 extern GEngine::Application* GEngine::CreateApplication();
 #if defined(GE_CONSOLE_APP)
-#if defined(GE_PLATFORM_WINDOWS) && !defined(GE_DEBUG)
+#if defined(GE_PLATFORM_WINDOWS) && !defined(GE_DEBUG) && 0
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #else
 int main(int argc, char** argv)

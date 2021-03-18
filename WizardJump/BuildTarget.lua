@@ -59,8 +59,7 @@ project "WizardJump"
 
 	defines 
 	{
-		"GE_PROJECT_WizardJump",
-		"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
+		"GE_PROJECT_WizardJump"
 	}
 	
 	files 
@@ -132,7 +131,8 @@ project "WizardJump"
 
 		defines
 		{
-			"GE_PLATFORM_WINDOWS"
+			"GE_PLATFORM_WINDOWS",
+			"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 		}
 		postbuildcommands
 		{
@@ -149,7 +149,7 @@ project "WizardJump"
 			defines "GE_RELEASE"
 			runtime "Release"
 			optimize "On"
-			kind "WindowedApp"
+			kind "ConsoleApp"
 		filter "configurations:Dist"
 			defines "GE_DIST"
 			runtime "Release"

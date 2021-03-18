@@ -29,6 +29,7 @@ namespace GEngine {
 
 	private:
 		NativeObject object;
+		Component* component;
 
 	};
 

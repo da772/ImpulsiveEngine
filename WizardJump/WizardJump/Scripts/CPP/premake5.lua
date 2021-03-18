@@ -39,17 +39,36 @@ project "Scripts_CPP"
     {
         "ImpulseEngine"
     }
+    defines 
+    {
+        "GE_LOADED_DLL"
+    }
     end
 	
-    filter "configurations:Debug"
-        defines "GE_DEBUG"
-        runtime "Debug"
-        symbols "On"
-    filter "configurations:Release"
-        defines "GE_RELEASE"
-        runtime "Release"
-        optimize "On"
-    filter "configurations:Dist"
-        defines "GE_DIST"
-        runtime "Release"
-        optimize "On"
+
+    filter "system:android"
+        cppdialect "gnu++17"
+        rtti ("On")
+        linkoptions { "-lm" }
+        exceptionhandling ("On")
+        androidapilevel(android_version)
+        
+        filter "platforms:x86"
+            architecture "x86"
+        filter "platforms:ARM"
+            architecture "ARM"
+        filter "platforms:ARM64"
+            architecture "ARM64"
+        filter "platforms:x64"
+			architecture "x64"
+
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"
+        filter "configurations:Dist"
+            defines "GE_DIST"
+            runtime "Release"
+            optimize "On"

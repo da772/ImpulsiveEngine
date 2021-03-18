@@ -27,5 +27,8 @@ public:
 	UFUNCTION()
 	virtual void OnUpdate(Timestep timestep) override;
 
+	UFUNCTION()
+	void TestFunc();
+
 };
 

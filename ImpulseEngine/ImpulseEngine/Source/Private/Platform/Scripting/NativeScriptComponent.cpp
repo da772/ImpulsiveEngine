@@ -4,64 +4,40 @@
 
 namespace GEngine {
 
-	NativeScriptComponent::NativeScriptComponent(Entity* e, const std::string& clazz) : Component(e), object(ScriptApi::CreateObject_Native(clazz, e))
+	NativeScriptComponent::NativeScriptComponent(Entity* e, const std::string& clazz) : Component(e), object(ScriptApi::GetReflector_Native()->CreateUClass(clazz, e))
 	{
-
+		component = (Component*)object.data();
+		bUpdates = component->GetDoesUpdate();
 	}
 
 	NativeScriptComponent::~NativeScriptComponent()
 	{
-		ScriptApi::DestroyObject_Native(object);
+		ScriptApi::GetReflector_Native()->DestroyUClass(object);
 	}
 
 	void NativeScriptComponent::UnloadGraphics()
 	{
-		try {
-			object.CallFunction<void>("UnloadGraphics");
-		}
-		catch (std::exception& e) {
-
-		}
+		component->UnloadGraphics();
 	}
 
 	void NativeScriptComponent::ReloadGraphics()
 	{
-		try {
-			object.CallFunction<void>("ReloadGraphics");
-		}
-		catch (std::exception& e) {
-
-		}
+		component->ReloadGraphics();
 	}
 
 	void NativeScriptComponent::OnBegin()
 	{
-		try {
-			object.CallFunction<void>("OnBegin");
-		}
-		catch (std::exception& e) {
-
-		}
+		component->Begin();
 	}
 
 	void NativeScriptComponent::OnEnd()
 	{
-		try {
-			object.CallFunction<void>("OnEnd");
-		}
-		catch (std::exception& e) {
-
-		}
+		component->End();
 	}
 
 	void NativeScriptComponent::OnUpdate(Timestep timestep)
 	{
-		try {
-			object.CallFunction<void>("OnUpdate", timestep);
-		}
-		catch (std::exception& e) {
-
-		}
+		component->Update(timestep);
 	}
 
 }

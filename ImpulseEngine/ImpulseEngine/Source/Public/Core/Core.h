@@ -72,19 +72,22 @@
 #endif
 
 #ifdef GE_ENABLE_ASSERTS
-#ifdef GE_PLATFORM_WINDOWS
+#if defined(GE_PLATFORM_WINDOWS) && !defined(GE_LOADED_DLL)
 	#define GE_ASSERT(x, ...) { if(!(x)) { GE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define GE_CORE_ASSERT(x, ...) { if(!(x)) { GE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #elif defined(GE_PLATFORM_MACOSX) || defined(GE_PLATFORM_IOS)
 #define GE_ASSERT(x, ...) { if(!(x)) { GE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __builtin_trap(); } }
 #define GE_CORE_ASSERT(x, ...) { if(!(x)) { GE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __builtin_trap(); } }
+#elif defined(GE_LOADED_DLL)
+#define GE_ASSERT(x, ...)     
+#define GE_CORE_ASSERT(x, ...)	
 #else 
-#define GE_ASSERT(x, ...)       if(!(x)) { GE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__);}
-#define GE_CORE_ASSERT(x, ...)  if(!(x)) { GE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);}
+#define GE_ASSERT(x, ...)           if(!(x)) { GE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__);}
+#define GE_CORE_ASSERT(x, ...)	    if(!(x)) { GE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);}
 #endif
 #else
-	#define GE_ASSERT(x, ...)           if(!(x)) { GE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__);}
-	#define GE_CORE_ASSERT(x, ...)	    if(!(x)) { GE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__);}
+#define GE_ASSERT(x, ...)     
+#define GE_CORE_ASSERT(x, ...)	
 #endif
 
 #define BIND_EVENT_FN(x,y) std::bind(&x::y, this, std::placeholders::_1)

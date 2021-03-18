@@ -1,10 +1,17 @@
 #include "gepch.h"
 #include "Public/Platform/Scripting/ScriptApi.h"
-#include "reflection/utility.hpp"
+#include "Public/Core/Util/Utility.h"
+#include "Public/Core/Util/Time.h"
+#include "Public/Core/Util/ThreadPool.h"
 
 namespace GEngine {
 
 	refl::reflector* ScriptApi::s_nativeReflector = nullptr;
+	std::shared_ptr<spdlog::logger> ScriptApi::native_logger = nullptr;
+	std::string ScriptApi::dirMake_Native = "";
+	std::string ScriptApi::nameMake_Native = "";
+	std::string ScriptApi::dirBuild_Native = "";
+	std::string ScriptApi::nameBuild_Native = "";
 	static dllptr lib;
 
 	void ScriptApi::Initialize()
@@ -36,42 +43,81 @@ namespace GEngine {
 
 	bool ScriptApi::Load_Native(const std::string& path, const std::string& extension)
 	{
+#if GE_HOT_RELOAD
 		if (lib) {
-			__UnloadLib(&lib, *s_nativeReflector);
+			std::string name = native_logger->name();
+			native_logger = nullptr;
+			spdlog::drop(name);
+			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
 			s_nativeReflector->Clear();
 		}
 
+#if 1
 		for (auto& p : std::filesystem::recursive_directory_iterator(path))
 		{
 			if (p.path().extension() == extension) {
-				__GenerateLib(path, p.path().stem().string() + ".h", *s_nativeReflector);
+				Utility::__GenerateLib(path, p.path().stem().string() + ".h", *s_nativeReflector);
 			}
 		}
-			
-		std::string buildOut = sys::build_proj(files::GetParentExecuteableDir(3), "GenerateMake");
+#endif
+#if 1
+		uint64_t ms = Time::GetEpochTimeMS();
+		std::string buildOut = Utility::sys::build_proj(dirMake_Native, nameMake_Native);
 		if (buildOut.size() > 0) {
-			std::cout << buildOut << std::endl;
+			if (buildOut.find("Error:") != std::string::npos) {
+				GE_CORE_ERROR("Native Build: Error: {0}", buildOut);
+			}
 		}
-		std::cout << "Build Complete...\n" << std::endl;
-		std::string compileOut = sys::compile_proj(files::GetParentExecuteableDir(3), "Reflection_Tests_Scripts");
+		ms = Time::GetEpochTimeMS() - ms;
+		GE_CORE_TRACE("Native Build: Complete... ({0}ms)", ms);
+		ms = Time::GetEpochTimeMS();
+		std::string compileOut = Utility::sys::compile_proj(dirBuild_Native, nameBuild_Native);
 		if (compileOut.size() > 0) {
 			if (compileOut.find("error") != std::string::npos) {
-				std::cout << compileOut << std::endl;
+				GE_CORE_ERROR("Native Compile: Failure... ");
+				GE_CORE_ERROR("{0}", compileOut);
 				if (compileOut.find("insufficient") != std::string::npos) {
-					std::cout << "IS DEBUGGER ATTATCHED?" << std::endl;
+					GE_CORE_INFO("Native Compile: ");
 				}
 				return false;
 			}
 		}
-		std::cout << "Compile Complete...\n" << std::endl;
-		__LoadLib(&lib, *s_nativeReflector);
-		std::cout << "LOAD DLL" << std::endl;
+#endif
+		ms = Time::GetEpochTimeMS() - ms;
+		GE_CORE_TRACE("Native Compile: Complete... ({0}ms)", ms);
+		//std::cout << "Compile Complete...\n" << std::endl;
+		ms = Time::GetEpochTimeMS();
+		if (Utility::__LoadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage())) {
+			ms = Time::GetEpochTimeMS() - ms;
+			GE_CORE_TRACE("Native Link: Complete... ({0}ms)", ms);
+		}
+		else {
+			GE_CORE_ERROR("Native Link: Failed");
+			return false;
+		}
+		
+		NativeObject o = s_nativeReflector->CreateUClass("Logger");
+		native_logger = o.CallFunction<std::shared_ptr<spdlog::logger>> ("SetupLogs", Log::GetSinks());
+		spdlog::register_logger(native_logger);
+		spdlog::set_level(spdlog::level::level_enum::trace);
+		s_nativeReflector->DestroyUClass(o);
 		return true;
+#else
+		return true;
+#endif
 	}
 
 	void ScriptApi::Unload_Native()
 	{
-
+		if (lib) {
+			if (native_logger) {
+				std::string name = native_logger->name();
+				native_logger = nullptr;
+				spdlog::drop(name);
+			}
+			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
+			s_nativeReflector->Clear();
+		}
 	}
 
 	void ScriptApi::Clear_Native()
@@ -87,6 +133,18 @@ namespace GEngine {
 	GEngine::NativeStorage ScriptApi::GetStorage_Native()
 	{
 		return s_nativeReflector->GetStorage();
+	}
+
+	void ScriptApi::SetMake_Native(const std::string& dir, const std::string& name)
+	{
+		dirMake_Native = dir;
+		nameMake_Native = name;
+	}
+
+	void ScriptApi::SetBuild_Native(const std::string& dir, const std::string& name)
+	{
+		dirBuild_Native = dir;
+		nameBuild_Native = name;
 	}
 
 }

@@ -24,6 +24,7 @@ namespace refl {
 
 	class uClass {
 		public:
+		uClass(uClass&& other);
 		uClass(void* p, const std::string& n, ::refl::reflector* r, bool destroy = false);
 		~uClass();
 
@@ -134,6 +135,10 @@ namespace refl {
 				return;
 			}
 			inline void* data() const {return ptr;}
+			inline uClass& operator=(uClass&& other) {
+				other.destroy = false;
+				return *this;
+			}
 		private:
 			std::string clazz = "NULL";
 			void* ptr = nullptr;
@@ -207,5 +212,11 @@ namespace refl {
 	inline uClass::uClass(void* p, const std::string& n, ::refl::reflector* r, bool d) : clazz(n), ptr(p), ref(r), store(r->GetStorage()), destroy(d) {
 
 	};
+
+	inline uClass::uClass(uClass&& other) : clazz(other.clazz), ptr(other.ptr), ref(other.ref), store(other.ref->GetStorage()), destroy(other.destroy) {
+		other.destroy = false;
+	}
+
+
 
 }

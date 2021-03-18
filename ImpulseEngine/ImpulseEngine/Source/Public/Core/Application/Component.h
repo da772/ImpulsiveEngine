@@ -34,6 +34,9 @@ namespace GEngine {
 		inline bool GetShouldUpdate() {
 			return bUpdates && bInit;
 		}
+		inline bool GetDoesUpdate() const {
+			return bUpdates;
+		}
 		void Destroy();
 		Entity* GetEntity() const;
 

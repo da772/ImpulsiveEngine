@@ -269,11 +269,11 @@ namespace GEngine {
 			fileData = FileSystem::LoadFileFromPak(path);
 
 			if (fileData != nullptr) {
-				GE_CORE_TRACE("FILE LOADED FROM PAK: {0}", path);
+				GE_CORE_INFO("FILE LOADED FROM PAK: {0}", path);
 				return fileData;
 			}
 			else {
-				GE_CORE_ERROR("FILE NOT LOADED FROM PAK: {0}", path);
+				GE_CORE_WARN("FILE NOT LOADED FROM PAK: {0}", path);
 			}
 		}
 

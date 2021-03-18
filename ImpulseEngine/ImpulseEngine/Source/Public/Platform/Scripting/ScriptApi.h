@@ -7,6 +7,7 @@ namespace GEngine {
 
 	using NativeObject = refl::uClass;
 	using NativeStorage = refl::store::storage*;
+	using NativeReflector = refl::reflector*;
 
 	class ScriptApi {
 	public:
@@ -20,19 +21,20 @@ namespace GEngine {
 		static void Clear_Native();
 		static void OutputDir_Native(const std::string& s);
 		static NativeStorage GetStorage_Native();
+		static void SetMake_Native(const std::string& dir, const std::string& name);
+		static void SetBuild_Native(const std::string& dir, const std::string& name);
+		static inline NativeReflector GetReflector_Native() { return s_nativeReflector; }
 
-		template<typename ... Args>
-		inline static NativeObject CreateObject_Native(const std::string& clazz, Args&& ... args) {
-			return s_nativeReflector->CreateUClass(clazz, std::forward<Args>(args)...);
-		}
 
-		inline static void DestroyObject_Native(NativeObject& object) {
-			s_nativeReflector->DestroyUClass(object);
-		}
 
 	private:
 
 		static refl::reflector* s_nativeReflector;
+		static std::string dirMake_Native;
+		static std::string nameMake_Native;
+		static std::string dirBuild_Native;
+		static std::string nameBuild_Native;
+		static std::shared_ptr<spdlog::logger> native_logger;
 
 	};
 
