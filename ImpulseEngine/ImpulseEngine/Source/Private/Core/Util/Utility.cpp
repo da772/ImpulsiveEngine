@@ -157,6 +157,19 @@ namespace GEngine {
 #endif
 	}
 
+    ret_err Utility::dll::dlerror() {
+#ifdef GE_HOT_RELOAD
+#if defined(__linux__) || defined(__APPLE__)
+        return ::dlerror();
+#endif
+#if defined(_WIN32)
+        return GetLastError();
+#endif
+#else
+        return "";
+#endif
+    }
+
 	int Utility::dll::dlclose(dllptr p)
 	{
 #ifdef GE_HOT_RELOAD
@@ -215,7 +228,7 @@ namespace GEngine {
 		cmd += _msBin + "\\MSBuild.exe\" \"" + dir + file + ".vcxproj\" /verbosity:quiet /nologo ";
 #endif
 #if defined (__linux__) || defined (__APPLE__)
-		cmd += "cd " + dir + " && make -s " + file + " ";
+		cmd += "cd " + dir + " && make -s ";
 #endif
 #ifdef GE_RELEASE
 #if defined (__linux__) || defined (__APPLE__)
@@ -243,7 +256,7 @@ namespace GEngine {
 #endif
 
 #if defined (__linux__) || defined (__APPLE__)
-		cmd += "_x86_64";
+		//cmd += "_x86_64";
 #endif
 #ifdef _WIN32
 		cmd += "/p:Platform=x64 ";
@@ -425,7 +438,7 @@ namespace GEngine {
 #endif
 		* lib = Utility::dll::dlopen(loc.c_str(), 0);
 
-		if (!lib) {
+		if (!*lib) {
 			GE_CORE_ERROR("Native Library: Could not load library - {0}:{1}", name, Utility::dll::dlerror());
 			return false;
 		}
@@ -456,7 +469,8 @@ namespace GEngine {
 			else {
 				GE_CORE_ERROR("Native Library: Could not load symbol - {0}", "__ReflectionMap__unloadGeneratedFiles");
 			}
-			Utility::dll::dlclose(*lib);
+			int i = dll::dlclose(*lib);
+            GE_CORE_ERROR("DLCOSE ERR: {0}", i);
 			*lib = 0;
 			std::string loc = FileSystem::GetParentExecuteableDir(0) + Utility::dll::GetDLLExtensionName((_renameDLL ? __DLL_prefix : "") + name);
 			if (_renameDLL)

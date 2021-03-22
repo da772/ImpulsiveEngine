@@ -44,6 +44,28 @@ project "Scripts_CPP"
         "GE_LOADED_DLL"
     }
     end
+
+    filter "system:macosx"
+        defines
+        {
+            "GE_PLATFORM_MACOSX"
+        }
+
+        excludes 
+        { 
+            "%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
+        }
+
+        includedirs
+        {
+
+        }
+        
+        xcodebuildsettings
+        { 
+            ["ALWAYS_SEARCH_USER_PATHS"] = "YES"
+        }
+
 	
 
     filter "system:android"
