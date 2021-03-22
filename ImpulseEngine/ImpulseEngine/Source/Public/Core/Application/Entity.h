@@ -82,7 +82,7 @@ namespace GEngine {
 		void RemoveTransformCallback(Component* c);
 		void Destroy();
 
-		inline const const std::set<Component*>& GetComponents() const { return components; }
+		inline const std::set<Component*>& GetComponents() const { return components; }
 
 		static int refCount;
 

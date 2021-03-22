@@ -424,6 +424,9 @@ project "ImpulseEngine"
 		pchheader "gepch.h"
 		pchsource "ImpulseEngine/Source/gepch.cpp"
 		cppdialect "gnu++17"
+		if _OPTIONS['hot-reload'] then
+			pic "On"
+		end
 		files
 		{
 		}

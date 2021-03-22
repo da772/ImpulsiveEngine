@@ -87,6 +87,7 @@
         "shared_mutex": "cpp",
         "stop_token": "cpp",
         "cinttypes": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "future": "cpp"
     }
 }

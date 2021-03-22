@@ -45,6 +45,11 @@ project "Scripts_CPP"
     }
     end
 
+    filter "system:linux"
+        if _OPTIONS['hot-reload'] then
+        pic "On"
+        end
+
     filter "system:macosx"
         defines
         {

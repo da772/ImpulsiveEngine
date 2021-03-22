@@ -293,7 +293,7 @@ namespace GEngine {
 		if (!file.read(dat, size))
 		{
 			free(dat);
-			GE_CORE_ASSERT(false, "FILE COULD NOT BE READ");
+			GE_CORE_ASSERT(false, "FILE COULD NOT BE READ: "+ path);
 		}
 		else {
 			fileData = Ref<FileData>(new FileData(size + 1, (unsigned char*)dat));
