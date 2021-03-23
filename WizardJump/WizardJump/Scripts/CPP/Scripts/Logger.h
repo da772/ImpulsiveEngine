@@ -10,14 +10,12 @@ public:
 
 
 	UFUNCTION()
-	std::shared_ptr<spdlog::logger> SetupLogs(std::vector<spdlog::sink_ptr> sinks);
+	std::shared_ptr<spdlog::logger> SetupLogs(std::shared_ptr<spdlog::logger> l);
     
     UFUNCTION()
     void DestroyLogs();
 
 	static std::shared_ptr<spdlog::logger> logger;
-private:
-	static std::string loggerName;
 	
 
 

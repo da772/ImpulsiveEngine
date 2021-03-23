@@ -285,7 +285,7 @@ protected:
 		directionIndicator = CreateQuad(directionIndicatorPos, 0.f, directionIndicatorScale, directionIndicatorColor, Texture2D::Create("Content/Textures/halfCircle.png", TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Min_Nearest | TEXTUREFLAGS_Mag_Nearest));
 		powerIndicator = CreateSubTexturedQuad(powerIndicatorPos, 0.f, powerIndicatorScale, powerIndicatorColor,
 			powerIndicatorTexture);
-		m_animationComp = GetEntity()->AddComponent<SpriteAnimationComponent>(GetEntity());
+		m_animationComp = GetEntity()->AddComponent<SpriteAnimationComponent>();
 		Idle();
 		
 	}

@@ -14,9 +14,9 @@ void CharacterEntity::OnBegin()
 
 		SetPosition({ m_position.x, m_position.y,0.f });		
 
-		m_characterComponent = AddComponent<CharacterController>(this);
-		m_spriteComponent = AddComponent<CharacterGraphics>(this);
-		m_audioComponent = AddComponent<AudioListenerComponent>(this);
+		m_characterComponent = AddComponent<CharacterController>();
+		m_spriteComponent = AddComponent<CharacterGraphics>();
+		m_audioComponent = AddComponent<AudioListenerComponent>();
 }
 
 void CharacterEntity::OnEnd()

@@ -26,8 +26,7 @@ namespace GEngine {
 		template<class C, typename ... Args>
 		inline C* AddComponent(Args&& ... args) {
 			entt::registry& r = SceneManager::GetCurrentScene()->GetRegistry();
-			//r.emplace<C>((entt::entity)go_hash, std::forward<Args>(args)...);
-			C* c = new C(std::forward<Args>(args)...);
+			C* c = new C(this, std::forward<Args>(args)...);
 			components.insert(c);
 			if (bInit) {
 				c->Begin();
@@ -39,12 +38,12 @@ namespace GEngine {
 		template<class C>
 		inline C* RemoveComponent(C* component)
 		{
-			if (bInit)
-				component->End();
-			components.erase(component);
-			//entt::registry& r = SceneManager::GetCurrentScene()->GetRegistry();
-			//r.remove<C>((entt::entity)go_hash);
-			delete component;
+			if (components.find(component) != components.end()) {
+				if (bInit)
+					component->End();
+				components.erase(component);
+				delete component;
+			}
 			return nullptr;
 		}
 

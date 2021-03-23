@@ -14,7 +14,7 @@ namespace GEngine {
 	Entity::Entity(const uint32_t& id)
 	{
 		go_hash = id;
-		transform = AddComponent<Transform>(this);
+		transform = AddComponent<Transform>();
 	}
 
 	int Entity::refCount = 0;

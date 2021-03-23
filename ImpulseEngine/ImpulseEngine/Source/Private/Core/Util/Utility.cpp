@@ -470,7 +470,7 @@ namespace GEngine {
 				GE_CORE_ERROR("Native Library: Could not load symbol - {0}", "__ReflectionMap__unloadGeneratedFiles");
 			}
 			int i = dll::dlclose(*lib);
-            GE_CORE_ERROR("DLCOSE ERR: {0}", i);
+            GE_CORE_TRACE("Native Library Closed: {0}", i);
 			*lib = 0;
 			std::string loc = FileSystem::GetParentExecuteableDir(0) + Utility::dll::GetDLLExtensionName((_renameDLL ? __DLL_prefix : "") + name);
 			if (_renameDLL)

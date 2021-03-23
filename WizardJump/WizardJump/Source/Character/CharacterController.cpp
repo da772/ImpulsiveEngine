@@ -17,11 +17,11 @@ void CharacterController::OnBegin()
 	startTime = Time::GetEpochTimeNS();
 	//musicSound = CreateGameObject<AudioComponent>("Content/Audio/test.ogg", true, true, true, .25f);
 
-	spriteComp = GetEntity()->AddComponent<SpriteComponent>(GetEntity());
-    bodyComp = GetEntity()->AddComponent<CharacterBody>(GetEntity());
-    leftFootSound = GetEntity()->AddComponent<AudioComponent>(GetEntity(), "Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
-    rightFootSound = GetEntity()->AddComponent<AudioComponent>(GetEntity(), "Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
-    jumpSound = GetEntity()->AddComponent<AudioComponent>(GetEntity(), "Content/Audio/jumpRustling.ogg", false, false, true, .75f);
+	spriteComp = GetEntity()->AddComponent<SpriteComponent>();
+    bodyComp = GetEntity()->AddComponent<CharacterBody>();
+    leftFootSound = GetEntity()->AddComponent<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
+    rightFootSound = GetEntity()->AddComponent<AudioComponent>("Content/Audio/sneakerConcrete.ogg", false, false, true, .75f);
+    jumpSound = GetEntity()->AddComponent<AudioComponent>("Content/Audio/jumpRustling.ogg", false, false, true, .75f);
 	
 	//GetEntity()->AddComponent(musicSound);
 	graphicsComp = dynamic_cast<CharacterEntity*>(GetEntity())->m_spriteComponent;

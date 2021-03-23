@@ -34,7 +34,6 @@ namespace GEngine {
 		static std::string nameMake_Native;
 		static std::string dirBuild_Native;
 		static std::string nameBuild_Native;
-		static std::shared_ptr<spdlog::logger> native_logger;
 
 	};
 

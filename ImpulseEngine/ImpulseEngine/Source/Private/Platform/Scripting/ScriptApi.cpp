@@ -7,7 +7,6 @@
 namespace GEngine {
 
 	refl::reflector* ScriptApi::s_nativeReflector = nullptr;
-	std::shared_ptr<spdlog::logger> ScriptApi::native_logger = nullptr;
 	std::string ScriptApi::dirMake_Native = "";
 	std::string ScriptApi::nameMake_Native = "";
 	std::string ScriptApi::dirBuild_Native = "";
@@ -45,9 +44,7 @@ namespace GEngine {
 	{
 #if GE_HOT_RELOAD
 		if (lib) {
-			std::string name = native_logger->name();
-			native_logger = nullptr;
-			spdlog::drop(name);
+			
             NativeObject o = s_nativeReflector->CreateUClass("Logger");
             o.CallFunction<void> ("DestroyLogs");
             s_nativeReflector->DestroyUClass(o);
@@ -100,7 +97,7 @@ namespace GEngine {
 		}
 		
 		NativeObject o = s_nativeReflector->CreateUClass("Logger");
-		native_logger = o.CallFunction<std::shared_ptr<spdlog::logger>> ("SetupLogs", Log::GetSinks());
+		o.CallFunction<std::shared_ptr<spdlog::logger>> ("SetupLogs", Log::GetClientLogger());
 		//spdlog::register_logger(native_logger);
 		spdlog::set_level(spdlog::level::level_enum::trace);
 		s_nativeReflector->DestroyUClass(o);
@@ -113,11 +110,6 @@ namespace GEngine {
 	void ScriptApi::Unload_Native()
 	{
 		if (lib) {
-			if (native_logger) {
-				std::string name = native_logger->name();
-				native_logger = nullptr;
-				spdlog::drop(name);
-			}
 			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
 			s_nativeReflector->Clear();
 		}

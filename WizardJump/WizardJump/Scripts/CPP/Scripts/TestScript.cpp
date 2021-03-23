@@ -26,7 +26,7 @@ void TestScript::ReloadGraphics()
 
 void TestScript::OnBegin()
 {
-	GE_LOG_WARN("TEST SCRIPT BEGIN12312");
+	GE_LOG_WARN("TEST SCRIPT BEGIN");
 }
 
 void TestScript::OnEnd()

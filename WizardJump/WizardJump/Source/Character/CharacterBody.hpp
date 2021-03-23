@@ -52,9 +52,9 @@ protected:
 		Vector2f groundScale = Vector2f(.4f, .1f);
 
 		
-		m_quadCollider = m_entity->AddComponent<QuadColliderComponent>(m_entity, true, true, Vector2f(0.f, 0.f));
+		m_quadCollider = m_entity->AddComponent<QuadColliderComponent>(true, true, Vector2f(0.f, 0.f));
 		m_quadCollider->b_UpdatePos = false;
-		m_groundCollider = m_entity->AddComponent<QuadColliderComponent>(m_entity, true, false, Vector2f(0.f, 0.f));
+		m_groundCollider = m_entity->AddComponent<QuadColliderComponent>(true, false, Vector2f(0.f, 0.f));
 		
 		quadColliderID = m_quadCollider->CreateQuad(pos, scale, 1, 0, "characterBody");
 		circleColliderID = m_quadCollider->CreateCircle({ 0.f,-.65f }, { .2f, .2f }, 1, 0, "characterBody");
@@ -75,7 +75,7 @@ protected:
 			});
 
 		if (debug) {
-			m_debugSprite = m_entity->AddComponent<SpriteComponent>(m_entity);
+			m_debugSprite = m_entity->AddComponent<SpriteComponent>();
 			m_debugSprite->CreateQuad({ pos.x,pos.y,11.f }, 0, { scale.x,scale.y,1 }, { 1,0,0,.25f });
 			m_debugSprite->CreateQuad({ 0, -.65f, 12.f }, 0, { .4f,.4f,1.f }, { 0,0,1,.5f });
 			m_debugSprite->CreateQuad({ groundPos.x,groundPos.y,11}, 0, { groundScale.x,groundScale.y,1 }, { 0,1,0,.25f });

@@ -16,6 +16,7 @@ namespace GEngine {
 	std::vector<std::function<void()>> SceneManager::m_FlushFunctions;
 	bool SceneManager::b_started = false;
 	bool SceneManager::b_paused = false;
+	bool SceneManager::b_changingScene = false;
 
 
 
@@ -26,20 +27,27 @@ namespace GEngine {
 
 	void SceneManager::SetCurrentScene(const std::string& name)
 	{
-		ThreadPool::AddEndFrameFunction([name]() {
-			CollisionDetection::Reset();
-			if (SceneManager::scene != nullptr) {
-				scene->End();
-				SceneManager::m_FlushFunctions.clear();
-				delete SceneManager::scene;
-				SceneManager::scene = nullptr;
-			}
 
-			if (SceneManager::scenes.find(name.c_str()) != SceneManager::scenes.end()) {
-				SceneManager::scene = SceneManager::scenes[name]();
-				Begin();
-			}
-			});
+		if (!b_changingScene) {
+			b_changingScene = true;
+			CollisionDetection::Reset();
+			ThreadPool::AddEndFrameFunction([name]() {
+				b_changingScene = false;
+				CollisionDetection::Reset();
+				if (SceneManager::scene != nullptr) {
+					scene->End();
+					SceneManager::m_FlushFunctions.clear();
+					delete SceneManager::scene;
+					SceneManager::scene = nullptr;
+				}
+
+				if (SceneManager::scenes.find(name.c_str()) != SceneManager::scenes.end()) {
+					SceneManager::scene = SceneManager::scenes[name]();
+					Begin();
+				}
+				
+				});
+		}
 	}
 
 	void SceneManager::Update(Timestep ts)

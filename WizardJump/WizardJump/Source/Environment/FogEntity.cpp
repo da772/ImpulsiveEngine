@@ -107,7 +107,7 @@ void FogEntity::OnBegin()
 	*/
 	SetPosition({ 0,0,0 });
 	//m_shader = Shader::Create("Content/shaders/FogShader.glsl");
-	m_spriteComponent = AddComponent<SpriteComponent>(this);
+	m_spriteComponent = AddComponent<SpriteComponent>();
 	//m_audioComponent = CreateGameObject<AudioComponent>("Content/Audio/windLoop.ogg", true, true, true, .25f, .75f);
 	//AddComponent(m_audioComponent);
 	

@@ -25,9 +25,9 @@ void DialogFrame::SetOnDialogComplete(const std::function<void()>& f)
 void DialogFrame::OnBegin()
 {
 	
-	m_spriteAnimComponent = AddComponent<SpriteAnimationComponent>(this);
-	m_uiComponent = AddComponent<UIComponent>(this);
-	m_audioComponent = AddComponent<AudioComponent>(this, "Content/Audio/keyPress.ogg", false, false, true, 1.f, 1.f);
+	m_spriteAnimComponent = AddComponent<SpriteAnimationComponent>();
+	m_uiComponent = AddComponent<UIComponent>();
+	m_audioComponent = AddComponent<AudioComponent>("Content/Audio/keyPress.ogg", false, false, true, 1.f, 1.f);
 	m_audioComponent->SetPitch(2.f);
 
 
@@ -97,7 +97,7 @@ void DialogFrame::OnBegin()
 	}
 
 
-	m_buttonComponent = AddComponent<ButtonComponent>(this, m_position, 0.f, Vector3f(dialogScale.x, dialogScale.y, 1.f), Vector4f(1, 0, 0, 0.f), Vector2f(0, 0));
+	m_buttonComponent = AddComponent<ButtonComponent>(m_position, 0.f, Vector3f(dialogScale.x, dialogScale.y, 1.f), Vector4f(1, 0, 0, 0.f), Vector2f(0, 0));
 	m_buttonComponent->SetOnEvent([this](const Event& event) {
 
 		//GE_LOG_DEBUG("Button Press: {0}, Animating: {1}", event.GetName(), isAnimating);

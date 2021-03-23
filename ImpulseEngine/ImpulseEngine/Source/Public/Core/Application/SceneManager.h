@@ -37,6 +37,7 @@ namespace GEngine {
 		static std::vector < std::function<void()> > m_FlushFunctions;
 		static bool b_started;
 		static bool b_paused;
+		static bool b_changingScene;
 
 	};
 
