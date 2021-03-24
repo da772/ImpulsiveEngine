@@ -3,7 +3,7 @@
 
 TestScript::TestScript(Entity* e) : Component(e)
 {
-	GE_LOG_DEBUG("TEST SCRIPT CREATED!");
+	GE_LOG_DEBUG("TEST SCRIPT CREATED: "+Factory::HashToString(go_hash));
 	bUpdates = true;
 }
 
@@ -25,13 +25,9 @@ void TestScript::ReloadGraphics()
 
 void TestScript::OnBegin()
 {
-    GE_LOG_DEBUG("TEST SCRIPT BEGIN 12");
-    NewReloadedFunction();
+    GE_LOG_DEBUG("TEST SCRIPT BEGIN 22");
 }
 
-void TestScript::NewReloadedFunction() {
-    GE_LOG_WARN("RELOADED FUNCTION");
-}
 
 void TestScript::OnEnd()
 {

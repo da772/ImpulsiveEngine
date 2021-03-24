@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GEngine.h"
+#include <GEngine.h>
 #include "Character/CharacterBody.hpp"
 #include "Character/CharacterGraphics.hpp"
 

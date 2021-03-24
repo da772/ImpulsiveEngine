@@ -13,8 +13,8 @@ namespace GEngine {
 		inline const std::string GetTag() const { return go_tag; }
 		inline void SetTag(const std::string& tag) { go_tag = tag; }
 	protected:
-		uint32_t go_hash;
-		std::string go_tag;
+		uint64_t go_hash = 0;
+		std::string go_tag = "GameObject";
 		inline std::string GetClassName() {
 			return typeid(this).name();
 		}

@@ -3,17 +3,31 @@
 #define GE_FACTORY_INCLUDE
 #include "Public/Core/Util/Time.h"
 #include "Public/Core/Util/Utility.h"
-#if 0
+#if 1
 
 namespace GEngine {
 
 	namespace Factory {
-		static unsigned long counter = 0;
-		static uint64_t NextHash() {
-			return ++Factory::counter;
+		inline unsigned long counter = 0;
+		inline std::unordered_set<uint64_t> hashes;
+		inline uint64_t NextHash() {
+			char ch[8];
+			Utility::GenerateHash(ch, 8);
+			uint64_t h = 0;
+			memcpy(&h, ch, sizeof(char) * 8);
+			while (Factory::hashes.find(h) != Factory::hashes.end()) {
+				Utility::GenerateHash(ch, 8);
+				memcpy(&h, ch, sizeof(char) * 8);
+			}
+			return h;
 		}
-		static std::unordered_set<uint64_t> hashes;
-		static void RemoveHash(uint64_t hash) { if (hashes.size() > 0 &&  hashes.find(hash) != hashes.end()) hashes.erase(hash); };
+		inline std::string HashToString(const uint64_t& h) {
+			char ch[9];
+			memcpy(ch, &h, sizeof(uint64_t));
+			ch[8] = 0;
+			return std::string(ch);
+		}
+		inline void RemoveHash(uint64_t hash) { if (hashes.size() > 0 &&  hashes.find(hash) != hashes.end()) hashes.erase(hash); };
 	}
 
 	template<class E, typename ... Args>

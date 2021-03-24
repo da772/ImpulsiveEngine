@@ -8,12 +8,13 @@ namespace GEngine {
 
 	Component::Component(Entity* e) : GameObject(), m_entity(e)
 	{
-
+		go_hash = m_entity->GetHash();
+		GE_CORE_DEBUG("COMPONENT HASH: {0}", Factory::HashToString(go_hash));
 	}
 
 	Component::~Component()
 	{
-		//GE_CORE_DEBUG("COMPONENT DESTROYED");
+		m_entity->RemoveHash(go_hash);
 	}
 
 	Entity* Component::GetEntity() const {

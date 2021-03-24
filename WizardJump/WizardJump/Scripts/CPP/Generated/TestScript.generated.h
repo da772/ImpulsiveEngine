@@ -10,7 +10,6 @@ class TestScript_Generated : public refl::class_generation {
 		{"~TestScript",{"~TestScript","void",static_cast<refl::store::uproperty_type>(3),{},[](void* ptr, std::vector<void*> args) {TestScript* p = (TestScript*)ptr; delete p; return nullptr;} }},
 		{"UnloadGraphics",{"UnloadGraphics","void",static_cast<refl::store::uproperty_type>(3),{},[](void* ptr, std::vector<void*> args) { (*((TestScript*)ptr).*(&TestScript::UnloadGraphics))(); return nullptr; } }},
 		{"ReloadGraphics",{"ReloadGraphics","void",static_cast<refl::store::uproperty_type>(3),{},[](void* ptr, std::vector<void*> args) { (*((TestScript*)ptr).*(&TestScript::ReloadGraphics))(); return nullptr; } }},
-		{"NewReloadedFunction",{"NewReloadedFunction","void",static_cast<refl::store::uproperty_type>(3),{},[](void* ptr, std::vector<void*> args) { (*((TestScript*)ptr).*(&TestScript::NewReloadedFunction))(); return nullptr; } }},
 		{"OnBegin",{"OnBegin","void",static_cast<refl::store::uproperty_type>(3),{},[](void* ptr, std::vector<void*> args) { (*((TestScript*)ptr).*(&TestScript::OnBegin))(); return nullptr; } }},
 		{"OnEnd",{"OnEnd","void",static_cast<refl::store::uproperty_type>(3),{},[](void* ptr, std::vector<void*> args) { (*((TestScript*)ptr).*(&TestScript::OnEnd))(); return nullptr; } }},
 		{"OnUpdate",{"OnUpdate","void",static_cast<refl::store::uproperty_type>(3),{{static_cast<::refl::store::uproperty_type>(1),"Timestep"} },[](void* ptr, std::vector<void*> args) { (*((TestScript*)ptr).*(&TestScript::OnUpdate))(*(Timestep*)args[0]); return nullptr; } }},

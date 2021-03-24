@@ -17,6 +17,14 @@ public:
 	UFUNCTION()
 	void SetFunctionPtr();
 
+	UFUNCTION()
+	void RegisterLog_Core(std::shared_ptr<spdlog::logger> logger);
+	UFUNCTION()
+	void RegisterLog_Client(std::shared_ptr<spdlog::logger> logger);
+
+	UFUNCTION()
+	void RemoveLog(std::shared_ptr<spdlog::logger> logger);
+
 	static std::function<void(uint8_t, std::string)> s_log;
 
 };
@@ -29,7 +37,5 @@ public:
 #define GE_LOG_WARN(x) Logger::s_log(3,x)
 #define GE_LOG_ERROR(x) Logger::s_log(4,x)
 #define GE_LOG_FATAL(x) Logger::s_log(5,x)
-
-
 
 #endif 

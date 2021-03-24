@@ -26,6 +26,13 @@ namespace GEngine {
         inline static std::shared_ptr<spdlog::logger> GetNativeLogger() {
             return s_NativeLogger;
         }
+		inline static void SetCoreLogger(std::shared_ptr<spdlog::logger> l) {
+			s_CoreLogger = l;
+		}
+		inline static void SetClientLogger(std::shared_ptr<spdlog::logger> l) {
+			s_ClientLogger = l;
+		}
+
 		inline static std::vector<spdlog::sink_ptr>& GetSinks() { return sinks; }
 		inline static ImGuiAppLog* GetImGuiLog() { return s_ImGuiLog; }
 		static void RegisterLog(std::shared_ptr < spdlog::logger > l);
@@ -71,10 +78,10 @@ namespace GEngine {
 
 #ifdef GE_LOADED_DLL
 // Client log macros
-#define GE_CORE_TRACE(...)    
-#define GE_CORE_DEBUG(...)    
-#define GE_CORE_INFO(...)     
-#define GE_CORE_WARN(...)     
-#define GE_CORE_ERROR(...)    
-#define GE_CORE_FATAL(...) 
+#define GE_CORE_TRACE(...) GE_LOG_TRACE(...)   
+#define GE_CORE_DEBUG(...) GE_LOG_DEBUG(...)   
+#define GE_CORE_INFO(...)  GE_LOG_INFO(...)   
+#define GE_CORE_WARN(...)  GE_LOG_WARN(...)
+#define GE_CORE_ERROR(...) GE_LOG_ERROR(...)
+#define GE_CORE_FATAL(...) GE_LOG_FATAL(...)
 #endif

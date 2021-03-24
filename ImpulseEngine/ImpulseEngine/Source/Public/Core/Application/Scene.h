@@ -4,7 +4,6 @@
 #include "Public/Core/Core.h"
 #include "Public/Core/Util/Timestep.h"
 #include "Public/Core/Application/GameObject.h"
-#include "entt.hpp"
 
 
 namespace GEngine {
@@ -25,8 +24,8 @@ namespace GEngine {
 		Camera* GetCamera() const;
 		void SetCamera(Camera* _camera);
 		template<typename E = Entity>
-		inline E* CreateEntity() {
-			const uint32_t entity = (uint32_t)m_registry.create();
+		inline E* CreateEntity(uint64_t entity = 0) {
+			if (entity == 0) entity = Factory::NextHash();
 			E* e = new E(entity);
 			entities[entity] = e;
 			if (b_init) {
@@ -61,8 +60,6 @@ namespace GEngine {
 
 		inline const std::unordered_map<uint32_t, Entity*>& GetEntities() const { return entities; }
 
-		inline entt::registry& GetRegistry() { return m_registry; }
-
 		
 	protected:
 		std::string id;
@@ -71,7 +68,6 @@ namespace GEngine {
 		bool b_init = false;
 		std::unordered_map<uint32_t, Entity*> entities;
 		bool b_paused = false;
-		entt::registry m_registry;
 
 	private:
 

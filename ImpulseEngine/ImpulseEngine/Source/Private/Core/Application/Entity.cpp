@@ -11,16 +11,22 @@
 namespace GEngine {
 
 
-	Entity::Entity(const uint32_t& id)
+	Entity::Entity(const uint64_t& id, const std::string& s)
 	{
 		go_hash = id;
+		if (s.size() > 0) go_tag = s;
 		transform = AddComponent<Transform>();
+		GE_CORE_DEBUG("ENTITY HASH: {0}", Factory::HashToString(go_hash));
 	}
-
-	int Entity::refCount = 0;
 
 	Entity::~Entity()
 	{
+		Factory::RemoveHash(go_hash);
+		if (comp_hashes.size() > 0) {
+			for (auto h : comp_hashes) {
+				Factory::RemoveHash(h);
+			}
+		}
 		GE_LOG_DEBUG("ENTITY DESTROYED");
 	}
 
@@ -79,6 +85,26 @@ namespace GEngine {
 		End();
 		SceneManager::GetCurrentScene()->DestroyEntity(this);
 		
+	}
+
+	uint64_t Entity::GetHash()
+	{
+		if (comp_hashes.size() > 0) {
+			uint64_t h = comp_hashes.front();
+			comp_hashes.pop_front();
+			return h;
+		}
+		return Factory::NextHash();
+	}
+
+	void Entity::RemoveHash(const uint64_t& h)
+	{
+		Factory::RemoveHash(h);
+	}
+
+	void Entity::AddHash(const uint64_t& h)
+	{
+		comp_hashes.push_back(h);
 	}
 
 	void Entity::Clean()

@@ -47,6 +47,8 @@ namespace GEngine {
             {
                 NativeObject o = s_nativeReflector->CreateUClass("Logger");
                 o.CallFunction<void> ("SetFunctionPtr");
+				o.CallFunction<void>("RemoveLog", Log::GetCoreLogger());
+				o.CallFunction<void>("RemoveLog", Log::GetClientLogger());
                 s_nativeReflector->DestroyUClass(o);
             }
             s_nativeReflector->Clear();
@@ -106,9 +108,10 @@ namespace GEngine {
                 default:
                 case 4: GE_NATIVE_ERROR(s); break;
             }
-            
         });
         o.CallFunction<void> ("SetFunctionPtr");
+		o.CallFunction<void>("RegisterLog_Core", Log::GetCoreLogger());
+		o.CallFunction<void>("RegisterLog_Client", Log::GetClientLogger());
 		//spdlog::register_logger(native_logger);
 		spdlog::set_level(spdlog::level::level_enum::trace);
 		s_nativeReflector->DestroyUClass(o);

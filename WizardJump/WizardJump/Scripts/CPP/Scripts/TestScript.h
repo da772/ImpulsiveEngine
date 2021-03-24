@@ -17,9 +17,6 @@ public:
 
 	UFUNCTION()
 	virtual void ReloadGraphics() override;
-
-    UFUNCTION()
-    void NewReloadedFunction();
     
 	UFUNCTION()
 	virtual void OnBegin() override;

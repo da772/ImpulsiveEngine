@@ -5,7 +5,6 @@
 #include "Public/Core/Application/GameObject.h"
 #include "Public/Core/Application/Scene.h"
 #include "Public/Core/Application/SceneManager.h"
-#include "entt.hpp"
 
 
 namespace GEngine {
@@ -20,12 +19,11 @@ namespace GEngine {
 	class GE_API Entity : public GameObject {
 
 	public:
-		Entity(const uint32_t&);
+		Entity(const uint64_t&, const std::string& s = "");
 		virtual ~Entity();
 
 		template<class C, typename ... Args>
 		inline C* AddComponent(Args&& ... args) {
-			entt::registry& r = SceneManager::GetCurrentScene()->GetRegistry();
 			C* c = new C(this, std::forward<Args>(args)...);
 			components.insert(c);
 			if (bInit) {
@@ -81,9 +79,11 @@ namespace GEngine {
 		void RemoveTransformCallback(Component* c);
 		void Destroy();
 
-		inline const std::set<Component*>& GetComponents() const { return components; }
+		uint64_t GetHash();
+		void RemoveHash(const uint64_t& h);
+		void AddHash(const uint64_t& h);
 
-		static int refCount;
+		inline const std::set<Component*>& GetComponents() const { return components; }
 
 	private:
 		void Clean();
@@ -99,6 +99,7 @@ namespace GEngine {
 		virtual void OnUpdate(Timestep timestep) {};
 		bool bUpdates = true;
 		bool bInit = false;
+		std::list<uint64_t> comp_hashes;
 
 
 

@@ -33,8 +33,6 @@ namespace GEngine {
 	}
 
 	Entity* Scene::DestroyEntity(Entity* actor) {
-		m_registry.remove_all((entt::entity)actor->GetHash());
-		m_registry.destroy((entt::entity)actor->GetHash());
 		delete entities[actor->GetHash()];
 		entities.erase(actor->GetHash());
 		return nullptr;
@@ -82,7 +80,6 @@ namespace GEngine {
 	}
 
 	void Scene::RemoveAllEntities() {
-		m_registry.clear();
 		for (std::pair<u32, Entity*> e : entities) {
 			e.second->End();
 		}
