@@ -51,11 +51,15 @@ public:
 		refreshButton->SetOnEvent([this, &sc](const Event& e) {
 			if (e.GetEventType() == EventType::MouseButtonReleased) {
 #ifdef GE_HOT_RELOAD
-				buttonsEntity->RemoveComponent<NativeScriptComponent>(sc);
+                GEngine::SceneManager::Shutdown();
+				//buttonsEntity->RemoveComponent<NativeScriptComponent>(sc);
 				ScriptApi::Load(GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Scripts/CPP/Scripts/", ".h");
 #endif
 				GEngine::SceneManager::SetCurrentScene("menuScene");
 			}
+            if (e.GetEventType() == EventType::TouchReleased) {
+                
+            }
 			});
 
 		startButton->SetOnEvent([this, sc](const Event& e) {
@@ -67,11 +71,9 @@ public:
 			}
 
 			if (e.GetEventType() == EventType::TouchReleased) {
-
 				GE_LOG_DEBUG("EVENT: {0}", e.GetName());
 				//GEngine::SceneManager::SetCurrentScene("mainGame");
-
-
+                GEngine::SceneManager::SetCurrentScene("menuScene");
 			}
 
 			});

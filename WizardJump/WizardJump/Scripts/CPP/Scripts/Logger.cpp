@@ -1,15 +1,11 @@
 #include "Logger.h"
 
-std::shared_ptr<spdlog::logger> Logger::logger = nullptr;
+std::function<void(uint8_t, std::string)> Logger::s_log = nullptr;
 
-std::shared_ptr<spdlog::logger> Logger::SetupLogs(std::shared_ptr<spdlog::logger> l)
-{
-#ifdef GE_LOADED_DLL
-    Logger::logger = l;
-#endif
-	return Logger::logger;
-}
-
-void Logger::DestroyLogs() {
-    Logger::logger = nullptr;
+void Logger::SetFunctionPtr() {
+    if (s_log == nullptr) {
+        s_log = log;
+    } else {
+        s_log = nullptr;
+    }
 }

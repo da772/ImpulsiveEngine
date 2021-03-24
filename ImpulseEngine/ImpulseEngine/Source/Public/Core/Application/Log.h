@@ -23,6 +23,9 @@ namespace GEngine {
 		inline static std::shared_ptr<spdlog::logger> GetClientLogger() { 
 			return s_ClientLogger;
 		}
+        inline static std::shared_ptr<spdlog::logger> GetNativeLogger() {
+            return s_NativeLogger;
+        }
 		inline static std::vector<spdlog::sink_ptr>& GetSinks() { return sinks; }
 		inline static ImGuiAppLog* GetImGuiLog() { return s_ImGuiLog; }
 		static void RegisterLog(std::shared_ptr < spdlog::logger > l);
@@ -30,6 +33,7 @@ namespace GEngine {
 	private:
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
+        static std::shared_ptr<spdlog::logger> s_NativeLogger;
 		static ImGuiAppLog* s_ImGuiLog;
 		static std::vector<spdlog::sink_ptr> sinks;
 
@@ -54,6 +58,14 @@ namespace GEngine {
 #define GE_LOG_WARN(...)	      ::GEngine::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define GE_LOG_ERROR(...)	      ::GEngine::Log::GetClientLogger()->error(__VA_ARGS__)
 #define GE_LOG_FATAL(...)	      ::GEngine::Log::GetClientLogger()->fatal(__VA_ARGS__)
+
+#define GE_NATIVE_TRACE(...)          ::GEngine::Log::GetNativeLogger()->trace(__VA_ARGS__)
+#define GE_NATIVE_DEBUG(...)          ::GEngine::Log::GetNativeLogger()->debug(__VA_ARGS__)
+#define GE_NATIVE_INFO(...)          ::GEngine::Log::GetNativeLogger()->info(__VA_ARGS__)
+#define GE_NATIVE_WARN(...)          ::GEngine::Log::GetNativeLogger()->warn(__VA_ARGS__)
+#define GE_NATIVE_ERROR(...)          ::GEngine::Log::GetNativeLogger()->error(__VA_ARGS__)
+#define GE_NATIVE_FATAL(...)          ::GEngine::Log::GetNativeLogger()->fatal(__VA_ARGS__)
+
 #endif
 
 

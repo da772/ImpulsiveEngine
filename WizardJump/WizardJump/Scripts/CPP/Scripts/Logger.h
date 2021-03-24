@@ -1,34 +1,35 @@
 #pragma once
 #include <GEngine.h>
 
+
+using lFunc = std::function<void(uint8_t, std::string)>;
+
 UCLASS()
 class Logger {
 public:
 	UCONSTRUCTOR()
 	inline Logger() {};
 	~Logger() {};
-
-
-	UFUNCTION()
-	std::shared_ptr<spdlog::logger> SetupLogs(std::shared_ptr<spdlog::logger> l);
     
-    UFUNCTION()
-    void DestroyLogs();
-
-	static std::shared_ptr<spdlog::logger> logger;
+	UPROPERTY()
+	lFunc log;
 	
+	UFUNCTION()
+	void SetFunctionPtr();
 
+	static std::function<void(uint8_t, std::string)> s_log;
 
 };
 
 #ifdef GE_LOADED_DLL
 
-#define GE_LOG_TRACE(...)	   Logger::logger->trace(__VA_ARGS__)
-#define GE_LOG_DEBUG(...)	   Logger::logger->debug(__VA_ARGS__)
-#define GE_LOG_INFO(...)	   Logger::logger->info(__VA_ARGS__)	 
-#define GE_LOG_WARN(...)	   Logger::logger->warn(__VA_ARGS__)	 
-#define GE_LOG_ERROR(...)	   Logger::logger->error(__VA_ARGS__)
-#define GE_LOG_FATAL(...)	   Logger::logger->fatal(__VA_ARGS__)
+#define GE_LOG_TRACE(x) Logger::s_log(0,x)
+#define GE_LOG_DEBUG(x) Logger::s_log(1,x)
+#define GE_LOG_INFO(x) Logger::s_log(2,x)
+#define GE_LOG_WARN(x) Logger::s_log(3,x)
+#define GE_LOG_ERROR(x) Logger::s_log(4,x)
+#define GE_LOG_FATAL(x) Logger::s_log(5,x)
+
 
 
 #endif 

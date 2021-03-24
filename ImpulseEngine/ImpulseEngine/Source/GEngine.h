@@ -5,7 +5,9 @@
 
 
 #include "Public/Core/Application/Application.h"
+#ifndef GE_LOADED_DLL
 #include "Public/Core/Application/Log.h"
+#endif
 #include "Public/Core/Util/KeyCodes.h"
 #include "Public/Core/Util/MouseButtonCodes.h"
 #include "Public/Core/Util/Timestep.h"

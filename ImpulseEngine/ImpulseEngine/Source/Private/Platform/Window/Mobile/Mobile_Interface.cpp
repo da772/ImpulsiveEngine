@@ -14,7 +14,8 @@ namespace GEngine {
 		void HideKeyboard() {};
 		void SetKeyboardValue(const std::string&) {};
 		float const GetTime() { return 0.f;};
-    }
 #endif
+    }
+
 
 }

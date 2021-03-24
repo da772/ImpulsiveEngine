@@ -57,6 +57,10 @@ namespace GEngine {
 		if (b_init) {
 			OnUpdate(timestep);
 			for (std::pair<u32, Entity*> e : entities) {
+                if (!e.second) {
+                    GE_CORE_ASSERT(false, "ENTITY INVALID");
+                    continue;
+                }
 				if (e.second->GetShouldUpdate())
 					e.second->Update(timestep);
 			}

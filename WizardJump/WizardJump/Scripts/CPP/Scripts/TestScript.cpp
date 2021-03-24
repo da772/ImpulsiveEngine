@@ -1,8 +1,6 @@
 #include "TestScript.h"
 #include "Logger.h"
 
-#include <iostream>
-
 TestScript::TestScript(Entity* e) : Component(e)
 {
 	GE_LOG_DEBUG("TEST SCRIPT CREATED!");
@@ -16,22 +14,28 @@ TestScript::~TestScript()
 
 void TestScript::UnloadGraphics()
 {
-
+    
 }
 
 void TestScript::ReloadGraphics()
 {
-
+    
 }
+
 
 void TestScript::OnBegin()
 {
-	GE_LOG_WARN("TEST SCRIPT BEGIN");
+    GE_LOG_DEBUG("TEST SCRIPT BEGIN 12");
+    NewReloadedFunction();
+}
+
+void TestScript::NewReloadedFunction() {
+    GE_LOG_WARN("RELOADED FUNCTION");
 }
 
 void TestScript::OnEnd()
 {
-	GE_LOG_DEBUG("TEST SCIPR END");
+	GE_LOG_WARN("TEST SCIPR END");
 }
 
 void TestScript::OnUpdate(Timestep timestep)

@@ -71,7 +71,20 @@ project "Scripts_CPP"
             ["ALWAYS_SEARCH_USER_PATHS"] = "YES"
         }
 
-	
+    filter "system:ios"
+		xcodebuildsettings
+		{ 
+			["ALWAYS_SEARCH_USER_PATHS"] = "YES",
+            ["ARCHS"] = "$(ARCHS_STANDARD)",
+            ["SKIP_INSTALL"] = "YES"
+        }
+        
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"
 
     filter "system:android"
         cppdialect "gnu++17"

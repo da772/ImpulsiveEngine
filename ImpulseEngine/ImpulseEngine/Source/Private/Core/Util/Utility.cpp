@@ -39,10 +39,12 @@
 #endif
 
 #if defined(__APPLE__)
+#if defined(GE_CONSOLE_APP)
 #include <sys/types.h>
 #include <unistd.h>
 #include <libproc.h>
 #include <dlfcn.h>
+#endif
 #endif
 
 #if defined(__linux__) 
@@ -465,6 +467,7 @@ namespace GEngine {
 			void (*func_ptr)(::refl::store::storage*) = reinterpret_cast<void (*)(::refl::store::storage*)>(Utility::dll::dlsym(*lib, "__ReflectionMap__unloadGeneratedFiles"));
 			if (func_ptr) {
 				(*func_ptr)(store);
+                func_ptr = nullptr;
 			}
 			else {
 				GE_CORE_ERROR("Native Library: Could not load symbol - {0}", "__ReflectionMap__unloadGeneratedFiles");

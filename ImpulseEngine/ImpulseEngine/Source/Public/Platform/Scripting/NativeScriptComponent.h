@@ -30,6 +30,7 @@ namespace GEngine {
 	private:
 		NativeObject object;
 		Component* component;
+        bool isValid = false;
 
 	};
 

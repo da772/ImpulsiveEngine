@@ -13,6 +13,7 @@
 namespace GEngine {
 	std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
 	std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
+    std::shared_ptr<spdlog::logger> Log::s_NativeLogger;
 #ifndef GE_DIST
 	ImGuiAppLog* Log::s_ImGuiLog = new ImGuiAppLog();
 #else 
@@ -36,9 +37,11 @@ namespace GEngine {
 
 		s_CoreLogger = std::make_shared<spdlog::logger>("GEngine", begin(sinks), end(sinks));
 		s_ClientLogger = std::make_shared<spdlog::logger>("App", begin(sinks), end(sinks));
+        s_NativeLogger = std::make_shared<spdlog::logger>("Native", begin(sinks), end(sinks));
 
 		s_ClientLogger->set_level(spdlog::level::trace);
 		s_CoreLogger->set_level(spdlog::level::trace);
+        s_NativeLogger->set_level(spdlog::level::trace);
 
 	}
 

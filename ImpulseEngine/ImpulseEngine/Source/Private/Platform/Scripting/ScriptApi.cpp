@@ -44,12 +44,13 @@ namespace GEngine {
 	{
 #if GE_HOT_RELOAD
 		if (lib) {
-			
-            NativeObject o = s_nativeReflector->CreateUClass("Logger");
-            o.CallFunction<void> ("DestroyLogs");
-            s_nativeReflector->DestroyUClass(o);
+            {
+                NativeObject o = s_nativeReflector->CreateUClass("Logger");
+                o.CallFunction<void> ("SetFunctionPtr");
+                s_nativeReflector->DestroyUClass(o);
+            }
+            s_nativeReflector->Clear();
 			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
-			s_nativeReflector->Clear();
 		}
 
 #if 1
@@ -85,7 +86,6 @@ namespace GEngine {
 #endif
 		ms = Time::GetEpochTimeMS() - ms;
 		GE_CORE_TRACE("Native Compile: Complete... ({0}ms)", ms);
-		//std::cout << "Compile Complete...\n" << std::endl;
 		ms = Time::GetEpochTimeMS();
 		if (Utility::__LoadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage())) {
 			ms = Time::GetEpochTimeMS() - ms;
@@ -95,9 +95,20 @@ namespace GEngine {
 			GE_CORE_ERROR("Native Link: Failed");
 			return false;
 		}
-		
+    
 		NativeObject o = s_nativeReflector->CreateUClass("Logger");
-		o.CallFunction<std::shared_ptr<spdlog::logger>> ("SetupLogs", Log::GetClientLogger());
+        o.SetMember<std::function<void(uint8_t, std::string)>>("log", [](uint8_t l, std::string s) {
+            switch (l) {
+                case 0: GE_NATIVE_TRACE(s); break;
+                case 1: GE_NATIVE_DEBUG(s); break;
+                case 2: GE_NATIVE_INFO(s); break;
+                case 3: GE_NATIVE_WARN(s); break;
+                default:
+                case 4: GE_NATIVE_ERROR(s); break;
+            }
+            
+        });
+        o.CallFunction<void> ("SetFunctionPtr");
 		//spdlog::register_logger(native_logger);
 		spdlog::set_level(spdlog::level::level_enum::trace);
 		s_nativeReflector->DestroyUClass(o);
