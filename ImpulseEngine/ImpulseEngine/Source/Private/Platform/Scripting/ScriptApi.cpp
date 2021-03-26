@@ -54,6 +54,7 @@ namespace GEngine {
 	bool ScriptApi::Load_Native(const std::string& path, const std::string& extension)
 	{
 #if GE_HOT_RELOAD
+		bool compileFail = false;
 		if (lib) {
             s_nativeReflector->Clear();
 			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
@@ -84,9 +85,9 @@ namespace GEngine {
 				GE_CORE_ERROR("Native Compile: Failure... ");
 				GE_CORE_ERROR("{0}", compileOut);
 				if (compileOut.find("insufficient") != std::string::npos) {
-					GE_CORE_INFO("Native Compile: ");
+					GE_CORE_WARN("Native Compile: Is Debugger Attatched?");
 				}
-				return false;
+				compileFail = true;
 			}
 		}
 #endif
@@ -102,6 +103,9 @@ namespace GEngine {
 			return false;
 		}
 		
+		if (compileFail)
+			return false;
+
 		return true;
 #else
 		return true;
