@@ -81,9 +81,11 @@ project "miniupnpc"
             runtime "Release"
             optimize "On"
 
-    filter "system:windows"
+    filter "system:linux"
         systemversion "latest"
-
+        if _OPTIONS['hot-reload'] then
+            pic "On"
+        end
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"

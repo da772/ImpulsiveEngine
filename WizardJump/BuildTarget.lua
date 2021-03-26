@@ -24,12 +24,14 @@ workspace "WizardJump"
 
 	filter "system:windows"
 		makesettings [[
-			CXX = x86_64-pc-cygwin-g++
+			CC = clang
+			CXX = clang++
 		]]
 
 	filter "system:linux"
 		makesettings [[
-			CXX = g++-8
+			CC = clang
+			CXX = clang++
 		]]
 			
 	
@@ -171,7 +173,6 @@ project "WizardJump"
 			linkgroups 'on'
 			systemversion "latest"
 			kind "ConsoleApp"
-			cppdialect "gnu++17"
 	
 			postbuildcommands
 			{

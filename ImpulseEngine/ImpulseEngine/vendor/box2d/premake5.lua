@@ -38,6 +38,16 @@ project "box2d"
             runtime "Release"
             optimize "On"
     
+    filter "system:linux"
+        if _OPTIONS['hot-reload'] then
+            pic "On"
+        end
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"
 
     filter "system:android"
         cppdialect "gnu++17"

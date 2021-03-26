@@ -39,9 +39,9 @@ public:
 
     {
         should_do_colors_ = details::os::in_terminal(target_file_) && details::os::is_color_terminal();
-        colors_[level::trace] = white;
+        colors_[level::trace] = green;
         colors_[level::debug] = cyan;
-        colors_[level::info] = green;
+        colors_[level::info] = white;
         colors_[level::warn] = yellow + bold;
         colors_[level::err] = red + bold;
         colors_[level::critical] = bold + on_red;

@@ -104,8 +104,9 @@ project "ImGui"
         if _OPTIONS['hot-reload'] then
             defines
             {
-                "IMGUI_API=__attribute__((visibility(\"default\"))"
+                "IMGUI_API=__attribute__((visibility(\"default\")))"
             }
+            pic "On"
         end
         filter "configurations:Debug"
             runtime "Debug"

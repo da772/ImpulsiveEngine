@@ -3,11 +3,13 @@
 #include "Public/Core/Core.h"
 #pragma warning(push, 0)
 #pragma GCC diagnostic push
+#ifdef GE_PLATFORM_MACOSX
 #pragma GCC diagnostic ignored "-Wdefaulted-function-deleted"
+#endif
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 #pragma GCC diagnostic pop
-#pragma warning(push, 0)   
+#pragma warning(pop)
 #include "Public/Core/ImGui/ImGuiSink.h"
 
 

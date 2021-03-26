@@ -114,7 +114,9 @@ project "GLFW"
             
     filter "system:linux"
         pic "On"
-    
+        if _OPTIONS['hot-reload'] then
+            pic "On"
+        end
         systemversion "latest"
         staticruntime "On"
 

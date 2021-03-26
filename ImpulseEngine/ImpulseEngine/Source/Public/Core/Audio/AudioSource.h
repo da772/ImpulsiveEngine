@@ -52,7 +52,7 @@ namespace GEngine {
 		inline virtual float GetPitch() { return m_pitch; }
 		inline virtual bool IsLooping() { return b_loop; }
 
-		inline virtual void MaxDistance(const float f) = 0;
+		virtual void MaxDistance(const float f) = 0;
 
 		inline virtual void SetPosition(const Vector3f& pos) { m_position = pos; }
 
