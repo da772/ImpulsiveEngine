@@ -42,6 +42,6 @@ void TestScript::OnUpdate(Timestep timestep)
 
 void TestScript::TestFunc()
 {
-	GE_LOG_TRACE("TESTFUNC CALLED SKKA");
+	GE_LOG_TRACE("TESTFUNC CALLED");
 }
 

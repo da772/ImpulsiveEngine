@@ -34,7 +34,7 @@
 #endif
 #elif defined(GE_PLATFORM_LINUX) || defined (GE_PLATFORM_MACOSX)
 #ifdef GE_DYNAMIC_LINK
-#define GE_API __attribute__((visibility("default"))
+#define GE_API __attribute__((visibility("default")))
 #else
 #define GE_API
 #endif
