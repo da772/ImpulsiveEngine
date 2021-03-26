@@ -5,4 +5,4 @@ cd ..
 python ReloadProject.py
 
 cd ..
-./vendor/bin/premake/premake5 gmake2 --os=linux
+./vendor/bin/premake/premake5_mac gmake2 --os=linux

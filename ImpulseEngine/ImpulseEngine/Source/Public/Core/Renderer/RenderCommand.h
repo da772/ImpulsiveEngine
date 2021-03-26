@@ -56,10 +56,10 @@ namespace GEngine {
 		inline static void BlendFuncSeparate(int p1, int p2, int p3, int p4) { RenderCommand::s_RendererAPI->BlendFuncSeparate(p1, p2, p3, p4); };
 		inline static void BlendFunc(int p1, int p2) { RenderCommand::s_RendererAPI->BlendFunc(p1, p2); };
 
-		inline static void Create() { RenderCommand::s_RendererAPI.reset(RendererApi::Create()); }
+        inline static void Create() { RenderCommand::s_RendererAPI = RendererApi::Create(); }
 		static void Destroy();
 	private:
-		static Scope<RendererApi> s_RendererAPI;
+		static RendererApi* s_RendererAPI;
 
 	};
 

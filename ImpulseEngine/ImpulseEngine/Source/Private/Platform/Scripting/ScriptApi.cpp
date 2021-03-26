@@ -1,6 +1,5 @@
 #include "gepch.h"
 #include "Public/Platform/Scripting/ScriptApi.h"
-#include "Public/Core/Util/Utility.h"
 #include "Public/Core/Util/Time.h"
 #include "Public/Core/Util/ThreadPool.h"
 
@@ -11,7 +10,19 @@ namespace GEngine {
 	std::string ScriptApi::nameMake_Native = "";
 	std::string ScriptApi::dirBuild_Native = "";
 	std::string ScriptApi::nameBuild_Native = "";
+
 	static dllptr lib;
+
+    void ScriptApi::_NativeLog(uint8_t i, const std::string& s) {
+        switch (i) {
+            case 0: GE_NATIVE_TRACE(s); break;
+            case 1: GE_NATIVE_DEBUG(s); break;
+            case 2: GE_NATIVE_INFO(s); break;
+            case 3: GE_NATIVE_WARN(s); break;
+            default:
+            case 4: GE_NATIVE_ERROR(s); break;
+        }
+    }
 
 	void ScriptApi::Initialize()
 	{
@@ -44,13 +55,6 @@ namespace GEngine {
 	{
 #if GE_HOT_RELOAD
 		if (lib) {
-            {
-                NativeObject o = s_nativeReflector->CreateUClass("Logger");
-                o.CallFunction<void> ("SetFunctionPtr");
-				o.CallFunction<void>("RemoveLog", Log::GetCoreLogger());
-				o.CallFunction<void>("RemoveLog", Log::GetClientLogger());
-                s_nativeReflector->DestroyUClass(o);
-            }
             s_nativeReflector->Clear();
 			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
 		}
@@ -74,7 +78,7 @@ namespace GEngine {
 		ms = Time::GetEpochTimeMS() - ms;
 		GE_CORE_TRACE("Native Build: Complete... ({0}ms)", ms);
 		ms = Time::GetEpochTimeMS();
-		std::string compileOut = Utility::sys::compile_proj(dirBuild_Native, nameBuild_Native);
+        std::string compileOut = Utility::sys::compile_proj(dirBuild_Native, nameBuild_Native);
 		if (compileOut.size() > 0) {
 			if (compileOut.find("error") != std::string::npos) {
 				GE_CORE_ERROR("Native Compile: Failure... ");
@@ -97,24 +101,7 @@ namespace GEngine {
 			GE_CORE_ERROR("Native Link: Failed");
 			return false;
 		}
-    
-		NativeObject o = s_nativeReflector->CreateUClass("Logger");
-        o.SetMember<std::function<void(uint8_t, std::string)>>("log", [](uint8_t l, std::string s) {
-            switch (l) {
-                case 0: GE_NATIVE_TRACE(s); break;
-                case 1: GE_NATIVE_DEBUG(s); break;
-                case 2: GE_NATIVE_INFO(s); break;
-                case 3: GE_NATIVE_WARN(s); break;
-                default:
-                case 4: GE_NATIVE_ERROR(s); break;
-            }
-        });
-        o.CallFunction<void> ("SetFunctionPtr");
-		o.CallFunction<void>("RegisterLog_Core", Log::GetCoreLogger());
-		o.CallFunction<void>("RegisterLog_Client", Log::GetClientLogger());
-		//spdlog::register_logger(native_logger);
-		spdlog::set_level(spdlog::level::level_enum::trace);
-		s_nativeReflector->DestroyUClass(o);
+		
 		return true;
 #else
 		return true;

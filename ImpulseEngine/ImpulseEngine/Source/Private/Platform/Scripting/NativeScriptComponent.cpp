@@ -7,7 +7,12 @@ namespace GEngine {
 	NativeScriptComponent::NativeScriptComponent(Entity* e, const std::string& clazz) : Component(e), m_clazz(clazz)
 	{
 		m_entity->AddHash(Factory::NextHash());
-		m_object = ScriptApi::GetReflector_Native()->CreateUClass(clazz, m_entity);
+        try {
+            m_object = ScriptApi::GetReflector_Native()->CreateUClass(clazz, m_entity);
+        }
+        catch (const std::exception& e) {
+            GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
+        }
 		m_component = (Component*)m_object.data();
         if (m_component) {
             m_isValid = true;

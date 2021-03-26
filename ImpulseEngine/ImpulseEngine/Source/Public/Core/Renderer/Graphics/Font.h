@@ -47,7 +47,7 @@ namespace GEngine {
 		virtual void Unload() = 0;
 		virtual void Reload() = 0;
 
-		virtual inline void LoadCharactersEN() { LoadCharacters("a quick brown fox jumps over the lazy dog 0123456789=-+_)(*&^%$#@!AQUICKBROWNFOXJUMPSOVERTHELAZYDOG[]{}\|/?.,<>\"\\`~"); }
+		virtual inline void LoadCharactersEN() { LoadCharacters("a quick brown fox jumps over the lazy dog 0123456789=-+_)(*&^%$#@!AQUICKBROWNFOXJUMPSOVERTHELAZYDOG[]{}\\|/?.,<>\"\\`~"); }
 
 	protected:
 		void* m_nativeFont;

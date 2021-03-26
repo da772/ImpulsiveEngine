@@ -16,8 +16,8 @@ namespace GEngine {
 
 		void OnUpdate(bool m_Minimized) override;
 
-		inline unsigned int GetWidth() const override { return m_Data.Width; }
-		inline unsigned int GetHeight() const override { return m_Data.Height; }
+        unsigned int GetWidth() const override;
+        unsigned int GetHeight() const override;
         virtual void GetFrameBufferSize(int* width, int* height) override;
 		virtual void SetTitle(const std::string& title) override;
 		virtual void SetSize(uint16_t width, uint16_t height) override;

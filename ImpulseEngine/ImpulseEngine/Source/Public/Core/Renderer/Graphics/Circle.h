@@ -25,8 +25,8 @@ namespace GEngine {
         virtual std::vector< u32 > GetIndices(u32 offset) override;
         virtual std::vector<float> GetVertices(Vector3f position, float rotation = 0.f, Vector3f scale = Vector3f(1, 1, 1),
             Vector4f color = Vector4f(1, 1, 1, 1), u32 texture = 0, Vector2f textureScale = { 1,1 }, const Vector2f* textureCoords = nullptr, float alphaChannel = 4) override;
-        virtual void SetZPosition(std::vector<float>& arr, float zPos);
-        virtual void SetTextureSlot(std::vector<float>& arr, int texture);
+        virtual void SetZPosition(std::vector<float>& arr, float zPos) override;
+        virtual void SetTextureSlot(std::vector<float>& arr, int texture) override;
     
 
     private:

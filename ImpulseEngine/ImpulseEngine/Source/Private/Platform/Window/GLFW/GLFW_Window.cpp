@@ -66,8 +66,6 @@ namespace GEngine {
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		m_Context = Scope<GraphicsContext>(GraphicsContext::Create((const void*)m_Window));
 
-		
-
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 		if (!mode)
 			return;
@@ -84,8 +82,6 @@ namespace GEngine {
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		
-
-
 		
 
 		// Set GLFW callbacks
@@ -184,8 +180,10 @@ namespace GEngine {
 		glfwSetErrorCallback([](int error, const char* description) {
 			GE_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 		});
-
-
+        
+        
+        glfwGetWindowSize(m_Window, (int*)&m_Data.Width, (int*)&m_Data.Height);
+        
 	}
 
 	void GLFW_Window::GetSafeArea(int* top, int* bottom, int* left, int* right)
@@ -216,6 +214,17 @@ namespace GEngine {
     
     void GLFW_Window::GetFrameBufferSize(int* width, int* height) {
         glfwGetFramebufferSize((GLFWwindow*)m_Window,width,height);
+    }
+
+    unsigned int GLFW_Window::GetWidth() const {
+        int width, height;
+        glfwGetWindowSize(m_Window, &width, &height);
+        return width;
+    }
+    unsigned int GLFW_Window::GetHeight() const {
+        int width, height;
+        glfwGetWindowSize(m_Window, &width, &height);
+        return height;
     }
 
 	void GLFW_Window::SetTitle(const std::string& title)

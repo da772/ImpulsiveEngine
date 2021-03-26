@@ -124,6 +124,7 @@ namespace GEngine {
         #ifdef GE_GRAPHICS_API_OPENGL_3_3
 		gltTerminate();
         #endif
+        delete this;
 	}
 
 	void OpenGL_RendererApi::SetClearColor(const Vector4f& color)

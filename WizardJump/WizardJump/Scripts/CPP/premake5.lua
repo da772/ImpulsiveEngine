@@ -55,21 +55,21 @@ project "Scripts_CPP"
         {
             "GE_PLATFORM_MACOSX"
         }
-
-        excludes 
-        { 
-            "%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
-        }
-
-        includedirs
+        
+        links
         {
-
+            "Cocoa.framework",
+			"OpenGL.framework",
+			"IOKit.framework",
+			"CoreVideo.framework",
+			"OpenAL.framework"
         }
         
-        xcodebuildsettings
-        { 
-            ["ALWAYS_SEARCH_USER_PATHS"] = "YES"
-        }
+		xcodebuildsettings
+		{ 
+			["ALWAYS_SEARCH_USER_PATHS"] = "YES" ,
+			["SKIP_INSTALL"] = "YES"
+		}
 
     filter "system:ios"
 		xcodebuildsettings

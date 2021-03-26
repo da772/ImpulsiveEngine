@@ -32,6 +32,7 @@ namespace GEngine {
 			return ShaderDataType::Float;
         case ShaderDataName::Position2D:
             return ShaderDataType::Float2;
+        case ShaderDataName::None:
 		default:
 			break;
 		}
@@ -61,6 +62,7 @@ namespace GEngine {
 			return "a_AlphaChannel";
         case ShaderDataName::Position2D:
             return "a_Position2D";
+        case ShaderDataName::None:
 		default:
 			break;
 
@@ -83,6 +85,9 @@ namespace GEngine {
 		case ShaderDataType::Int3: return 4 * 3;
 		case ShaderDataType::Int4: return 4 * 4;
 		case ShaderDataType::Bool: return 1;
+        case ShaderDataType::None:
+        default:
+        break;
 		}
 
 		GE_CORE_ASSERT(false, "Unknown ShaderDataType!");
@@ -121,6 +126,9 @@ namespace GEngine {
 			case ShaderDataType::Int3: return 3;
 			case ShaderDataType::Int4: return 4;
 			case ShaderDataType::Bool: return 1;
+            case ShaderDataType::None:
+            default:
+            break;
 			}
 			GE_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			return 0;

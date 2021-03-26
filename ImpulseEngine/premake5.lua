@@ -52,17 +52,18 @@ group ""
 
 project "ImpulseEngine"
 	location "ImpulseEngine"
-	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
 	if _OPTIONS['hot-reload'] then
 	staticruntime "off"
+	kind "SharedLib"
 	defines
 	{
 		"GE_HOT_RELOAD"
 	}
 	else
 	staticruntime "on"
+	kind "StaticLib"
 	end
 
 
@@ -138,9 +139,6 @@ project "ImpulseEngine"
 
 	filter "system:macosx"
 		systemversion "latest"
-
-		pchheader "Source/gepch.h"
-		pchsource "Source/gepch.cpp"
 		
 		buildoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
 		linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
@@ -174,7 +172,7 @@ project "ImpulseEngine"
 			"OpenGL.framework",
 			"IOKit.framework",
 			"CoreVideo.framework",
-			"libvulkan.1.1.130",
+			--"libvulkan.1.1.130",
 			"OpenAL.framework",
 			"Glad",
 			"GLFW"
@@ -194,6 +192,14 @@ project "ImpulseEngine"
 			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
+
+		filter "action:xcode4"
+			pchheader "Source/gepch.h"
+			pchsource "Source/gepch.cpp"
+			
+		filter "action:gmake2"
+			pchheader "gepch.h"
+			pchsource "ImpulseEngine/Source/gepch.cpp"
 		
 	filter "system:ios"
 		architecture "ARM"

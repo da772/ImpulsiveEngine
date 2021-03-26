@@ -1,9 +1,12 @@
 #pragma once
 
 #include "Public/Core/Core.h"
-#pragma warning(push, 0)   
+#pragma warning(push, 0)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdefaulted-function-deleted"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
+#pragma GCC diagnostic pop
 #pragma warning(push, 0)   
 #include "Public/Core/ImGui/ImGuiSink.h"
 

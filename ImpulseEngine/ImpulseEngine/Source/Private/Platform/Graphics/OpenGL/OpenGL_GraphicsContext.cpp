@@ -51,7 +51,7 @@ namespace GEngine {
         
 		int width = 0, height = 0;
         #if defined(GE_GRAPHICS_API_OPENGL_3_3)
-		glfwGetFramebufferSize(m_WindowHandle, &width, &height);
+		glfwGetWindowSize(m_WindowHandle, &width, &height);
 		glViewport(0, 0, width, height);
         glEnable(GL_MULTISAMPLE);
         #endif

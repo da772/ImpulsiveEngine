@@ -28,6 +28,12 @@ namespace GEngine {
 			f->self = f;
 #endif
 			break;
+            case GraphicsApi::FGraphicsApi::DIRECTX11:
+            case GraphicsApi::FGraphicsApi::DIRECTX12:
+            case GraphicsApi::FGraphicsApi::NONE:
+            default:
+            GE_CORE_ERROR("GRAPHICS API NOT DEFINED");
+            break;
 
 		}
 

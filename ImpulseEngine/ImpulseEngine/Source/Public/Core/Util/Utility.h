@@ -27,7 +27,6 @@ using addrptr = void*;
 using ret_err = char*;
 #endif
 
-
 namespace GEngine {
 
 	namespace Utility {
@@ -65,4 +64,5 @@ namespace GEngine {
 
 
 	};
-	
+
+

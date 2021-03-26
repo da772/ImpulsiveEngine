@@ -4,13 +4,12 @@
 
 namespace GEngine {
 
-
-	Scope<RendererApi> RenderCommand::s_RendererAPI;
+    RendererApi* RenderCommand::s_RendererAPI = nullptr;
 
 	void RenderCommand::Destroy()
 	{
-		RenderCommand::s_RendererAPI->Shutdown(); 
-		RenderCommand::s_RendererAPI.reset();
+		RenderCommand::s_RendererAPI->Shutdown();
+        RenderCommand::s_RendererAPI = nullptr;
 	}
 
 
