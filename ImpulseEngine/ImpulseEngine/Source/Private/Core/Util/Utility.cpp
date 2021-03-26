@@ -108,10 +108,10 @@ namespace GEngine {
 		}
 	}
 
-	void Utility::dll::movePDB(const std::string& dir, const std::string& name, const std::string& newPrefix, bool deleteOld)
+	void Utility::dll::movePDB(const std::string& dir, const std::string& name, const std::string& newName, bool deleteOld)
 	{
 #ifdef GE_HOT_RELOAD
-		std::string loc = dir + newPrefix + name + ".pdb";
+		std::string loc = dir + newName + ".pdb";
 		std::ifstream  src(dir + name + ".pdb", std::ios::binary);
 		std::ofstream  dst(loc, std::ios::binary);
 		if (src.fail()) {
@@ -436,13 +436,18 @@ namespace GEngine {
 			dst.close();
 		}
 #ifdef _WIN32
-		Utility::dll::movePDB(FileSystem::GetParentExecuteableDir(0), name, "_", true);
+		Utility::dll::movePDB(FileSystem::GetParentExecuteableDir(0), name, "_"+name, true);
 #endif
 		* lib = Utility::dll::dlopen(loc.c_str(), 0);
 
 		if (!*lib) {
 			GE_CORE_ERROR("Native Library: Could not load library - {0}:{1}", name, Utility::dll::dlerror());
 			return false;
+		}
+		else {
+#ifdef _WIN32
+			Utility::dll::movePDB(FileSystem::GetParentExecuteableDir(0), "_"+name, name, true);
+#endif
 		}
 
 		void (*func_ptr)(::refl::store::storage*) = reinterpret_cast<void (*)(::refl::store::storage*)>(Utility::dll::dlsym(*lib, "__ReflectionMap__loadGeneratedFiles"));

@@ -30,5 +30,8 @@ public:
 	UFUNCTION()
 	void TestFunc();
 
+	UFUNCTION()
+	void NewFunct(int i);
+
 };
 

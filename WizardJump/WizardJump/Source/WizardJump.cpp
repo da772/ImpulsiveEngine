@@ -96,11 +96,11 @@ WizardJump::WizardJump()
 	}
 
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(3)+"WizardJump/Content",
-		GEngine::FileSystem::FilePath("Data/Content.pak"), false);
+		GEngine::FileSystem::FilePath("Data/EditorContent.pak"), false);
 #endif
-	GEngine::FileSystem::LoadPak("Data/Content.pak");
-	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"), 
-		GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/Content.pak", false);
+	GEngine::FileSystem::LoadPak("Data/EditorContent.pak");
+	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/EditorContent.pak"), 
+		GEngine::FileSystem::GetParentExecuteableDir(3) + "WizardJump/Data/EditorContent.pak", false);
 	GE_LOG_INFO("Cores: {0}, Freq: {1}", DeviceInfo::GetCpuCount(), DeviceInfo::GetCpuFreq());
 	SetRenderScale(1.f);
 	SetRenderSamples(0);

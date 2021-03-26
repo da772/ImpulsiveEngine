@@ -27,6 +27,7 @@ void TestScript::OnBegin()
 {
     GE_LOG_DEBUG("TEST SCRIPT BEGIN {0}:{1} YEEE {2}", "TEST THIS YEE ", 1231, 21231.2f);
 	TestFunc();
+	NewFunct(-1231);
 }
 
 
@@ -42,6 +43,11 @@ void TestScript::OnUpdate(Timestep timestep)
 
 void TestScript::TestFunc()
 {
-	GE_LOG_TRACE("TESTFUNC CALLED");
+	GE_LOG_TRACE("TESTFUNC YES");
+}
+
+void TestScript::NewFunct(int i)
+{
+	GE_LOG_WARN("NEW FUNCT: {0}", i);
 }
 
