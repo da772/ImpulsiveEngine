@@ -17,7 +17,7 @@ namespace GEngine {
 
 
 
-	class PhysicsCollision {
+	class GE_API PhysicsCollision {
 	public:
 		PhysicsCollision(Ref<PhysicsBody> b, const std::string& t) : body(b), tag(t) {};
 		virtual ~PhysicsCollision() {};
@@ -35,7 +35,7 @@ namespace GEngine {
 
 
 
-	struct PhysicsInfo {
+	struct GE_API PhysicsInfo {
 
 		PhysicsInfoType type = PhysicsInfoType::PHYSICS_Static;
 		Vector2f position = Vector2f(0,0);

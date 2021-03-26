@@ -26,7 +26,7 @@ namespace GEngine {
 	using namespace GraphicsApi;
 
 
-	class GraphicsContext {
+	class GE_API GraphicsContext {
 
 	public:
 		GraphicsContext();

@@ -7,7 +7,7 @@ namespace GEngine {
 	class FileData;
 	class AudioSource;
 
-	class AudioContext {
+	class GE_API AudioContext {
 	public:
 		AudioContext() {};
 		~AudioContext() {};

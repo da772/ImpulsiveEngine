@@ -5,9 +5,8 @@
 
 namespace GEngine {
 
-	class ScriptObject;
 
-	class SpriteAnimationComponent : public Component {
+	class GE_API SpriteAnimationComponent : public Component {
 	public:
 		inline SpriteAnimationComponent(Entity* e) : Component(e) { go_tag = "Sprite Animation Component"; bUpdates = true; };
 		virtual ~SpriteAnimationComponent();

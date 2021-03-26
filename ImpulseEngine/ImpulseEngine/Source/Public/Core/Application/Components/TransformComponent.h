@@ -11,7 +11,7 @@ namespace GEngine {
         Vector3f scale;
     };
 
-    class Transform : public Component {
+    class GE_API Transform : public Component {
         public:
             Transform(Entity* e);
             ~Transform();

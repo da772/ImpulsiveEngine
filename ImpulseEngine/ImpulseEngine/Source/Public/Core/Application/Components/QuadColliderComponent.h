@@ -19,7 +19,7 @@ namespace GEngine {
 		bool quad;
 	};
 
-	class QuadColliderComponent : public Component {
+	class GE_API QuadColliderComponent : public Component {
 	public:
 		QuadColliderComponent(Entity* e, bool dyamic = false, bool physics = false, const Vector2f& position = Vector2f(0,0), bool fixedRotation = true, float bounce = 0.f);
 		~QuadColliderComponent();

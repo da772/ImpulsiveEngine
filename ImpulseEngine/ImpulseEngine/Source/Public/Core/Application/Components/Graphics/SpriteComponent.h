@@ -13,7 +13,7 @@ namespace GEngine {
 	struct ScriptVector3;
 	struct ScriptVector4;
 
-	class SpriteComponent : public Component {
+	class GE_API SpriteComponent : public Component {
 
 	public:
 		SpriteComponent(Entity* e, Ref<Shader> shader = nullptr, const std::function<void()>& func = nullptr, const std::string& pipeline = "");

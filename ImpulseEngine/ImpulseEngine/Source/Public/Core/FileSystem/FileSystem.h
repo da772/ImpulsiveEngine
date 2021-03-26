@@ -2,7 +2,7 @@
 
 namespace GEngine {
 
-	class FileData {
+	class GE_API FileData {
 	public:
 		FileData(uint64_t size, unsigned char* data);
 		~FileData();
@@ -38,7 +38,7 @@ namespace GEngine {
 	};
 
 
-	class FileSystem {
+	class GE_API FileSystem {
 	public:
 		
 		static void PakDirectory(std::string src, std::string out, bool srcRelative = true);

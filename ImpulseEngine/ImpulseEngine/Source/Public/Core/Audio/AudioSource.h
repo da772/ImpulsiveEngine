@@ -6,7 +6,7 @@ namespace GEngine {
 
 	class FileData;
 
-	struct AudioStreamingData {
+	struct GE_API AudioStreamingData {
 
 		uint32_t buffers[AUDIO_BUFFERS_NUM];
 		std::string fileName;
@@ -28,7 +28,7 @@ namespace GEngine {
 
 	};
 
-	class AudioSource {
+	class GE_API AudioSource {
 
 	public:
 

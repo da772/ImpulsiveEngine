@@ -5,7 +5,7 @@
 
 namespace GEngine {
 
-	class RenderPipeline_ui : public RenderPipeline {
+	class GE_API RenderPipeline_ui : public RenderPipeline {
 
 	public:
 		RenderPipeline_ui();

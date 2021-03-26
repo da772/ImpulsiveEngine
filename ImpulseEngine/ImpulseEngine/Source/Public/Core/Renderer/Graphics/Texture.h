@@ -30,7 +30,7 @@ namespace GEngine {
 	template<class T, class id>
 	class ObjectPool;
 
-	class Texture {
+	class GE_API Texture {
 	public:
         virtual ~Texture() ;
 		virtual uint32_t GetHeight() const = 0;
@@ -58,7 +58,7 @@ namespace GEngine {
 
 	};
 
-	class Texture2D : public Texture {
+	class GE_API Texture2D : public Texture {
 	public:
 		
 		inline Texture2D() {};

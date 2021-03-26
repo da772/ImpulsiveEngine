@@ -7,7 +7,7 @@ namespace GEngine {
 	class AudioSource;
 	struct AudioStreamingData;
 
-	class OpenAL_Context : public AudioContext {
+	class GE_API OpenAL_Context : public AudioContext {
 	public:
 		OpenAL_Context();
 		~OpenAL_Context();

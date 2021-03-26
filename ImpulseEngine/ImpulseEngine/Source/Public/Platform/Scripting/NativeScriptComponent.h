@@ -4,7 +4,7 @@
 namespace GEngine {
 
 
-	class NativeScriptComponent : public Component {
+	class GE_API NativeScriptComponent : public Component {
 
 	public:
 		NativeScriptComponent(Entity* e, const std::string& clazz);

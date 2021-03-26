@@ -34,7 +34,7 @@
 
 namespace GEngine {
 
-	class RendererApi {
+	class GE_API RendererApi {
 	public:
 		virtual void Init() = 0;
 		virtual void SetClearColor(const Vector4f& color) = 0;

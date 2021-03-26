@@ -24,7 +24,7 @@ namespace GEngine {
 	class Component;
 	class Event;
 
-	class Collider {
+	class GE_API Collider {
 	public:
 		Collider() {};
 		~Collider() {};

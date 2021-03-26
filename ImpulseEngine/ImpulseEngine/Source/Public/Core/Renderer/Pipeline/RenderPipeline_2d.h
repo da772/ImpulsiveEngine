@@ -3,7 +3,7 @@
 
 namespace GEngine {
 
-	class RenderPipeline_2d : public RenderPipeline {
+	class GE_API RenderPipeline_2d : public RenderPipeline {
 
 	public:
 		RenderPipeline_2d(const float renderScale = 1.f, const char* name = "Renderpipeline_2d");

@@ -4,10 +4,10 @@
 #ifdef GE_GRAPHICS_API_VULKAN
 #include "vulkan/vulkan.h"
 #endif
-
+#ifdef GE_GRAPHICS_API_VULKAN
 namespace GEngine {
 
-	class Vulkan_Shader : public Shader {
+	class GE_API Vulkan_Shader : public Shader {
 
 	public:
 		Vulkan_Shader();
@@ -46,3 +46,5 @@ namespace GEngine {
 	};
 
 }
+
+#endif

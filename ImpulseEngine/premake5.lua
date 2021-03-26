@@ -59,7 +59,9 @@ project "ImpulseEngine"
 	kind "SharedLib"
 	defines
 	{
-		"GE_HOT_RELOAD"
+		"GE_HOT_RELOAD",
+		"GE_DYNAMIC_LINK",
+		"GE_BUILD_DLL"
 	}
 	else
 	staticruntime "on"

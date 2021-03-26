@@ -31,7 +31,7 @@ namespace GEngine {
 		std::string Name;
 	};
 
-	class Instrumentor
+	class GE_API Instrumentor
 	{
 	private:
 		std::mutex m_Mutex;
@@ -133,7 +133,7 @@ namespace GEngine {
 
 	};
 
-	class InstrumentationTimer
+	class GE_API InstrumentationTimer
 	{
 	public:
 		InstrumentationTimer(const char* name)

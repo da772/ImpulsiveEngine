@@ -32,6 +32,12 @@ project "ImGui"
             ["ALWAYS_SEARCH_USER_PATHS"] = "YES",
             ["SKIP_INSTALL"] = "YES"
         }
+        if _OPTIONS['hot-reload'] then
+            defines
+            {
+                "IMGUI_API=__attribute__((visibility(\"default\"))"
+            }
+        end
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"
@@ -80,7 +86,12 @@ project "ImGui"
 
     filter "system:windows"
         systemversion "latest"
-
+        if _OPTIONS['hot-reload'] then
+            defines
+            {
+                "IMGUI_API=__declspec(dllexport)"
+            }
+        end
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"
@@ -90,7 +101,12 @@ project "ImGui"
 
     filter "system:linux"
         systemversion "latest"
-
+        if _OPTIONS['hot-reload'] then
+            defines
+            {
+                "IMGUI_API=__attribute__((visibility(\"default\"))"
+            }
+        end
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"

@@ -7,7 +7,7 @@
 
 namespace GEngine {
 
-	class GameObject {
+	class GE_API GameObject {
 	public:
 		inline const uint32_t GetHash() const { return go_hash; }
 		inline const std::string GetTag() const { return go_tag; }

@@ -4,7 +4,7 @@
 
 namespace GEngine {
 
-	class OpenGL_RendererApi : public RendererApi {
+	class GE_API OpenGL_RendererApi : public RendererApi {
 	public:
 		virtual void Init() override;
 		virtual void Shutdown() override;

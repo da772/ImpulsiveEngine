@@ -7,7 +7,7 @@ namespace GEngine{
 	//  static ExampleAppLog my_log;
 	//  my_log.AddLog("Hello %d world\n", 123);
 	//  my_log.Draw("title");
-	class ImGuiAppLog
+	class GE_API ImGuiAppLog
 	{
     public:
 		ImGuiTextBuffer     Buf;
@@ -18,7 +18,7 @@ namespace GEngine{
 		ImVector<ImVec4>	Levels;
 
 
-		GE_API ImGuiAppLog()
+		ImGuiAppLog()
 		{
 			Levels.push_back(ImVec4(0, 255, 0, 1)); // Info White
 			Levels.push_back(ImVec4(0,230,255,1)); // Debug Blue
@@ -30,7 +30,7 @@ namespace GEngine{
 			Clear();
 		}
 
-		inline void GE_API Clear()
+		inline void Clear()
 		{
 			Buf.clear();
 			LineOffsets.clear();
@@ -39,7 +39,7 @@ namespace GEngine{
 			LevelOffsets.push_back(0);
 		}
 
-		inline void GE_API AddLog(const char* fmt, ...) IM_FMTARGS(2)
+		inline void AddLog(const char* fmt, ...) IM_FMTARGS(2)
 		{
 			int old_size = Buf.size();
 			va_list args;
@@ -52,7 +52,7 @@ namespace GEngine{
 			ScrollToBottom = true;
 		}
 
-		inline void GE_API AddLog(std::string fmt, int level)
+		inline void AddLog(std::string fmt, int level)
 		{
 			int old_size = Buf.size();
 			Buf.append(fmt.c_str());
@@ -68,7 +68,7 @@ namespace GEngine{
 			ScrollToBottom = true;
 		}
 
-		inline void GE_API Draw(const char* title, bool* p_open = NULL)
+		inline void Draw(const char* title, bool* p_open = NULL)
 		{
 			if (!ImGui::Begin(title, p_open))
 			{

@@ -5,7 +5,7 @@ namespace GEngine {
 
 	typedef void* HANDLE;
 
-	class WIN32_Window : public Window {
+	class GE_API WIN32_Window : public Window {
 	public:
 		WIN32_Window(const WindowData& props);
 

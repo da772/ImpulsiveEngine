@@ -3,7 +3,7 @@
 namespace GEngine {
 
 	template<class T, class id>
-	class ObjectPool {
+	class GE_API ObjectPool {
 
 	public:
 		ObjectPool() {

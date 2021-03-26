@@ -11,7 +11,7 @@ class Portfwd;
 
 namespace GEngine {
 
-	class Networking {
+	class GE_API Networking {
 	public:
 		static void Init();
 		static void Shutdown();

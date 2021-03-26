@@ -3,7 +3,7 @@ namespace GEngine {
 
 	class Ad;
 
-	class AdManager {
+	class GE_API AdManager {
 
 	public:
 		static void Initialize();

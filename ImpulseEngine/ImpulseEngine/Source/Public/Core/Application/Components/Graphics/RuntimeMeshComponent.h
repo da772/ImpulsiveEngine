@@ -12,7 +12,7 @@ namespace GEngine {
 	class VertexBuffer;
 	class VertexArray;
 
-	class RuntimeMeshComponent : public Component {
+	class GE_API RuntimeMeshComponent : public Component {
 
 	public:
 		RuntimeMeshComponent(Entity* e);

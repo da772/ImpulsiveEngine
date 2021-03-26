@@ -7,7 +7,7 @@ namespace GEngine {
 	class FrameBuffer;
 	class Shader;
 
-	class RenderPipeline {
+	class GE_API RenderPipeline {
 
 	public:
 

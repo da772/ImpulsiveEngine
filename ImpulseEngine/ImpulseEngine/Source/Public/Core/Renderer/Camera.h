@@ -3,7 +3,7 @@
 
 namespace GEngine {
 
-	class Camera {
+	class GE_API Camera {
 	public:
 
 		Camera() {};
@@ -38,7 +38,7 @@ namespace GEngine {
 		bool b_FlipY = false;
 	};
 
-	class Orthographic_Camera : public Camera {
+	class GE_API Orthographic_Camera : public Camera {
 	public:
 		Orthographic_Camera(float left, float right, float bottom, float top, bool flipY = false);
 
@@ -48,7 +48,7 @@ namespace GEngine {
 	};
 
 
-	class Perspective_Camera : public Camera {
+	class GE_API Perspective_Camera : public Camera {
 	public:
 		Perspective_Camera(float left, float right, float bottom, float top);
 		virtual void SetPosition(const Vector3f& position) override { m_Position = Vector3f(-position.x, position.y, position.z); RecalculateViewMatrix(); } ;

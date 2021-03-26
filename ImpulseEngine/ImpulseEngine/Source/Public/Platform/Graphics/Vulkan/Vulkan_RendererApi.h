@@ -1,9 +1,9 @@
 #pragma once
 #include "Core/Renderer/RendererApi.h"
-
+#ifdef GE_GRAPHICS_API_VULKAN
 namespace GEngine {
 
-	class Vulkan_RendererApi : public RendererApi {
+	class GE_API Vulkan_RendererApi : public RendererApi {
 	public:
 		virtual void Init() override;
 		virtual void SetClearColor(const Vector4f& color) override;
@@ -24,3 +24,4 @@ namespace GEngine {
 	};
 
 }
+#endif

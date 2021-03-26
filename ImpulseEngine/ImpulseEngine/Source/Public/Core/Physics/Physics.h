@@ -10,7 +10,7 @@ namespace GEngine {
 
 
 
-	class Physics {
+	class GE_API Physics {
 
 	public:
 		static void Initialize();

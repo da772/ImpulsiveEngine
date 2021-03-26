@@ -4,7 +4,7 @@ namespace GEngine {
 
 	class Renderable {
 
-	class RenderPipeline;
+	class GE_API RenderPipeline;
 
 	public:
 		Renderable() {};

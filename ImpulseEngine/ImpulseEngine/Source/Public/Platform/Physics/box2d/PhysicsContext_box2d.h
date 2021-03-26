@@ -10,7 +10,7 @@ namespace GEngine {
 
 
 
-	class PhysicsContext_box2d : public PhysicsContext {
+	class GE_API PhysicsContext_box2d : public PhysicsContext {
 	public:
 		PhysicsContext_box2d();
 		virtual ~PhysicsContext_box2d();

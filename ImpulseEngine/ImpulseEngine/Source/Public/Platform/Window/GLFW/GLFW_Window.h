@@ -7,7 +7,7 @@ class GraphicsContext;
 
 namespace GEngine {
 
-	class GLFW_Window : public Window
+	class GE_API GLFW_Window : public Window
 	{
 	public:
 		GLFW_Window(const WindowData& props);

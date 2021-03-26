@@ -9,7 +9,7 @@ namespace GEngine {
 	};
 
 
-	class Ad {
+	class GE_API Ad {
 
 	public:
 		virtual ~Ad() {};

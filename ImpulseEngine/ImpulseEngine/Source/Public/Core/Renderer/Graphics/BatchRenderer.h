@@ -17,7 +17,7 @@ namespace GEngine {
 
 
 
-	class Batch : public Renderable {
+	class GE_API Batch : public Renderable {
 
 
 	public:
@@ -57,7 +57,7 @@ namespace GEngine {
 
 	};
 
-	struct BatchObjectData {
+	struct GE_API BatchObjectData {
 		Vector3f position;
 		float rotation; Vector2f scale;  Vector4f color; 
 		Ref<Texture2D> texture;
@@ -76,7 +76,7 @@ namespace GEngine {
 		UI
 	};
 
-	class BatchRenderer {
+	class GE_API BatchRenderer {
 	public:
 		BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader = nullptr, const char* pipelineId = nullptr, const std::function<void()>& shaderFunc = nullptr);
 		~BatchRenderer();

@@ -5,7 +5,7 @@ namespace GEngine {
 
 	class Texture2D;
 
-	class SubTexture2D {
+	class GE_API SubTexture2D {
 
 	public:
 		SubTexture2D(const Ref<Texture2D>& texture, const Vector2f& min, const Vector2f& max);

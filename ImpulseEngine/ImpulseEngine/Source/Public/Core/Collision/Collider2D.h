@@ -5,7 +5,7 @@ namespace GEngine {
 
 
 
-	class Collider2D : public Collider {
+	class GE_API Collider2D : public Collider {
 	public:
 		
 		Collider2D(const Vector2f& position, const Vector2f& scale, float rotation);

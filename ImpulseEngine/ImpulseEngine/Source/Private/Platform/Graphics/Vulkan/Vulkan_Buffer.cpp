@@ -29,6 +29,11 @@ namespace GEngine {
 
 	}
 
+	void Vulkan_VertexBuffer::SetData(const void* data, uint32_t size)
+	{
+		
+	}
+
 	Vulkan_IndexBuffer::Vulkan_IndexBuffer(uint32_t* indices, uint32_t size)
 		: IndexBuffer(indices,  size), m_Indices(indices, indices+ size) 
 	{

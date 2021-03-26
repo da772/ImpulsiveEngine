@@ -2,7 +2,7 @@
 
 namespace GEngine {
 
-	class Time {
+	class GE_API Time {
 	public:		
 		static const uint64_t GetEpochTimeMS();
 		static const uint64_t GetEpochTimeNS();

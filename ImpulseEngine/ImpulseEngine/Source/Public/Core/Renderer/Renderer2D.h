@@ -6,7 +6,7 @@ namespace GEngine {
 	class Camera;
 	class Texture2D;
 
-	class Renderer2D {
+	class GE_API Renderer2D {
 	public:
 		
 		static void Init();

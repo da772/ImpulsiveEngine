@@ -96,7 +96,7 @@ namespace GEngine {
 	}
 
 
-	struct BufferElement
+	struct GE_API BufferElement
 	{
 		BufferElement() {};
 		std::string Name;
@@ -137,7 +137,7 @@ namespace GEngine {
 	};
 
 
-	class BufferLayout {
+	class GE_API BufferLayout {
 
 	public:
 		inline BufferLayout() {};
@@ -180,7 +180,7 @@ namespace GEngine {
 	};
 
 
-	class VertexBuffer {
+	class GE_API VertexBuffer {
 	public:
 		
 		virtual ~VertexBuffer();
@@ -208,7 +208,7 @@ namespace GEngine {
 	};
 
 
-	class IndexBuffer {
+	class GE_API IndexBuffer {
 	public:
 		virtual ~IndexBuffer();
 		virtual void Bind() = 0;
@@ -229,7 +229,7 @@ namespace GEngine {
 
 	class Texture2D;
 
-	class FrameBuffer {
+	class GE_API FrameBuffer {
 	public:
 		inline virtual ~FrameBuffer() {};
 		virtual void Bind() = 0;

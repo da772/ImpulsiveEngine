@@ -3,7 +3,7 @@
 
 namespace GEngine {
 
-	class OpenGL_Texture2D : public Texture2D {
+	class GE_API OpenGL_Texture2D : public Texture2D {
 	public:
 		OpenGL_Texture2D(const std::string&  path, const u32 flags);
 		OpenGL_Texture2D(uint32_t width, uint32_t height);

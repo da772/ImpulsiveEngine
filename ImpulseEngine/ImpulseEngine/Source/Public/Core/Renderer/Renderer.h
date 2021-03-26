@@ -15,7 +15,7 @@ namespace GEngine {
 	class RenderPipeline;
 	class FrameBuffer;
 
-	struct FPipeline {
+	struct GE_API FPipeline {
 		FPipeline(Ref<RenderPipeline> p, int i) : p(p), i(i) {
 
 		}
@@ -37,7 +37,7 @@ namespace GEngine {
 
 	};
 
-	class Renderer {
+	class GE_API Renderer {
 
 	public:
 		static void BeginScene(Camera* camera);

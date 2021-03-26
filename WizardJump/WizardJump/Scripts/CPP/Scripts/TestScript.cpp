@@ -26,6 +26,7 @@ void TestScript::ReloadGraphics()
 void TestScript::OnBegin()
 {
     GE_LOG_DEBUG("TEST SCRIPT BEGIN {0}:{1} YEEE {2}", "TEST THIS YEE ", 1231, 21231.2f);
+	TestFunc();
 }
 
 

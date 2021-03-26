@@ -3,7 +3,7 @@
 
 
 namespace GEngine {
-	class VertexArray {
+	class GE_API VertexArray {
 	public:
 		virtual ~VertexArray();
 

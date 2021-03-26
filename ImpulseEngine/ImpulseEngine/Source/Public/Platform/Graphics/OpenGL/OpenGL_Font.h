@@ -10,7 +10,7 @@ namespace GEngine {
 
 	class FileData;
 
-	class OpenGL_Font : public Font {
+	class GE_API OpenGL_Font : public Font {
 	public:
 		OpenGL_Font(std::string path, int size);
 		virtual ~OpenGL_Font();

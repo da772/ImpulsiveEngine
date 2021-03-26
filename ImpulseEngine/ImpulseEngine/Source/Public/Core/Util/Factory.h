@@ -10,7 +10,7 @@ namespace GEngine {
 	namespace Factory {
 		inline unsigned long counter = 0;
 		inline std::unordered_set<uint64_t> hashes;
-		inline uint64_t NextHash() {
+		inline uint64_t GE_API NextHash() {
 			char ch[8];
 			Utility::GenerateHash(ch, 8);
 			uint64_t h = 0;
@@ -21,13 +21,13 @@ namespace GEngine {
 			}
 			return h;
 		}
-		inline std::string HashToString(const uint64_t& h) {
+		inline std::string GE_API HashToString(const uint64_t& h) {
 			char ch[9];
 			memcpy(ch, &h, sizeof(uint64_t));
 			ch[8] = 0;
 			return std::string(ch);
 		}
-		inline void RemoveHash(uint64_t hash) { if (hashes.size() > 0 &&  hashes.find(hash) != hashes.end()) hashes.erase(hash); };
+		inline void GE_API RemoveHash(uint64_t hash) { if (hashes.size() > 0 &&  hashes.find(hash) != hashes.end()) hashes.erase(hash); };
 	}
 
 	template<class E, typename ... Args>

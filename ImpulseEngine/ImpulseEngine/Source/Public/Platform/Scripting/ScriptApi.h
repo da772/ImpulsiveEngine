@@ -13,7 +13,7 @@ namespace GEngine {
 
     
 
-	class ScriptApi {
+	class GE_API ScriptApi {
     private:
         template<typename T>
         static inline std::string toString(const T& t) {

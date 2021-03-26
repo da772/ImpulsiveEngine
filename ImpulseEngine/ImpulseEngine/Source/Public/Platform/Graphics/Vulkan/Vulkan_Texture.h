@@ -1,9 +1,9 @@
 #pragma once
 #include "Public/Core/Renderer/Graphics/Texture.h"
-
+#ifdef GE_GRAPHICS_API_VULKAN
 namespace GEngine {
 
-	class Vulkan_Texture2D : public Texture2D {
+	class GE_API Vulkan_Texture2D : public Texture2D {
 	public:
 		Vulkan_Texture2D(const std::string&  path, u32 flags = 0);
 		Vulkan_Texture2D(uint32_t width, uint32_t height);
@@ -28,3 +28,4 @@ namespace GEngine {
 
 
 }
+#endif

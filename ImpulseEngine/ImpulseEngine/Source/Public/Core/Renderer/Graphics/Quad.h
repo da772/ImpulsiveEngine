@@ -13,7 +13,7 @@ namespace GEngine {
 		float alphaChannel;
 	};
 
-	class Quad : public Shape {
+	class GE_API Quad : public Shape {
 	public:
 		Quad();
 		virtual ~Quad();

@@ -22,7 +22,7 @@ namespace GEngine {
 		Ref<Font> font;
 	};
 
-	class UIComponent : public Component {
+	class GE_API UIComponent : public Component {
 
 	public:
 		UIComponent(Entity* e);

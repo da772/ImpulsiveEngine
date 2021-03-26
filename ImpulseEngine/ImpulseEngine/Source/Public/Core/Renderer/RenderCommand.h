@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 
 namespace GEngine {
-	class RenderCommand {
+	class GE_API RenderCommand {
 	public:
 
 		inline static void SetClearColor(const Vector4f& color) { s_RendererAPI->SetClearColor(color); };

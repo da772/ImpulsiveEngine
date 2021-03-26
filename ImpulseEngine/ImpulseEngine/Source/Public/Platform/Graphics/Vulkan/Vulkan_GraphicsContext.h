@@ -6,7 +6,7 @@
 #ifdef GE_GRAPHICS_API_VULKAN
 #include "vulkan/vulkan.h"
 #endif
-
+#ifdef GE_GRAPHICS_API_VULKAN
 struct GLFWwindow;
 
 namespace GEngine {
@@ -28,7 +28,7 @@ namespace GEngine {
 	};
 #endif
 
-	class Vulkan_GraphicsContext : public GraphicsContext {
+	class GE_API Vulkan_GraphicsContext : public GraphicsContext {
 
 	public:
 		Vulkan_GraphicsContext(const void* windowHandle);
@@ -267,3 +267,4 @@ namespace GEngine {
 	};
 
 }
+#endif

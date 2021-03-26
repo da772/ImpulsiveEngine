@@ -13,7 +13,7 @@ namespace GEngine {
 	using OnUpdateEventFn = std::function<void(Timestep, Vector3f&, Vector3f&, Vector2f&, uint64_t&, float&)>;
 	using OnEventFn = std::function<void(Event&)>;
 
-	class CameraController {
+	class GE_API CameraController {
 	public:
 		CameraController() {};
         virtual ~CameraController(){};
@@ -61,7 +61,7 @@ namespace GEngine {
 
 	};
 
-	class Orthographic_CameraController : public CameraController {
+	class GE_API Orthographic_CameraController : public CameraController {
 	public:
 		Orthographic_CameraController(const float aspectRatio);
 
@@ -87,7 +87,7 @@ namespace GEngine {
 
 	};
 
-	class Perspective_CameraController : public CameraController {
+	class GE_API Perspective_CameraController : public CameraController {
 	public:
 		Perspective_CameraController(const float aspectRatio);
 

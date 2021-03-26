@@ -6,7 +6,7 @@ struct GLFWwindow;
 
 namespace GEngine {
 	
-	class OpenGL_GraphicsContext : public GraphicsContext {
+	class GE_API OpenGL_GraphicsContext : public GraphicsContext {
 
 	public:
 		OpenGL_GraphicsContext(const void* windowHandle);

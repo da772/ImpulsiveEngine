@@ -31,7 +31,7 @@ namespace GEngine {
 
 	using EventCallbackFn = std::function<void(Event&)>;
 
-	struct WindowData
+	struct GE_API WindowData
 	{
 	public:
 		WindowData() {};

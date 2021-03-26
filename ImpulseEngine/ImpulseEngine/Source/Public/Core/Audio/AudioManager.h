@@ -6,7 +6,7 @@ namespace GEngine {
 	class AudioContext;
 	class AudioSource;
 
-	class AudioManager {
+	class GE_API AudioManager {
 
 	public:
 		static void Initialize();

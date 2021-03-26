@@ -4,7 +4,7 @@ namespace GEngine {
 
 	class BufferLayout;
 
-	class Shape {
+	class GE_API Shape {
 	public:
 		inline Shape() {};
 		inline virtual ~Shape() {};

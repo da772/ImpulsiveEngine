@@ -4,7 +4,7 @@
 namespace GEngine {
 
 
-	class OpenGL_VertexBuffer : public VertexBuffer {
+	class GE_API OpenGL_VertexBuffer : public VertexBuffer {
 	public:
 		OpenGL_VertexBuffer(float* vertices, uint32_t size);
 		OpenGL_VertexBuffer(uint32_t size);
@@ -21,7 +21,7 @@ namespace GEngine {
 		Ref<BufferLayout> m_Layout;
 	};
 
-	class OpenGL_IndexBuffer : public IndexBuffer {
+	class GE_API OpenGL_IndexBuffer : public IndexBuffer {
 	public:
 		OpenGL_IndexBuffer(uint32_t* indices, uint32_t size);
 		~OpenGL_IndexBuffer();
@@ -31,7 +31,7 @@ namespace GEngine {
 		uint32_t m_RendererID = 0;
 	};
 
-	class OpenGL_FrameBuffer : public FrameBuffer {
+	class GE_API OpenGL_FrameBuffer : public FrameBuffer {
 
 	public:
 		OpenGL_FrameBuffer(int width, int height, int format, const char* texName = "", const float renderScale= 1.f);

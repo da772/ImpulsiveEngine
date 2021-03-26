@@ -2,7 +2,7 @@
 
 namespace GEngine {
 
-	class DeviceInfo {
+	class GE_API DeviceInfo {
 	public:
 		static const uint16_t GetCpuCount();
 

@@ -12,7 +12,7 @@ namespace GEngine {
 
 	
 
-	class OpenAL_source : public AudioSource {
+	class GE_API OpenAL_source : public AudioSource {
 	public:
 		OpenAL_source();
 		virtual ~OpenAL_source();

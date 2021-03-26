@@ -3,7 +3,7 @@
 
 namespace GEngine {
 
-	class OpenGL_VertexArray : public VertexArray {
+	class GE_API OpenGL_VertexArray : public VertexArray {
 
 	public :
 		OpenGL_VertexArray();

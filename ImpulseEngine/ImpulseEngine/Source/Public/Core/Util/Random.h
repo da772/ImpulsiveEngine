@@ -5,7 +5,7 @@
 
 namespace GEngine {
 
-	class Random
+	class GE_API Random
 	{
 	public:
 

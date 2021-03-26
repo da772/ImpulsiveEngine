@@ -9,7 +9,7 @@ namespace GEngine {
 
 	class FileData;
 
-	class Shader {
+	class GE_API Shader {
 	public:
 	
 		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, const bool files = false);

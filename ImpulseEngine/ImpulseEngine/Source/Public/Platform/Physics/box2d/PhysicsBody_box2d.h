@@ -12,7 +12,7 @@ namespace GEngine {
 
 	struct PhysicsInfo;
 
-	class PhysicsBody_box2d : public PhysicsBody {
+	class GE_API PhysicsBody_box2d : public PhysicsBody {
 	public:
 		PhysicsBody_box2d(void* nativeBody);
 		virtual ~PhysicsBody_box2d();

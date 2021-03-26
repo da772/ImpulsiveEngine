@@ -25,7 +25,7 @@ namespace GEngine {
 		std::vector<CharacterData> charData;
 	};
 
-	class Font {
+	class GE_API Font {
 
 	public:
 		static Ref<Font> Create(std::string path, int size);

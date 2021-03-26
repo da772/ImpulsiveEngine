@@ -41,14 +41,38 @@ project "Scripts_CPP"
     }
     defines 
     {
-        "GE_LOADED_DLL"
+        "GE_LOADED_DLL",
+        "GE_DYNAMIC_LINK"
     }
     end
+
+    filter "system:windows"
+		systemversion "latest"
+        defines 
+        {
+            "GE_PLATFORM_WINDOWS"
+        }
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"
 
     filter "system:linux"
         if _OPTIONS['hot-reload'] then
         pic "On"
         end
+        defines 
+        {
+            "GE_PLATFORM_LINUX"
+        }
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"
 
     filter "system:macosx"
         defines

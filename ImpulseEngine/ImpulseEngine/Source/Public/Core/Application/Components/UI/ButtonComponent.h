@@ -12,7 +12,7 @@ namespace GEngine {
 	class ScriptObject;
 	class Event;
 
-	class ButtonComponent : public Component {
+	class GE_API ButtonComponent : public Component {
 	public:
 
 		ButtonComponent(Entity* e, const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale = { 1,1 });

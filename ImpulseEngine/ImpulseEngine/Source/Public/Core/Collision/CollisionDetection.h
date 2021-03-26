@@ -12,7 +12,7 @@ namespace GEngine {
 		bool operator() (Collider* left, Collider* right) const;
 	};
 
-	class CollisionDetection {
+	class GE_API CollisionDetection {
 
 	public:
 		static void CheckCollision();

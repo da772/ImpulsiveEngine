@@ -11,7 +11,7 @@ namespace firebase {
 namespace GEngine {
 
 
-	class Firebase_Ads : public Ad {
+	class GE_API Firebase_Ads : public Ad {
 	public:
 		Firebase_Ads();
 		virtual ~Firebase_Ads();

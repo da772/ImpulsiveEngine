@@ -7,7 +7,7 @@ namespace GEngine {
 	class Event;
 	struct Timestep;
 
-	class SceneManager {
+	class GE_API SceneManager {
 	
 	public:
 		template<typename S = Scene>

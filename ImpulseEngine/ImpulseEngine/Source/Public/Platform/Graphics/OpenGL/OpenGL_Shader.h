@@ -4,7 +4,7 @@
 
 namespace GEngine {
 
-	class OpenGL_Shader : public Shader {
+	class GE_API OpenGL_Shader : public Shader {
 
 	public:
 		OpenGL_Shader();

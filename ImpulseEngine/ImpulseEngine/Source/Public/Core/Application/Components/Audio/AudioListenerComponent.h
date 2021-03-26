@@ -5,7 +5,7 @@
 
 namespace GEngine {
 
-	class AudioListenerComponent : public Component {
+	class GE_API AudioListenerComponent : public Component {
 	public:
 		AudioListenerComponent(Entity* e);
 		virtual ~AudioListenerComponent();

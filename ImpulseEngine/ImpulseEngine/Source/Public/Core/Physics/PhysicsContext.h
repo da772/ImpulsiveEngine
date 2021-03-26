@@ -14,7 +14,7 @@ namespace GEngine {
 	};
 
 
-	class PhysicsContext {
+	class GE_API PhysicsContext {
 
 	public:
 		PhysicsContext() {};

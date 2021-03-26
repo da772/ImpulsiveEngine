@@ -14,7 +14,7 @@ namespace GEngine {
         Vector2f startPos;
     };
 
-    class Circle : public Shape {
+    class GE_API Circle : public Shape {
     public:
         Circle();
         virtual ~Circle();

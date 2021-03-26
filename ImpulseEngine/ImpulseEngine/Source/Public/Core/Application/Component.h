@@ -9,7 +9,7 @@ namespace GEngine {
 
 	class Entity;
 
-	class Component : public GameObject {
+	class GE_API Component : public GameObject {
 
 
 	public:

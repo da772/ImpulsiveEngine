@@ -17,7 +17,7 @@ namespace GEngine {
 
 	class Component;
 
-	class PhysicsBody {
+	class GE_API PhysicsBody {
 
 
 	public:

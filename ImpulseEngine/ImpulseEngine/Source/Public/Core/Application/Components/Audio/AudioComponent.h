@@ -6,7 +6,7 @@ namespace GEngine {
 
 	class AudioSource;
 
-	class AudioComponent : public Component {
+	class GE_API AudioComponent : public Component {
 	public:
 
 		AudioComponent(Entity* e, const std::string& fileName, bool playing = false, bool looping = false, bool bStatic = false, float volume = 1.f, float pitch = 1.f, bool fromPak = true, bool relative = true);

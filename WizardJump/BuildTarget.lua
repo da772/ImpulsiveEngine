@@ -107,6 +107,10 @@ project "WizardJump"
 	}
 
 	if _OPTIONS["hot-reload"] then
+	defines
+	{
+		"GE_DYNAMIC_LINK"
+	}
 	else
 	links
 	{
@@ -138,6 +142,12 @@ project "WizardJump"
 		{
 			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"$(TargetDir)Data\""
 		}
+		if _OPTIONS["hot-reload"] then
+		postbuildcommands
+		{
+			"copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\ImpulseEngine.dll\" \"%{prj.location}Bin\\" .. outputdir .. "\\%{prj.name}\\ImpulseEngine.dll\""
+		}
+		end
 
 
 		filter "configurations:Debug"

@@ -1,12 +1,12 @@
 #pragma once
 #include "Core/Renderer/Graphics/VertexArray.h"
-
+#ifdef GE_GRAPHICS_API_VULKAN
 #ifdef GE_GRAPHICS_API_VULKAN
 #include "Public/Platform/Graphics/Vulkan/Vulkan_GraphicsContext.h"
 #endif
 namespace GEngine {
 
-	class Vulkan_VertexArray : public VertexArray {
+	class GE_API Vulkan_VertexArray : public VertexArray {
 
 	public:
 		Vulkan_VertexArray();
@@ -35,3 +35,4 @@ namespace GEngine {
 
 }
 
+#endif

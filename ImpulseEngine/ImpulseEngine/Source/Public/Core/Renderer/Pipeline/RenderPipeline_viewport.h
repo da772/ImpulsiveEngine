@@ -9,7 +9,7 @@ namespace GEngine {
 	class IndexBuffer;
 	class VertexArray;
 
-	class RenderPipeline_viewport : public RenderPipeline {
+	class GE_API RenderPipeline_viewport : public RenderPipeline {
 
 	public:
 		RenderPipeline_viewport();

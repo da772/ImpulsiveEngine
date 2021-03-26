@@ -2,7 +2,7 @@
 
 namespace GEngine {
 
-	class ThreadPool {
+	class GE_API ThreadPool {
 	public:
 		static void AddJob(std::function<void()> func);
 

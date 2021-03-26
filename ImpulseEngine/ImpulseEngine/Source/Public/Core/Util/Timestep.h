@@ -2,7 +2,7 @@
 
 namespace GEngine {
 
-	class Timestep {
+	class GE_API Timestep {
 	public:
 		Timestep(double time = 0.0)
 			: m_Time(time) {
