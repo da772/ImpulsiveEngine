@@ -53,9 +53,11 @@ namespace GEngine {
 			const std::function<void()>& shaderEndFunc = p.p->GetShaderEndFunction();
 
 			shader->Bind();
-			RenderCommand::BindTexture(texture->GetRendererID(), 0);
+			if (texture)
+				RenderCommand::BindTexture(texture->GetRendererID(), 0);
 			if (shaderStartFunc != nullptr) shaderStartFunc();
-			texture->Bind();
+			if (texture)
+				texture->Bind();
 			m_varray->Bind();
 			RenderCommand::DrawIndexed(m_varray);
 			if (shaderEndFunc != nullptr) shaderEndFunc();
@@ -65,7 +67,8 @@ namespace GEngine {
 		m_frameBuffer->UnBind();
         Renderer::Prepare();
 		m_shader->Bind();
-		m_frameBuffer->GetTexture()->Bind();
+		if (m_frameBuffer->GetTexture())
+			m_frameBuffer->GetTexture()->Bind();
 		m_varray->Bind();
 		RenderCommand::DrawIndexed(m_varray);
 		RenderEnd();

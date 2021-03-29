@@ -12,6 +12,10 @@
 #include "Public/Platform/Graphics/Vulkan/Vulkan_Texture.h"
 #endif
 
+#ifdef GE_GRAPHICS_API_NONE
+#include "Public/Platform/Graphics/Server/Empty_Texture.h"
+#endif
+
 
 namespace GEngine {
 
@@ -67,6 +71,11 @@ namespace GEngine {
 			t = Ref<Texture2D>(new Vulkan_Texture2D(path, flags));
 			break;
 #endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			t = Ref<Texture2D>(new Empty_Texture2D(path, flags));
+			break;
+#endif
 		default:
 			GE_CORE_ASSERT(false, "Invalid Texture 2D for current graphics api: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
@@ -107,6 +116,11 @@ namespace GEngine {
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			t = Ref<Vulkan_Texture2D>(new Vulkan_Texture2D(width, height));
+			break;
+#endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			t = Ref<Texture2D>(new Empty_Texture2D(width, height));
 			break;
 #endif
 		default:

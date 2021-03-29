@@ -4,9 +4,11 @@
 #include "Public/Core/Audio/AudioSource.h"
 
 #ifdef GE_AUDIO_OPENAL
-
 #include "Public/Platform/Audio/OpenAL/OpenAL_Context.h"
+#endif
 
+#ifdef GE_AUDIO_NONE
+#include "Public/Platform/Audio/Server/Server_AudioContext.h"
 #endif
 
 namespace GEngine {
@@ -15,6 +17,9 @@ namespace GEngine {
 	{
 #ifdef GE_AUDIO_OPENAL
 		return make_shared<OpenAL_Context>();
+#endif
+#ifdef GE_AUDIO_NONE
+		return make_shared<Server_AudioContext>();
 #endif
 
 		return nullptr;

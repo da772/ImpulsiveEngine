@@ -2,7 +2,7 @@
 
 #include "Public/Core/Core.h"
 
-#ifdef GE_CONSOLE_APP
+#if defined(GE_CONSOLE_APP) || defined (GE_SERVER_APP)
 #include "Public/Platform/EntryPoint/MainEntryPoint.h"
 #endif
 

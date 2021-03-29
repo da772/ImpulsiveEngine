@@ -20,8 +20,8 @@ namespace GEngine {
 	int Batch::s_BatchCount = 0;
 
 	Batch::Batch(Ref<Shape> shape, Ref<IndexBuffer> indexBuffer, Ref<Shader> shader, int maxShapes, int maxTextures, const std::function<void()>& shaderFunction) :
-        m_IndexBuffer(indexBuffer), m_Shader(shader), m_shaderFunction(shaderFunction) {
-
+		m_IndexBuffer(indexBuffer), m_Shader(shader), m_shaderFunction(shaderFunction) {
+#ifndef GE_GRAPHICS_API_NONE
         m_VertexBuffer = Ref<VertexBuffer>(VertexBuffer::Create(shape->GetVerticesSize()*maxShapes *sizeof(float)));
         m_VertexBuffer->SetLayout(shape->GetBufferLayout());
 
@@ -37,6 +37,7 @@ namespace GEngine {
 		}
 		m_Shader->UploadUniformIntArray("u_Textures", samplers.data(), maxTextures);
 		s_BatchCount++;
+		#endif
      }
 
      Batch::~Batch() {
@@ -51,22 +52,26 @@ namespace GEngine {
 
 	 void Batch::SetVertices(std::vector<float>& vertices, std::vector<int>& textures, int indexCount)
 	 {
-		 
+		 #ifndef GE_GRAPHICS_API_NONE
          m_Vertices = std::vector<float>(std::move(vertices));
 		 m_TextureIds = std::vector<int>(std::move(textures));
 		 m_IndexCount = indexCount;
 
 		 m_VertexBuffer->SetData(m_Vertices.data(), m_Vertices.size() * sizeof(float));
+		 #endif
 	 }
 
 	 void Batch::RefreshVertices()
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 m_VertexBuffer->SetData(m_Vertices.data(), m_Vertices.size() * sizeof(float));
+		 #endif
 	 }
 
 
 	 void Batch::Render()
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 if (m_IndexCount > 0) {
 
 			 m_Shader->Bind();
@@ -80,12 +85,13 @@ namespace GEngine {
 			 m_VertexArray->Bind();
 			 RenderCommand::DrawIndexed(m_VertexArray, m_IndexCount);
 		 }
-
+		#endif
 	 }
 
 	 BatchRenderer::BatchRenderer(ERenderType pipeline, Ref<Shape> shape, int maxShapes, Ref<Shader> shader, const char* pipelineId, const std::function<void()>& shaderFunc) : m_MaxShapes(maxShapes), m_Shader(shader), m_Shape(shape),
 		 m_PipelineId(pipelineId == nullptr ? pipeline == ERenderType::GAME ? "2d" : "ui" : pipelineId), m_renderType(pipeline), m_shaderfunction(shaderFunc)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		m_MaxVertices = m_MaxShapes * m_Shape->GetVerticesSize();
 		m_MaxIndices = m_MaxShapes * m_Shape->GetIndicesSize();
 
@@ -99,7 +105,7 @@ namespace GEngine {
 			offset += m_Shape->GetVerticesRows();
 		}
 		
-
+		#endif
 	 }
 
 	 BatchRenderer::~BatchRenderer()
@@ -119,6 +125,7 @@ namespace GEngine {
 
 	 void BatchRenderer::Setup()
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 if (m_MaxTextures == 0) m_MaxTextures = RenderCommand::GetMaxTextureSlots();
 		 if (m_BlankTexture == nullptr) {
 			 m_BlankTexture = Texture2D::Create("batchBlank", 1, 1);
@@ -134,12 +141,14 @@ namespace GEngine {
 		 if (m_Pipeline == nullptr) {
 			 m_Pipeline = Renderer::GetPipeline(m_PipelineId.c_str());
 		 }
+		 #endif
 	 }
 
 
 
 	 const uint64_t BatchRenderer::AddShape(const Vector3f& _position, float rotation,const Vector2f& scale,const Vector4f& color, Ref<Texture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 Vector3f position = _position;
 		 Setup();
 
@@ -154,10 +163,14 @@ namespace GEngine {
 		
 
 		 return AddShape(data);
+		 #else
+		 return 0;
+		 #endif
 	 }
 
 	 const uint64_t BatchRenderer::AddShape(const Vector3f& _position, float rotation,const Vector2f& scale, const Vector4f& color, Ref<SubTexture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 Vector3f position = _position;
 		 if (m_renderType == ERenderType::UI) {
 			 position.y = GEMath::MapRange(position.y, -1.f, 1.f, Application::GetSafeBottomUI() - 1.f, 1.f - Application::GetSafeTopUI());
@@ -170,11 +183,15 @@ namespace GEngine {
 			m_Shape->GetVertices(m_renderType == ERenderType::UI ? Vector3f(position.x, position.y, 0) : position, rotation, { scale.x, scale.y, 1 }, color, 0 , textureScale,  texture->GetTexCoords(), alphaChannel), texture };
 		 
 		 return AddShape(data);
+		 #else
+		 return 0;
+		 #endif
 
 	 }
 
 	 const uint64_t BatchRenderer::AddShape(BatchObjectData& data)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 data.time = Time::GetEpochTimeNS();
 		 uint64_t id = data.time;
 
@@ -190,10 +207,14 @@ namespace GEngine {
 		 ReCreateBatches();
 
 		 return id;
+		 #else
+		 return 0;
+		 #endif
 	 }
 
 	 void BatchRenderer::EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<Texture2D> texture, const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -220,11 +241,13 @@ namespace GEngine {
 
 			 batch->RefreshVertices();
 		 }
+		 #endif
 	 }
 
 	 void BatchRenderer::EditShape(const uint64_t id, Vector3f postiion, float rotation, Vector2f scale, Vector4f color, Ref<SubTexture2D> texture,
 		 const Vector2f& textureScale, float alphaChannel /*= 4*/)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -251,11 +274,13 @@ namespace GEngine {
 
 			 batch->RefreshVertices();
 		 }
+		 #endif
 	 }
 
 
 	 void BatchRenderer::SetColor(const uint64_t id, Vector4f color)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -267,18 +292,21 @@ namespace GEngine {
 		
 		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
-
+		#endif
 
 	 }
 
 	 void BatchRenderer::ReCreateShapeVertices(BatchObjectData* data)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 data->vertices = m_Shape->GetVertices(m_renderType == ERenderType::UI ? Vector3f(data->position.x, data->position.y, 0) : data->position, data->rotation, { data->scale.x, data->scale.y, 1 }, data->color,
 			 data->textureId, data->textureScale, data->subTexture == nullptr ? nullptr : data->subTexture->GetTexCoords(), data->alphaChannel);
+		#endif
 	 }
 
 	 void BatchRenderer::SetPosition(const uint64_t id, Vector2f position)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -290,10 +318,12 @@ namespace GEngine {
 		 ReCreateShapeVertices(&it->second);
 		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
+		#endif
 	 }
 
 	 void BatchRenderer::SetTextureScale(const uint64_t id, const Vector2f& scale)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -305,10 +335,12 @@ namespace GEngine {
 		 ReCreateShapeVertices(&it->second);
 		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
+		#endif
 	 }
 
 	 void BatchRenderer::SetSafeParams(const uint64_t& id, const Vector2f& pos, const float& rot, const Vector2f& scale, const Vector4f& color)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -323,10 +355,12 @@ namespace GEngine {
 		 ReCreateShapeVertices(&it->second);
 		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
+		#endif
 	 }
 
 	 void BatchRenderer::SetZOrder(const uint64_t id, float zOrder)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -340,10 +374,12 @@ namespace GEngine {
 		 }
 
 		 ReCreateBatches();
+		#endif
 	 }
 
 	 void BatchRenderer::SetSubTexture(const uint64_t id, Ref<SubTexture2D> texture)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -373,11 +409,13 @@ namespace GEngine {
 			 it->second.subTexture = texture;
 			 ReCreateBatches();
 		 }
+		#endif
 	 }
 
 
 	 void BatchRenderer::SetTexture(const uint64_t id, Ref<Texture2D> texture)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -406,12 +444,14 @@ namespace GEngine {
 			 it->second.subTexture = nullptr;
 			 ReCreateBatches();
 		 }
+		#endif
 	 }
 
 
 
 	 void BatchRenderer::SetRotation(const uint64_t id, float rotation)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -423,10 +463,12 @@ namespace GEngine {
 		 ReCreateShapeVertices(&it->second);
 		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
+		#endif
 	 }
 
 	 void BatchRenderer::SetScale(const uint64_t id, Vector2f scale)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
@@ -438,7 +480,7 @@ namespace GEngine {
 		 ReCreateShapeVertices(&it->second);
 		 std::copy(it->second.vertices.begin(), it->second.vertices.end(), vertices.begin() + ((uint64_t)m_Shape->GetVerticesSize() * (uint64_t)it->second.batchPos));
 		 batch->RefreshVertices();
-
+		#endif
 	 }
 
 
@@ -446,74 +488,104 @@ namespace GEngine {
 
 	 const GEngine::Vector3f BatchRenderer::GetShapePosition(const uint64_t id)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.position;
+		#else
+		return Vector3f(0.f);
+		#endif
 	 }
 
 	 const GEngine::Ref<GEngine::Texture2D> BatchRenderer::GetShapeTexture(const uint64_t id)
 	 {
+		 #ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.texture;
+		 #else
+		 return nullptr;
+		 #endif
 	 }
 
 	 const GEngine::Ref<GEngine::SubTexture2D> BatchRenderer::GetShapeSubTexture(const uint64_t id)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.subTexture;
+		#else
+		return nullptr;
+		#endif
 	 }
 
 	 const float BatchRenderer::GetShapeRotation(const uint64_t id)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.rotation;
+		#else
+		return 0.f;
+		#endif
 	 }
 
 	 const GEngine::Vector2f BatchRenderer::GetShapeScale(const uint64_t id)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.scale;
+		#else
+			return Vector2f(0.f);
+		#endif
 	 }
 
 	 const GEngine::Vector2f BatchRenderer::GetTextureScale(const uint64_t id)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
 		 return it->second.textureScale;
+		#else
+			return Vector2f(0.f);
+		#endif
 	 }
 
 	 const GEngine::Vector4f BatchRenderer::GetShapeColor(const uint64_t id)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 
-		 return it->second.color;
+		return it->second.color;
+		#else
+		return Vector4f(0.f);
+		#endif
 	 }
 
 	 void BatchRenderer::RemoveShape(const uint64_t id)
 	 {
+		#ifndef GE_GRAPHICS_API_NONE
 		 std::vector<std::pair<uint64_t, BatchObjectData>>::iterator it = std::find_if(m_SortedObjects.begin(), m_SortedObjects.end(), [id](const std::pair<u64, BatchObjectData>& e) {
 			 return e.first == id;
 			 });
 		 m_SortedObjects.erase(it);
 		 ReCreateBatches();
+		 #endif
 	 }
 
 
@@ -529,14 +601,17 @@ namespace GEngine {
 	 }
 
 	 void BatchRenderer::ReloadGraphics() {
+		#ifndef GE_GRAPHICS_API_NONE
 		if (bUnloaded) {
             bUnloaded = false;
 			Setup();
 			ReCreateBatches();
 		}
+		#endif
 	 } 
 
 	 void BatchRenderer::UnloadGraphics() {
+		#ifndef GE_GRAPHICS_API_NONE
 		 if (!bUnloaded) {
 			 for (int i = 0; i < m_Batches.size(); i++) {
 				 m_Pipeline->Remove(m_Batches[i]);
@@ -546,11 +621,12 @@ namespace GEngine {
 			 m_BlankTexture = nullptr;
 			 bUnloaded = true;
 		 }
+		#endif
 	 }
 
 	 void BatchRenderer::ReCreateBatches()
 	 {
-
+		#ifndef GE_GRAPHICS_API_NONE
          if (bUnloaded) return;
          
 		 if (m_SortedObjects.size() <= 0 && m_Batches.size() == 1) {
@@ -620,6 +696,8 @@ namespace GEngine {
 			 }
 			 m_Batches.erase(m_Batches.begin() + batchCount + 1, m_Batches.end());
 		 }
+		 #endif
 	 }
 
-	 }
+}
+	 	

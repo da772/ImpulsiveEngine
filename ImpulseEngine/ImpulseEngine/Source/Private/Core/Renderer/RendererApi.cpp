@@ -10,6 +10,10 @@
 #include "Public/Platform/Graphics/Vulkan/Vulkan_RendererApi.h"
 #endif
 
+#ifdef GE_GRAPHICS_API_NONE
+#include "Public/Platform/Graphics/Server/Empty_RendererApi.h"
+#endif
+
 namespace GEngine {
 
 	unordered_map<int, int> RendererApi::s_BlendFactors;
@@ -27,6 +31,10 @@ namespace GEngine {
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			return new Vulkan_RendererApi();
+#endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			return new Empty_RendererApi();
 #endif
 
 		default:

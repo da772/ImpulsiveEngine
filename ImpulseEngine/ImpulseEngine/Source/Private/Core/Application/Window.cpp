@@ -15,6 +15,10 @@
 #include "Public/Platform/Window/Mobile/MobileWindow.h"
 #endif
 
+#ifdef GE_WINDOW_API_SERVER
+#include "Public/Platform/Window/Server/Server_Window.h"
+#endif
+
 
 namespace GEngine {
 FWindowApi Window::s_WindowApi = GE_WINDOW_API_DEFAULT;
@@ -72,7 +76,11 @@ FWindowApi Window::s_WindowApi = GE_WINDOW_API_DEFAULT;
             case FWindowApi::MOBILE:
                 return Window::_CreateWindow<MobileWindow>(props);
 #endif
-            case FWindowApi::NONE:
+#ifdef GE_WINDOW_API_SERVER
+            case FWindowApi::SERVER:
+				return Window::_CreateWindow<ServerWindow>(props);
+	#endif
+			case FWindowApi::NONE:
             default:
                 GE_CORE_ASSERT(false, "Window Api invalid on current platform : {0}",(int) s_WindowApi);
 				return nullptr;

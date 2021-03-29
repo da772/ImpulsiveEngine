@@ -1,4 +1,5 @@
 #include "gepch.h"
+#ifdef GE_CONSOLE_APP
 #ifdef GE_WINDOW_API_GLFW
 #include "examples/imgui_impl_glfw.cpp"
 #endif
@@ -12,6 +13,8 @@
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
 #include "examples/imgui_impl_vulkan.cpp"
+#endif
+
 #endif
 
 

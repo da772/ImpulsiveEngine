@@ -7,8 +7,6 @@ class ExampleLayer : public GEngine::Layer
 {
 public:
 
-	ImFont* font2;
-
 	ExampleLayer();
 	~ExampleLayer();
 

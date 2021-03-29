@@ -9,6 +9,11 @@ newoption {
 	description = "allows for hot reloading on the fly"
 }
 
+newoption {
+	trigger = "server",
+	description = "build as standalone server"
+}
+
 IncludeDir = {}
 IncludeDir["GLFW"] = "ImpulseEngine/vendor/GLFW/include"
 IncludeDir["ENET"] = "ImpulseEngine/vendor/Enet/include"
@@ -33,13 +38,17 @@ IncludeDir["reflection"] = "ImpulseEngine/Modules/Reflection/include"
 
 
 group "Dependencies"
+	if _OPTIONS['server'] then
+	else
 	include "ImpulseEngine/ImpulseEngine/vendor/GLFW"
 	include "ImpulseEngine/ImpulseEngine/vendor/Glad"
 	include "ImpulseEngine/ImpulseEngine/vendor/imgui"
+	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
+	end
 	include "ImpulseEngine/ImpulseEngine/vendor/Enet"
 	include "ImpulseEngine/ImpulseEngine/vendor/miniupnpc"
 	include "ImpulseEngine/ImpulseEngine/vendor/zlib"
-	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
+	
 	--include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
 	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
 	if _OPTIONS['build-openal'] then
@@ -66,6 +75,12 @@ project "ImpulseEngine"
 	else
 	staticruntime "on"
 	kind "StaticLib"
+	end
+	if _OPTIONS['server'] then
+	defines 
+	{
+		"GE_SERVER_APP"	
+	}
 	end
 
 
@@ -120,18 +135,32 @@ project "ImpulseEngine"
 	{
 		"%{IncludeDir.Vulkan}/lib"
 	}
-
+	if _OPTIONS['build-openal'] then
 	links
 	{
-		"ImGui",
+		
 		"Enet",
 		"miniupnpc",
 		"zlib",
-		"freetype",
-		"box2d",
-		"Vorbis",
+		"box2d"
 		
 	}
+	else
+	links
+	{
+		"ImGui",
+		"freetype"
+	}
+	end
+	links
+	{
+		"Enet",
+		"miniupnpc",
+		"zlib",
+		"box2d",
+		"Vorbis"
+	}
+	
 	if _OPTIONS['build-openal'] then	
 	links
 	{
@@ -452,7 +481,8 @@ project "ImpulseEngine"
 			"GL_WITH_GLAD"
 		}
 		
-
+		if _OPTIONS['server'] then
+		else
 		links 
 		{
 			"GL",
@@ -460,6 +490,7 @@ project "ImpulseEngine"
 			"GLFW",
 			"X11"
 		}
+		end
 
 		filter "configurations:Debug"
 			defines "GE_DEBUG"

@@ -12,6 +12,9 @@
 #include "Public/Platform/Graphics/Vulkan/Vulkan_Shader.h"
 #endif
 
+#ifdef GE_GRAPHICS_API_NONE
+#include "Public/Platform/Graphics/Server/Empty_Shader.h"
+#endif
 
 namespace GEngine {
 
@@ -35,14 +38,21 @@ namespace GEngine {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 		case GraphicsApi::FGraphicsApi::OPENGL:
 			s = make_unique<OpenGL_Shader>(name, vertexSrc, fragmentSrc, files);
+			break;
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			s = make_unique<Vulkan_Shader>(name, vertexSrc, fragmentSrc, files);
+			break;
+#endif
+#ifdef GE_GRAPHICS_API_NONE
+	case GraphicsApi::FGraphicsApi::NONE:
+			s = make_unique<Empty_Shader>(name, vertexSrc, fragmentSrc, files);
+			break;
 #endif
 
 		default:
-			GE_CORE_ASSERT(false, "Undefined Shader for current Graphics API: {0}", (int)GraphicsContext::GetGraphicsApi());
+			GE_CORE_ASSERT(false, "Undefined Shader for current Graphics API: "+ std::to_string((int)GraphicsContext::GetGraphicsApi()));
 			return nullptr;
 
 		}
@@ -74,6 +84,11 @@ namespace GEngine {
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			s = make_unique<Vulkan_Shader>(filePath);
+			break;
+#endif
+#ifdef GE_GRAPHICS_API_NONE
+	case GraphicsApi::FGraphicsApi::NONE:
+			s = make_unique<Empty_Shader>(filePath);
 			break;
 #endif
 		default:

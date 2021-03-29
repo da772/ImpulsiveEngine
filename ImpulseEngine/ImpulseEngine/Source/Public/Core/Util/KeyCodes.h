@@ -1,7 +1,7 @@
 #pragma once
 
 // from glfw3.h
-#if  defined(GE_CONSOLE_APP) || defined(GE_PLATFORM_IOS)
+#if defined(GE_CONSOLE_APP) || defined(GE_PLATFORM_IOS) || defined(GE_SERVER_APP)
 /* Printable keys */
 #define GE_KEY_SPACE              32
 #define GE_KEY_APOSTROPHE         39  /* ' */

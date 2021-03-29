@@ -28,7 +28,7 @@ namespace GEngine {
 
 	void FileSystem::PakDirectory(std::string src, std::string out, bool srcRelative)
 	{
-#ifdef GE_CONSOLE_APP
+#if defined(GE_CONSOLE_APP) || defined(GE_SERVER_APP)
 		// Initalize varibales
 		uint32_t size = 0;
 		std::unordered_map<std::string, Ref<FileData>> map;
@@ -113,7 +113,7 @@ namespace GEngine {
 
 	void FileSystem::Copy(std::string src, std::string out, bool srcRelative /*= true*/)
 	{
-#ifdef GE_CONSOLE_APP
+#if defined(GE_CONSOLE_APP) || defined(GE_SERVER_APP)
 		std::string ex = GetExecutableDir();
 		if (srcRelative)
 			src = FilePath(src);
@@ -356,7 +356,7 @@ namespace GEngine {
 
 	std::string FileSystem::GetExecutablePath()
 	{
-#if defined(GE_PLATFORM_WINDOWS ) && !(GE_MINGW_)
+#if defined(GE_PLATFORM_WINDOWS )
 #pragma warning(push)
 #pragma warning(disable : 4996)
 		TCHAR NPath[MAX_PATH];
@@ -377,7 +377,7 @@ namespace GEngine {
 
 		return std::string(pathBuf);
 #endif
-#if defined(GE_PLATFORM_LINUX) || defined(GE_MINGW_)
+#if defined(GE_PLATFORM_LINUX)
 
 		char buff[PATH_MAX];
 		ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);

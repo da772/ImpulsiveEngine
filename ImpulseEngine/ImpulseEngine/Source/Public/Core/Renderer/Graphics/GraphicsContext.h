@@ -1,21 +1,30 @@
 #pragma once
 #include <glm/glm.hpp>
 
-
-#ifdef GE_PLATFORM_WINDOWS
+#ifdef GE_SERVER_APP
+#ifndef GE_GRAPHICS_API_DEFAULT
+#define GE_GRAPHICS_API_DEFAULT FGraphicsApi::NONE
+#endif
+#elif defined(GE_PLATFORM_WINDOWS)
+#ifndef GE_GRAPHICS_API_DEFAULT
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif
-#ifdef GE_PLATFORM_LINUX
+#elif defined(GE_PLATFORM_LINUX)
+#ifndef GE_GRAPHICS_API_DEFAULT
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif
-#ifdef GE_PLATFORM_MACOSX
+#elif defined(GE_PLATFORM_MACOSX)
+#ifndef GE_GRAPHICS_API_DEFAULT
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif
-#ifdef GE_PLATFORM_IOS
+#elifs defined(GE_PLATFORM_IOS)
+#ifndef GE_GRAPHICS_API_DEFAULT
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif
-#ifdef GE_PLATFORM_ANDROID
+#elif defined(GE_PLATFORM_ANDROID)
+#ifndef GE_GRAPHICS_API_DEFAULT
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
+#endif
 #endif
 
 namespace GEngine {

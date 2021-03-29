@@ -10,6 +10,10 @@
 #include "Public/Platform/Graphics/Vulkan/Vulkan_VertexArray.h"
 #endif
 
+#ifdef GE_GRAPHICS_API_NONE
+#include "Public/Platform/Graphics/Server/Empty_VertexArray.h"
+#endif
+
 
 namespace GEngine {
 
@@ -29,6 +33,10 @@ namespace GEngine {
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			return new Vulkan_VertexArray();
+#endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			return new Empty_VertexArray();
 #endif
 		default:
 			GE_CORE_ASSERT("Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());

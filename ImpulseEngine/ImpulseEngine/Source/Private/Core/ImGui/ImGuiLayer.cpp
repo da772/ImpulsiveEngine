@@ -36,10 +36,12 @@ namespace GEngine {
 	{
 
 	}
-
+	#ifdef GE_CONSOLE_APP
 	ImFont* font2;
+	#endif
 	void ImGuiLayer::OnAttach()
 	{
+		#ifdef GE_CONSOLE_APP
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 
@@ -73,14 +75,16 @@ namespace GEngine {
 		}
 
 		Api_OnAttach();
-
+		#endif
 	}
 
 	
 	void ImGuiLayer::OnDetach()
 	{
+		#ifdef GE_CONSOLE_APP
 		Api_OnDetach();
 		ImGui::DestroyContext();
+		#endif
 	}
 
 
@@ -92,15 +96,17 @@ namespace GEngine {
 
 	void ImGuiLayer::Begin()
 	{
+		#ifdef GE_CONSOLE_APP
 		Api_Begin();
 		ImGui::NewFrame();
 		ImGui::PushFont(font2);
 		
-
+		#endif
 	}
 
 	void ImGuiLayer::End()
 	{
+		#ifdef GE_CONSOLE_APP
 		ImGuiIO& io = ImGui::GetIO();
 		Application* app = Application::GetApp();
 		io.DisplaySize = ImVec2((float)app->GetWindow()->GetWidth(), (float)app->GetWindow()->GetHeight());
@@ -108,12 +114,13 @@ namespace GEngine {
 		ImGui::Render();
 		
 		Api_End();
-		
+		#endif
 	}
 
 	
 	void ImGuiLayer::Api_OnDetach()
 	{
+		#ifdef GE_CONSOLE_APP
 		switch (GraphicsContext::GetGraphicsApi())
 		{
 		case FGraphicsApi::OPENGL:
@@ -126,6 +133,7 @@ namespace GEngine {
 			GE_CORE_ASSERT(false, "ImGui not supported on this platform!");
 			break;
 		}
+		#endif
 	}
 
 	void ImGuiLayer::OpenGL_OnDetach()
@@ -274,5 +282,3 @@ namespace GEngine {
 
 
 }
-
-

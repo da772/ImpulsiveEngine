@@ -45,6 +45,12 @@ project "Scripts_CPP"
         "GE_DYNAMIC_LINK"
     }
     end
+    if _OPTIONS["server"] then
+        defines 
+        {
+            "GE_SERVER_APP"
+        }
+    end
 
     filter "system:windows"
 		systemversion "latest"

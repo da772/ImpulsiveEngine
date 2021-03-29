@@ -81,7 +81,7 @@ void ExampleLayer::OnEvent(GEngine::Event& event)
 WizardJump::WizardJump()
 {
     SetUIResolution(1080, 1920);
-#ifdef GE_CONSOLE_APP
+#if defined(GE_CONSOLE_APP) || defined(GE_SERVER_APP)
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = "WizardJump";
@@ -144,11 +144,12 @@ WizardJump::WizardJump()
 #endif
 	GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); });
 #endif
-
+#ifdef GE_CONSOLE_APP
 	if (s_debugTools) {
 		m_DebugLayer = new DebugLayer();
 		PushLayer(m_DebugLayer);
 	}
+#endif
 	m_ExampleLayer = new ExampleLayer();
 	PushLayer(m_ExampleLayer);
 

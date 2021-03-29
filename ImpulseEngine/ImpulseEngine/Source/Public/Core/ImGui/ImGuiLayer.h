@@ -17,8 +17,8 @@ namespace GEngine {
 
 
 
-		void Begin();
-		void End();
+		void Begin() override;
+		void End() override;
 		
 	private:
 		void Api_OnDetach();

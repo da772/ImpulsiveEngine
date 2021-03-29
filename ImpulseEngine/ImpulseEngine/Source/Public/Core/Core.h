@@ -19,7 +19,7 @@
 	#define GE_PHYSICS_BOX2D
 #endif
 
-#define GE_AUDIO_OPENAL
+
 
 #ifdef GE_PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
@@ -44,10 +44,18 @@
 
 #define IMGUI_API GE_API
 
+#ifndef GE_SERVER_APP
 #if defined(GE_PLATFORM_WINDOWS) || defined(GE_PLATFORM_MACOSX) || defined(GE_PLATFORM_LINUX)
 #define GE_GRAPHICS_API_OPENGL_3_3
 #define GE_WINDOW_API_GLFW
+#define GE_AUDIO_OPENAL
 #define GE_CONSOLE_APP
+#endif
+#else
+#define GE_GRAPHICS_API_NONE
+#define GE_WINDOW_API_SERVER
+#define IMGUI_DISABLE
+#define GE_AUDIO_NONE
 #endif
 
 #if defined(GE_PLATFORM_IOS)

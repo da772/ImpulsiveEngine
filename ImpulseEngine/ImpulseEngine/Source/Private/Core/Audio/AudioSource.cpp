@@ -1,6 +1,6 @@
 #include "gepch.h"
 
-#include "Public/Core/Audio/AudioSource.h";
+#include "Public/Core/Audio/AudioSource.h"
 
 namespace GEngine {
 	bool AudioSource::IsPlaying()

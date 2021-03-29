@@ -11,6 +11,10 @@
 #include "Public/Platform/Graphics/Vulkan/Vulkan_Buffer.h"
 #endif
 
+#ifdef GE_GRAPHICS_API_NONE
+#include "Public/Platform/Graphics/Server/Empty_Buffer.h"
+#endif
+
 
 namespace GEngine {
 
@@ -30,6 +34,10 @@ namespace GEngine {
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			return new Vulkan_VertexBuffer(vertices, size);
 #endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			return new Empty_VertexBuffer(vertices, size);
+#endif
 			default:
 				GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
 				return nullptr;
@@ -46,6 +54,10 @@ namespace GEngine {
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			//return new Vulkan_VertexBuffer(vertices, size);
+#endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			return new Empty_VertexBuffer(size);
 #endif
 		default:
 			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
@@ -70,6 +82,10 @@ namespace GEngine {
 		case GraphicsApi::FGraphicsApi::VULKAN:
 			return new Vulkan_IndexBuffer(indices, count);
 #endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			return new Empty_IndexBuffer(indices, count);
+#endif
 		default:
 			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;
@@ -84,6 +100,11 @@ namespace GEngine {
 		case GraphicsApi::FGraphicsApi::OPENGL:
 			return make_shared<OpenGL_FrameBuffer>(width, height, format, texName, renderScale);
 #endif
+#ifdef GE_GRAPHICS_API_NONE
+		case GraphicsApi::FGraphicsApi::NONE:
+			return make_shared<Empty_FrameBuffer>(width, height, format, texName, renderScale);
+#endif
+
 		default:
 			GE_CORE_ASSERT(false, "Graphics Api not implemented: {0}", (int)GraphicsContext::GetGraphicsApi());
 			return nullptr;

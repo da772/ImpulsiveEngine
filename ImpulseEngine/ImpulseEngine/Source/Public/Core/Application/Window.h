@@ -6,6 +6,11 @@
 #include "Public/Core/Events/Event.h"
 #include "Public/Core/Renderer/Graphics/GraphicsContext.h"
 
+#ifdef GE_WINDOW_API_SERVER
+#ifndef GE_WINDOW_API_DEFAULT
+#define GE_WINDOW_API_DEFAULT GEngine::FWindowApi::SERVER;
+#endif
+#endif
 #ifdef GE_WINDOW_API_GLFW
 #ifndef GE_WINDOW_API_DEFAULT
 #define GE_WINDOW_API_DEFAULT GEngine::FWindowApi::GLFW;
@@ -25,7 +30,7 @@
 namespace GEngine {
 
 
-	namespace WindowApi { enum class FWindowApi : uint8_t { NONE = 0, GLFW, WIN32API, MOBILE }; }
+	namespace WindowApi { enum class FWindowApi : uint8_t { NONE = 0, GLFW, WIN32API, MOBILE, SERVER }; }
 
 	using namespace WindowApi;
 

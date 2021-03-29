@@ -14,11 +14,10 @@ namespace GEngine {
 	std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
 	std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
     std::shared_ptr<spdlog::logger> Log::s_NativeLogger;
-#ifndef GE_DIST
+#ifdef GE_CONSOLE_APP
 	ImGuiAppLog* Log::s_ImGuiLog = new ImGuiAppLog();
-#else 
-	ImGuiAppLog* Log::s_ImGuiLog = nullptr;
 #endif
+
 	std::vector<spdlog::sink_ptr> Log::sinks;
 
 	void Log::Init()
@@ -28,7 +27,9 @@ namespace GEngine {
 #else
 		sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
 #endif
+#ifdef GE_CONSOLE_APP
 		sinks.push_back(std::make_shared<ImGui_sink_mt>(*s_ImGuiLog));
+#endif
 
 		for (spdlog::sink_ptr s : sinks) {
 			s->set_pattern("[%T:%e] %^%l%n: %v%$");

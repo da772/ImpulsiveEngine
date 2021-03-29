@@ -116,8 +116,14 @@ project "WizardJump"
 	else
 	links
 	{
-	"Scripts_CPP"
+		"Scripts_CPP"
 	}
+	end
+	if _OPTIONS['server'] then
+		defines 
+		{
+			"GE_SERVER_APP"	
+		}
 	end
 
 	filter "platforms:x86_64"
@@ -181,22 +187,28 @@ project "WizardJump"
 
 			links 
 			{
-				"ImGui",
 				"Enet",
 				"miniupnpc",
-				"freetype",
 				"box2d",
-				"Vorbis",
-				"GL",
-				"Glad",
-				"GLFW",
 				"dl",
 				"pthread",
-				"X11",
-				"openal",
 				"stdc++fs",
 				"zlib"
 			}
+			if _OPTIONS['server'] then
+			else
+			links 
+			{
+				"ImGui",
+				"freetype",
+				"GL",
+				"Glad",
+				"GLFW",
+				"X11",
+				"openal",
+				"Vorbis"
+			}
+			end
 	
 			excludes 
 			{ 

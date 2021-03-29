@@ -1,9 +1,8 @@
 #pragma once
 #include "GEngine.h"
-#include "Public/Core/Core.h"
 
 extern GEngine::Application* GEngine::CreateApplication();
-#if defined(GE_CONSOLE_APP)
+#if defined(GE_CONSOLE_APP) || defined(GE_SERVER_APP)
 #if defined(GE_PLATFORM_WINDOWS) && !defined(GE_DEBUG) && 0
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #else

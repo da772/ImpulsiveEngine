@@ -177,7 +177,7 @@ namespace GEngine {
 		FGraphicsApi tempGraphicsApi;
 
 		
-		ImGuiLayer* m_ImGuiLayer = nullptr;
+		Layer* m_ImGuiLayer = nullptr;
 		bool m_Running = true, m_Minimized = false;;
 		LayerStack m_LayerStack;
 		static Application* s_Instance;

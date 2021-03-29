@@ -15,12 +15,14 @@ namespace GEngine {
 		Layer(const std::string& name);
 		virtual ~Layer();
 
-		virtual void OnAttach() {}
-		virtual void OnDetach() {}
-		virtual void OnUpdate(Timestep timeStep) {}
-		virtual void OnEvent(Event& event) {}
-		virtual void OnImGuiRender() {}
-		virtual void OnDraw() {};
+		inline virtual void Begin() {};
+		inline virtual void OnAttach() {}
+		inline virtual void OnDetach() {}
+		inline virtual void OnUpdate(Timestep timeStep) {}
+		inline virtual void OnEvent(Event& event) {}
+		inline virtual void OnImGuiRender() {}
+		inline virtual void OnDraw() {};		
+		inline virtual void End() {};
 
 		inline const std::string GetName() const { return m_DebugName; }
 	protected:

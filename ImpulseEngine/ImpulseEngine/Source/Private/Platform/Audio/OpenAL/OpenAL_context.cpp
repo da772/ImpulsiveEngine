@@ -3,13 +3,13 @@
 #include "Public/Platform/Audio/OpenAL/OpenAL_source.h"
 #include "Public/Core/Audio/AudioSource.h"
 #include "Public/Core/Util/ThreadPool.h"
-
+#if defined(GE_AUDIO_OPENAL)
 #define AL_LIBTYPE_STATIC
-
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/efx.h>
 #include <vorbis/vorbisfile.h>
+#endif
 #include "Public/Core/FileSystem/FileSystem.h"
 
 
@@ -17,7 +17,7 @@
 namespace GEngine {
 
 	
-
+#if defined(GE_AUDIO_OPENAL)
 	void check_al_errors(const std::string& filename, const std::uint_fast32_t line);
 
 	template<typename alFunction, typename... Params>
@@ -36,8 +36,9 @@ namespace GEngine {
 		check_al_errors(filename, line);
 		return ret;
 	}
+	#endif
 	
-
+#if defined(GE_AUDIO_OPENAL)
 #define alCall(function, ...) alCallImpl(__FILE__, __LINE__, function, __VA_ARGS__)
 #define alcCall(function, device, ...) alcCallImpl(__FILE__, __LINE__, function, device, __VA_ARGS__)
 
@@ -45,10 +46,10 @@ namespace GEngine {
 	static int32_t seek_ogg_callback(void* fileHandle, ogg_int64_t to, std::int32_t type);
 	static long int tell_ogg_callback(void* fileHandle);
 	static int close_ogg_callback(void* fileHandle);
-
+#endif
 	OpenAL_Context::OpenAL_Context()
 	{
-		
+		#if defined(GE_AUDIO_OPENAL)
 		device = alcOpenDevice(NULL);
 		ALCint attribs[] = {
 		ALC_REFRESH, 60, ALC_SYNC, ALC_FALSE, ALC_MAX_AUXILIARY_SENDS, 2, 0
@@ -73,7 +74,7 @@ namespace GEngine {
 		alCall(alGetListener3f, AL_POSITION, &m_listenerPos.x, &m_listenerPos.y, &m_listenerPos.z);
 		//alCall(alGetListenerf, AL_PITCH, &m_listenerPitch);
 		alCall(alGetListenerf, AL_GAIN, &m_listenerVolume);
-
+#endif
 	}
 
 	OpenAL_Context::~OpenAL_Context()
@@ -81,15 +82,16 @@ namespace GEngine {
 		for (Ref<AudioSource> s : m_sources) {
 			Destroy(s);
 		}
-
+#if defined(GE_AUDIO_OPENAL)
 		alcDestroyContext((ALCcontext*)ctx);
 		alcCloseDevice((ALCdevice*)device);
+	#endif
 	}
 
 
 
 	void OpenAL_Context::UpdateStream(Ref<AudioSource> audioSource) {
-		
+		#if defined(GE_AUDIO_OPENAL)
 		AudioStreamingData& audioData = audioSource->GetData();
 		OggVorbis_File* oggFile = &dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
 
@@ -193,6 +195,7 @@ namespace GEngine {
 
 			delete[] data;
 		}
+		#endif
 	}
 	
 	void OpenAL_Context::Update()
@@ -212,17 +215,21 @@ namespace GEngine {
 		if (m_sources.find(s) == m_sources.end())
 			return;
 		m_sources.erase(s);
+		#if defined(GE_AUDIO_OPENAL)
         alSourceStop(s->GetData().source);
 		alSourcei(s->GetData().source, AL_BUFFER, AL_NONE);
 		alDeleteSources(1, &s->GetData().source);
 		alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
 		ov_clear(&dynamic_pointer_cast<OpenAL_source>(s)->oggFile);
+		#endif
 	}
 
 	void OpenAL_Context::SetListenerPosition(const Vector3f& pos)
 	{
 		m_listenerPos = pos;
+		#if defined(GE_AUDIO_OPENAL)
 		alListener3f(AL_POSITION, pos.x, pos.y, pos.z);
+		#endif
 	}
 
 	const Vector3f& OpenAL_Context::GetListenerPosition()
@@ -233,13 +240,17 @@ namespace GEngine {
 	void OpenAL_Context::SetListenerPitch(float f)
 	{
 		m_listenerPitch = f;
+		#if defined(GE_AUDIO_OPENAL)
 		alListenerf(AL_PITCH, f);
+		#endif
 	}
 
 	void OpenAL_Context::SetListenerVolume(float f)
 	{
 		m_listenerVolume = f;
+		#if defined(GE_AUDIO_OPENAL)
 		alListenerf(AL_GAIN, f);
+		#endif
 	}
 
 	const float OpenAL_Context::GetListenerPitch()
@@ -254,6 +265,7 @@ namespace GEngine {
 
 	void OpenAL_Context::ResetBuffers(Ref<AudioSource> audioSource, uint32_t buffer)
 	{
+		#if defined(GE_AUDIO_OPENAL)
 		OggVorbis_File& oggFile = dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
 		AudioStreamingData* audioData = &audioSource->GetData();
 
@@ -307,11 +319,14 @@ namespace GEngine {
 		alCall(alSourceQueueBuffers, audioData->source, audioData->bufferNum, &audioData->buffers[0]);
 		audioData->queued = true;
 		delete[] data;
+		#endif
 	}
 
 	Ref<AudioSource> OpenAL_Context::LoadSource(const char* fileName, bool fromPak /*= true*/, bool relative /*= true*/)
 	{
+		
 		Ref<OpenAL_source> s = make_shared<OpenAL_source>();
+		#if defined(GE_AUDIO_OPENAL)
 		AudioStreamingData* audioData = &s->GetData();
 		audioData->fileName = fileName;
 		audioData->fromPak = fromPak;
@@ -447,15 +462,17 @@ namespace GEngine {
 		s->SetSelf(s);
 		s->oggFile = std::move(oggFile);
 		m_sources.insert(s);
+		#endif
 		return s;
 	}
 
 	int close_ogg_callback(void* fileHandle) {
 		return 0;
 	}
-
+#if defined(GE_AUDIO_OPENAL)
 	std::size_t read_ogg_callback(void* destination, std::size_t size1, std::size_t size2, void* fileHandle)
 	{
+		
 		AudioStreamingData* audioData = reinterpret_cast<AudioStreamingData*>(fileHandle);
 		uint32_t length = size1 * size2;
 
@@ -538,7 +555,5 @@ namespace GEngine {
 			}
 		}
 	}
-
-
-
+#endif
 }

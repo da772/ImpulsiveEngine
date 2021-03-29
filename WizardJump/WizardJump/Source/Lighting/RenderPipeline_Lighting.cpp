@@ -73,8 +73,10 @@ void RenderPipeline_Lighting::Render()
 	m_shaderMask->UploadUniformMat4("u_Transform", transform);
 	m_shaderMask->UploadUniformInt("u_Texture", 0);
 	m_shaderMask->UploadUniformInt("u_Texture_Mask", 1);
-	m_frameBuffer_shadow->GetTexture()->Bind(0);
-	m_frameBuffer_lights->GetTexture()->Bind(1);
+	if (m_frameBuffer_shadow->GetTexture())
+		m_frameBuffer_shadow->GetTexture()->Bind(0);
+	if (m_frameBuffer_lights->GetTexture())
+		m_frameBuffer_lights->GetTexture()->Bind(1);
 	m_varray->Bind();
 	RenderCommand::DrawIndexed(m_varray);
 	m_frameBuffer->UnBind();

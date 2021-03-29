@@ -10,7 +10,9 @@
 #include "spdlog/fmt/ostr.h"
 #pragma GCC diagnostic pop
 #pragma warning(pop)
+#ifdef GE_CONSOLE_APP
 #include "Public/Core/ImGui/ImGuiSink.h"
+#endif
 
 
 namespace GEngine {
@@ -39,14 +41,18 @@ namespace GEngine {
 		}
 
 		inline static std::vector<spdlog::sink_ptr>& GetSinks() { return sinks; }
+		#ifdef GE_CONSOLE_APP
 		inline static ImGuiAppLog* GetImGuiLog() { return s_ImGuiLog; }
+		#endif
 		static void RegisterLog(std::shared_ptr < spdlog::logger > l);
 
 	private:
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
         static std::shared_ptr<spdlog::logger> s_NativeLogger;
+		#ifdef GE_CONSOLE_APP
 		static ImGuiAppLog* s_ImGuiLog;
+		#endif
 		static std::vector<spdlog::sink_ptr> sinks;
 
 	};

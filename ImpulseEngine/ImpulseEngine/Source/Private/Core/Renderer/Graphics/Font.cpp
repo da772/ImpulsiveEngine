@@ -5,6 +5,9 @@
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 #include "Public/Platform/Graphics/OpenGL/OpenGL_Font.h"
 #endif
+#ifdef GE_GRAPHICS_API_NONE
+#include "Public/Platform/Graphics/Server/Empty_Font.h"
+#endif
 
 namespace GEngine {
 
@@ -28,9 +31,13 @@ namespace GEngine {
 			f->self = f;
 #endif
 			break;
+			case GraphicsApi::FGraphicsApi::NONE:
+#ifdef GE_GRAPHICS_API_NONE
+				f = Ref<Font>(new Empty_Font(path, size));
+#endif
+				break;
             case GraphicsApi::FGraphicsApi::DIRECTX11:
             case GraphicsApi::FGraphicsApi::DIRECTX12:
-            case GraphicsApi::FGraphicsApi::NONE:
             default:
             GE_CORE_ERROR("GRAPHICS API NOT DEFINED");
             break;

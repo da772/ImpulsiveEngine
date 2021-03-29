@@ -11,6 +11,10 @@
 #include "Public/Platform/Window/Mobile/Mobile_Input.h"
 #endif
 
+#ifdef GE_WINDOW_API_SERVER
+#include "Public/Platform/Window/Server/Server_Input.h"
+#endif
+
 #include "Public/Core/Application/Application.h"
 
 namespace GEngine {
@@ -71,6 +75,11 @@ namespace GEngine {
 #ifdef GE_WINDOW_API_MOBILE
 		case WindowApi::FWindowApi::MOBILE:
 			s_Instance = new Mobile_Input();
+			break;
+#endif
+#ifdef GE_WINDOW_API_SERVER
+		case WindowApi::FWindowApi::SERVER:
+			s_Instance = new Server_Input();
 			break;
 #endif
 		default:

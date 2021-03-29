@@ -1,7 +1,6 @@
 #include "DebugLayer.h"
 #include "imgui/imgui_internal.h"
-
-
+#ifdef GE_CONSOLE_APP
 using namespace GEngine;
 
 bool DebugLayer::showLog = true;
@@ -432,4 +431,4 @@ void DebugLayer::CreateGraphicsDebuggger()
 	ImGui::End();
 }
 
-
+#endif

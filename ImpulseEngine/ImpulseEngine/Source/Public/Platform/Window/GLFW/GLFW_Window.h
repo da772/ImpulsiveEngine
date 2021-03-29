@@ -1,4 +1,5 @@
 #pragma once
+#ifdef GE_WINDOW_API_GLFW
 #include "Public/Core/Application/Window.h"
 
 
@@ -25,7 +26,7 @@ namespace GEngine {
 		// Window attributes
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
-		inline virtual void* GetNativeWindow() const { return m_Window; }
+		inline virtual void* GetNativeWindow() const override { return m_Window; }
 		bool IsVSync() const override;
 		virtual void Shutdown() override;
 		virtual float const GetTime() const override;
@@ -48,3 +49,4 @@ namespace GEngine {
 	};
 
 }
+#endif
