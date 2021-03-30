@@ -12,7 +12,7 @@
 
 #endif
 #ifdef GE_WINDOW_API_MOBILE
-#include "Public/Platform/Window/Mobile/MobileWindow.h"
+#include "Public/Platform/Window/Mobile/Mobile_Window.h"
 #endif
 
 #ifdef GE_WINDOW_API_SERVER

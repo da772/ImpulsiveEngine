@@ -1,7 +1,7 @@
 #include "gepch.h"
 #include "Public/Platform/Window/Mobile/Mobile_Input.h"
 #ifdef GE_MOBILE_APP
-#include "Public/Platform/Window/Mobile/MobileWindow.h"
+#include "Public/Platform/Window/Mobile/Mobile_Window.h"
 #endif
 #include "Public/Core/Application/Application.h"
 #include "Public/Core/Events/TouchEvent.h"

@@ -1,6 +1,7 @@
 #include "DebugLayer.h"
-#include "imgui/imgui_internal.h"
+
 #ifdef GE_CONSOLE_APP
+#include "imgui/imgui_internal.h"
 using namespace GEngine;
 
 bool DebugLayer::showLog = true;
