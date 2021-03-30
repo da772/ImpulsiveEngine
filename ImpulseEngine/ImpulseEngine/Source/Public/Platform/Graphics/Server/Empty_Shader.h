@@ -23,7 +23,7 @@ namespace GEngine {
 		inline virtual void UploadUniformFloat3(const std::string& name, const Vector3f& values) override{};
 		inline virtual void UploadUniformFloat(const std::string& name, const float values) override{};
 		inline virtual void UploadUniformInt(const std::string& name, const int values) override{};
-		inline virtual uint32_t ShaderTypeFromString(const std::string& type) override{};
+		inline virtual uint32_t ShaderTypeFromString(const std::string& type) override { return 0; };
 
 	};
 

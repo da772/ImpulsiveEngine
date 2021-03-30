@@ -1,7 +1,17 @@
 #pragma once
 
+
 #ifndef GE_GENGINE_DEF
 #define GE_GENGINE_DEF
+
+#ifdef GE_PLATFORM_WINDOWS
+#pragma warning(push)
+#pragma warning(disable : 4099)
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4275)
+#pragma warning(disable : 4251)
+#pragma warning(disable : 4217)
+#endif
 
 
 #include "Public/Core/Application/Application.h"
@@ -90,6 +100,6 @@
 
 
 #include "Public/Core/Core.h"
-
+#pragma warning(pop)
 #endif
 

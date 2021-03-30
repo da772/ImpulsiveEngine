@@ -44,6 +44,7 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/Glad"
 	include "ImpulseEngine/ImpulseEngine/vendor/imgui"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
+	include "ImpulseEngine/ImpulseEngine/vendor/Vorbis"
 	end
 	include "ImpulseEngine/ImpulseEngine/vendor/Enet"
 	include "ImpulseEngine/ImpulseEngine/vendor/miniupnpc"
@@ -54,7 +55,7 @@ group "Dependencies"
 	if _OPTIONS['build-openal'] then
 		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
 	end
-	include "ImpulseEngine/ImpulseEngine/vendor/Vorbis"
+	
 	
 
 group ""
@@ -135,10 +136,9 @@ project "ImpulseEngine"
 	{
 		"%{IncludeDir.Vulkan}/lib"
 	}
-	if _OPTIONS['build-openal'] then
+	if _OPTIONS['server'] then
 	links
 	{
-		
 		"Enet",
 		"miniupnpc",
 		"zlib",
@@ -149,17 +149,15 @@ project "ImpulseEngine"
 	links
 	{
 		"ImGui",
-		"freetype"
-	}
-	end
-	links
-	{
+		"freetype",
+		"Vorbis",
 		"Enet",
 		"miniupnpc",
 		"zlib",
-		"box2d",
-		"Vorbis"
+		"box2d"
 	}
+	end
+	
 	
 	if _OPTIONS['build-openal'] then	
 	links
@@ -418,6 +416,12 @@ project "ImpulseEngine"
 			"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 		}
 
+		if _OPTIONS['server'] then
+		links 
+		{
+			"Ws2_32.lib"
+		}
+		else
 		links 
 		{
 			"opengl32.lib",
@@ -426,6 +430,9 @@ project "ImpulseEngine"
 			"GLFW",
 			"Ws2_32.lib"
 		}
+		end
+
+		
 
 		filter "configurations:Debug"
 			defines "GE_DEBUG"
@@ -439,21 +446,6 @@ project "ImpulseEngine"
 			defines "GE_DIST"
 			runtime "Release"
 			optimize "On"
-		filter { "system:windows", "action:gmake2" }
-			cppdialect "gnu++17"
-			defines
-			{
-				"GE_MINGW_",
-				"GE_BUILD_DLL",
-				"GLFW_INCLUDE_NONE",
-				"GE_WINDOW_GLFW",
-				"GE_PLATFORM_WINDOWS",
-				"GL_WITH_GLAD"
-			}
-			links
-			{
-				"openal"
-			}
 
 	filter "system:linux"
 		linkgroups 'on'
