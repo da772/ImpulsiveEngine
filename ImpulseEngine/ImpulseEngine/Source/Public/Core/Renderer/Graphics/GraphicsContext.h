@@ -17,7 +17,7 @@
 #ifndef GE_GRAPHICS_API_DEFAULT
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif
-#elifs defined(GE_PLATFORM_IOS)
+#elif defined(GE_PLATFORM_IOS)
 #ifndef GE_GRAPHICS_API_DEFAULT
 #define GE_GRAPHICS_API_DEFAULT FGraphicsApi::OPENGL
 #endif
