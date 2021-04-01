@@ -14,6 +14,7 @@ newoption {
 	description = "build as standalone server"
 }
 
+
 IncludeDir = {}
 IncludeDir["GLFW"] = "ImpulseEngine/vendor/GLFW/include"
 IncludeDir["ENET"] = "ImpulseEngine/vendor/Enet/include"
