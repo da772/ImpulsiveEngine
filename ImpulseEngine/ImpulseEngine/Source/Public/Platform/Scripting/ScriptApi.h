@@ -40,6 +40,7 @@ namespace GEngine {
 		static NativeStorage GetStorage_Native();
 		static void SetMake_Native(const std::string& dir, const std::string& name);
 		static void SetBuild_Native(const std::string& dir, const std::string& name);
+        static void SetRelativePath_Native(const std::string& includeDir);
 		static inline NativeReflector GetReflector_Native() { return s_nativeReflector; }
 
         template<typename ... Args>

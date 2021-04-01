@@ -147,4 +147,9 @@ namespace GEngine {
 		nameBuild_Native = name;
 	}
 
+	void ScriptApi::SetRelativePath_Native(const std::string& includeDir)
+	{
+		s_nativeReflector->SetRelativeInclude(includeDir.c_str());
+	}
+
 }

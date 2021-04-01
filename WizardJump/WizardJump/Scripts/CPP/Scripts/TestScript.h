@@ -1,4 +1,4 @@
-
+#pragma once
 #include <GEngine.h>
 
 using namespace GEngine;
@@ -33,5 +33,23 @@ public:
 	UFUNCTION()
 	void NewFunct(int i);
 
+};
+
+
+UCLASS()
+class MyScript : public Component {
+public:
+	UCONSTRUCTOR()
+	inline MyScript(Entity* e) : Component(e) {  };
+	inline ~MyScript() {};
+
+	UPROPERTY()
+	int id = 123;
+
+	UFUNCTION()
+	inline int GetId() { return id;  }
+
+	UFUNCTION()
+	inline int* GetIdPtr() { return &id; }
 };
 

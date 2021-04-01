@@ -24,7 +24,7 @@ namespace refl {
 
 	class uClass {
 		public:
-		uClass();
+		inline uClass() {};
 		uClass(uClass&& other);
 		uClass(void* p, const std::string& n, ::refl::reflector* r, bool destroy = false);
 		~uClass();
@@ -123,6 +123,14 @@ namespace refl {
 				return _CallFunction<typename std::conditional< (std::is_void<T>::value), void*, T>::type>(name, vec);
 			}
 
+			template<typename T, typename ... Args>
+			inline static typename std::conditional< (std::is_void<T>::value), void*, T>::type CallStaticFunction(
+				const std::string& clazz, const std::string& name, ::refl::reflector* r, const std::vector<void*>& vec) {
+				
+				uClass cls = uClass(nullptr, clazz, r);
+				return cls._CallFunction<typename std::conditional< (std::is_void<T>::value), void*, T>::type>(name, vec);
+			}
+
 			template<typename ... Args>
 			inline void CallVoidFunction(const std::string& name, Args&& ... args) {
 				const std::unordered_map<std::string, refl::store::uobject_struct>& map = store->get_map();
@@ -166,6 +174,7 @@ namespace refl {
 			inline const char* GetError()  { return err.GetError();}
 			inline store::storage* GetStorage() { return &st; }
 			inline void SetOutputDir(const char* outputDir) { gen.set_output(outputDir); }
+			inline void SetRelativeInclude(const char* includeDir) {gen.set_relative_include(includeDir);}
 			//void LoadGeneratedFiles() { ::refl::impl::__loadGeneratedFiles(&st); }
 			//void UnloadGeneratedFiles() { ::refl::impl::__unloadGeneratedFiles(&st); }
 		private:
@@ -191,14 +200,20 @@ namespace refl {
 						free(f);
 				}
 				return;
-
 			}
+
 		public:
 			template<typename ... Args>
 			inline uClass CreateUClass(const std::string& clazz, Args&& ... args) {
 				std::vector<void*> vec = {(void*)&args...};
 				void* t = __callfunc<void*>(nullptr, clazz, clazz,vec);
 				return uClass(t, clazz, this, true);
+			}
+
+			template <typename T, typename ... Args>
+			inline typename std::conditional< (std::is_void<T>::value), void*, T>::type CallStaticFunction(const std::string& clazz, const std::string& name, Args&& ... args) {
+				std::vector<void*> vec = {(void*)&args...};
+				return uClass::CallStaticFunction<typename std::conditional< (std::is_void<T>::value), void*, T>::type>(clazz, name, this, vec);
 			}
 
 			inline void DestroyUClass(uClass& c) {
@@ -209,10 +224,6 @@ namespace refl {
 			}
 			
 	};
-
-	inline uClass::uClass() {
-
-	}
 
 	inline uClass::~uClass() {
 		if (destroy && ptr != nullptr) {
