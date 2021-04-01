@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>382836443440-s3ft4q8h7hh4ad01ni964b81rj4r8d34.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.382836443440-s3ft4q8h7hh4ad01ni964b81rj4r8d34</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAAG-55mg7mZvtUVHW97jrmCuQrKGs0IYs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>382836443440</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ie.WizardJump</string>
+	<key>PROJECT_ID</key>
+	<string>wizardjump-bba64</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wizardjump-bba64.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:382836443440:ios:77c75009da0b31504c20f5</string>
+	<key>DATABASE_URL</key>
+	<string>https://wizardjump-bba64.firebaseio.com</string>
+</dict>
+</plist>

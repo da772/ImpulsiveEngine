@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "382836443440",
+    "firebase_url": "https://wizardjump-bba64.firebaseio.com",
+    "project_id": "wizardjump-bba64",
+    "storage_bucket": "wizardjump-bba64.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382836443440:android:5399babc5a5e4e154c20f5",
+        "android_client_info": {
+          "package_name": "com.ie.WizardJump"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382836443440-t9c4c0psggj34ba11hgkcejdni27avhh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjjAT_lBGOJWZYayQiwV-z8hFzcxt9RtU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382836443440-t9c4c0psggj34ba11hgkcejdni27avhh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "382836443440-s3ft4q8h7hh4ad01ni964b81rj4r8d34.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ie.WizardJump"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

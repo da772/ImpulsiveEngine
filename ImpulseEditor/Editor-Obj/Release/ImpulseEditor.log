@@ -1,0 +1,42 @@
+﻿Build started 4/1/2021 4:43:42 PM.
+Logging verbosity is set to: Normal.     1>Project "D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\ImpulseEditor.vcxproj" on node 3 (Build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Editor-Obj\Release\ImpulseEditor.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX86\x64\CL.exe /c /I..\ImpulseEngine\ImpulseEngine\vendor\spdlog\include /I..\ImpulseEngine\ImpulseEngine\Source /I..\ImpulseEngine\ImpulseEngine\vendor /I..\ImpulseEngine\ImpulseEngine\vendor\glm /I..\ImpulseEngine\ImpulseEngine\vendor\entt\include /I..\ImpulseEngine /I..\ImpulseEngine\ImpulseEngine\Modules\IE_VECTOR\include /I..\ImpulseEngine\ImpulseEngine\Modules\Reflection\include /IImpulseEditor\Source /IImpulseEditor\include /IImpulseEditor\Scripts\CPP\Generated /Zi /nologo /W3 /WX- /diagnostics:column /Ox /Oi /D GE_HOT_RELOAD /D GE_PROJECT_ImpulseEditor /D GE_DYNAMIC_LINK /D GE_PRJ_OFFSET=1 /D GE_PLATFORM_WINDOWS /D "MS_BUILD_BIN=\"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\"" /D GE_RELEASE /D "BUILD_CONFIG=\"Release\"" /D _UNICODE /D UNICODE /GF /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"Editor-Obj\Release\\" /Fd"Editor-Obj\Release\vc142.pdb" /Gd /TP /FC /errorReport:prompt ImpulseEditor\Source\ImpulseEditor.cpp
+         ImpulseEditor.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX86\x64\link.exe /ERRORREPORT:PROMPT /OUT:"Editor\ImpulseEditor.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\ImpulseEngine\ImpulseEngine\vendor\Vulkan\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG:FULL /PDB:"Editor\ImpulseEditor.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Editor\ImpulseEditor.lib" /MACHINE:X64 "Editor-Obj\Release\CharacterController.obj"
+         "Editor-Obj\Release\CharacterEntity.obj"
+         "Editor-Obj\Release\DebugLayer.obj"
+         "Editor-Obj\Release\BackgroundEntity.obj"
+         "Editor-Obj\Release\FogEntity.obj"
+         "Editor-Obj\Release\ParticleSystem2D.obj"
+         "Editor-Obj\Release\ImpulseEditor.obj"
+         "Editor-Obj\Release\LightComponent.obj"
+         "Editor-Obj\Release\Lighting.obj"
+         "Editor-Obj\Release\RenderPipeline_Lighting.obj"
+         "Editor-Obj\Release\MapEditor.obj"
+         "Editor-Obj\Release\Tutorial.obj"
+         "Editor-Obj\Release\DialogFrame.obj"
+         "Editor-Obj\Release\main.obj"
+         "D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEngine\ImpulseEngine\Bin\Release-windows-x86_64\ImpulseEngine\ImpulseEngine.lib"
+         ImpulseEditor.vcxproj -> D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\Editor\ImpulseEditor.exe
+       PostBuildEvent:
+         XCOPY /I /E /S /Y "D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\ImpulseEditor/Data" "D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\Editor\Data"
+         copy /Y  "D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEngine\ImpulseEngine\Bin\Release-windows-x86_64\ImpulseEngine\ImpulseEngine.dll" "D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\Editor\ImpulseEngine.dll"
+         :VCEnd
+         D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\ImpulseEditor/Data\Content.pak
+         D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\ImpulseEditor/Data\EditorContent.pak
+         2 File(s) copied
+                 1 file(s) copied.
+       FinalizeBuildStatus:
+         Deleting file "Editor-Obj\Release\ImpulseEditor.tlog\unsuccessfulbuild".
+         Touching "Editor-Obj\Release\ImpulseEditor.tlog\ImpulseEditor.lastbuildstate".
+     1>Done Building Project "D:\Documents\Dev\ImpulsiveEngine\ImpulsiveEngine\ImpulseEditor\ImpulseEditor.vcxproj" (Build target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.01

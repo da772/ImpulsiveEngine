@@ -36,8 +36,8 @@ namespace GEngine {
 			s->set_level(spdlog::level::trace);
 		}
 
-		s_CoreLogger = std::make_shared<spdlog::logger>("GEngine", begin(sinks), end(sinks));
-		s_ClientLogger = std::make_shared<spdlog::logger>("App", begin(sinks), end(sinks));
+		s_CoreLogger = std::make_shared<spdlog::logger>("Engine", begin(sinks), end(sinks));
+		s_ClientLogger = std::make_shared<spdlog::logger>("Editor", begin(sinks), end(sinks));
         s_NativeLogger = std::make_shared<spdlog::logger>("Native", begin(sinks), end(sinks));
 
 		s_ClientLogger->set_level(spdlog::level::trace);
