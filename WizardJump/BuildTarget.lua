@@ -303,7 +303,9 @@ project "WizardJump"
 
 		postbuildcommands
 		{
-			"cp -rf ${PROJECT_DIR}/%{prj.name}/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/",
+			"cp -rf ${PROJECT_DIR}/%{prj.name}/Data ${TARGET_BUILD_DIR}/%{prj.name}.app/",
+			"cp -rf ${PROJECT_DIR}/%{prj.name}/Source/iOS/GoogleService-Info.plist ${TARGET_BUILD_DIR}/%{prj.name}.app/"
+
 		}
 
 
