@@ -14,4 +14,5 @@ class MyScript_Generated : public refl::class_generation {
 	inline static void Unload(::refl::store::storage* storage) {
 		storage->discard("MyScript");
 	}
+
 };
