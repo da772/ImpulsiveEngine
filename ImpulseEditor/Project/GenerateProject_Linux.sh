@@ -5,4 +5,4 @@ cd ..
 python ReloadProject.py
 
 cd ..
-./vendor/premake/premake5_linux gmake2 --os=linux
+./vendor/premake/premake5_linux gmake2 --os=linux --target-name=MyProject --build-engine
