@@ -183,7 +183,8 @@ project (targetName)
 		if _OPTIONS["hot-reload"] then
 		postbuildcommands
 		{
-			"copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\ImpulseEngine.dll\" \"$(TARGETDIR)ImpulseEngine.dll\""
+			"copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.dll\" \"$(TARGETDIR)ImpulseEngine.dll\"",
+			"copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.pdb\" \"$(TARGETDIR)ImpulseEngine.pdb\""
 		}
 		end
 

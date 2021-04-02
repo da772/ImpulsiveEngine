@@ -55,7 +55,7 @@ namespace GEngine {
 					uint32_t pos = relPath.find(ex);
 					relPath.replace(relPath.begin() + (int)pos, relPath.begin() + (int)pos + ex.size() + 1, "");
 				}
-				Ref<FileData> fd = FileDataFromPath(relPath, true, false);
+				Ref<FileData> fd = FileDataFromPath(relPath, false, false);
 				if (!srcRelative) {
 					uint32_t pos = relPath.find(ex);
 					relPath.replace(relPath.begin() + (int)pos, relPath.begin() + (int)pos + ex.size() + 1, "");
@@ -137,7 +137,7 @@ namespace GEngine {
 		Ref<FileData> fd;
 		// Get pak file from disk
 
-		fd = FileDataFromPath(path.c_str());
+		fd = FileDataFromPath(path.c_str(), true, true);
 #ifndef GE_PLATFORM_ANDROID
 		path = FilePath(path);
 #endif
@@ -244,6 +244,7 @@ namespace GEngine {
 		free(name);
 
 		in.close();
+
 		return fd;
 	}
 
@@ -265,17 +266,15 @@ namespace GEngine {
 	{
 		Ref<FileData> fileData;
 
-		if (!fromPak) {
+		if (fromPak) {
 			fileData = FileSystem::LoadFileFromPak(path);
 
 			if (fileData != nullptr) {
 				GE_CORE_INFO("FILE LOADED FROM PAK: {0}", path);
 				return fileData;
 			}
-			else {
-				GE_CORE_WARN("FILE NOT LOADED FROM PAK: {0}", path);
-			}
 		}
+		
 
 		if (relative)
 			path = FilePath(path);
@@ -293,7 +292,8 @@ namespace GEngine {
 		if (!file.read(dat, size))
 		{
 			free(dat);
-			GE_CORE_ASSERT(false, "FILE COULD NOT BE READ: "+ path);
+			GE_CORE_ERROR("FILE COULD NOT BE READ: {0}", path);
+			return nullptr;
 		}
 		else {
 			fileData = Ref<FileData>(new FileData(size + 1, (unsigned char*)dat));

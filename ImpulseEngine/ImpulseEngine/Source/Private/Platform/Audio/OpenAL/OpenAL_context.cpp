@@ -332,7 +332,7 @@ namespace GEngine {
 		audioData->fromPak = fromPak;
 		audioData->relative = relative;
 
-		audioData->file = FileSystem::FileDataFromPath(fileName, !audioData->fromPak, audioData->relative);
+		audioData->file = FileSystem::FileDataFromPath(fileName);
 		audioData->sizeConsumed = 0;
 		audioData->size = audioData->file->GetDataSize();
 

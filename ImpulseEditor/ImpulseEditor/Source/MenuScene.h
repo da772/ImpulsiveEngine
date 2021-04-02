@@ -115,6 +115,12 @@ public:
 
 	}
 
+
+	inline void OnImGuiRender() override
+	{
+		
+	}
+
 private:
 	GEngine::Entity* buttonsEntity = nullptr;
 	GEngine::UIComponent* textComponent = nullptr;

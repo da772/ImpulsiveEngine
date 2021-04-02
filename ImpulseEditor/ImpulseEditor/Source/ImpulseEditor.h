@@ -35,7 +35,7 @@ public:
 	ImpulseEditor();
 
 	ExampleLayer* m_ExampleLayer;
-	GEngine::Layer* m_DebugLayer;
+	GEngine::Layer* m_ProjectSelectLayer;
 
 	virtual void OnCleanDirtyApi() override;
 

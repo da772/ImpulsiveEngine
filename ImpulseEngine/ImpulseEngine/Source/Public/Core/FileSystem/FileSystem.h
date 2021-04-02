@@ -52,7 +52,7 @@ namespace GEngine {
 		static std::string GetExecutableDir();
 		static std::string GetParentExecuteableDir(int levelsUp);
 
-		static Ref<FileData> FileDataFromPath(std::string path, bool fromPak = false, bool relative = true);
+		static Ref<FileData> FileDataFromPath(std::string path, bool fromPak = true, bool relative = false);
 		static void AddToMemoryPak(const std::string& name, Ref<FileData> data);
 		static bool FileInMemory(const std::string& name);
 

@@ -3,11 +3,14 @@
 #include "SplashScreenScene.h"
 #include "MapEditor.hpp"
 
+#include "ProjectSelectLayer.h"
+
 
 #include "MainGameScene.h"
 #include "MenuScene.h"
 
 #include "Lighting/Lighting.hpp"
+
 
 #include "Reflection.map.generated.h"
 
@@ -17,7 +20,6 @@ ExampleLayer::ExampleLayer()
 
 : Layer("ExampleLayer"), app(GEngine::Application::GetApp())
 {
-
 
 
 
@@ -36,9 +38,10 @@ void ExampleLayer::OnImGuiRender()
 
 void ExampleLayer::OnAttach()
 {
+	/*
 #ifdef GE_HOT_RELOAD
 	ScriptApi::SetBuild_Native(FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Scripts/CPP/", "Scripts_CPP");
-	ScriptApi::SetMake_Native(FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "Project/", "GenerateProject_Scripting");
+	ScriptApi::SetMake_Native(FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "Build/", "GenerateProject_Scripting");
 	ScriptApi::OutputDir_Native(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Scripts/CPP/Generated/");
 	ScriptApi::SetRelativePath_Native("../Scripts/");
 	ScriptApi::Load(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Scripts/CPP/Scripts/", ".h");
@@ -49,6 +52,7 @@ void ExampleLayer::OnAttach()
 	//GEngine::SceneManager::AddScene<MainGameScene>("mainGame");
 	GEngine::SceneManager::AddScene<MenuScene>("menuScene");
 	GEngine::SceneManager::SetCurrentScene("menuScene");
+	*/
 }
 
 void ExampleLayer::OnDetach()
@@ -86,25 +90,23 @@ ImpulseEditor::ImpulseEditor()
 	this->m_width = 540;
 	this->m_height = 960;
 	this->title = GE_APP_NAME;
-	s_debugTools = false;
+
 #endif
 	
 #if defined(GE_EDITOR)
-	if (s_debugTools) {
-		this->m_width = 1280;
-		this->m_height = 720;
-		this->m_viewPortWidth = 1080;
-		this->m_viewPortHeight = 1920;
-	}
+	s_debugTools = true;
+	this->m_width = 960;
+	this->m_height = 540;
 
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET)+"ImpulseEditor/Content",
-		GEngine::FileSystem::FilePath("Data/Content.pak"), false);
-#endif
-	GEngine::FileSystem::LoadPak("Data/Content.pak");
+		GEngine::FileSystem::FilePath("Data/EngineContent.pak"), false);
+
+	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
 	GEngine::Ref<GEngine::FileData> manifest = GEngine::FileSystem::LoadFileFromPak("Content/Editor/Manifest.cxml");
-#ifdef GE_EDITOR
-	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/Content.pak"), 
-		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/Content.pak", false);
+
+
+	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/EngineContent.pak"), 
+		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/EngineContent.pak", false);
 #endif
 	GE_LOG_INFO("Cores: {0}, Freq: {1}", DeviceInfo::GetCpuCount(), DeviceInfo::GetCpuFreq());
 	SetRenderScale(1.f);
@@ -149,24 +151,24 @@ ImpulseEditor::ImpulseEditor()
 #endif
 	GEngine::AdManager::LoadRewardAd([]() {GE_LOG_DEBUG("AD LOADED"); });
 #endif
-#ifdef GE_CONSOLE_APP
+#ifdef GE_EDITOR
 	if (s_debugTools) {
-		m_DebugLayer = new DebugLayer();
-		PushLayer(m_DebugLayer);
+		m_ProjectSelectLayer = new ProjectSelectLayer("ProjectSelect");
+		PushLayer(m_ProjectSelectLayer);
 	}
 #endif
-	m_ExampleLayer = new ExampleLayer();
-	PushLayer(m_ExampleLayer);
+	//m_ExampleLayer = new ExampleLayer();
+	//PushLayer(m_ExampleLayer);
 
-	Lighting::Initialize();
+	//Lighting::Initialize();
 }
 
 void ImpulseEditor::OnCleanDirtyApi()
 {
 	m_ExampleLayer->OnDetach();
-	m_DebugLayer->OnDetach();
+	m_ProjectSelectLayer->OnDetach();
 	m_ExampleLayer->OnAttach();
-	m_DebugLayer->OnAttach();
+	m_ProjectSelectLayer->OnAttach();
 }
 
 void ImpulseEditor::OnUpdate(GEngine::Timestep timeStep)

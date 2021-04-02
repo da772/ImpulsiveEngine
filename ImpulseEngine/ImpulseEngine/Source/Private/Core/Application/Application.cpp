@@ -463,7 +463,6 @@ namespace GEngine {
     
     void Application::Draw() {
         if (!m_loaded) return;
-        if (!SceneManager::GetCurrentScene()) return;
         Renderer::BeginScene(m_Camera);
         Renderer::Render();
         if (b_EnableImGui) m_ImGuiLayer->Begin();
@@ -471,7 +470,7 @@ namespace GEngine {
                 layer->OnDraw();
                 if (b_EnableImGui) layer->OnImGuiRender();
 		}
-        if (b_EnableImGui) SceneManager::ImGuiRender();
+        if (SceneManager::GetCurrentScene() && b_EnableImGui) SceneManager::ImGuiRender();
         if (b_EnableImGui) m_ImGuiLayer->End();
         Renderer::EndScene();
     }

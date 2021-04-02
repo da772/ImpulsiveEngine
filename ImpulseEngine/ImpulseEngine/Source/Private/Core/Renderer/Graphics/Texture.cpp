@@ -58,11 +58,16 @@ namespace GEngine {
 				Texture2D::s_TexturePool.erase(path);
 		}
 
+		Ref<FileData> _data = GEngine::FileSystem::FileDataFromPath(path);
+		if (_data == nullptr) return nullptr;
+
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
-		case GraphicsApi::FGraphicsApi::OPENGL:
+		case GraphicsApi::FGraphicsApi::OPENGL: {
+			
 			t = Ref<Texture2D>(new OpenGL_Texture2D(path, flags));
 			break;
+		}
 #endif
 
 
