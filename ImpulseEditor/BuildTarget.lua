@@ -219,19 +219,29 @@ project (targetName)
 			--	"cp -rf \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor/Data\\"""
 			}
 
+
 			links 
 			{
+				"Enet",
+				"miniupnpc",
+				"box2d",
 				"dl",
 				"pthread",
-				"stdc++fs"
+				"stdc++fs",
+				"zlib"
 			}
 			if _OPTIONS['server'] then
 			else
 			links 
 			{
+				"ImGui",
+				"freetype",
 				"GL",
+				"Glad",
+				"GLFW",
 				"X11",
-				"openal"
+				"openal",
+				"Vorbis"
 			}
 			end
 
