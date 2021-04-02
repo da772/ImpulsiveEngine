@@ -82,13 +82,14 @@ void ExampleLayer::OnEvent(GEngine::Event& event)
 ImpulseEditor::ImpulseEditor()
 {
     SetUIResolution(1080, 1920);
-#if defined(GE_EDITOR)
+#ifdef GE_CONSOLE_APP
 	this->m_width = 540;
 	this->m_height = 960;
-	this->title = "ImpulseEditor";
+	this->title = GE_APP_NAME;
 	s_debugTools = false;
+#endif
 	
-	
+#if defined(GE_EDITOR)
 	if (s_debugTools) {
 		this->m_width = 1280;
 		this->m_height = 720;

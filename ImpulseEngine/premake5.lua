@@ -14,6 +14,11 @@ newoption {
 	description = "build as standalone server"
 }
 
+newoption {
+	trigger = "build-engine",
+	description = "build engine"
+}
+
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "ImpulseEngine/vendor/GLFW/include"
@@ -37,6 +42,7 @@ IncludeDir["zlib"] = "ImpulseEngine/vendor/zlib/include"
 IncludeDir["vector"] = "ImpulseEngine/Modules/IE_VECTOR/include"
 IncludeDir["reflection"] = "ImpulseEngine/Modules/Reflection/include"
 
+if _OPTIONS['build-engine'] then
 
 group "Dependencies"
 	if _OPTIONS['server'] then
@@ -74,9 +80,13 @@ project "ImpulseEngine"
 		"GE_DYNAMIC_LINK",
 		"GE_BUILD_DLL"
 	}
+	targetdir ("%{prj.name}/Bin/" .. outputdir .. "/%{prj.name}/shared")
+	objdir ("%{prj.name}/Bin-Obj/" .. outputdir .. "/%{prj.name}/shared")
 	else
 	staticruntime "on"
 	kind "StaticLib"
+	targetdir ("%{prj.name}/Bin/" .. outputdir .. "/%{prj.name}/static")
+	objdir ("%{prj.name}/Bin-Obj/" .. outputdir .. "/%{prj.name}/static")
 	end
 	if _OPTIONS['server'] then
 	defines 
@@ -84,10 +94,6 @@ project "ImpulseEngine"
 		"GE_SERVER_APP"	
 	}
 	end
-
-
-	targetdir ("%{prj.name}/Bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{prj.name}/Bin-Obj/" .. outputdir .. "/%{prj.name}")
 
 
 	files 
@@ -498,4 +504,4 @@ project "ImpulseEngine"
 			runtime "Release"
 			optimize "On"
 
-	
+end

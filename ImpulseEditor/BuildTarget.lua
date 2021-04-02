@@ -1,9 +1,20 @@
-workspace "ImpulseEditor"
+
+newoption {
+	trigger = "target-name",
+	value = "ImpulseEditor",
+	description = "set target name"
+}
+if not _OPTIONS["target-name"] then
+	_OPTIONS["target-name"] = "ImpulseEditor"
+end
+targetName = _OPTIONS["target-name"]
+
+workspace(targetName)
 	architecture "x64"
 
 	android_version = 21
 
-	startproject "ImpulseEditor"
+	startproject(targetName)
 
 	configurations
 	{
@@ -41,11 +52,14 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 include "ImpulseEngine"
 include "ImpulseEditor/ImpulseEditor/Scripts/CPP"
 
-project "ImpulseEditor"
+
+project (targetName)
 	location "ImpulseEditor"
 	kind "ConsoleApp"
 	language "C++"
 		cppdialect "C++17"
+	targetdir ("%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{prj.location}/Bin-Obj/" .. outputdir .. "/%{prj.name}")
 	if _OPTIONS['hot-reload'] then
 	staticruntime "off"
 	defines 
@@ -55,35 +69,28 @@ project "ImpulseEditor"
 	else
 	staticruntime "on"
 	end
-	if _OPTIONS['hot-reload'] then
-		targetdir ("%{prj.location}/Editor/")
-		objdir ("%{prj.location}/Editor-Obj")
-	else
-		targetdir ("%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}")
-		objdir ("%{prj.location}/Bin-Obj/" .. outputdir .. "/%{prj.name}")
-	end
 
 	defines 
 	{
-		"GE_PROJECT_ImpulseEditor"
+		"GE_APP_NAME=\""..targetName.."\"",
 	}
 	
 	files 
 	{
-		"%{prj.location}/%{prj.name}/Source/**.h",
-		"%{prj.location}/%{prj.name}/Source/**.c",
-		"%{prj.location}/%{prj.name}/Source/**.cpp",
-		"%{prj.location}/%{prj.name}/Source/**.hpp"
+		"%{prj.location}/ImpulseEditor/Source/**.h",
+		"%{prj.location}/ImpulseEditor/Source/**.c",
+		"%{prj.location}/ImpulseEditor/Source/**.cpp",
+		"%{prj.location}/ImpulseEditor/Source/**.hpp"
 	}
 
 	removefiles
 	{
-		"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.cpp",
-		"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.c",
-		"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.h",
-		"%{prj.location}/%{prj.name}/Source/Engine/Android/**.cpp",
-		"%{prj.location}/%{prj.name}/Source/Engine/Android/**.c",
-		"%{prj.location}/%{prj.name}/Source/Engine/Android/**.h"
+		"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.cpp",
+		"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.c",
+		"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.h",
+		"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.cpp",
+		"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.c",
+		"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.h"
 	}
 
 	includedirs 
@@ -96,16 +103,29 @@ project "ImpulseEditor"
 		"ImpulseEngine/%{IncludeDir.cr}",
 		"ImpulseEngine/%{IncludeDir.vector}",
 		"ImpulseEngine/%{IncludeDir.reflection}",
-		"%{prj.location}/%{prj.name}/Source/",
-		"%{prj.location}/%{prj.name}/include/",
-		"%{prj.location}/%{prj.name}/Scripts/CPP/Generated"
+		"%{prj.location}/ImpulseEditor/Source/",
+		"%{prj.location}/ImpulseEditor/include/",
+		"%{prj.location}/ImpulseEditor/Scripts/CPP/Generated"
 
 	}
 
 	libdirs
 	{
-		"ImpulseEngine/%{IncludeDir.Vulkan}/lib"
+		"ImpulseEngine/%{IncludeDir.Vulkan}/lib",
+		
 	}
+	if _OPTIONS["hot-reload"] then
+		libdirs
+		{
+			"ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"
+		}
+	else
+		libdirs
+		{
+			"ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"
+		}
+	end
+
 
 	links
 	{
@@ -116,7 +136,7 @@ project "ImpulseEditor"
 	defines
 	{
 		"GE_DYNAMIC_LINK",
-		"GE_PRJ_OFFSET=1",
+		"GE_PRJ_OFFSET=3",
 		"GE_EDITOR"
 	}
 	else
@@ -148,7 +168,7 @@ project "ImpulseEditor"
 
 		excludes 
 		{ 
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**" 
 		}
 
 		defines
@@ -158,7 +178,7 @@ project "ImpulseEditor"
 		}
 		postbuildcommands
 		{
-			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"$(TargetDir)Data\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"$(TargetDir)Data\""
 		}
 		if _OPTIONS["hot-reload"] then
 		postbuildcommands
@@ -189,40 +209,35 @@ project "ImpulseEditor"
 			linkgroups 'on'
 			systemversion "latest"
 			kind "ConsoleApp"
-	
+			if _OPTIONS["hot-reload"] then
+				linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+			else
+				linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+			end
 			postbuildcommands
 			{
-			--	"cp -rf \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}/Data\\"""
+			--	"cp -rf \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor/Data\\"""
 			}
 
 			links 
 			{
-				"Enet",
-				"miniupnpc",
-				"box2d",
 				"dl",
 				"pthread",
-				"stdc++fs",
-				"zlib"
+				"stdc++fs"
 			}
 			if _OPTIONS['server'] then
 			else
 			links 
 			{
-				"ImGui",
-				"freetype",
 				"GL",
-				"Glad",
-				"GLFW",
 				"X11",
-				"openal",
-				"Vorbis"
+				"openal"
 			}
 			end
-	
+
 			excludes 
 			{ 
-				"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
+				"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**" 
 			}
 	
 			defines
@@ -262,8 +277,12 @@ project "ImpulseEditor"
 	filter "system:ios"
 		architecture "ARM"
 		kind "WindowedApp"
-		linkoptions (linkoptions ("-F ../ImpulseEngine/%{IncludeDir.firebase}/lib/ios" .. " -ObjC"))
-		
+		linkoptions ("-F ../ImpulseEngine/%{IncludeDir.firebase}/lib/ios" .. " -ObjC")
+		if _OPTIONS["hot-reload"] then
+			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+		else
+			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+		end
 		defines
 		{
 			"GE_PLATFORM_IOS"
@@ -281,20 +300,20 @@ project "ImpulseEditor"
 
 		files 
 		{
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.m",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.mm",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.c",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.h",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.storyboard",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**.plist",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/*.json",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/iOSImages.xcassets",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.m",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.mm",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.c",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.h",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.storyboard",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.plist",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/*.json",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/iOSImages.xcassets",
 		}
 			
 		includedirs 
 		{
-			"%{prj.location}/%{prj.name}/Source",
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS",
+			"%{prj.location}/ImpulseEditor/Source",
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS",
 	
 			"ImpulseEngine/%{IncludeDir.firebase}/include"
 		}
@@ -310,11 +329,12 @@ project "ImpulseEditor"
 			"firebase_analytics.framework",
 			"firebase_admob.framework",
 		}
+		
 
 		postbuildcommands
 		{
-			"cp -rf ${PROJECT_DIR}/%{prj.name}/Data ${TARGET_BUILD_DIR}/%{prj.name}.app/",
-			"cp -rf ${PROJECT_DIR}/%{prj.name}/Source/iOS/GoogleService-Info.plist ${TARGET_BUILD_DIR}/%{prj.name}.app/"
+			"cp -rf ${PROJECT_DIR}/ImpulseEditor/Data ${TARGET_BUILD_DIR}/%{prj.name}.app/",
+			"cp -rf ${PROJECT_DIR}/ImpulseEditor/Source/iOS/GoogleService-Info.plist ${TARGET_BUILD_DIR}/%{prj.name}.app/"
 
 		}
 
@@ -355,6 +375,12 @@ project "ImpulseEditor"
 		rtti ("On")
 		exceptionhandling ("On")
 
+		if _OPTIONS["hot-reload"] then
+			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+		else
+			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+		end
+
 		androidapilevel(android_version)
 		defines
 		{
@@ -374,14 +400,14 @@ project "ImpulseEditor"
 
 		files 
 		{
-			"%{prj.location}/%{prj.name}/Source/Engine/Android/**.h",
-			"%{prj.location}/%{prj.name}/Source/Engine/Android/**.c",
-			"%{prj.location}/%{prj.name}/Source/Engine/Android/**.cpp",
+			"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.h",
+			"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.c",
+			"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.cpp",
 		}
 
 		includedirs 
 		{
-			"%{prj.location}/%{prj.name}/Source",
+			"%{prj.location}/ImpulseEditor/Source",
 		}
 		androidLibDir = ""
 
@@ -410,10 +436,10 @@ project "ImpulseEditor"
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 		filter "platforms:x64"
 			architecture "x64"
@@ -425,10 +451,10 @@ project "ImpulseEditor"
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}x64\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}x64\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"copy /y \"%{wks.location}x64\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}x64\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
 			"RMDIR /Q/S \"%{wks.location}x64\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 			
 		filter "platforms:ARM"
@@ -441,10 +467,10 @@ project "ImpulseEditor"
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}ARM\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}ARM\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"copy /y \"%{wks.location}ARM\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}ARM\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
 			"RMDIR /Q/S \"%{wks.location}ARM\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 
 		filter "platforms:ARM64"
@@ -457,17 +483,21 @@ project "ImpulseEditor"
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}ARM64\\%{cfg.buildcfg}\\lib%{prj.name}.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}ARM64\" \"%{prj.location}/Bin/" .. outputdir .. "/%{prj.name}\"",
+			"copy /y \"%{wks.location}ARM64\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}ARM64\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
 			"RMDIR /Q/S \"%{wks.location}ARM64\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)%{prj.name}/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 
 	filter "system:macosx"
 		systemversion "latest"
 		kind "WindowedApp"
 		buildoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
-		linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
+		if _OPTIONS["hot-reload"] then
+			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+		else
+			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+		end
 		defines
 		{
 			"GE_PLATFORM_MACOSX"
@@ -475,7 +505,7 @@ project "ImpulseEditor"
 
 		excludes 
 		{ 
-			"%{prj.location}/%{prj.name}/Source/Engine/iOS/**" 
+			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**" 
 		}
 
 		includedirs
@@ -501,8 +531,8 @@ project "ImpulseEditor"
 
 		postbuildcommands
 		{
-			"cp -rf ${PROJECT_DIR}/%{prj.name}/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
-			--"cp -rf ${PROJECT_DIR}/%{prj.name}/\"Res\" ${TARGET_BUILD_DIR}",
+			"cp -rf ${PROJECT_DIR}/ImpulseEditor/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
+			--"cp -rf ${PROJECT_DIR}/ImpulseEditor/\"Res\" ${TARGET_BUILD_DIR}",
 		}
 
 		

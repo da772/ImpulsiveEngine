@@ -4,4 +4,4 @@ cd "$here"
 cd ..
 python ReloadProject.py
 cd ..
-./vendor/premake/premake5_mac xcode4
+./vendor/premake/premake5_mac xcode4 --target-name=MyProject --build-engine
