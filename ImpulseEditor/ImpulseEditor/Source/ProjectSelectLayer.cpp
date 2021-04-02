@@ -23,7 +23,7 @@ void ProjectSelectLayer::OnAttach()
 	searchIcon = GEngine::Texture2D::Create("Content/Textures/searchIcon64x64.png", 192);
 
 	for (int i = 0; i < 20; i++) {
-		GEngine::Ref<GEngine::Texture2D> tex = GEngine::Texture2D::Create("D:/Documents/Dev/ImpulsiveEngine/ImpulsiveEngine/ImpulseEditor/ImpulseEditor/Content/Textures/ImpulsiveGamesLogo.png", 192);
+		GEngine::Ref<GEngine::Texture2D> tex = GEngine::Texture2D::Create("Content/Textures/ImpulsiveGamesLogo.png", 192);
 		if (!tex) {
 			tex = GEngine::Texture2D::Create("Content/Textures/Checkerboard.png", 192);
 		}
