@@ -8,6 +8,54 @@ struct ProjectData {
 	std::string path;
 	std::string time;
 	uint64_t lastModified;
+
+	bool isValid() {
+		return name.size() > 0 && path.size() > 0;
+	}
+
+	friend std::ostream& operator << (std::ostream& out, const ProjectData& c) {
+		char name[64] = { 0 };
+		memcpy(name, c.name.data(), c.name.size());
+		out.write(name, 64*sizeof(char));
+		char path[1024] = { 0 };
+		memcpy(path, c.path.data(), c.path.size());
+		out.write(path, sizeof(char)*1024);
+		char thumbnailPath[1024] = { 0 };
+		if (c.thumbNail)
+			memcpy(thumbnailPath, c.thumbNail->GetName().data(), c.thumbNail->GetName().size());
+		out.write(thumbnailPath, 1024*sizeof(char));
+		char time[256] = { 0 };
+		memcpy(time, c.time.data(), c.time.size());
+		out.write(time, sizeof(time));
+		out.write((char*)&c.lastModified, sizeof(uint64_t));
+		return out;
+	};
+
+	friend std::istream& operator>>(std::istream& in, ProjectData& c) {
+		char name[64] = { 0 };
+		in.read(name, 64*sizeof(char));
+		char path[1024] = { 0 };
+		in.read(path, 1024*sizeof(char));
+		char texture[1024] = { 0 };
+		in.read(texture, 1024*sizeof(char));
+		char time[256] = { 0 };
+		in.read(time, 256*sizeof(char));
+		uint64_t lastModified = 0;
+		in.read((char*)&lastModified, sizeof(uint64_t));
+		if (strlen(texture) > 0)
+			c.thumbNail = GEngine::Texture2D::Create(texture);
+		c.name = name;
+		c.path = path;
+		c.time = time;
+		c.lastModified = lastModified;
+		return in;
+	}
+
+	inline bool operator==(const ProjectData& other) {
+		return other.path == this->path;
+	}
+
+
 };
 
 class ProjectSelectLayer : public GEngine::Layer
@@ -47,6 +95,8 @@ private:
 
 	void Search();
 	void Sort(int i );
+	void SaveProjects();
+	void LoadProjects();
 	void ImportProject(const std::string& path);
 	void CreateNewProjectDialog();
 	void CreateDeleteConfirmationDialog();

@@ -190,6 +190,7 @@ project "ImpulseEngine"
 
 		files
 		{
+			"%{prj.name}/Source/**.m"
 		}
 
 		defines
@@ -438,7 +439,8 @@ project "ImpulseEngine"
 		if _OPTIONS['server'] then
 		links 
 		{
-			"Ws2_32.lib"
+			"Ws2_32.lib",
+			"shlwapi.lib"
 		}
 		else
 		links 
@@ -448,7 +450,8 @@ project "ImpulseEngine"
 			"Glad",
 			"GLFW",
 			"Ws2_32.lib",
-			"NativeFileDialog"
+			"NativeFileDialog",
+			"shlwapi.lib"
 		}
 		end
 

@@ -20,7 +20,7 @@ namespace GEngine {
 
 	void CollisionDetection::CheckCollision()
 	{
-		unordered_set<Collider*> cList;
+		std::unordered_set<Collider*> cList;
 
 		for (Collider* c : s_GameColliders_dynamic) {
 			{

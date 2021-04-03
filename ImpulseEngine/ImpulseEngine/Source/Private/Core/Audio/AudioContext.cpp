@@ -16,10 +16,10 @@ namespace GEngine {
 	GEngine::Ref<GEngine::AudioContext> AudioContext::Create()
 	{
 #ifdef GE_AUDIO_OPENAL
-		return make_shared<OpenAL_Context>();
+		return std::make_shared<OpenAL_Context>();
 #endif
 #ifdef GE_AUDIO_NONE
-		return make_shared<Server_AudioContext>();
+		return std::make_shared<Server_AudioContext>();
 #endif
 
 		return nullptr;

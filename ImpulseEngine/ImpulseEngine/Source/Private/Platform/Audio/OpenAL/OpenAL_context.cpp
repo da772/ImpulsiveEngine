@@ -93,7 +93,7 @@ namespace GEngine {
 	void OpenAL_Context::UpdateStream(Ref<AudioSource> audioSource) {
 		#if defined(GE_AUDIO_OPENAL)
 		AudioStreamingData& audioData = audioSource->GetData();
-		OggVorbis_File* oggFile = &dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
+		OggVorbis_File* oggFile = &std::dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
 
 		ALint buffersProcessed = 0;
 		alCall(alGetSourcei, audioData.source, AL_BUFFERS_PROCESSED, &buffersProcessed);
@@ -220,7 +220,7 @@ namespace GEngine {
 		alSourcei(s->GetData().source, AL_BUFFER, AL_NONE);
 		alDeleteSources(1, &s->GetData().source);
 		alDeleteBuffers(AUDIO_BUFFERS_NUM, &s->GetData().buffers[0]);
-		ov_clear(&dynamic_pointer_cast<OpenAL_source>(s)->oggFile);
+		ov_clear(&std::dynamic_pointer_cast<OpenAL_source>(s)->oggFile);
 		#endif
 	}
 
@@ -266,7 +266,7 @@ namespace GEngine {
 	void OpenAL_Context::ResetBuffers(Ref<AudioSource> audioSource, uint32_t buffer)
 	{
 		#if defined(GE_AUDIO_OPENAL)
-		OggVorbis_File& oggFile = dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
+		OggVorbis_File& oggFile = std::dynamic_pointer_cast<OpenAL_source>(audioSource)->oggFile;
 		AudioStreamingData* audioData = &audioSource->GetData();
 
 		ALint buffersProcessed = 0;
@@ -325,7 +325,7 @@ namespace GEngine {
 	Ref<AudioSource> OpenAL_Context::LoadSource(const char* fileName, bool fromPak /*= true*/, bool relative /*= true*/)
 	{
 		
-		Ref<OpenAL_source> s = make_shared<OpenAL_source>();
+		Ref<OpenAL_source> s = std::make_shared<OpenAL_source>();
 		#if defined(GE_AUDIO_OPENAL)
 		AudioStreamingData* audioData = &s->GetData();
 		audioData->fileName = fileName;

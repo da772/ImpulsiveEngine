@@ -10,7 +10,7 @@ namespace GEngine {
 
 	const uint16_t DeviceInfo::GetCpuCount()
 	{
-		return (uint16_t)thread::hardware_concurrency();
+		return (uint16_t)std::thread::hardware_concurrency();
 	}
 
 

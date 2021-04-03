@@ -19,7 +19,7 @@ namespace GEngine {
 		if (m_context == nullptr) {
 
 #ifdef GE_PHYSICS_BOX2D
-			m_context = make_shared<PhysicsContext_box2d>();
+			m_context = std::make_shared<PhysicsContext_box2d>();
 #endif
 		}
 	}

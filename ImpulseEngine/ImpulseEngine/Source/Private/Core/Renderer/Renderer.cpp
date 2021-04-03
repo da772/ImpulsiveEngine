@@ -218,7 +218,7 @@ namespace GEngine {
 		Ref<Shader> _shader = shader ? shader : s_ShapeData->shape_shader;
 
 		if (debug) {
-		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([_shader, vertexArray, transform]() {
+		queueId["Debug2D"].p->Add(std::make_shared<DebugRenderable>([_shader, vertexArray, transform]() {
 			_shader->Bind();
 			_shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
 			_shader->UploadUniformMat4("u_Transform", transform);
@@ -241,7 +241,7 @@ namespace GEngine {
 	
 		if (debug) {
 
-			queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([shader, vertexArray, transform]() {
+			queueId["Debug2D"].p->Add(std::make_shared<DebugRenderable>([shader, vertexArray, transform]() {
 				shader->Bind();
 				shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
 				shader->UploadUniformMat4("u_Transform", transform);
@@ -306,7 +306,7 @@ namespace GEngine {
 		s_ShapeData->line_vBuffer->SetVertices(f, sizeof(f));
 		glm::mat4 transform = glm::translate(glm::mat4(1.f), { 0,0,0 });
 
-		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([transform]() {
+		queueId["Debug2D"].p->Add(std::make_shared<DebugRenderable>([transform]() {
 
 			GEngine::Renderer::SubmitArraysLines(s_ShapeData->shape_shader, s_ShapeData->line_vArray, transform);
 
@@ -317,7 +317,7 @@ namespace GEngine {
 	void Renderer::DrawLines(const std::vector<float>& lines, const Vector4f& color)
 	{
 
-		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([lines, color]() {
+		queueId["Debug2D"].p->Add(std::make_shared<DebugRenderable>([lines, color]() {
 
 			Renderer::s_ShapeData->shape_shader->Bind();
 			Renderer::s_ShapeData->shape_shader->UploadUniformInt("u_Texture", 0);
@@ -341,7 +341,7 @@ namespace GEngine {
 
 	void Renderer::DrawDebugLines(const std::vector<float>& lines, const Vector4f& color)
 	{
-		queueId["Debug2D"].p->Add(make_shared<DebugRenderable>([lines, color]() {
+		queueId["Debug2D"].p->Add(std::make_shared<DebugRenderable>([lines, color]() {
 
 			Renderer::s_ShapeData->shape_shader->Bind();
 			Renderer::s_ShapeData->shape_shader->UploadUniformInt("u_Texture", 0);

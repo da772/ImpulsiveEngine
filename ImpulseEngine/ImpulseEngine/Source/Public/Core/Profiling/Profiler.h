@@ -14,7 +14,6 @@
 //#include "Public/Core/FileSystem/FileSystem.h"
 
 
-using namespace std;
 
 namespace GEngine {
 	using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;

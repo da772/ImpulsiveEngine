@@ -12,10 +12,17 @@
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <commdlg.h>
+#define _HAS_STD_BYTE 0
+#include <shlwapi.h>
+#include <shlobj.h>
 #endif
 
 #ifdef GE_CONSOLE_APP
 #include <nfd.h>
+#endif
+
+#ifdef GE_PLATFORM_MACOSX
+#include "Public/Core/Util/MacUtil.h"
 #endif
 
 #ifdef GE_PLATFORM_ANDROID
@@ -88,7 +95,7 @@ namespace GEngine {
 		}
 		
 		// Prepare for compression
-		_out.seekg(0, ios::end);
+		_out.seekg(0, std::ios::end);
 		int streamSize = _out.str().size();
 		char* buff = (char*)malloc(streamSize);
 		std::string buff1 = _out.str();
@@ -211,7 +218,7 @@ namespace GEngine {
 			dat = (char*)malloc(s);
 			in.read((char*)dat, s);
 
-			Ref<FileData> filedata = make_shared<FileData>(s, (unsigned char*)dat);
+			Ref<FileData> filedata = std::make_shared<FileData>(s, (unsigned char*)dat);
 
 			s_fileMap[name] = filedata;
 			sz += s;
@@ -242,7 +249,7 @@ namespace GEngine {
 			dat = (char*)realloc(dat, s);
 			in.read((char*)dat, s);
 			if (name == file) {
-				fd = make_shared<FileData>(s, (unsigned char*)dat);
+				fd = std::make_shared<FileData>(s, (unsigned char*)dat);
 				break;
 			}
 			
@@ -452,6 +459,27 @@ namespace GEngine {
 		}
 
 		return dirPath+"/";
+	}
+
+	std::string FileSystem::GetDefaultLocation()
+	{
+		std::string loc;
+#ifdef GE_PLATFORM_WINDOWS
+		TCHAR szPath[MAX_PATH];
+		if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, szPath)))
+		{
+			char sPath[MAX_PATH] = { 0 };
+			wcstombs(sPath, szPath, wcslen(szPath) + 1);
+			loc = sPath;
+		}
+#endif
+#ifdef GE_PLATFORM_LINUX
+		loc = "/etc/";
+#endif
+#ifdef GE_PLATFORM_MACOSX
+		loc = __MASCOSX_GET_APPLICATION_SUPPORT();
+#endif
+		return loc;
 	}
 
 	void FileSystem::OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& _startPath, bool isFolder)

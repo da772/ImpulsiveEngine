@@ -114,12 +114,12 @@ namespace GEngine {
 
 	Ref<StringInfo> OpenGL_Font::DrawString(const std::string& s, float maxWidth, int viewWidth, int viewHeight)
 	{
-		return AppendString(make_shared<StringInfo>(), s, maxWidth, viewWidth, viewHeight);
+		return AppendString(std::make_shared<StringInfo>(), s, maxWidth, viewWidth, viewHeight);
 	}
 
 	GEngine::Ref<GEngine::StringInfo> OpenGL_Font::DrawString_u32(uint32_t* s, int len, float maxWidth, int viewWidth, int viewHeight)
 	{
-		return AppendString_u32(make_shared<StringInfo>(), s, len, maxWidth, viewWidth, viewHeight);
+		return AppendString_u32(std::make_shared<StringInfo>(), s, len, maxWidth, viewWidth, viewHeight);
 	}
 
 	GEngine::Ref<GEngine::StringInfo> OpenGL_Font::AppendString_u32(Ref<StringInfo> info, uint32_t* text, int len, float maxWidth, int viewWidth, int viewHeight)

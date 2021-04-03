@@ -28,9 +28,9 @@ namespace GEngine {
 				Ref<PhysicsBody> c2 = (p2)->parent.lock();
 				if (c1 && c2) {
 					if (p1->onStartCollide)
-						p1->onStartCollide(make_shared<PhysicsCollision>( c2, p2->tag ));
+						p1->onStartCollide(std::make_shared<PhysicsCollision>( c2, p2->tag ));
 					if (p2->onStartCollide)
-						p2->onStartCollide(make_shared<PhysicsCollision>(c1, p1->tag));
+						p2->onStartCollide(std::make_shared<PhysicsCollision>(c1, p1->tag));
 				}
 			}
 			
@@ -44,9 +44,9 @@ namespace GEngine {
 				Ref<PhysicsBody> c2 = (p2)->parent.lock();
 				if (c1 && c2) {
 					if (p1->onEndCollide)
-						p1->onEndCollide(make_shared<PhysicsCollision>(c2, p2->tag));
+						p1->onEndCollide(std::make_shared<PhysicsCollision>(c2, p2->tag));
 					if (p2->onEndCollide)
-						p2->onEndCollide(make_shared<PhysicsCollision>(c1, p1->tag));
+						p2->onEndCollide(std::make_shared<PhysicsCollision>(c1, p1->tag));
 				}
 			}
 			
@@ -83,7 +83,7 @@ namespace GEngine {
 		def.userData = info.userData;
 		def.gravityScale = info.gravityScale * GE_PHYSICS_SCALAR;
 		void* bdy = (void*)m_world->CreateBody(&def);
-		Ref<PhysicsBody_box2d> b = make_shared<PhysicsBody_box2d>(bdy);
+		Ref<PhysicsBody_box2d> b = std::make_shared<PhysicsBody_box2d>(bdy);
 		b->SetSelf(b);
 		return b;
 	}
@@ -119,7 +119,7 @@ namespace GEngine {
 		}
 		float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
 		{
-			hitInfo = make_shared<RayCastInfo>();
+			hitInfo = std::make_shared<RayCastInfo>();
 			
 			Ref<PhysicsBody> _pbody = ((PhysicsParent*)(fixture->GetUserData()))->parent.lock();
 

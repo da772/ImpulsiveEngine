@@ -37,17 +37,17 @@ namespace GEngine {
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 		case GraphicsApi::FGraphicsApi::OPENGL:
-			s = make_unique<OpenGL_Shader>(name, vertexSrc, fragmentSrc, files);
+			s = std::make_unique<OpenGL_Shader>(name, vertexSrc, fragmentSrc, files);
 			break;
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
-			s = make_unique<Vulkan_Shader>(name, vertexSrc, fragmentSrc, files);
+			s = std::make_unique<Vulkan_Shader>(name, vertexSrc, fragmentSrc, files);
 			break;
 #endif
 #ifdef GE_GRAPHICS_API_NONE
 	case GraphicsApi::FGraphicsApi::NONE:
-			s = make_unique<Empty_Shader>(name, vertexSrc, fragmentSrc, files);
+			s = std::make_unique<Empty_Shader>(name, vertexSrc, fragmentSrc, files);
 			break;
 #endif
 
@@ -78,17 +78,17 @@ namespace GEngine {
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 		case GraphicsApi::FGraphicsApi::OPENGL:
-			s = make_unique<OpenGL_Shader>(filePath);
+			s = std::make_unique<OpenGL_Shader>(filePath);
 			break;
 #endif
 #ifdef GE_GRAPHICS_API_VULKAN
 		case GraphicsApi::FGraphicsApi::VULKAN:
-			s = make_unique<Vulkan_Shader>(filePath);
+			s = std::make_unique<Vulkan_Shader>(filePath);
 			break;
 #endif
 #ifdef GE_GRAPHICS_API_NONE
 	case GraphicsApi::FGraphicsApi::NONE:
-			s = make_unique<Empty_Shader>(filePath);
+			s = std::make_unique<Empty_Shader>(filePath);
 			break;
 #endif
 		default:

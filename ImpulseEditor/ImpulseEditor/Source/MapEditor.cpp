@@ -1352,7 +1352,7 @@ void MapEditor::SaveScene(const std::string& location ) {
 	else {
 		void* _scData = malloc(_scene.size() * sizeof(char));
 		memcpy(_scData, &_scene[0], _scene.size() * sizeof(char));
-		Ref<FileData> data = make_shared<FileData>(_scene.size() * sizeof(char), (unsigned char*)_scData);
+		Ref<FileData> data = std::make_shared<FileData>(_scene.size() * sizeof(char), (unsigned char*)_scData);
 		FileSystem::AddToMemoryPak(location, data);
 	}
 

@@ -5,7 +5,7 @@
 namespace GEngine {
 
     Server_AudioContext::Server_AudioContext() {
-        s_source = make_shared<Server_AudioSource>();
+        s_source = std::make_shared<Server_AudioSource>();
     }
 
 }

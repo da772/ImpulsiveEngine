@@ -51,6 +51,7 @@ namespace GEngine {
 		static std::string GetExecutablePath();
 		static std::string GetExecutableDir();
 		static std::string GetParentExecuteableDir(int levelsUp);
+		static std::string GetDefaultLocation();
 
 		static void OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& startPath = "", bool isFolder = false);
 

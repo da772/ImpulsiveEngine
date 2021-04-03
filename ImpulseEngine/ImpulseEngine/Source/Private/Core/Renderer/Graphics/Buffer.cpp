@@ -98,11 +98,11 @@ namespace GEngine {
 		switch (GraphicsContext::GetGraphicsApi()) {
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 		case GraphicsApi::FGraphicsApi::OPENGL:
-			return make_shared<OpenGL_FrameBuffer>(width, height, format, texName, renderScale);
+			return std::make_shared<OpenGL_FrameBuffer>(width, height, format, texName, renderScale);
 #endif
 #ifdef GE_GRAPHICS_API_NONE
 		case GraphicsApi::FGraphicsApi::NONE:
-			return make_shared<Empty_FrameBuffer>(width, height, format, texName, renderScale);
+			return std::make_shared<Empty_FrameBuffer>(width, height, format, texName, renderScale);
 #endif
 
 		default:

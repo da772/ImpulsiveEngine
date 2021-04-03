@@ -19,13 +19,13 @@ ParticleSystem2D::~ParticleSystem2D()
 void ParticleSystem2D::UnloadGraphics()
 {
 	m_pipeline->Remove(m_renderable);
-	m_lastRenderableTime = dynamic_pointer_cast<ParticleSystem2D_Renderable>(m_renderable)->GetLastRenderTime();
+	m_lastRenderableTime = std::dynamic_pointer_cast<ParticleSystem2D_Renderable>(m_renderable)->GetLastRenderTime();
 	m_renderable = nullptr;
 }
 
 void ParticleSystem2D::ReloadGraphics()
 {
-	m_renderable = make_shared<ParticleSystem2D_Renderable>(this, m_lastRenderableTime);
+	m_renderable = std::make_shared<ParticleSystem2D_Renderable>(this, m_lastRenderableTime);
 	m_pipeline->Add(m_renderable);
 }
 
@@ -35,7 +35,7 @@ void ParticleSystem2D::OnBegin()
 		m_texture = Texture2D::Create("batchBlank");
 	}
 	m_pipeline = Renderer::GetPipeline("2d");
-	m_renderable = make_shared<ParticleSystem2D_Renderable>(this);
+	m_renderable = std::make_shared<ParticleSystem2D_Renderable>(this);
 	m_pipeline->Add(m_renderable);
 }
 
@@ -51,10 +51,10 @@ ParticleSystem2D_Renderable::ParticleSystem2D_Renderable(ParticleSystem2D* syste
 	m_Time = Time::GetEpochTimeNS();
 	Quad q = Quad();
 	
-	m_vertexBuffer = shared_ptr<VertexBuffer>( VertexBuffer::Create(q.GetVertices(m_system->GetStartPosition(), 0, { m_system->GetStartScale(), 1 }, m_system->GetStartColor(), m_system->GetTexture()->GetRendererID(), { 1,1 }).data(), q.GetVerticesSize()*sizeof(uint32_t)));
+	m_vertexBuffer = std::shared_ptr<VertexBuffer>( VertexBuffer::Create(q.GetVertices(m_system->GetStartPosition(), 0, { m_system->GetStartScale(), 1 }, m_system->GetStartColor(), m_system->GetTexture()->GetRendererID(), { 1,1 }).data(), q.GetVerticesSize()*sizeof(uint32_t)));
 	m_vertexBuffer->SetLayout(q.GetBufferLayout());
 	std::vector<u32> indices = q.GetIndices(0);
-	m_indexBuffer = shared_ptr<IndexBuffer>( IndexBuffer::Create(indices.data(), q.GetIndicesSize()));
+	m_indexBuffer = std::shared_ptr<IndexBuffer>( IndexBuffer::Create(indices.data(), q.GetIndicesSize()));
 	m_vertexArray = Ref<VertexArray>(VertexArray::Create());
 	m_vertexArray->AddVertexBuffer(m_vertexBuffer);
 	m_vertexArray->SetIndexBuffer(m_indexBuffer);

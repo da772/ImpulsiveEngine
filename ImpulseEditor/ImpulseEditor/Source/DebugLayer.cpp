@@ -321,7 +321,7 @@ static Vector2<uint32_t> scaleRatio(int maxWidth, int maxHeight, int imgWidth, i
 	// calc
 	float widthRatio = (float)maxWidth / (float)imgWidth,
 		heightRatio = (float)maxHeight / (float)imgHeight;
-	float bestRatio = min(widthRatio, heightRatio);
+	float bestRatio = std::min(widthRatio, heightRatio);
 
 	// output
 	int newWidth = (float)imgWidth * bestRatio,

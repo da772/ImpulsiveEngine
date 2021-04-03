@@ -24,22 +24,7 @@ void ProjectSelectLayer::OnAttach()
 	folderIcon = GEngine::Texture2D::Create("Content/Textures/folderIcon172x172.png");
 	checkerBoardIcon = GEngine::Texture2D::Create("Content/Textures/Checkerboard.png");
 
-	for (int i = 0; i < 20; i++) {
-		GEngine::Ref<GEngine::Texture2D> tex = GEngine::Texture2D::Create("Content/Textures/ImpulsiveGamesLogo.png", 192);
-		if (!tex) {
-			tex = checkerBoardIcon;
-		}
-
-		stringstream transTime;
-		std::time_t _t = std::time(0)-i*5;   // get time now
-		transTime << std::put_time(std::localtime(&_t), "%c");
-		std::string time = transTime.str();
-		transTime.clear();
-		
-		ProjectData p = { "Test" + std::to_string(i), tex, "D:/Documents/Dev/ImpulsiveEngine/ImpulsiveEngine/ImpulseEditor/" + std::to_string(i), time, (uint64_t)_t};
-		m_projectData.push_back(std::move(p));
-	}
-
+	LoadProjects();
 	Sort(0);
 
 }
@@ -134,7 +119,9 @@ void ProjectSelectLayer::OnImGuiRender()
 		ImGui::SameLine();
 		pos = ImGui::GetCursorPos();
 		ImGui::SetCursorPos({ pos.x, pos.y - 2.5f });
-		std::string title = p.name + "\n" + p.path+"\nLast Modified: "+p.time;
+		std::string _path = p.path;
+		std::replace(_path.begin(), _path.end(), '\\', '/');
+		std::string title = p.name + "\n" + _path+"/"+p.name+"\nLast Modified: "+p.time;
 		ImGui::Text(title.c_str());
 	}
 	ImGui::EndChild();
@@ -225,22 +212,23 @@ void ProjectSelectLayer::Search()
 
 void ProjectSelectLayer::Sort(int i)
 {
+	std::vector<ProjectData>& d = m_projectData_Searched.size() > 0 ? m_projectData_Searched : m_projectData;
 	switch (i) {
 	default:
 	case 0: {
-		std::sort(m_projectData.begin(), m_projectData.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
+		std::sort(d.begin(), d.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
 			return lhs.lastModified > rhs.lastModified;
 			});
 		break;
 	}
 	case 1: {
-		std::sort(m_projectData.begin(), m_projectData.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
+		std::sort(d.begin(), d.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
 			return lhs.name.compare(rhs.name) < 0;
 			});
 		break;
 	}
 	case 2: {
-		std::sort(m_projectData.begin(), m_projectData.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
+		std::sort(d.begin(), d.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
 			return lhs.path.compare(rhs.path) < 0;
 			});
 		break;
@@ -248,8 +236,58 @@ void ProjectSelectLayer::Sort(int i)
 	}
 }
 
-void ProjectSelectLayer::ImportProject(const std::string& path) {
-	GE_CORE_DEBUG("@TODO IMPORT PROJECT: {0}", path);
+void ProjectSelectLayer::SaveProjects()
+{
+	std::string file = GEngine::FileSystem::GetDefaultLocation() + "/ImpulseEditor/.projects";
+
+	std::ofstream stream;
+	stream.open(file, std::ios::out | std::ios::binary | std::ios::trunc);
+
+	if (!stream.is_open()) {
+		std::filesystem::create_directories(GEngine::FileSystem::GetDefaultLocation() + "/ImpulseEditor");
+		stream = std::ofstream(file, std::ios::out | std::ios::binary | std::ios::trunc);
+	}
+
+	if (stream.is_open()) {
+
+		uint64_t prjCount = m_projectData.size();
+		stream.write((char*)&prjCount, sizeof(uint64_t));
+		char path[1024] = { 0 };
+		for (ProjectData& p : m_projectData) {
+			std::string _path = p.path +"/"+ p.name + "/" + p.name + ".proj";
+			memcpy(path, _path.data(), _path.size() * sizeof(char));
+			stream.write(path, 1024 * sizeof(char));
+			memset(path, 0, 1024 * sizeof(char));
+		}
+		stream.close();
+	}
+}
+
+void ProjectSelectLayer::LoadProjects()
+{
+	std::string saveLoc = GEngine::FileSystem::GetDefaultLocation() + "/ImpulseEditor/.projects";
+
+	std::ifstream stream(saveLoc, std::ios::in | std::ios::binary);
+
+	if (stream.is_open()) {
+
+		uint64_t prjCount = 0;
+		stream.read((char*)&prjCount, sizeof(uint64_t));
+		char path[1024] = { 0 };
+		for (int i = 0; i < prjCount; i++) {
+			stream.read(path, sizeof(char) * 1024);
+			ProjectData pData;
+			std::ifstream in(path, std::ios::in | std::ios::binary);
+			in >> pData;
+			in.close();
+			if (pData.path.size() > 0)
+				m_projectData.push_back(std::move(pData));
+			memset(path, 0, 1024 * sizeof(char));
+		}
+
+		stream.close();
+	}
+
 }
 
 void ProjectSelectLayer::CreateNewProjectDialog()
@@ -306,7 +344,7 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 				}
 			}
 			if (m_newProjectError.size() <= 0) {
-				stringstream transTime;
+				std::stringstream transTime;
 				std::time_t _t = std::time(0);   // get time now
 				transTime << std::put_time(std::localtime(&_t), "%c");
 				std::string time = transTime.str();
@@ -352,7 +390,11 @@ void ProjectSelectLayer::CreateDeleteConfirmationDialog()
         }
         
         ProjectData* d = GetProjectDataFromPath(selectedProject);
-		ImGui::Text((std::string("Are you sure you want to delete:\n")+ d->name+"\n"+d->path).c_str());
+		ImGui::TextColored({1.f,0.f,0.f,1.f},(std::string("Are you sure you want to delete:")).c_str());
+		std::string _path = d->path+"/"+d->name;
+		std::replace(_path.begin(), _path.end(), '\\', '/');
+		ImGui::Text((d->name + "\n" + _path+"/").c_str());
+		ImGui::TextColored({ 1.f,1.f,0.f,1.f }, (std::string("WARNING:\nDeleting this project will destroy its entire directory\n")).c_str());
 		if (ImGui::Button("Yes")) {
 			DeleteProject(selectedProject);
 			selectedProject = "";
@@ -373,22 +415,73 @@ void ProjectSelectLayer::OpenProject(const std::string& path)
 	GE_CORE_DEBUG("@TODO OPEN PROJECT: {0}", path);
 }
 
+void ProjectSelectLayer::ImportProject(const std::string& path) {
+	if (path.size() > 0) {
+		ProjectData pData;
+		std::ifstream in(path, std::ios::in | std::ios::binary);
+		in >> pData;
+		in.close();
+
+		std::string p = pData.path + "/" + pData.name+"/"+pData.name+".proj";
+		std::ifstream test(p, std::ios::in);
+
+		if (test) {
+			test.close();
+			if (std::find(m_projectData.begin(), m_projectData.end(), pData) == m_projectData.end()) {
+				m_projectData.push_back(std::move(pData));
+				Search();
+				Sort(0);
+			}
+			SaveProjects();
+		}
+	}
+}
+
 void ProjectSelectLayer::DeleteProject(const std::string& path)
 {
 	std::vector<ProjectData>::iterator it = m_projectData.begin();
+	std::string dir;
 	while (it != m_projectData.end()) {
 		if (it->path == path) {
+			dir = it->path+"/"+it->name+"/";
 			m_projectData.erase(it);
 			selectedProject = "";
 			break;
 		}
 		it++;
 	}
-	Search();
+	if (dir.size() > 0) {
+		std::filesystem::remove_all(dir);
+		SaveProjects();
+		Search();
+	}
 }
 
 void ProjectSelectLayer::CreateProject(ProjectData* d) {
     GE_CORE_DEBUG("@TODO CREATE PROJECT");
+	
+	std::filesystem::create_directories(d->path+"/"+d->name);
+
+	std::string filePath = d->path + "/" + d->name+"/"+d->name + ".proj";
+
+	std::ofstream out(filePath, std::ios::out | std::ios::binary | std::ios::trunc);
+	out << *d;
+	out.close();
+
+	
+	ProjectData pData;
+	std::ifstream in(filePath, std::ios::in | std::ios::binary);
+	in >> pData;
+	in.close();
+
+	if (pData == *d) {
+		GE_CORE_DEBUG("DATA IS THE SAME");
+	}
+	else {
+		GE_CORE_ERROR("DATA IS NOT THE SAME");
+	}
+
+	SaveProjects();
 }
 
 ProjectData* ProjectSelectLayer::GetProjectDataFromPath(const std::string& path)
