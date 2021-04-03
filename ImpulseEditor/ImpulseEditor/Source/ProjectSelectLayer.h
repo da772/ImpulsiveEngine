@@ -84,6 +84,7 @@ private:
 	std::string m_newProjectError;
 
 	std::string m_defaultProjectName = "MyProject";
+	std::string m_lastProjectDir;
 
 	char m_search_char[512] = { 0 };
 	bool m_createProjectModal = false;

@@ -101,8 +101,8 @@ void ProjectSelectLayer::OnImGuiRender()
 	ImGui::BeginChild("Projects", { (float)GEngine::Application::GetWindowWidth()*.85f,(float)GEngine::Application::GetWindowHeight()*.85f }, true);
 	for (const ProjectData& p : strlen(m_search_char) > 0 ? m_projectData_Searched : m_projectData) {
 		std::string s = "##" + p.name;
-		if (ImGui::Selectable(s.c_str(), selectedProject == p.path, 0, { 0.f, 60.f })) {
-			selectedProject = p.path;
+		if (ImGui::Selectable(s.c_str(), selectedProject == (p.path+"/"+p.name), 0, { 0.f, 60.f })) {
+			selectedProject = p.path+"/"+p.name;
 		}
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
 			OpenProject(selectedProject);
@@ -120,7 +120,7 @@ void ProjectSelectLayer::OnImGuiRender()
 		pos = ImGui::GetCursorPos();
 		ImGui::SetCursorPos({ pos.x, pos.y - 2.5f });
 		std::string _path = p.path;
-		std::replace(_path.begin(), _path.end(), '\\', '/');
+		//std::replace(_path.begin(), _path.end(), '\\', '/');
 		std::string title = p.name + "\n" + _path+"/"+p.name+"\nLast Modified: "+p.time;
 		ImGui::Text(title.c_str());
 	}
@@ -133,7 +133,7 @@ void ProjectSelectLayer::OnImGuiRender()
 		m_newProjectName = m_defaultProjectName;
 		m_createProjectModal = true;
 		m_newProjectError = "";
-		m_newProjectLocation = GEngine::FileSystem::GetParentExecuteableDir(0);
+		m_newProjectLocation = m_lastProjectDir.size() > 0 ? m_lastProjectDir : GEngine::FileSystem::GetParentExecuteableDir(0);
 		ImGui::OpenPopup("Create New Project");
 	}
 	CreateNewProjectDialog();
@@ -249,10 +249,12 @@ void ProjectSelectLayer::SaveProjects()
 	}
 
 	if (stream.is_open()) {
-
+		char path[1024] = { 0 };
+		memcpy(path, m_lastProjectDir.data(), sizeof(char) * m_lastProjectDir.size());
+		stream.write(path, 1024 * sizeof(char));
+		memset(path, 0, 1024 * sizeof(char));
 		uint64_t prjCount = m_projectData.size();
 		stream.write((char*)&prjCount, sizeof(uint64_t));
-		char path[1024] = { 0 };
 		for (ProjectData& p : m_projectData) {
 			std::string _path = p.path +"/"+ p.name + "/" + p.name + ".proj";
 			memcpy(path, _path.data(), _path.size() * sizeof(char));
@@ -270,10 +272,13 @@ void ProjectSelectLayer::LoadProjects()
 	std::ifstream stream(saveLoc, std::ios::in | std::ios::binary);
 
 	if (stream.is_open()) {
-
+		char path[1024] = { 0 };
+		stream.read(path, sizeof(char) * 1024);
+		m_lastProjectDir = path;
+		memset(path, 0, 1024 * sizeof(char));
 		uint64_t prjCount = 0;
 		stream.read((char*)&prjCount, sizeof(uint64_t));
-		char path[1024] = { 0 };
+		
 		for (int i = 0; i < prjCount; i++) {
 			stream.read(path, sizeof(char) * 1024);
 			ProjectData pData;
@@ -311,7 +316,6 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 		ImGui::PushItemWidth(200);
 		memcpy(nameBuf, &m_newProjectName[0], m_newProjectName.size());
 		if (ImGui::InputText("##newProjectName", nameBuf, 255)) {
-
 			m_newProjectName = nameBuf;
 		}
 		ImGui::PopItemWidth();
@@ -339,7 +343,7 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 		if (ImGui::Button("Create", ImVec2(120, 0))) { 
 			m_newProjectError = "";
 			for (auto& p : m_projectData) {
-				if (p.path == m_newProjectLocation) {
+				if ((p.path+"/"+p.name) == (m_newProjectLocation+"/"+m_newProjectName) ) {
 					m_newProjectError = "Project already created in that directory";
 				}
 			}
@@ -349,10 +353,12 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 				transTime << std::put_time(std::localtime(&_t), "%c");
 				std::string time = transTime.str();
 				transTime.clear();
+				std::replace(m_newProjectLocation.begin(), m_newProjectLocation.end(), '\\', '/');
+				m_lastProjectDir = m_newProjectLocation;
 				m_projectData.push_back({ m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t });
 				Sort(m_sortType);
 				Search();
-				selectedProject = m_newProjectLocation;
+				selectedProject = m_newProjectLocation + "/" + m_newProjectName;
                 CreateProject(GetProjectDataFromPath(selectedProject));
 				m_createProjectModal = false;
 				ImGui::CloseCurrentPopup();
@@ -442,7 +448,7 @@ void ProjectSelectLayer::DeleteProject(const std::string& path)
 	std::vector<ProjectData>::iterator it = m_projectData.begin();
 	std::string dir;
 	while (it != m_projectData.end()) {
-		if (it->path == path) {
+		if ((it->path + "/" + it->name) == path) {
 			dir = it->path+"/"+it->name+"/";
 			m_projectData.erase(it);
 			selectedProject = "";
@@ -468,19 +474,6 @@ void ProjectSelectLayer::CreateProject(ProjectData* d) {
 	out << *d;
 	out.close();
 
-	
-	ProjectData pData;
-	std::ifstream in(filePath, std::ios::in | std::ios::binary);
-	in >> pData;
-	in.close();
-
-	if (pData == *d) {
-		GE_CORE_DEBUG("DATA IS THE SAME");
-	}
-	else {
-		GE_CORE_ERROR("DATA IS NOT THE SAME");
-	}
-
 	SaveProjects();
 }
 
@@ -488,7 +481,7 @@ ProjectData* ProjectSelectLayer::GetProjectDataFromPath(const std::string& path)
 {
 	std::vector<ProjectData>::iterator it = m_projectData.begin();
 	while (it != m_projectData.end()) {
-		if (it->path == path) {
+		if ((it->path+"/"+it->name) == path) {
 			return &*it; // ???
 		}
 		it++;
