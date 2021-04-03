@@ -50,8 +50,9 @@ private:
 	void ImportProject(const std::string& path);
 	void CreateNewProjectDialog();
 	void CreateDeleteConfirmationDialog();
+    void CreateProject(ProjectData* d);
 	void OpenProject(const std::string& path);
 	void DeleteProject(const std::string& path);
-	ProjectData& GetProjectDataFromPath(const std::string& path);
+	ProjectData* GetProjectDataFromPath(const std::string& path);
 };
 

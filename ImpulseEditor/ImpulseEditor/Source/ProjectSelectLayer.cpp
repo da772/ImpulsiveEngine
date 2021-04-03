@@ -20,7 +20,7 @@ void ProjectSelectLayer::Begin()
 
 void ProjectSelectLayer::OnAttach()
 {
-	searchIcon = GEngine::Texture2D::Create("Content/Textures/searchIcon64x64.png");
+	searchIcon = GEngine::Texture2D::Create("Content/Textures/searchIcon172x172.png");
 	folderIcon = GEngine::Texture2D::Create("Content/Textures/folderIcon172x172.png");
 	checkerBoardIcon = GEngine::Texture2D::Create("Content/Textures/Checkerboard.png");
 
@@ -263,6 +263,11 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 				ImGui::CloseCurrentPopup();
 			}
 		}
+        
+        if (GEngine::Input::IsKeyPressed(GE_KEY_ESCAPE)) {
+            m_confirmDeleteModal = false;
+            ImGui::CloseCurrentPopup();
+        }
 		ImGui::Text("Project Name:");
 		char nameBuf[255] = { 0 };
 		ImGui::PushItemWidth(200);
@@ -309,6 +314,8 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 				m_projectData.push_back({ m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t });
 				Sort(m_sortType);
 				Search();
+				selectedProject = m_newProjectLocation;
+                CreateProject(GetProjectDataFromPath(selectedProject));
 				m_createProjectModal = false;
 				ImGui::CloseCurrentPopup();
 			}
@@ -338,12 +345,21 @@ void ProjectSelectLayer::CreateDeleteConfirmationDialog()
 				ImGui::CloseCurrentPopup();
 			}
 		}
-		ImGui::Text((std::string("Are you sure you want to delete:\n")+ selectedProject).c_str());
+        
+        if (GEngine::Input::IsKeyPressed(GE_KEY_ESCAPE)) {
+            m_confirmDeleteModal = false;
+            ImGui::CloseCurrentPopup();
+        }
+        
+        ProjectData* d = GetProjectDataFromPath(selectedProject);
+		ImGui::Text((std::string("Are you sure you want to delete:\n")+ d->name+"\n"+d->path).c_str());
 		if (ImGui::Button("Yes")) {
 			DeleteProject(selectedProject);
+			selectedProject = "";
 			m_confirmDeleteModal = false;
 			ImGui::CloseCurrentPopup();
 		}
+        ImGui::SameLine();
 		if (ImGui::Button("No")) {
 			m_confirmDeleteModal = false;
 			ImGui::CloseCurrentPopup();
@@ -371,6 +387,10 @@ void ProjectSelectLayer::DeleteProject(const std::string& path)
 	Search();
 }
 
+void ProjectSelectLayer::CreateProject(ProjectData* d) {
+    GE_CORE_DEBUG("@TODO CREATE PROJECT");
+}
+
 ProjectData* ProjectSelectLayer::GetProjectDataFromPath(const std::string& path)
 {
 	std::vector<ProjectData>::iterator it = m_projectData.begin();
@@ -382,3 +402,5 @@ ProjectData* ProjectSelectLayer::GetProjectDataFromPath(const std::string& path)
 	}
 	return nullptr;
 }
+
+

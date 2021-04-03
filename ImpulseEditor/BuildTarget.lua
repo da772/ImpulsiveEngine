@@ -4,6 +4,12 @@ newoption {
 	value = "ImpulseEditor",
 	description = "set target name"
 }
+
+newoption {
+	trigger = "build-editor",
+	description = "build editor"
+}
+
 if not _OPTIONS["target-name"] then
 	_OPTIONS["target-name"] = "ImpulseEditor"
 end
@@ -131,6 +137,13 @@ project (targetName)
 	{
 		"ImpulseEngine"
 	}
+
+	if _OPTIONS["build-editor"] then
+	defines
+	{
+		"GE_EDITOR"
+	}
+	end
 
 	if _OPTIONS["hot-reload"] then
 	defines
