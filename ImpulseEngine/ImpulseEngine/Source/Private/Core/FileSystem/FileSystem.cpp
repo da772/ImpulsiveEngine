@@ -1,6 +1,7 @@
 #include "gepch.h"
 #include "Public/Core/FileSystem/FileSystem.h"
-
+#include "Public/Core/Application/Application.h"
+#include "Public/Core/Application/Window.h"
 #include <zlib.h>
 
 #define GE_FILESYSTEM_CHAR_LENGTH 1024
@@ -9,6 +10,12 @@
 #include <locale>
 #include <codecvt>
 #include <WS2tcpip.h>
+#include <Windows.h>
+#include <commdlg.h>
+#endif
+
+#ifdef GE_CONSOLE_APP
+#include <nfd.h>
 #endif
 
 #ifdef GE_PLATFORM_ANDROID
@@ -445,6 +452,52 @@ namespace GEngine {
 		}
 
 		return dirPath+"/";
+	}
+
+	void FileSystem::OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& _startPath, bool isFolder)
+	{
+#ifdef GE_CONSOLE_APP
+		NFD_Init();
+
+		nfdchar_t* outPath;
+		nfdresult_t result;
+		nfdchar_t* startPath = NULL;
+		if (_startPath.size() > 0) {
+			startPath = (char*)_startPath.data();
+		}
+
+		if (!isFolder) {
+			nfdfilteritem_t* filterItem = (nfdfilteritem_t*)malloc(sizeof(nfdfilteritem_t) * filters.size());// { { "Source code", "c,cpp,cc" }, { "Headers", "h,hpp" } };
+
+			for (int i = 0; i < filters.size(); i++) {
+				const std::pair<std::string, std::string>& p = filters[i];
+				filterItem[i] = { p.first.data(), p.second.data() };
+			}
+
+			
+
+			result = NFD_OpenDialog(&outPath, filterItem, filters.size(), startPath);
+		}
+		else {
+			result = NFD_PickFolder(&outPath, startPath);
+		}
+		if (result == NFD_OKAY)
+		{
+			ret = outPath;
+			NFD_FreePath(outPath);
+		}
+		else if (result == NFD_CANCEL)
+		{
+
+		}
+		else
+		{
+			GE_CORE_DEBUG("Error: {0}", NFD_GetError());
+		}
+
+		NFD_Quit();
+#endif
+
 	}
 
 }

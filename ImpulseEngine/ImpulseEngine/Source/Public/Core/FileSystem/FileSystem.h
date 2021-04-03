@@ -52,6 +52,8 @@ namespace GEngine {
 		static std::string GetExecutableDir();
 		static std::string GetParentExecuteableDir(int levelsUp);
 
+		static void OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& startPath = "", bool isFolder = false);
+
 		static Ref<FileData> FileDataFromPath(std::string path, bool fromPak = true, bool relative = false);
 		static void AddToMemoryPak(const std::string& name, Ref<FileData> data);
 		static bool FileInMemory(const std::string& name);

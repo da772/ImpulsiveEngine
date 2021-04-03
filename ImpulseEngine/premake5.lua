@@ -41,6 +41,7 @@ IncludeDir["Vorbis"] = "ImpulseEngine/vendor/Vorbis/include"
 IncludeDir["zlib"] = "ImpulseEngine/vendor/zlib/include"
 IncludeDir["vector"] = "ImpulseEngine/Modules/IE_VECTOR/include"
 IncludeDir["reflection"] = "ImpulseEngine/Modules/Reflection/include"
+IncludeDir["nfd"] = "ImpulseEngine/vendor/nativefiledialog/include"
 
 if _OPTIONS['build-engine'] then
 
@@ -62,7 +63,15 @@ group "Dependencies"
 	if _OPTIONS['build-openal'] then
 		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
 	end
-	
+
+	filter "system:macosx"
+		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
+
+	filter "system:windows"
+		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
+
+	filter "system:linux"
+		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
 	
 
 group ""
@@ -200,6 +209,7 @@ project "ImpulseEngine"
 
 		includedirs
 		{
+			"%{IncludeDir.nfd}"
 		}
 
 		links 
@@ -211,7 +221,8 @@ project "ImpulseEngine"
 			--"libvulkan.1.1.130",
 			"OpenAL.framework",
 			"Glad",
-			"GLFW"
+			"GLFW",
+			"NativeFileDialog"
 		}
 
 		filter "configurations:Debug"
@@ -411,6 +422,7 @@ project "ImpulseEngine"
 		
 		includedirs
 		{
+			"%{IncludeDir.nfd}"
 		}
 
 		defines
@@ -435,7 +447,8 @@ project "ImpulseEngine"
 			"vulkan-1.lib",
 			"Glad",
 			"GLFW",
-			"Ws2_32.lib"
+			"Ws2_32.lib",
+			"NativeFileDialog"
 		}
 		end
 
@@ -470,6 +483,7 @@ project "ImpulseEngine"
 		
 		includedirs
 		{
+			"%{IncludeDir.nfd}"
 		}
 
 		defines
@@ -487,7 +501,8 @@ project "ImpulseEngine"
 			"GL",
 			"Glad",
 			"GLFW",
-			"X11"
+			"X11",
+			"NativeFileDialog"
 		}
 		end
 

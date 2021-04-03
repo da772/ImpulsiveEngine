@@ -292,7 +292,7 @@ void ImGui::StyleColorsCustom(ImGuiStyle* dst)
     colors[ImGuiCol_PlotLinesHovered] = panelHoverColor;
     colors[ImGuiCol_PlotHistogram] = panelActiveColor;
     colors[ImGuiCol_PlotHistogramHovered] = panelHoverColor;
-    colors[ImGuiCol_ModalWindowDarkening] = bgColor;
+    colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);;
     colors[ImGuiCol_DragDropTarget] = bgColor;
     colors[ImGuiCol_NavHighlight] = bgColor;
     colors[ImGuiCol_DockingPreview] = panelActiveColor;
