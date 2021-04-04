@@ -22,7 +22,7 @@
 #endif
 
 #ifdef GE_PLATFORM_MACOSX
-#include "Public/Core/Util/MacUtil.h"
+#include "ObjCWrapper/MacUtil.h"
 #endif
 
 #ifdef GE_PLATFORM_ANDROID

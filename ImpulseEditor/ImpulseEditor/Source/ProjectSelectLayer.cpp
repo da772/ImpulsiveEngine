@@ -239,7 +239,6 @@ void ProjectSelectLayer::Sort(int i)
 void ProjectSelectLayer::SaveProjects()
 {
 	std::string file = GEngine::FileSystem::GetDefaultLocation() + "/ImpulseEditor/.projects";
-
 	std::ofstream stream;
 	stream.open(file, std::ios::out | std::ios::binary | std::ios::trunc);
 

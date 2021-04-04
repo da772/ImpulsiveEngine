@@ -42,6 +42,7 @@ IncludeDir["zlib"] = "ImpulseEngine/vendor/zlib/include"
 IncludeDir["vector"] = "ImpulseEngine/Modules/IE_VECTOR/include"
 IncludeDir["reflection"] = "ImpulseEngine/Modules/Reflection/include"
 IncludeDir["nfd"] = "ImpulseEngine/vendor/nativefiledialog/include"
+IncludeDir["objc"] = "ImpulseEngine/Modules/ObjCWrapper/include"
 
 if _OPTIONS['build-engine'] then
 
@@ -66,6 +67,7 @@ group "Dependencies"
 
 	filter "system:macosx"
 		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
+		include "ImpulseEngine/ImpulseEngine/Modules/ObjCWrapper"
 
 	filter "system:windows"
 		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
@@ -210,7 +212,8 @@ project "ImpulseEngine"
 
 		includedirs
 		{
-			"%{IncludeDir.nfd}"
+			"%{IncludeDir.nfd}",
+			"%{IncludeDir.objc}"
 		}
 
 		links 
@@ -223,7 +226,8 @@ project "ImpulseEngine"
 			"OpenAL.framework",
 			"Glad",
 			"GLFW",
-			"NativeFileDialog"
+			"NativeFileDialog",
+			"ObjCWrapper"
 		}
 
 		filter "configurations:Debug"
