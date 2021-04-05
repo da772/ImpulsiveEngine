@@ -40,11 +40,12 @@ namespace GEngine {
 		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);
+		void PopLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 		void PopOverlay(Layer* layer);
 
 		inline static Application* GetApp() { return Application::s_Instance; };
-		inline Window* GetWindow() { return m_Window.get(); }
+		static inline Window* GetWindow() { return Application::s_Instance ? Application::s_Instance->m_Window.get() : nullptr; }
 
 		void QueueWindowApi(const FWindowApi& windowApi);
 		void QueueGraphicsApi(const FGraphicsApi& graphicsApi);

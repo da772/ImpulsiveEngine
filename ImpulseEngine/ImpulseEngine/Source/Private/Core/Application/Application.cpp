@@ -286,7 +286,12 @@ namespace GEngine {
         layer->OnAttach();
     }
     
-    void Application::PushOverlay(Layer* layer)
+	void Application::PopLayer(Layer* layer)
+	{
+        m_LayerStack.PopLayer(layer);
+	}
+
+	void Application::PushOverlay(Layer* layer)
     {
         m_LayerStack.PushOverlay(layer);
         layer->OnAttach();

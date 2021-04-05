@@ -147,8 +147,8 @@ namespace GEngine {
 	std::string Shader::ReadFile(const std::string& filePath)
 	{
 		Ref<FileData> data = GEngine::FileSystem::FileDataFromPath(filePath);
-		const char* filestr = (char*)data->GetDataAsString();
-		return std::string(filestr);
+		const char* filestr = (char*)data->GetData();
+		return std::string(filestr, data->GetDataSize()-1);
 	}
 
 

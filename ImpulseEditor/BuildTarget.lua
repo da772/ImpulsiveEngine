@@ -10,6 +10,16 @@ newoption {
 	description = "build editor"
 }
 
+newoption {
+	trigger = "package",
+	description = "package project for distribution"
+}
+
+newoption {
+	trigger = "build-engine",
+	description = "build engine"
+}
+
 if not _OPTIONS["target-name"] then
 	_OPTIONS["target-name"] = "ImpulseEditor"
 end
@@ -54,13 +64,15 @@ workspace(targetName)
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-
+include "vendor"
+if _OPTIONS['build-engine'] then
 include "ImpulseEngine"
-include "ImpulseEditor/ImpulseEditor/Scripts/CPP"
+end
+include(targetName.."/"..targetName.."/Scripts/")
 
 
 project (targetName)
-	location "ImpulseEditor"
+	location(targetName)
 	kind "ConsoleApp"
 	language "C++"
 		cppdialect "C++17"
@@ -76,6 +88,13 @@ project (targetName)
 	staticruntime "on"
 	end
 
+	if _OPTIONS['package'] then 
+	defines 
+	{
+		"GE_PACKAGE"
+	}
+	end
+
 	defines 
 	{
 		"GE_APP_NAME=\""..targetName.."\"",
@@ -83,20 +102,20 @@ project (targetName)
 	
 	files 
 	{
-		"%{prj.location}/ImpulseEditor/Source/**.h",
-		"%{prj.location}/ImpulseEditor/Source/**.c",
-		"%{prj.location}/ImpulseEditor/Source/**.cpp",
-		"%{prj.location}/ImpulseEditor/Source/**.hpp"
+		"%{prj.location}/"..targetName.."/Source/**.h",
+		"%{prj.location}/"..targetName.."/Source/**.c",
+		"%{prj.location}/"..targetName.."/Source/**.cpp",
+		"%{prj.location}/"..targetName.."/Source/**.hpp"
 	}
 
 	removefiles
 	{
-		"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.cpp",
-		"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.c",
-		"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.h",
-		"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.cpp",
-		"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.c",
-		"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.h"
+		"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.cpp",
+		"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.c",
+		"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.h",
+		"%{prj.location}/"..targetName.."/Source/Engine/Android/**.cpp",
+		"%{prj.location}/"..targetName.."/Source/Engine/Android/**.c",
+		"%{prj.location}/"..targetName.."/Source/Engine/Android/**.h"
 	}
 
 	includedirs 
@@ -109,9 +128,9 @@ project (targetName)
 		"ImpulseEngine/%{IncludeDir.cr}",
 		"ImpulseEngine/%{IncludeDir.vector}",
 		"ImpulseEngine/%{IncludeDir.reflection}",
-		"%{prj.location}/ImpulseEditor/Source/",
-		"%{prj.location}/ImpulseEditor/include/",
-		"%{prj.location}/ImpulseEditor/Scripts/CPP/Generated"
+		"%{prj.location}/"..targetName.."/Source/",
+		"%{prj.location}/"..targetName.."/include/",
+		"%{prj.location}/"..targetName.."/Scripts/Generated"
 
 	}
 
@@ -181,7 +200,7 @@ project (targetName)
 
 		excludes 
 		{ 
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**" 
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**" 
 		}
 
 		defines
@@ -191,7 +210,7 @@ project (targetName)
 		}
 		postbuildcommands
 		{
-			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"$(TargetDir)Data\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data\""
 		}
 		if _OPTIONS["hot-reload"] then
 		postbuildcommands
@@ -230,7 +249,7 @@ project (targetName)
 			end
 			postbuildcommands
 			{
-			--	"cp -rf \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor/Data\\"""
+			--	"cp -rf \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."/Data\\"""
 			}
 
 
@@ -261,7 +280,7 @@ project (targetName)
 
 			excludes 
 			{ 
-				"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**" 
+				"%{prj.location}/"..targetName.."/Source/Engine/iOS/**" 
 			}
 	
 			defines
@@ -324,20 +343,20 @@ project (targetName)
 
 		files 
 		{
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.m",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.mm",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.c",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.h",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.storyboard",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**.plist",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/*.json",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/iOSImages.xcassets",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.m",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.mm",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.c",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.h",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.storyboard",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.plist",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/*.json",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/iOSImages.xcassets",
 		}
 			
 		includedirs 
 		{
-			"%{prj.location}/ImpulseEditor/Source",
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS",
+			"%{prj.location}/"..targetName.."/Source",
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS",
 	
 			"ImpulseEngine/%{IncludeDir.firebase}/include"
 		}
@@ -357,8 +376,8 @@ project (targetName)
 
 		postbuildcommands
 		{
-			"cp -rf ${PROJECT_DIR}/ImpulseEditor/Data ${TARGET_BUILD_DIR}/%{prj.name}.app/",
-			"cp -rf ${PROJECT_DIR}/ImpulseEditor/Source/iOS/GoogleService-Info.plist ${TARGET_BUILD_DIR}/%{prj.name}.app/"
+			"cp -rf ${PROJECT_DIR}/"..targetName.."/Data ${TARGET_BUILD_DIR}/%{prj.name}.app/",
+			"cp -rf ${PROJECT_DIR}/"..targetName.."/Source/iOS/GoogleService-Info.plist ${TARGET_BUILD_DIR}/%{prj.name}.app/"
 
 		}
 
@@ -424,14 +443,14 @@ project (targetName)
 
 		files 
 		{
-			"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.h",
-			"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.c",
-			"%{prj.location}/ImpulseEditor/Source/Engine/Android/**.cpp",
+			"%{prj.location}/"..targetName.."/Source/Engine/Android/**.h",
+			"%{prj.location}/"..targetName.."/Source/Engine/Android/**.c",
+			"%{prj.location}/"..targetName.."/Source/Engine/Android/**.cpp",
 		}
 
 		includedirs 
 		{
-			"%{prj.location}/ImpulseEditor/Source",
+			"%{prj.location}/"..targetName.."/Source",
 		}
 		androidLibDir = ""
 
@@ -460,10 +479,10 @@ project (targetName)
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
+			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 		filter "platforms:x64"
 			architecture "x64"
@@ -475,10 +494,10 @@ project (targetName)
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}x64\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}x64\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
+			"copy /y \"%{wks.location}x64\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}x64\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}x64\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 			
 		filter "platforms:ARM"
@@ -491,10 +510,10 @@ project (targetName)
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}ARM\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}ARM\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
+			"copy /y \"%{wks.location}ARM\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}ARM\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}ARM\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 
 		filter "platforms:ARM64"
@@ -507,10 +526,10 @@ project (targetName)
 			postbuildcommands
 			{
 			"mkdir \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"copy /y \"%{wks.location}ARM64\\%{cfg.buildcfg}\\libImpulseEditor.so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
-			"XCOPY /I /E /S /Y \"%{wks.location}ARM64\" \"%{prj.location}/Bin/" .. outputdir .. "/ImpulseEditor\"",
+			"copy /y \"%{wks.location}ARM64\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
+			"XCOPY /I /E /S /Y \"%{wks.location}ARM64\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}ARM64\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)ImpulseEditor/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 
 	filter "system:macosx"
@@ -529,7 +548,7 @@ project (targetName)
 
 		excludes 
 		{ 
-			"%{prj.location}/ImpulseEditor/Source/Engine/iOS/**" 
+			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**" 
 		}
 
 		includedirs
@@ -555,8 +574,8 @@ project (targetName)
 
 		postbuildcommands
 		{
-			"cp -rf ${PROJECT_DIR}/ImpulseEditor/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
-			--"cp -rf ${PROJECT_DIR}/ImpulseEditor/\"Res\" ${TARGET_BUILD_DIR}",
+			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
+			--"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Res\" ${TARGET_BUILD_DIR}",
 		}
 
 		

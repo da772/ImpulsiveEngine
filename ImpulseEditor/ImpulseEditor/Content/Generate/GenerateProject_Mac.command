@@ -4,4 +4,4 @@ cd "$here"
 cd ..
 python ReloadProject.py
 cd ..
-./vendor/premake/premake5_linux gmake2 --os=linux --os=linux --hot-reload
+./vendor/premake/premake5_mac xcode4 --build-engine --build-editor

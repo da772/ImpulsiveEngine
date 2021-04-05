@@ -59,7 +59,8 @@ void RenderPipeline_Lighting::Render()
 	glm::mat4 transform = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 0))
 		* glm::scale(glm::mat4(1.0), { 5000.f, 5000.f, 1.f });
 	m_shaderColor->UploadUniformMat4("u_Transform", transform);
-	m_shaderColor->UploadUniformMat4("u_ViewProjection",Application::GetApp()->GetTargetCamera()->GetViewProjectionMatrix());
+	if (Application::GetApp()->GetTargetCamera())
+		m_shaderColor->UploadUniformMat4("u_ViewProjection", Application::GetApp()->GetTargetCamera()->GetViewProjectionMatrix());
 	m_shaderColor->UploadUniformFloat4("u_Color", { 0,0,0,.55f });
 	m_varray->Bind();
 	RenderCommand::DrawIndexed(m_varray);

@@ -110,7 +110,6 @@ namespace GEngine {
 
 	void Utility::dll::movePDB(const std::string& dir, const std::string& name, const std::string& newName, bool deleteOld)
 	{
-#ifdef GE_HOT_RELOAD
 		std::string loc = dir + newName + ".pdb";
 		std::ifstream  src(dir + name + ".pdb", std::ios::binary);
 		std::ofstream  dst(loc, std::ios::binary);
@@ -123,7 +122,6 @@ namespace GEngine {
 		src.close();
 		if (deleteOld)
 			::remove((dir + name + ".pdb").c_str());
-#endif
 	}
 
 	std::string Utility::dll::GetDLLExtensionName(std::string name)
@@ -283,7 +281,6 @@ namespace GEngine {
 
 	std::string GEngine::Utility::sys::exec_command(const std::string& cmd)
 	{
-#ifdef GE_HOT_RELOAD
 #if defined(__linux__) || defined (__APPLE__)
 		char buffer[2048] = { 0 };
 		std::string result = "";
@@ -332,9 +329,6 @@ namespace GEngine {
 		PROCESS_INFORMATION info = Utility::sys::CreateChildProcess(cmd, err_WR, out_WR);
 		output = Utility::sys::ReadFromPipe(err_RD, out_RD);
 		return output;
-#endif
-#else
-		return "";
 #endif
 	}
 
@@ -421,7 +415,6 @@ namespace GEngine {
 #endif
 	bool Utility::__LoadLib(const std::string& name, dllptr* lib, refl::store::storage* store)
 	{
-#ifdef GE_HOT_RELOAD
 		if (*lib) {
 			GE_CORE_ERROR("Native Library already loaded (Unload before loading)");
 			return false;
@@ -459,15 +452,11 @@ namespace GEngine {
 		}
 		(*func_ptr)(store);
 		return true;
-#else
-		return false;
-#endif
 
 	}
 
 	void Utility::__UnloadLib(const std::string& name, dllptr* lib, refl::store::storage* store)
 	{
-#ifdef GE_HOT_RELOAD
 		if (*lib) {
 			void (*func_ptr)(::refl::store::storage*) = reinterpret_cast<void (*)(::refl::store::storage*)>(Utility::dll::dlsym(*lib, "__ReflectionMap__unloadGeneratedFiles"));
 			if (func_ptr) {
@@ -484,18 +473,15 @@ namespace GEngine {
 			if (_renameDLL)
 				::remove(loc.c_str());	
 		}
-#endif
 	}
 
 	void Utility::__GenerateLib(const std::string& path, const std::string& name, refl::reflector& r)
 	{
-#ifdef GE_HOT_RELOAD
 		std::string in = path + name;
 		std::ifstream t(in);
 		std::stringstream buffer;
 		buffer << t.rdbuf();
 		GE_CORE_INFO("Native Generate: {0}", in);
 		r.Generate(in.c_str());
-#endif
 	}
 }

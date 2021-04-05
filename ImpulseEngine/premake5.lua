@@ -14,35 +14,6 @@ newoption {
 	description = "build as standalone server"
 }
 
-newoption {
-	trigger = "build-engine",
-	description = "build engine"
-}
-
-
-IncludeDir = {}
-IncludeDir["GLFW"] = "ImpulseEngine/vendor/GLFW/include"
-IncludeDir["ENET"] = "ImpulseEngine/vendor/Enet/include"
-IncludeDir["Glad"] = "ImpulseEngine/vendor/Glad/include"
-IncludeDir["Vulkan"] = "ImpulseEngine/vendor/Vulkan"
-IncludeDir["ImGui"] = "ImpulseEngine/vendor/imgui"
-IncludeDir["glm"] = "ImpulseEngine/vendor/glm"
-IncludeDir["stb_image"] = "ImpulseEngine/vendor/stbimage"
-IncludeDir["gltext"] = "ImpulseEngine/vendor/glText/include"
-IncludeDir["httplib"] = "ImpulseEngine/vendor/httplib/include"
-IncludeDir["miniupnpc"] = "ImpulseEngine/vendor/miniupnpc/include"
-IncludeDir["freetype"] = "ImpulseEngine/vendor/freetype-2.10.0/include"
-IncludeDir["freetypegl"] = "ImpulseEngine/vendor/freetype-2.10.0/include/freetype-gl"
-IncludeDir["entt"] = "ImpulseEngine/vendor/entt/include"
-IncludeDir["firebase"] = "ImpulseEngine/vendor/firebase"
-IncludeDir["box2d"] = "ImpulseEngine/vendor/box2d/include"
-IncludeDir["OpenAL"] = "ImpulseEngine/vendor/OpenAL/include"
-IncludeDir["Vorbis"] = "ImpulseEngine/vendor/Vorbis/include"
-IncludeDir["zlib"] = "ImpulseEngine/vendor/zlib/include"
-IncludeDir["vector"] = "ImpulseEngine/Modules/IE_VECTOR/include"
-IncludeDir["reflection"] = "ImpulseEngine/Modules/Reflection/include"
-IncludeDir["nfd"] = "ImpulseEngine/vendor/nativefiledialog/include"
-IncludeDir["objc"] = "ImpulseEngine/Modules/ObjCWrapper/include"
 
 if _OPTIONS['build-engine'] then
 
@@ -65,15 +36,14 @@ group "Dependencies"
 		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
 	end
 
-	filter "system:macosx"
-		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
+	if _OPTIONS['os'] == "macosx" then
 		include "ImpulseEngine/ImpulseEngine/Modules/ObjCWrapper"
+	end
 
-	filter "system:windows"
+	if (_OPTIONS['os'] == "macosx" or _OPTIONS['os'] == "windows" or _OPTIONS['os'] == "linux") then
 		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
-
-	filter "system:linux"
-		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
+		include "ImpulseEngine/ImpulseEngine/vendor/zip"
+	end
 	
 
 group ""
@@ -213,7 +183,8 @@ project "ImpulseEngine"
 		includedirs
 		{
 			"%{IncludeDir.nfd}",
-			"%{IncludeDir.objc}"
+			"%{IncludeDir.objc}",
+			"%{IncludeDir.zip}"
 		}
 
 		links 
@@ -227,7 +198,8 @@ project "ImpulseEngine"
 			"Glad",
 			"GLFW",
 			"NativeFileDialog",
-			"ObjCWrapper"
+			"ObjCWrapper",
+			"zip"
 		}
 
 		filter "configurations:Debug"
@@ -427,7 +399,8 @@ project "ImpulseEngine"
 		
 		includedirs
 		{
-			"%{IncludeDir.nfd}"
+			"%{IncludeDir.nfd}",
+			"%{IncludeDir.zip}"
 		}
 
 		defines
@@ -455,7 +428,8 @@ project "ImpulseEngine"
 			"GLFW",
 			"Ws2_32.lib",
 			"NativeFileDialog",
-			"shlwapi.lib"
+			"shlwapi.lib",
+			"zip"
 		}
 		end
 
@@ -490,7 +464,8 @@ project "ImpulseEngine"
 		
 		includedirs
 		{
-			"%{IncludeDir.nfd}"
+			"%{IncludeDir.nfd}",
+			"%{IncludeDir.zip}",
 		}
 
 		defines
@@ -509,7 +484,8 @@ project "ImpulseEngine"
 			"Glad",
 			"GLFW",
 			"X11",
-			"NativeFileDialog"
+			"NativeFileDialog",
+			"zip"
 		}
 		end
 

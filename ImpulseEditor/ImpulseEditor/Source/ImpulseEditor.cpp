@@ -2,16 +2,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "SplashScreenScene.h"
 #include "MapEditor.hpp"
-
+#ifdef GE_EDITOR
 #include "ProjectSelectLayer.h"
+#endif
 
 
 #include "MainGameScene.h"
 #include "MenuScene.h"
 
 #include "Lighting/Lighting.hpp"
-
-
 #include "Reflection.map.generated.h"
 
 
@@ -48,11 +47,13 @@ void ExampleLayer::OnAttach()
 #else 
 	__ReflectionMap__loadGeneratedFiles(ScriptApi::GetStorage_Native());
 #endif
+*/
 	//GEngine::SceneManager::AddScene<SplashScreenScene>("splashScreen");
 	//GEngine::SceneManager::AddScene<MainGameScene>("mainGame");
+	__ReflectionMap__loadGeneratedFiles(ScriptApi::GetStorage_Native());
 	GEngine::SceneManager::AddScene<MenuScene>("menuScene");
 	GEngine::SceneManager::SetCurrentScene("menuScene");
-	*/
+	//*/
 }
 
 void ExampleLayer::OnDetach()
@@ -98,16 +99,16 @@ ImpulseEditor::ImpulseEditor()
 	this->m_width = 960;
 	this->m_height = 540;
 
+#ifndef GE_PACKAGE
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET)+"ImpulseEditor/Content",
 		GEngine::FileSystem::FilePath("Data/EngineContent.pak"), false);
-
-	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
-	GEngine::Ref<GEngine::FileData> manifest = GEngine::FileSystem::LoadFileFromPak("Content/Editor/Manifest.cxml");
-
 
 	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/EngineContent.pak"), 
 		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/EngineContent.pak", false);
 #endif
+#endif
+
+	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
 	GE_LOG_INFO("Cores: {0}, Freq: {1}", DeviceInfo::GetCpuCount(), DeviceInfo::GetCpuFreq());
 	SetRenderScale(1.f);
 	SetRenderSamples(0);
@@ -122,10 +123,12 @@ ImpulseEditor::ImpulseEditor()
 	EnableImGui(false);
 #endif
 	
+	/*
 	MobileWindow* window = dynamic_cast< GEngine::MobileWindow*>(GetWindow());
 	if (window) {
 		//window->ShowKeyboard();
 	}
+	*/
 	
 
 #ifdef GE_MOBILE_APP
@@ -156,11 +159,12 @@ ImpulseEditor::ImpulseEditor()
 		m_ProjectSelectLayer = new ProjectSelectLayer("ProjectSelect");
 		PushLayer(m_ProjectSelectLayer);
 	}
-#endif
-	//m_ExampleLayer = new ExampleLayer();
-	//PushLayer(m_ExampleLayer);
+#else
+	m_ExampleLayer = new ExampleLayer();
+	PushLayer(m_ExampleLayer);
 
-	//Lighting::Initialize();
+	Lighting::Initialize();
+#endif
 }
 
 void ImpulseEditor::OnCleanDirtyApi()

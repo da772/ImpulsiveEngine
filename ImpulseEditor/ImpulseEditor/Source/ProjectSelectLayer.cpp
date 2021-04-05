@@ -3,6 +3,9 @@
 #include "imgui/imgui_internal.h"
 #endif
 
+
+static const std::vector<std::string> create_project_dirs = { "Content/Editor", "Data"};
+
 ProjectSelectLayer::ProjectSelectLayer(const std::string& name) : Layer(name)
 {
 
@@ -155,22 +158,24 @@ void ProjectSelectLayer::OnImGuiRender()
 		OpenProject(selectedProject);
 	}
 
-	if (prjSelec) {
-		ImGui::PopItemFlag();
-		ImGui::PopStyleVar();
-		prjSelec = false;
-
-	}
 	ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
-	if (!selectedProject.size()) {
-		ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
-		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-		prjSelec = true;
+	if (ImGui::Button("Show", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
+		ShowProject(selectedProject);
 	}
+
+	ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
+	if (ImGui::Button("Remove", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
+		RemoveProject(selectedProject);
+	}
+
+	ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
+	ImGui::PushStyleColor(ImGuiCol_Text, { 1.f,0.f,0.f,1.f });
 	if (ImGui::Button("Delete", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
 		m_confirmDeleteModal = true;
 		ImGui::OpenPopup("Delete Project?");
 	}
+	ImGui::PopStyleColor();
+
 	CreateDeleteConfirmationDialog();
 	if (prjSelec) {
 		ImGui::PopItemFlag();
@@ -243,7 +248,7 @@ void ProjectSelectLayer::SaveProjects()
 	stream.open(file, std::ios::out | std::ios::binary | std::ios::trunc);
 
 	if (!stream.is_open()) {
-		std::filesystem::create_directories(GEngine::FileSystem::GetDefaultLocation() + "/ImpulseEditor");
+		GEngine::FileSystem::CreateDirectories(GEngine::FileSystem::GetDefaultLocation() + "/ImpulseEditor");
 		stream = std::ofstream(file, std::ios::out | std::ios::binary | std::ios::trunc);
 	}
 
@@ -296,6 +301,7 @@ void ProjectSelectLayer::LoadProjects()
 
 void ProjectSelectLayer::CreateNewProjectDialog()
 {
+#ifdef GE_EDITOR
 	if (m_createProjectModal) ImGui::SetNextWindowSize({ 400, 200});
 	if (ImGui::BeginPopupModal("Create New Project", &m_createProjectModal, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
@@ -371,7 +377,7 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 		}
 		ImGui::EndPopup();
 	}
-
+#endif
 	//std::string str;
 	//GEngine::FileSystem::OpenFileDialog({}, str, true);
 	//GE_CORE_DEBUG("FOLDER OPEN: {0}", str);
@@ -379,6 +385,7 @@ void ProjectSelectLayer::CreateNewProjectDialog()
 
 void ProjectSelectLayer::CreateDeleteConfirmationDialog()
 {
+#ifdef GE_EDITOR
 	if (m_confirmDeleteModal) ImGui::SetNextWindowSize({ 400, 200 });
 	if (ImGui::BeginPopupModal("Delete Project?", &m_confirmDeleteModal, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 	{
@@ -413,6 +420,7 @@ void ProjectSelectLayer::CreateDeleteConfirmationDialog()
 		}
 		ImGui::EndPopup();
 	}
+#endif
 }
 
 void ProjectSelectLayer::OpenProject(const std::string& path)
@@ -456,16 +464,37 @@ void ProjectSelectLayer::DeleteProject(const std::string& path)
 		it++;
 	}
 	if (dir.size() > 0) {
-		std::filesystem::remove_all(dir);
+		GEngine::FileSystem::RemoveAllFolders(dir);
 		SaveProjects();
 		Search();
 	}
 }
 
+void ProjectSelectLayer::RemoveProject(const std::string& path)
+{
+	std::vector<ProjectData>::iterator it = m_projectData.begin();
+	std::string dir;
+	while (it != m_projectData.end()) {
+		if ((it->path + "/" + it->name) == path) {
+			dir = it->path + "/" + it->name + "/";
+			m_projectData.erase(it);
+			selectedProject = "";
+			break;
+		}
+		it++;
+	}
+}
+
 void ProjectSelectLayer::CreateProject(ProjectData* d) {
-    GE_CORE_DEBUG("@TODO CREATE PROJECT");
+	GE_CORE_DEBUG("@TODO CREATE PROJECT");
 	
-	std::filesystem::create_directories(d->path+"/"+d->name);
+	for (const std::string& s : create_project_dirs)
+		GEngine::FileSystem::CreateDirectories(d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/" + s);
+
+	GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/"+d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/"+d->name);
 
 	std::string filePath = d->path + "/" + d->name+"/"+d->name + ".proj";
 
@@ -474,6 +503,29 @@ void ProjectSelectLayer::CreateProject(ProjectData* d) {
 	out.close();
 
 	SaveProjects();
+}
+
+void ProjectSelectLayer::ShowProject(const std::string& path)
+{
+#ifdef GE_PLATFORM_WINDOWS
+	ProjectData* d = GetProjectDataFromPath(selectedProject);
+	std::string cmd = "explorer /select,\""+selectedProject+"/"+d->name+".proj\"";
+	std::replace(cmd.begin()+15, cmd.end(), '/', '\\');
+	GEngine::Utility::sys::exec_command(cmd);
+	cmd = "\""+selectedProject+"/"+d->name+"/Generate/GenerateProject_Windows.bat\" vs2019 --os=windows --package --target-name="+d->name;
+	std::replace(cmd.begin(), cmd.end(), '/', '\\');
+	GE_CORE_DEBUG("CMD: {0}", cmd);
+	std::string re = GEngine::Utility::sys::exec_command(cmd);
+	GE_CORE_DEBUG("RESULT: {0}", re);
+
+#endif
+#ifdef GE_PLATFORM_LINUX
+	GEngine::Utility::sys::exec_command("xdg-open " + selectedProject);
+#endif
+#ifdef GE_PLATFORM_MACOSX
+	GEngine::Utility::sys::exec_command("open " + selectedProject);
+#endif
+
 }
 
 ProjectData* ProjectSelectLayer::GetProjectDataFromPath(const std::string& path)

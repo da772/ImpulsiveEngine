@@ -8,14 +8,8 @@ namespace GEngine {
 		~FileData();
 
 
-		inline uint64_t GetDataSize() const { return m_Size - 1; }
-		inline uint64_t GetStringSize() const { return m_Size; }
+		inline uint64_t GetDataSize() const { return m_Size ; }
 		inline unsigned char* GetData() const {
-			m_Data[m_Size - 1] = 0;
-			return m_Data;
-		};
-		inline unsigned char* GetDataAsString() const {
-			m_Data[m_Size - 1] = '\0';
 			return m_Data;
 		};
 
@@ -52,6 +46,9 @@ namespace GEngine {
 		static std::string GetExecutableDir();
 		static std::string GetParentExecuteableDir(int levelsUp);
 		static std::string GetDefaultLocation();
+		static int ExtractZip(const std::string& zip, const std::string& location);
+		static void CreateDirectories(const  std::string& dir);
+		static void RemoveAllFolders(const std::string& dir);
 
 		static void OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& startPath = "", bool isFolder = false);
 

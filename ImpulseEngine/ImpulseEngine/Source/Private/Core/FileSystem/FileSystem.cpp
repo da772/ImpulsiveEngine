@@ -19,6 +19,7 @@
 
 #ifdef GE_CONSOLE_APP
 #include <nfd.h>
+#include <zip.h>
 #endif
 
 #ifdef GE_PLATFORM_MACOSX
@@ -147,7 +148,6 @@ namespace GEngine {
 
 	void FileSystem::LoadPak(std::string path, bool setDefault)
 	{
-		UnloadPak();
 		Ref<FileData> fd;
 		// Get pak file from disk
 
@@ -167,7 +167,7 @@ namespace GEngine {
 
 		// Uncompress from
 		infstream.avail_in = (uInt)fd->GetDataSize();
-		infstream.next_in = (Bytef*)fd->GetDataAsString();
+		infstream.next_in = (Bytef*)fd->GetData();
 		// Uncompress to
 		infstream.avail_out = (uInt)fd->GetDataSize();
 		infstream.next_out = (Bytef*)dstPtr;
@@ -248,7 +248,7 @@ namespace GEngine {
 			in.read((char*)&s, sizeof(uint64_t));
 			dat = (char*)realloc(dat, s);
 			in.read((char*)dat, s);
-			if (name == file) {
+			if (std::string(name) == file) {
 				fd = std::make_shared<FileData>(s, (unsigned char*)dat);
 				break;
 			}
@@ -480,6 +480,36 @@ namespace GEngine {
 		loc = __MASCOSX_GET_APPLICATION_SUPPORT();
 #endif
 		return loc;
+	}
+
+	int FileSystem::ExtractZip(const std::string& zip, const std::string& location)
+	{
+#ifdef GE_CONSOLE_APP
+		Ref<FileData> data = FileDataFromPath(zip);
+		if (data != nullptr) {
+			int res = zip_stream_extract((const char*)data->GetData(), data->GetDataSize()-1, location.c_str(), NULL, NULL);
+			if (res) {
+				GE_CORE_ERROR("Failed to extract: {0}", res);
+			}
+			return res;
+		}
+		GE_CORE_ERROR("Failed to extract: {0} : File not found", zip);
+#endif
+		return -1;
+	}
+
+	void FileSystem::CreateDirectories(const std::string& dir)
+	{
+#ifdef GE_CONSOLE_APP
+		std::filesystem::create_directories(dir);
+#endif
+	}
+
+	void FileSystem::RemoveAllFolders(const std::string& dir)
+	{
+#ifdef GE_CONSOLE_APP
+		std::filesystem::remove_all(dir);
+#endif
 	}
 
 	void FileSystem::OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& _startPath, bool isFolder)

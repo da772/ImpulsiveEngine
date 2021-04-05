@@ -102,8 +102,10 @@ private:
 	void CreateNewProjectDialog();
 	void CreateDeleteConfirmationDialog();
     void CreateProject(ProjectData* d);
+	void ShowProject(const std::string& path);
 	void OpenProject(const std::string& path);
 	void DeleteProject(const std::string& path);
+	void RemoveProject(const std::string& path);
 	ProjectData* GetProjectDataFromPath(const std::string& path);
 };
 

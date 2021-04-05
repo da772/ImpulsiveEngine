@@ -9,8 +9,8 @@ project "Scripts_CPP"
     else 
         staticruntime "on"
     end
-    targetdir ("%{wks.location}/ImpulseEditor/Bin/" .. outputdir .. "/ImpulseEditor")
-	objdir ("%{wks.location}/ImpulseEditor/Bin-Obj/" .. outputdir .. "/ImpulseEditor")
+    targetdir ("%{wks.location}/".. targetName .."/Bin/" .. outputdir .. "/".. targetName .."")
+	objdir ("%{wks.location}/".. targetName .."/Bin-Obj/" .. outputdir .. "/".. targetName .."")
 
     files 
     {

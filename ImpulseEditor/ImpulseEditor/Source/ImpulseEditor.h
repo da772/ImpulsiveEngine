@@ -1,7 +1,6 @@
 #pragma once
 #define GE_DEBUG_TOOLS
 #include <GEngine.h>
-#include "DebugLayer.h"
 
 class ExampleLayer : public GEngine::Layer
 {
