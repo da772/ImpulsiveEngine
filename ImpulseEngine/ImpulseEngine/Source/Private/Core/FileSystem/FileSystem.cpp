@@ -53,7 +53,8 @@ namespace GEngine {
 			src = FilePath(src);
 		else {
 			ex = src;
-			uint32_t slash = (uint32_t)ex.find_last_of("/\\");
+			std::replace(ex.begin(), ex.end(), '\\', '/');
+			uint32_t slash = (uint32_t)ex.find_last_of("/");
 			if (slash >= 0) {
 				ex = ex.substr(0, slash);
 			}
@@ -73,7 +74,7 @@ namespace GEngine {
 				Ref<FileData> fd = FileDataFromPath(relPath, false, false);
 				if (!srcRelative) {
 					uint32_t pos = relPath.find(ex);
-					relPath.replace(relPath.begin() + (int)pos, relPath.begin() + (int)pos + ex.size() + 1, "");
+					relPath = relPath.substr(pos+ex.size()+1, relPath.size()-pos);
 				}
 				size += sizeof(FileData)+relPath.size()*sizeof(char);
 				

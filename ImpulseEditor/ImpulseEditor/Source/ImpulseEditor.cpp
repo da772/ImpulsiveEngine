@@ -50,7 +50,10 @@ void ExampleLayer::OnAttach()
 */
 	//GEngine::SceneManager::AddScene<SplashScreenScene>("splashScreen");
 	//GEngine::SceneManager::AddScene<MainGameScene>("mainGame");
+#ifdef GE_HOT_RELOAD
+#else
 	__ReflectionMap__loadGeneratedFiles(ScriptApi::GetStorage_Native());
+#endif
 	GEngine::SceneManager::AddScene<MenuScene>("menuScene");
 	GEngine::SceneManager::SetCurrentScene("menuScene");
 	//*/

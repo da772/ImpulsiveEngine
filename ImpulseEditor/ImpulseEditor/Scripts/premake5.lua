@@ -25,14 +25,14 @@ project "Scripts_CPP"
 
     includedirs
     {
-        "%{wks.location}/ImpulseEngine/ImpulseEngine/vendor/spdlog/include",
 		"%{wks.location}/ImpulseEngine/ImpulseEngine/Source",
 		"%{wks.location}/ImpulseEngine/ImpulseEngine/vendor",
-		"%{wks.location}/ImpulseEngine/%{IncludeDir.glm}",
-		"%{wks.location}/ImpulseEngine/%{IncludeDir.entt}",	
-		"%{wks.location}/ImpulseEngine/%{IncludeDir.cr}",
-		"%{wks.location}/ImpulseEngine/%{IncludeDir.vector}",
-        "%{wks.location}/ImpulseEngine/%{IncludeDir.reflection}",
+        "%{IncludeDir.spdlog}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.vector}",
+        "%{IncludeDir.reflection}",
+        "%{IncludeDir.ImGui}",
     }
     if _OPTIONS["hot-reload"] then
     links 

@@ -11,9 +11,6 @@
 #include <sstream> 
 
 
-//#include "Public/Core/FileSystem/FileSystem.h"
-
-
 
 namespace GEngine {
 	using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
@@ -46,7 +43,7 @@ namespace GEngine {
 
 		void BeginSession(const std::string& name, const std::string& filepath = "results.json")
 		{
-			std::lock_guard lock(m_Mutex);
+			std::lock_guard<std::mutex> lock(m_Mutex);
 			if (m_CurrentSession) {
 				// If there is already a current session, then close it before beginning new one.
 				// Subsequent profiling output meant for the original session will end up in the
@@ -73,7 +70,7 @@ namespace GEngine {
 
 		void EndSession()
 		{
-			std::lock_guard lock(m_Mutex);
+			std::lock_guard<std::mutex> lock(m_Mutex);
 			InternalEndSession();
 		}
 
@@ -95,7 +92,7 @@ namespace GEngine {
 			json << "\"ts\":" << result.Start.count();
 			json << "}";
 
-			std::lock_guard lock(m_Mutex);
+			std::lock_guard<std::mutex> lock(m_Mutex);
 			if (m_CurrentSession) {
 				m_OutputStream << json.str();
 				m_OutputStream.flush();

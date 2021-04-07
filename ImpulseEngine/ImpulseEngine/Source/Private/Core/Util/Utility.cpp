@@ -126,7 +126,6 @@ namespace GEngine {
 
 	std::string Utility::dll::GetDLLExtensionName(std::string name)
 	{
-#ifdef GE_HOT_RELOAD
 
 #if defined(__linux__)
 		return "lib" + name + ".so";
@@ -137,79 +136,64 @@ namespace GEngine {
 #ifdef _WIN32
 		return name + ".dll";
 #endif
-#else
 		return "";
-#endif
 
 	}
 
 	dllptr Utility::dll::dlopen(const char* filename, int flags)
 	{
-#ifdef GE_HOT_RELOAD
 #if defined(__linux__) || defined(__APPLE__)
 		return ::dlopen(filename, RTLD_NOW);
 #endif
 #ifdef _WIN32
 		return ::LoadLibraryA(filename);
 #endif
-#else
 		return 0;
-#endif
 	}
 
     ret_err Utility::dll::dlerror() {
-#ifdef GE_HOT_RELOAD
 #if defined(__linux__) || defined(__APPLE__)
         return ::dlerror();
 #endif
 #if defined(_WIN32)
         return GetLastError();
 #endif
-#else
-        return "";
-#endif
+        return 0;
     }
 
 	int Utility::dll::dlclose(dllptr p)
 	{
-#ifdef GE_HOT_RELOAD
 #if defined(__linux__) || defined(__APPLE__)
 		return ::dlclose(p);
 #endif
 #ifdef _WIN32
 		return (int)FreeLibrary(p);
 #endif
-#else
 		return 0;
-#endif
 	}
 
 	addrptr Utility::dll::dlsym(dllptr p, const char* name)
 	{
-#ifdef GE_HOT_RELOAD
 #if defined(__linux__) || defined(__APPLE__)
 		return ::dlsym(p, name);
 #endif
 #ifdef _WIN32 
 		return ::GetProcAddress(p, name);
 #endif
-#else
 		return 0;
-#endif
 	}
 
 	std::string GEngine::Utility::sys::build_proj(const std::string& dir, const std::string& file)
 	{
-#ifdef GE_HOT_RELOAD
 		std::string cmd = "";
 #if defined(__linux__) || defined(__APPLE__)
 		cmd += "cd \"" + dir + "\" && \"./" + file;
+#endif
 #ifdef __APPLE__
 		cmd += "_Mac.command\" ";
 #endif
 #ifdef __linux__
 		cmd += "_Linux.sh\" ";
-#endif
 #endif
 #if defined(_WIN32)
 		std::string drive = dir.substr(0, 2);
@@ -273,13 +257,12 @@ namespace GEngine {
 		*/
 		GE_CORE_INFO("Native Compile Command: {0}", cmd);
 		return Utility::sys::exec_command(cmd);
-#else
-		return "";
-#endif
+
 
 	}
 
-	std::string GEngine::Utility::sys::exec_command(const std::string& cmd)
+
+	std::string Utility::sys::exec_command(const std::string& cmd)
 	{
 #if defined(__linux__) || defined (__APPLE__)
 		char buffer[2048] = { 0 };
@@ -330,6 +313,7 @@ namespace GEngine {
 		output = Utility::sys::ReadFromPipe(err_RD, out_RD);
 		return output;
 #endif
+		return "";
 	}
 
 #ifdef _WIN32

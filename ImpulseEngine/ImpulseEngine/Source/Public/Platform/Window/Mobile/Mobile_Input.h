@@ -70,7 +70,7 @@ public:
 	
     static inline std::unordered_map<uint64_t, FTouchInfo> GetTouches() {
 		{
-			std::lock_guard lock(Mobile_Touch_Callback::touchMutex);
+			std::lock_guard<std::mutex> lock(Mobile_Touch_Callback::touchMutex);
 			std::unordered_map<uint64_t, FTouchInfo> t = Mobile_Touch_Callback::touches;
 			return t;
 		}
@@ -84,7 +84,7 @@ public:
     static inline int GetTouchCount() {
 		int size = 0;
 		{
-			std::lock_guard lock(Mobile_Touch_Callback::touchMutex);
+			std::lock_guard<std::mutex> lock(Mobile_Touch_Callback::touchMutex);
 			size = (int)Mobile_Touch_Callback::touches.size();
 		}
 		return size;

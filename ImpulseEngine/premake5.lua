@@ -24,7 +24,7 @@ group "Dependencies"
 	include "ImpulseEngine/ImpulseEngine/vendor/Glad"
 	include "ImpulseEngine/ImpulseEngine/vendor/imgui"
 	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
-	include "ImpulseEngine/ImpulseEngine/vendor/Vorbis"
+	include "ImpulseEngine/ImpulseEngine/vendor/Vorbis"	
 	end
 	include "ImpulseEngine/ImpulseEngine/vendor/Enet"
 	include "ImpulseEngine/ImpulseEngine/vendor/miniupnpc"
@@ -45,6 +45,9 @@ group "Dependencies"
 		include "ImpulseEngine/ImpulseEngine/vendor/zip"
 	end
 	
+
+group "Tools"
+	include "ImpulseEngine/ImpulseEngine/Tools/Packager"
 
 group ""
 

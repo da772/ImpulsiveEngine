@@ -23,6 +23,7 @@ newoption {
 if not _OPTIONS["target-name"] then
 	_OPTIONS["target-name"] = "ImpulseEditor"
 end
+
 targetName = _OPTIONS["target-name"]
 
 workspace(targetName)
@@ -120,14 +121,14 @@ project (targetName)
 
 	includedirs 
 	{
-		"ImpulseEngine/ImpulseEngine/vendor/spdlog/include",
 		"ImpulseEngine/ImpulseEngine/Source",
 		"ImpulseEngine/ImpulseEngine/vendor",
-		"ImpulseEngine/%{IncludeDir.glm}",
-		"ImpulseEngine/%{IncludeDir.entt}",	
-		"ImpulseEngine/%{IncludeDir.cr}",
-		"ImpulseEngine/%{IncludeDir.vector}",
-		"ImpulseEngine/%{IncludeDir.reflection}",
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.vector}",
+		"%{IncludeDir.reflection}",
+		"%{IncludeDir.ImGui}",
 		"%{prj.location}/"..targetName.."/Source/",
 		"%{prj.location}/"..targetName.."/include/",
 		"%{prj.location}/"..targetName.."/Scripts/Generated"
@@ -136,7 +137,7 @@ project (targetName)
 
 	libdirs
 	{
-		"ImpulseEngine/%{IncludeDir.Vulkan}/lib",
+		"%{IncludeDir.Vulkan}/lib",
 		
 	}
 	if _OPTIONS["hot-reload"] then
@@ -320,7 +321,7 @@ project (targetName)
 	filter "system:ios"
 		architecture "ARM"
 		kind "WindowedApp"
-		linkoptions ("-F ../ImpulseEngine/%{IncludeDir.firebase}/lib/ios" .. " -ObjC")
+		linkoptions ("-F ../%{IncludeDir.firebase}/lib/ios" .. " -ObjC")
 		if _OPTIONS["hot-reload"] then
 			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
 		else
@@ -358,7 +359,7 @@ project (targetName)
 			"%{prj.location}/"..targetName.."/Source",
 			"%{prj.location}/"..targetName.."/Source/Engine/iOS",
 	
-			"ImpulseEngine/%{IncludeDir.firebase}/include"
+			"%{IncludeDir.firebase}/include"
 		}
 
 		links
@@ -473,7 +474,7 @@ project (targetName)
 			architecture "x86"
 			libdirs
 			{
-				"ImpulseEngine/%{IncludeDir.firebase}/lib/android/libx86"
+				"%{IncludeDir.firebase}/lib/android/libx86"
 			}
 			androidLibDir = "x86"
 			postbuildcommands
@@ -488,7 +489,7 @@ project (targetName)
 			architecture "x64"
 			libdirs
 			{
-				"ImpulseEngine/%{IncludeDir.firebase}/lib/android/libx64"
+				"%{IncludeDir.firebase}/lib/android/libx64"
 			}
 			androidLibDir = "x86_64"
 			postbuildcommands
@@ -504,7 +505,7 @@ project (targetName)
 			architecture "ARM"
 			libdirs
 			{
-				"ImpulseEngine/%{IncludeDir.firebase}/lib/android/libarm"
+				"%{IncludeDir.firebase}/lib/android/libarm"
 			}
 			androidLibDir = "armeabi-v7a"
 			postbuildcommands
@@ -520,7 +521,7 @@ project (targetName)
 			architecture "ARM64"
 			libdirs
 			{
-				"ImpulseEngine/%{IncludeDir.firebase}/lib/android/libarm64"
+				"%{IncludeDir.firebase}/lib/android/libarm64"
 			}
 			androidLibDir = "arm64-v8a"
 			postbuildcommands
