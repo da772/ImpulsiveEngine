@@ -54,6 +54,15 @@ project "Packager"
             runtime "Release"
             optimize "On"
 
+        links
+        {
+            "Cocoa.framework",
+			"OpenGL.framework",
+			"IOKit.framework",
+			"CoreVideo.framework",
+			"OpenAL.framework",
+        }
+
     filter "system:windows"
         systemversion "latest"
 
