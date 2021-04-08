@@ -47,13 +47,6 @@ project "Packager"
             "GE_PLATFORM_MACOSX"
         }
 
-        filter "configurations:Debug"
-            runtime "Debug"
-            symbols "On"
-        filter "configurations:Release"
-            runtime "Release"
-            optimize "On"
-
         links
         {
             "Cocoa.framework",
@@ -62,6 +55,13 @@ project "Packager"
 			"CoreVideo.framework",
 			"OpenAL.framework",
         }
+
+        filter "configurations:Debug"
+            runtime "Debug"
+            symbols "On"
+        filter "configurations:Release"
+            runtime "Release"
+            optimize "On"
 
     filter "system:windows"
         systemversion "latest"

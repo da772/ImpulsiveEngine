@@ -499,6 +499,48 @@ namespace GEngine {
 		return -1;
 	}
 
+	int FileSystem::ZipDir(const std::string& _dir, const std::string& out)
+	{
+#ifdef GE_CONSOLE_APP
+		char* outbuf = NULL;
+		ssize_t outbufsize = 0;
+		struct zip_t* zip = zip_stream_open(NULL, 0, ZIP_DEFAULT_COMPRESSION_LEVEL, 'w');
+		std::string dir = _dir;
+		std::replace(dir.begin(), dir.end(), '\\', '/');
+		zip_walk(zip, dir.c_str(), dir.size());
+		zip_stream_copy(zip, (void**)&outbuf, &outbufsize);
+		zip_stream_close(zip);
+		std::ofstream outS(out, std::ios::binary | std::ios::out | std::ios::trunc);
+		outS.write(outbuf, outbufsize);
+		outS.close();
+		free(outbuf);
+#endif
+		return 0;
+	}
+
+	void FileSystem::zip_walk(void* _zip, const char* path, size_t dirSize)
+	{
+#ifdef GE_CONSOLE_APP
+		zip_t* zip = (zip_t*)_zip;
+		std::string dir = path;
+		dir.erase(0, dirSize);
+
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
+			// skip "." and ".."
+			std::string pth = entry.path().generic_string();
+			
+			if (entry.is_directory()) {
+				
+			}
+			else {
+				zip_entry_open(zip, &pth[dirSize+1]);
+				zip_entry_fwrite(zip, pth.c_str());
+				zip_entry_close(zip);
+			}
+		}
+#endif
+	}
+
 	void FileSystem::CreateDirectories(const std::string& dir)
 	{
 #ifdef GE_CONSOLE_APP

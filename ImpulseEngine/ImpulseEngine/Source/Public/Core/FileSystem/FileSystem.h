@@ -47,6 +47,7 @@ namespace GEngine {
 		static std::string GetParentExecuteableDir(int levelsUp);
 		static std::string GetDefaultLocation();
 		static int ExtractZip(const std::string& zip, const std::string& location);
+		static int ZipDir(const std::string& dir, const std::string& out);
 		static void CreateDirectories(const  std::string& dir);
 		static void RemoveAllFolders(const std::string& dir);
 
@@ -60,6 +61,7 @@ namespace GEngine {
 		static std::unordered_map<std::string, Ref<FileData>> s_fileMap;
 		static Ref<FileData> LoadFileFromPakFile(const std::string& file, const std::string pak);
 		static std::string s_pakDir;
+		static void zip_walk(void* zip, const char* path, size_t dirSize);
 
 	};
 

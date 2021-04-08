@@ -3,6 +3,7 @@
 
 static uint8_t isCommand(const char* c);
 static void pakDir(int* p, char*, int argc, char** argv);
+static void zipDir(int* p, char*, int argc, char** argv);
 static std::string help();
 
 using cmd_func = std::unordered_map<std::string, std::function<void(int*, char*, int, char**)>>;
@@ -14,13 +15,17 @@ static cmd_func commands =
 	{"help", [](int* p, char*, int argc,char** argv) {
 		std::cout << help() << std::endl;
 	}},
-	{"pak", pakDir}
+	{"pak", pakDir},
+	{"zip", zipDir}
 };
 
 static cmd_help commands_help = {
 	{"help", help},
 	{"pak", []() {
 		return "-pak: {directory to pack} {output file}.pak";
+	}},
+	{"zip", []() {
+		return "-zip: {directory to zip} {output file}.zip";
 	}}
 };
 
@@ -74,6 +79,35 @@ void pakDir(int* p, char* cmd, int argc, char** argv) {
 		std::cout << dir[0] << " : " << dir[1] << std::endl;
 		GEngine::FileSystem::PakDirectory(dir[0], dir[1], false);
 	}
+	else {
+		std::cout << commands_help[cmd]();
+		return;
+	}
+}
+
+void zipDir(int* p, char* cmd, int argc, char** argv) {
+	int c = *p;
+	*p = *p + 1;
+	char* dir[2] = { 0,0 };
+	int counter = 0;
+	for (; *p < argc;) {
+		if (!isCommand(argv[*p]) && counter < 2) {
+			dir[counter++] = argv[*p];
+			*p = *p + 1;
+			continue;
+		}
+		break;
+	}
+	if (counter == 2) {
+		uint64_t t = GEngine::Time::GetEpochTimeMS();
+		std::cout << dir[0] << " : " << dir[1] << std::endl;
+
+		
+
+		GEngine::FileSystem::ZipDir(dir[0], dir[1]);
+		t = GEngine::Time::GetEpochTimeMS() - t;
+		std::cout << "Dir Zipped: " << dir[1] << " (" << t << "ms)" << std::endl;
+ 	}
 	else {
 		std::cout << commands_help[cmd]();
 		return;
