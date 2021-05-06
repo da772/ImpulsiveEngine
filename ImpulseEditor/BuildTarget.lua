@@ -20,6 +20,12 @@ newoption {
 	description = "build engine"
 }
 
+newoption {
+	trigger = "hot-reload",
+	description = "allows for hot reloading on the fly"
+}
+
+
 if not _OPTIONS["target-name"] then
 	_OPTIONS["target-name"] = "ImpulseEditor"
 end
@@ -211,7 +217,7 @@ project (targetName)
 		postbuildcommands
 		{
 			"call \"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content/\" \"$(ProjectDir)"..targetName.."/Data/EngineContent.pak\"",
-			"call \"%{wks.location}Tools\\Packager.exe\" -zip \"$(ProjectDir)Generate/\" \"$(ProjectDir)"..targetName.."/Content/Archives/Generate.zip\"",
+			"call \"%{wks.location}Tools\\Packager.exe\" -zip \"$(ProjectDir)Generate\" \"$(ProjectDir)"..targetName.."/Content/Archives/Generate.zip\"",
 			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
 		}
 		if _OPTIONS["hot-reload"] then

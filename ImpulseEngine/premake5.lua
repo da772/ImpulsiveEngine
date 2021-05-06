@@ -5,11 +5,6 @@ newoption {
 }
 
 newoption {
-	trigger = "hot-reload",
-	description = "allows for hot reloading on the fly"
-}
-
-newoption {
 	trigger = "server",
 	description = "build as standalone server"
 }

@@ -492,12 +492,13 @@ void ProjectSelectLayer::CreateProject(ProjectData* d) {
 		GEngine::FileSystem::CreateDirectories(d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/" + s);
 
 	GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name);
-	GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name+"/Generate");
 	GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
 	GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name);
 	GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/"+d->name);
 	GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
-	GEngine::FileSystem::ExtractZip("Content/Archives/premake5.zip", d->path + "/" + d->name);
+
+	GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false);
 
 	std::string filePath = d->path + "/" + d->name+"/"+d->name + ".proj";
 
@@ -507,7 +508,7 @@ void ProjectSelectLayer::CreateProject(ProjectData* d) {
 
 	SaveProjects();
 
-	std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject.bat\" vs2019 --os=windows --package --target-name=" + d->name;
+	std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject.bat\" vs2019 --os=windows --hot-reload --package --target-name=" + d->name;
 	std::replace(cmd.begin(), cmd.end(), '/', '\\');
 	GE_CORE_DEBUG("CMD: {0}", cmd);
 	std::string re = GEngine::Utility::sys::exec_command(cmd);
