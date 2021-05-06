@@ -138,7 +138,6 @@ project (targetName)
 	libdirs
 	{
 		"%{IncludeDir.Vulkan}/lib",
-		
 	}
 	if _OPTIONS["hot-reload"] then
 		libdirs
@@ -211,7 +210,9 @@ project (targetName)
 		}
 		postbuildcommands
 		{
-			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data\""
+			"call \"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content/\" \"$(ProjectDir)"..targetName.."/Data/EngineContent.pak\"",
+			"call \"%{wks.location}Tools\\Packager.exe\" -zip \"$(ProjectDir)Generate/\" \"$(ProjectDir)"..targetName.."/Content/Archives/Generate.zip\"",
+			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
 		}
 		if _OPTIONS["hot-reload"] then
 		postbuildcommands
@@ -483,7 +484,7 @@ project (targetName)
 			"copy /y \"%{wks.location}%{cfg.architecture}\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}%{cfg.architecture}\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}%{cfg.architecture}\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y /C \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 		filter "platforms:x64"
 			architecture "x64"
@@ -498,7 +499,7 @@ project (targetName)
 			"copy /y \"%{wks.location}x64\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}x64\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}x64\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y /C \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 			
 		filter "platforms:ARM"
@@ -514,7 +515,7 @@ project (targetName)
 			"copy /y \"%{wks.location}ARM\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}ARM\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}ARM\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y /C \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 
 		filter "platforms:ARM64"
@@ -530,7 +531,7 @@ project (targetName)
 			"copy /y \"%{wks.location}ARM64\\%{cfg.buildcfg}\\lib"..targetName..".so\"  \"%{prj.location}AndroidStudio\\app\\src\\main\\jniLibs\\" .. androidLibDir .. "\"",
 			"XCOPY /I /E /S /Y \"%{wks.location}ARM64\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."\"",
 			"RMDIR /Q/S \"%{wks.location}ARM64\"",
-			"XCOPY /I /E /S /Y \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
+			"XCOPY /I /E /S /Y /C \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}AndroidStudio\\app\\src\\main\\assets\\Data\\\""
 			}
 
 	filter "system:macosx"

@@ -118,6 +118,13 @@ namespace GEngine {
 		deflateEnd(&defstream);
 
 		// Save compressed file
+		std::string outDir = out;
+		std::replace(outDir.begin(), outDir.end(), '\\', '/');
+		uint32_t slash = (uint32_t)outDir.find_last_of("/");
+		if (slash >= 0) {
+			outDir = outDir.substr(0, slash);
+		}
+		CreateDirectories(outDir);
 		std::ofstream _outFile(out, std::ios::out | std::ios::binary | std::ios::trunc);
 		_outFile.write(buff, defstream.total_out);
 		_outFile.close();

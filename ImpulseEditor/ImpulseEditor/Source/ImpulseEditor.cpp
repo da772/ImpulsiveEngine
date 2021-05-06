@@ -106,6 +106,10 @@ ImpulseEditor::ImpulseEditor()
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET)+"ImpulseEditor/Content",
 		GEngine::FileSystem::FilePath("Data/EngineContent.pak"), false);
 
+
+
+
+
 	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/EngineContent.pak"), 
 		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/EngineContent.pak", false);
 #endif

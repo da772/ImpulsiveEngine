@@ -492,9 +492,12 @@ void ProjectSelectLayer::CreateProject(ProjectData* d) {
 		GEngine::FileSystem::CreateDirectories(d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/" + s);
 
 	GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
 	GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name);
 	GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/"+d->name);
-	GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/"+d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/premake5.zip", d->path + "/" + d->name);
 
 	std::string filePath = d->path + "/" + d->name+"/"+d->name + ".proj";
 
@@ -503,6 +506,13 @@ void ProjectSelectLayer::CreateProject(ProjectData* d) {
 	out.close();
 
 	SaveProjects();
+
+	std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject.bat\" vs2019 --os=windows --package --target-name=" + d->name;
+	std::replace(cmd.begin(), cmd.end(), '/', '\\');
+	GE_CORE_DEBUG("CMD: {0}", cmd);
+	std::string re = GEngine::Utility::sys::exec_command(cmd);
+	GE_CORE_DEBUG("RESULT: {0}", re);
+
 }
 
 void ProjectSelectLayer::ShowProject(const std::string& path)
