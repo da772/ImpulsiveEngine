@@ -104,18 +104,18 @@ ImpulseEditor::ImpulseEditor()
 
 #ifndef GE_PACKAGE
 	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET)+"ImpulseEditor/Content",
-		GEngine::FileSystem::FilePath("Data/EngineContent.pak"), false);
+		GEngine::FileSystem::FilePath("Data/ImpulseEditorContent.pak"), false);
 
 
 
 
 
-	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/EngineContent.pak"), 
-		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/EngineContent.pak", false);
+	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/ImpulseEditorContent.pak"), 
+		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/ImpulseEditorContent.pak", false, false);
 #endif
 #endif
 
-	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
+	GEngine::FileSystem::LoadPak("Data/ImpulseEditorContent.pak");
 	GE_LOG_INFO("Cores: {0}, Freq: {1}", DeviceInfo::GetCpuCount(), DeviceInfo::GetCpuFreq());
 	SetRenderScale(1.f);
 	SetRenderSamples(0);

@@ -134,7 +134,7 @@ namespace GEngine {
 #endif
 	}
 
-	void FileSystem::Copy(std::string src, std::string out, bool srcRelative /*= true*/)
+	void FileSystem::Copy(std::string src, std::string out, bool srcRelative /*= true*/, bool outRelative)
 	{
 #if defined(GE_CONSOLE_APP) || defined(GE_SERVER_APP)
 		std::string ex = GetExecutableDir();
@@ -147,7 +147,7 @@ namespace GEngine {
 				ex = ex.substr(0, slash);
 			}
 		}
-		if (srcRelative)
+		if (outRelative)
 			out = FilePath(out);
 
 		std::filesystem::copy(src, out, std::filesystem::copy_options::overwrite_existing);

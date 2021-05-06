@@ -216,8 +216,9 @@ project (targetName)
 		}
 		postbuildcommands
 		{
-			"call \"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content/\" \"$(ProjectDir)"..targetName.."/Data/EngineContent.pak\"",
+			"call \"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\"",
 			"call \"%{wks.location}Tools\\Packager.exe\" -zip \"$(ProjectDir)Generate\" \"$(ProjectDir)"..targetName.."/Content/Archives/Generate.zip\"",
+			"call \"%{wks.location}Tools\\Packager.exe\" -zip \"$(SolutionDir)Tools\" \"$(ProjectDir)"..targetName.."/Content/Archives/Tools.zip\"",
 			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
 		}
 		if _OPTIONS["hot-reload"] then

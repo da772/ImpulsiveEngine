@@ -495,16 +495,19 @@ void ProjectSelectLayer::CreateProject(ProjectData* d) {
 	GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name+"/Generate");
 	GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
 	GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name);
+	GEngine::FileSystem::ExtractZip("Content/Archives/Tools.zip", d->path + "/" + d->name+"/Tools");
 	GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/"+d->name);
 	GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
 
-	GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false);
+	GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false, false);
+
 
 	std::string filePath = d->path + "/" + d->name+"/"+d->name + ".proj";
-
 	std::ofstream out(filePath, std::ios::out | std::ios::binary | std::ios::trunc);
 	out << *d;
 	out.close();
+
+	GEngine::FileSystem::Copy("Data/ImpulseEditorContent.pak", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Data/ImpulseEditorContent.pak", true, false);
 
 	SaveProjects();
 

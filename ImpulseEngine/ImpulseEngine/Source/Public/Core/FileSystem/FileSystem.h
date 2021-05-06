@@ -36,7 +36,7 @@ namespace GEngine {
 	public:
 		
 		static void PakDirectory(std::string src, std::string out, bool srcRelative = true);
-		static void Copy(std::string src, std::string out, bool srcRelative = true);
+		static void Copy(std::string src, std::string out, bool srcRelative = true, bool outRelative = true);
 		static void LoadPak(const std::string path, bool setDefault = true);
 		static Ref<FileData> LoadFileFromPak(const std::string& path, std::string pak = "");
 		static void UnloadPak();
