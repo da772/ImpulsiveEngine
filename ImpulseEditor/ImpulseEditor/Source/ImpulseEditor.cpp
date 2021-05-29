@@ -3,7 +3,7 @@
 #include "SplashScreenScene.h"
 #include "MapEditor.hpp"
 #ifdef GE_EDITOR
-#include "ProjectSelectLayer.h"
+#include "Project/ProjectSelectLayer.h"
 #endif
 
 
@@ -163,7 +163,7 @@ ImpulseEditor::ImpulseEditor()
 #endif
 #ifdef GE_EDITOR
 	if (s_debugTools) {
-		m_ProjectSelectLayer = new ProjectSelectLayer("ProjectSelect");
+		m_ProjectSelectLayer = new Project::ProjectSelectLayer("ProjectSelect");
 		PushLayer(m_ProjectSelectLayer);
 	}
 #else
