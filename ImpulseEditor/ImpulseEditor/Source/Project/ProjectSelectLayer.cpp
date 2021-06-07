@@ -5,7 +5,7 @@
 
 namespace Project {
 
-	static const std::vector<std::string> create_project_dirs = { "Content/Editor", "Data" };
+	static const std::vector<std::string> create_project_dirs = { "Content", "Data" };
 
 	ProjectSelectLayer::ProjectSelectLayer(const std::string& name) : Layer(name)
 	{
@@ -474,6 +474,7 @@ namespace Project {
 			GEngine::FileSystem::RemoveAllFolders(dir);
 			SaveProjects();
 			Search();
+
 		}
 	}
 
@@ -498,27 +499,26 @@ namespace Project {
 		for (const std::string& s : create_project_dirs)
 			GEngine::FileSystem::CreateDirectories(d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/" + s);
 
-		GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name);
+		GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name+"/AndroidStudio");
 		GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name + "/Generate");
 		GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
-		GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name);
+		GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name+"/vendor");
 		GEngine::FileSystem::ExtractZip("Content/Archives/Tools.zip", d->path + "/" + d->name + "/Tools");
+		GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name+"/NativeScripts");
 		GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
-		GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
 
 		GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false, false);
-
 
 		std::string filePath = d->path + "/" + d->name + "/" + d->name + ".proj";
 		std::ofstream out(filePath, std::ios::out | std::ios::binary | std::ios::trunc);
 		out << *d;
 		out.close();
 
-		GEngine::FileSystem::Copy("Data/ImpulseEditorContent.pak", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Data/ImpulseEditorContent.pak", true, false);
+		GEngine::FileSystem::Copy("Data/EngineContent.pak", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Data/EngineContent.pak", true, false);
 
 		SaveProjects();
 
-		std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject.bat\" vs2019 --os=windows --hot-reload --package --target-name=" + d->name;
+		std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject.bat\" vs2019 --os=windows --engine-source=" +GEngine::FileSystem::GetParentExecuteableDir(4)+ " --hot-reload --build-openal --package --build-engine --target-name=" + d->name;
 		std::replace(cmd.begin(), cmd.end(), '/', '\\');
 		GE_CORE_DEBUG("CMD: {0}", cmd);
 		std::string re = GEngine::Utility::sys::exec_command(cmd);

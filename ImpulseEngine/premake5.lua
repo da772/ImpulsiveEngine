@@ -15,34 +15,34 @@ if _OPTIONS['build-engine'] then
 group "Dependencies"
 	if _OPTIONS['server'] then
 	else
-	include "ImpulseEngine/ImpulseEngine/vendor/GLFW"
-	include "ImpulseEngine/ImpulseEngine/vendor/Glad"
-	include "ImpulseEngine/ImpulseEngine/vendor/imgui"
-	include "ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0"
-	include "ImpulseEngine/ImpulseEngine/vendor/Vorbis"	
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/GLFW")
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/Glad")
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/imgui")
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/freetype-2.10.0")
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/Vorbis")
 	end
-	include "ImpulseEngine/ImpulseEngine/vendor/Enet"
-	include "ImpulseEngine/ImpulseEngine/vendor/miniupnpc"
-	include "ImpulseEngine/ImpulseEngine/vendor/zlib"
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/Enet")
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/miniupnpc")
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/zlib")
 	
-	--include "ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
-	include "ImpulseEngine/ImpulseEngine/vendor/box2d"
+	--include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/freetype-gl"
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/box2d")
 	if _OPTIONS['build-openal'] then
-		include "ImpulseEngine/ImpulseEngine/vendor/OpenAL"
+		include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/OpenAL")
 	end
 
 	if _OPTIONS['os'] == "macosx" then
-		include "ImpulseEngine/ImpulseEngine/Modules/ObjCWrapper"
+		include(vendorSrc.."ImpulseEngine/ImpulseEngine/Modules/ObjCWrapper")
 	end
 
 	if (_OPTIONS['os'] == "macosx" or _OPTIONS['os'] == "windows" or _OPTIONS['os'] == "linux") then
-		include "ImpulseEngine/ImpulseEngine/vendor/nativefiledialog"
-		include "ImpulseEngine/ImpulseEngine/vendor/zip"
+		include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/nativefiledialog")
+		include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/zip")
 	end
 	
 
 group "Tools"
-	include "ImpulseEngine/ImpulseEngine/Tools/Packager"
+	include(vendorSrc.."ImpulseEngine/ImpulseEngine/Tools/Packager")
 
 group ""
 

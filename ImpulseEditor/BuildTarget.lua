@@ -5,6 +5,14 @@ newoption {
 	description = "set target name"
 }
 
+
+newoption {
+	trigger = "engine-source",
+	value = "",
+	description = "set location of engine source"
+}
+
+
 newoption {
 	trigger = "build-editor",
 	description = "build editor"
@@ -14,6 +22,8 @@ newoption {
 	trigger = "package",
 	description = "package project for distribution"
 }
+
+
 
 newoption {
 	trigger = "build-engine",
@@ -31,6 +41,13 @@ if not _OPTIONS["target-name"] then
 end
 
 targetName = _OPTIONS["target-name"]
+if not _OPTIONS['engine-source'] then
+	engineSrc = "%{wks.location}/"
+	vendorSrc = ""
+else 
+	engineSrc = _OPTIONS["engine-source"]
+	vendorSrc = _OPTIONS["engine-source"]
+end
 
 workspace(targetName)
 	architecture "x64"
@@ -73,9 +90,13 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 include "vendor"
 if _OPTIONS['build-engine'] then
-include "ImpulseEngine"
+	if not _OPTIONS['engine-source'] then
+		include ("ImpulseEngine")
+	else 
+		include (engineSrc.."ImpulseEngine")
+	end
 end
-include(targetName.."/"..targetName.."/Scripts/")
+include(targetName.."/"..targetName.."/NativeScripts/")
 
 
 project (targetName)
@@ -127,8 +148,8 @@ project (targetName)
 
 	includedirs 
 	{
-		"ImpulseEngine/ImpulseEngine/Source",
-		"ImpulseEngine/ImpulseEngine/vendor",
+		engineSrc.."ImpulseEngine/ImpulseEngine/Source",
+		engineSrc.."ImpulseEngine/ImpulseEngine/vendor",
 		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
@@ -137,7 +158,7 @@ project (targetName)
 		"%{IncludeDir.ImGui}",
 		"%{prj.location}/"..targetName.."/Source/",
 		"%{prj.location}/"..targetName.."/include/",
-		"%{prj.location}/"..targetName.."/Scripts/Generated"
+		"%{prj.location}/"..targetName.."/NativeScripts/Generated"
 
 	}
 
@@ -148,12 +169,12 @@ project (targetName)
 	if _OPTIONS["hot-reload"] then
 		libdirs
 		{
-			"ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"
+			engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"
 		}
 	else
 		libdirs
 		{
-			"ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"
+			engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"
 		}
 	end
 
@@ -184,7 +205,7 @@ project (targetName)
 	}
 	links
 	{
-		"Scripts_CPP"
+		"NativeScripts"
 	}
 	end
 	if _OPTIONS['server'] then
@@ -216,18 +237,33 @@ project (targetName)
 		}
 		postbuildcommands
 		{
-			"call \"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\"",
-			"call \"%{wks.location}Tools\\Packager.exe\" -zip \"$(ProjectDir)Generate\" \"$(ProjectDir)"..targetName.."/Content/Archives/Generate.zip\"",
-			"call \"%{wks.location}Tools\\Packager.exe\" -zip \"$(SolutionDir)Tools\" \"$(ProjectDir)"..targetName.."/Content/Archives/Tools.zip\"",
 			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
 		}
+		if _OPTIONS["build-editor"] then
+			postbuildcommands
+			{
+				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}AndroidStudio\" \"%{prj.location}"..targetName.."/Content/Archives/AndroidStudio.zip\"",
+				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}vendor\" \"%{prj.location}"..targetName.."/Content/Archives/vendor.zip\"",
+				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
+				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
+				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
+				"call \"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\""
+				
+			}
+		else 
+			postbuildcommands
+			{
+				"call \"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\""
+			}
+		end
 		if _OPTIONS["hot-reload"] then
 		postbuildcommands
 		{
-			"copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.dll\" \"$(TARGETDIR)ImpulseEngine.dll\"",
-			"copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.pdb\" \"$(TARGETDIR)ImpulseEngine.pdb\""
+			"copy /Y  \""..engineSrc.."ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.dll\" \"$(TARGETDIR)ImpulseEngine.dll\"",
+			"copy /Y  \""..engineSrc.."ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.pdb\" \"$(TARGETDIR)ImpulseEngine.pdb\""
 		}
 		end
+
 
 
 		filter "configurations:Debug"
@@ -252,9 +288,9 @@ project (targetName)
 			systemversion "latest"
 			kind "ConsoleApp"
 			if _OPTIONS["hot-reload"] then
-				linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
 			else
-				linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 			end
 			postbuildcommands
 			{
@@ -331,9 +367,9 @@ project (targetName)
 		kind "WindowedApp"
 		linkoptions ("-F ../%{IncludeDir.firebase}/lib/ios" .. " -ObjC")
 		if _OPTIONS["hot-reload"] then
-			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+			linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
 		else
-			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+			linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 		end
 		defines
 		{
@@ -428,9 +464,9 @@ project (targetName)
 		exceptionhandling ("On")
 
 		if _OPTIONS["hot-reload"] then
-			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+			linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
 		else
-			linkoptions {"-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+			linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 		end
 
 		androidapilevel(android_version)
@@ -546,9 +582,9 @@ project (targetName)
 		kind "WindowedApp"
 		buildoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
 		if _OPTIONS["hot-reload"] then
-			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
 		else
-			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 		end
 		defines
 		{

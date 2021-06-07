@@ -530,18 +530,33 @@ namespace GEngine {
 #ifdef GE_CONSOLE_APP
 		zip_t* zip = (zip_t*)_zip;
 		std::string dir = path;
-		dir.erase(0, dirSize);
 
-		for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
-			// skip "." and ".."
-			std::string pth = entry.path().generic_string();
-			
-			if (entry.is_directory()) {
-				
+
+		if (std::filesystem::is_directory(path)) {
+
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
+				// skip "." and ".."
+				std::string pth = entry.path().generic_string();
+
+				if (entry.is_directory()) {
+
+				}
+				else {
+					zip_entry_open(zip, &pth[dirSize + 1]);
+					zip_entry_fwrite(zip, pth.c_str());
+					zip_entry_close(zip);
+				}
 			}
-			else {
-				zip_entry_open(zip, &pth[dirSize+1]);
-				zip_entry_fwrite(zip, pth.c_str());
+		}
+		else {
+			if (dir[dir.size() - 1] == '/') {
+				dir.erase(dir.begin() + dir.size()-1);
+			}
+			size_t pos = dir.find_last_of('/');
+			if (pos != std::string::npos) {
+				dir = dir.substr(pos+1, dir.size() - pos);
+				zip_entry_open(zip, dir.data());
+				zip_entry_fwrite(zip, path);
 				zip_entry_close(zip);
 			}
 		}

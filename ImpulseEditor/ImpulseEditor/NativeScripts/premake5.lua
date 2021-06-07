@@ -1,4 +1,4 @@
-project "Scripts_CPP"
+project "NativeScript"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
