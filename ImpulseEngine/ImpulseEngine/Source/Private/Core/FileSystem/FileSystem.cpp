@@ -570,10 +570,14 @@ namespace GEngine {
 #endif
 	}
 
-	void FileSystem::RemoveAllFolders(const std::string& dir)
+	bool FileSystem::RemoveAllFolders(const std::string& dir)
 	{
 #ifdef GE_CONSOLE_APP
-		std::filesystem::remove_all(dir);
+		std::error_code er = {};
+		uintmax_t count = 0;
+		std::filesystem::_Remove_all_dir(dir, er, count);
+		if (er.value() != 0) return false;
+		return true;
 #endif
 	}
 

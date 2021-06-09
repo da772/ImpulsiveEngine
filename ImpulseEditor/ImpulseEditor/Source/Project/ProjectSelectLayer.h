@@ -35,6 +35,7 @@ namespace Project {
 		char m_search_char[512] = { 0 };
 		bool m_createProjectModal = false;
 		bool m_confirmDeleteModal = false;
+		bool m_deleteFail = false;
 
 		GEngine::Ref<GEngine::Texture2D> searchIcon;
 		GEngine::Ref<GEngine::Texture2D> checkerBoardIcon;
@@ -50,7 +51,7 @@ namespace Project {
 		void CreateProject(ProjectData* d);
 		void ShowProject(const std::string& path);
 		void OpenProject(const std::string& path);
-		void DeleteProject(const std::string& path);
+		bool DeleteProject(const std::string& path);
 		void RemoveProject(const std::string& path);
 		ProjectData* GetProjectDataFromPath(const std::string& path);
 	};

@@ -1,6 +1,6 @@
 #include "gepch.h"
 #include "Public/Core/ImGui/ImGuiLog.h"
-
+#ifndef GE_GRAPHICS_API_NONE
 namespace GEngine {
 
 
@@ -132,3 +132,5 @@ namespace GEngine {
 
 
 }
+
+#endif

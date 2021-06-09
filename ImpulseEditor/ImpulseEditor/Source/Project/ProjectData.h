@@ -17,8 +17,12 @@ namespace Project {
 		uint32_t languages;
 
 
-		bool isValid() {
+		inline bool isValid() const {
 			return name.size() > 0 && path.size() > 0;
+		}
+
+		inline bool isNative() const {
+			return languages & (uint32_t)ProjectDataLanguages::NATIVE;
 		}
 
 

@@ -2,6 +2,20 @@
 #ifdef GE_EDITOR
 #include "imgui/imgui_internal.h"
 #endif
+#ifdef GE_PLATFORM_WINDOWS
+#define GE_PLATFORM_OS "windows"
+#define GE_PLATFORM_MAKE "vs2019"
+#define GE_CMD_EXTENSION "bat"
+#elif GE_PLATFORM_LINUX
+#define GE_PLATFORM_OS "linux"
+#define GE_PLATFORM_MAKE "gmake2"
+#define GE_CMD_EXTENSION "sh"
+#else
+#define GE_PLATFORM_OS "macosx"
+#define GE_PLATFORM_MAKE "xcode4"
+#define GE_CMD_EXTENSION "command"
+#endif
+
 
 namespace Project {
 
@@ -165,6 +179,14 @@ namespace Project {
 			ShowProject(selectedProject);
 		}
 
+		if (selectedProject.size() > 0 && GetProjectDataFromPath(selectedProject)->languages & (uint32_t)Project::ProjectDataLanguages::NATIVE) {
+			ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
+			if (ImGui::Button("Generate", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
+				GE_CORE_DEBUG("GENEREATE");
+				//ShowProject(selectedProject);
+			}
+		}
+
 		ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
 		if (ImGui::Button("Remove", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
 			RemoveProject(selectedProject);
@@ -174,6 +196,7 @@ namespace Project {
 		ImGui::PushStyleColor(ImGuiCol_Text, { 1.f,0.f,0.f,1.f });
 		if (ImGui::Button("Delete", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
 			m_confirmDeleteModal = true;
+			m_deleteFail = false;
 			ImGui::OpenPopup("Delete Project?");
 		}
 		ImGui::PopStyleColor();
@@ -349,8 +372,6 @@ namespace Project {
 			ImGui::RadioButton("Scripting", (int*)&m_newProjectLanguage, (uint32_t)ProjectDataLanguages::SCRIPTING);
 			ImGui::SameLine();
 			ImGui::RadioButton("Native", (int*)&m_newProjectLanguage, (uint32_t)ProjectDataLanguages::NATIVE);
-			ImGui::SameLine();
-			ImGui::RadioButton("Both", (int*)&m_newProjectLanguage, (uint32_t)ProjectDataLanguages::SCRIPTING | (uint32_t)(ProjectDataLanguages::NATIVE));
 
 			if (ImGui::Button("Create", ImVec2(120, 0))) {
 				m_newProjectError = "";
@@ -393,7 +414,7 @@ namespace Project {
 	void ProjectSelectLayer::CreateDeleteConfirmationDialog()
 	{
 #ifdef GE_EDITOR
-		if (m_confirmDeleteModal) ImGui::SetNextWindowSize({ 400, 200 });
+		if (m_confirmDeleteModal) ImGui::SetNextWindowSize({ 400, 0 });
 		if (ImGui::BeginPopupModal("Delete Project?", &m_confirmDeleteModal, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 		{
 			if (!ImGui::IsWindowHovered()) {
@@ -414,16 +435,26 @@ namespace Project {
 			std::replace(_path.begin(), _path.end(), '\\', '/');
 			ImGui::Text((d->name + "\n" + _path + "/").c_str());
 			ImGui::TextColored({ 1.f,1.f,0.f,1.f }, (std::string("WARNING:\nDeleting this project will destroy its entire directory\n")).c_str());
+			ImGui::Separator();
+			ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.f - 40);
 			if (ImGui::Button("Yes")) {
-				DeleteProject(selectedProject);
-				selectedProject = "";
-				m_confirmDeleteModal = false;
-				ImGui::CloseCurrentPopup();
+				if (DeleteProject(selectedProject)) {
+					selectedProject = "";
+					m_confirmDeleteModal = false;
+					m_deleteFail = false;
+					ImGui::CloseCurrentPopup();
+				}
+				else {
+					m_deleteFail = true;
+				}
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("No")) {
 				m_confirmDeleteModal = false;
 				ImGui::CloseCurrentPopup();
+			}
+			if (m_deleteFail) {
+				ImGui::TextColored({ 1.f,0.f,0.f,1.f }, "Permission Denied.");
 			}
 			ImGui::EndPopup();
 		}
@@ -457,25 +488,29 @@ namespace Project {
 		}
 	}
 
-	void ProjectSelectLayer::DeleteProject(const std::string& path)
+	bool ProjectSelectLayer::DeleteProject(const std::string& path)
 	{
 		std::vector<ProjectData>::iterator it = m_projectData.begin();
 		std::string dir;
 		while (it != m_projectData.end()) {
 			if ((it->path + "/" + it->name) == path) {
 				dir = it->path + "/" + it->name + "/";
-				m_projectData.erase(it);
-				selectedProject = "";
 				break;
 			}
 			it++;
 		}
+		bool canDel = GEngine::FileSystem::RemoveAllFolders(dir);
+		if (!canDel) {
+			return false;
+		}
+		selectedProject = "";
+		m_projectData.erase(it);
 		if (dir.size() > 0) {
-			GEngine::FileSystem::RemoveAllFolders(dir);
 			SaveProjects();
 			Search();
-
 		}
+
+		return true;
 	}
 
 	void ProjectSelectLayer::RemoveProject(const std::string& path)
@@ -494,20 +529,21 @@ namespace Project {
 	}
 
 	void ProjectSelectLayer::CreateProject(ProjectData* d) {
-		GE_CORE_DEBUG("@TODO CREATE PROJECT");
 
 		for (const std::string& s : create_project_dirs)
 			GEngine::FileSystem::CreateDirectories(d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/" + s);
 
-		GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name+"/AndroidStudio");
-		GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name + "/Generate");
-		GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
-		GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name+"/vendor");
-		GEngine::FileSystem::ExtractZip("Content/Archives/Tools.zip", d->path + "/" + d->name + "/Tools");
-		GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name+"/NativeScripts");
-		GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
 
-		GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false, false);
+		GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name+"/AndroidStudio");
+		GEngine::FileSystem::ExtractZip("Content/Archives/Tools.zip", d->path + "/" + d->name + "/Tools");
+		if (d->isNative()) {
+			GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name + "/Generate");
+			GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
+			GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name + "/vendor");
+			GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/NativeScripts");
+			GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
+			GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false, false);
+		}
 
 		std::string filePath = d->path + "/" + d->name + "/" + d->name + ".proj";
 		std::ofstream out(filePath, std::ios::out | std::ios::binary | std::ios::trunc);
@@ -517,12 +553,22 @@ namespace Project {
 		GEngine::FileSystem::Copy("Data/EngineContent.pak", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Data/EngineContent.pak", true, false);
 
 		SaveProjects();
+		if (d->isNative()) {
+#ifndef GE_PLATFORM_WINDOWS
+			std::string permission = "chmod +x \"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
+			GE_CORE_DEBUG("CMD: {0}", permission);
+			GE_CORE_DEBUG("RESULT: {0}", GEngine::Utility::sys::exec_command(cmd));
+#endif
 
-		std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject.bat\" vs2019 --os=windows --engine-source=" +GEngine::FileSystem::GetParentExecuteableDir(4)+ " --hot-reload --build-openal --package --build-engine --target-name=" + d->name;
-		std::replace(cmd.begin(), cmd.end(), '/', '\\');
-		GE_CORE_DEBUG("CMD: {0}", cmd);
-		std::string re = GEngine::Utility::sys::exec_command(cmd);
-		GE_CORE_DEBUG("RESULT: {0}", re);
+			std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\" " + GE_PLATFORM_MAKE + " --os=" + GE_PLATFORM_OS + " --engine-source=" + GEngine::FileSystem::GetParentExecuteableDir(4) + " --hot-reload --package --build-engine --target-name=" + d->name;
+#ifdef GE_PLATFORM_WINDOWS
+			cmd += " --build-openal";
+#endif
+			std::replace(cmd.begin(), cmd.end(), '/', '\\');
+			GE_CORE_DEBUG("CMD: {0}", cmd);
+			std::string re = GEngine::Utility::sys::exec_command(cmd);
+			GE_CORE_DEBUG("RESULT: {0}", re);
+		}
 
 	}
 
@@ -533,11 +579,6 @@ namespace Project {
 		std::string cmd = "explorer /select,\"" + selectedProject + "/" + d->name + ".proj\"";
 		std::replace(cmd.begin() + 15, cmd.end(), '/', '\\');
 		GEngine::Utility::sys::exec_command(cmd);
-		cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject_Windows.bat\" vs2019 --os=windows --package --target-name=" + d->name;
-		std::replace(cmd.begin(), cmd.end(), '/', '\\');
-		GE_CORE_DEBUG("CMD: {0}", cmd);
-		std::string re = GEngine::Utility::sys::exec_command(cmd);
-		GE_CORE_DEBUG("RESULT: {0}", re);
 
 #endif
 #ifdef GE_PLATFORM_LINUX
@@ -554,7 +595,7 @@ namespace Project {
 		std::vector<ProjectData>::iterator it = m_projectData.begin();
 		while (it != m_projectData.end()) {
 			if ((it->path + "/" + it->name) == path) {
-				return &*it; // ???
+				return &*it; // 1:12
 			}
 			it++;
 		}

@@ -49,7 +49,7 @@ namespace GEngine {
 		static int ExtractZip(const std::string& zip, const std::string& location);
 		static int ZipDir(const std::string& dir, const std::string& out);
 		static void CreateDirectories(const  std::string& dir);
-		static void RemoveAllFolders(const std::string& dir);
+		static bool RemoveAllFolders(const std::string& dir);
 
 		static void OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& startPath = "", bool isFolder = false);
 

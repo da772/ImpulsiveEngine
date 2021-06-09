@@ -1,5 +1,5 @@
 #pragma once
-
+#ifndef GE_GRAPHICS_API_NONE
 #include <imgui.h>
 
 namespace GEngine{
@@ -33,3 +33,4 @@ namespace GEngine{
 
 }
 
+#endif
