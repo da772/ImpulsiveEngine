@@ -531,6 +531,25 @@ namespace GEngine {
 		return 0;
 	}
 
+	int FileSystem::ZipFiles(const std::vector<std::string>& dirs, const std::string& out)
+	{
+#ifdef GE_CONSOLE_APP
+		char* outbuf = NULL;
+		ssize_t outbufsize = 0;
+		struct zip_t* zip = zip_stream_open(NULL, 0, ZIP_DEFAULT_COMPRESSION_LEVEL, 'w');
+		for (std::string dir : dirs) {
+			std::replace(dir.begin(), dir.end(), '\\', '/');
+			zip_walk(zip, dir.c_str(), dir.size());
+		}
+		zip_stream_copy(zip, (void**)&outbuf, &outbufsize);
+		zip_stream_close(zip);
+		std::ofstream outS(out, std::ios::binary | std::ios::out | std::ios::trunc);
+		outS.write(outbuf, outbufsize);
+		outS.close();
+#endif
+		return 0;
+	}
+
 	void FileSystem::zip_walk(void* _zip, const char* path, size_t dirSize)
 	{
 #ifdef GE_CONSOLE_APP

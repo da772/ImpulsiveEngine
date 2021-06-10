@@ -478,7 +478,7 @@ namespace Project {
 				ImGui::BeginChild("GenerateFlagsLeft", { ImGui::GetWindowWidth() / 2,  (platformStruct.generationFlags.size() / 2.f) * 40.f }, false);
 
 				for (int i = platformStruct.generationFlags.size() <= 1 ? 2 : platformStruct.generationFlags.size() / 2; i < platformStruct.generationFlags.size(); i++) {
-					ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[i]).c_str(), &m_generateFlags, (uint32_t)platformStruct.generationFlags[i]);
+					ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[i]).c_str(), (unsigned int*)&m_generateFlags, (uint32_t)platformStruct.generationFlags[i]);
 				}
 
 				ImGui::EndChild();
@@ -486,18 +486,21 @@ namespace Project {
 				ImGui::BeginChild("GenerateFlagsRight", { ImGui::GetWindowWidth() / 2, (platformStruct.generationFlags.size() / 2.f) * 40.f}, false);
 
 				for (int i = 0; i < platformStruct.generationFlags.size() / 2; i++) {
-					ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[i]).c_str(), &m_generateFlags, (uint32_t)platformStruct.generationFlags[i]);
+					ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[i]).c_str(), (unsigned int*)&m_generateFlags, (uint32_t)platformStruct.generationFlags[i]);
 				}
 
 				ImGui::EndChild();	
 				
 			}
 			else {
-				ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[0]).c_str(), &m_generateFlags, (uint32_t)platformStruct.generationFlags[0]);
+				ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[0]).c_str(), (unsigned int*)&m_generateFlags, (uint32_t)platformStruct.generationFlags[0]);
 			}
 
 			ImGui::Separator();
-			ImGui::Button("Generate");
+			if (ImGui::Button("Generate")) {
+				GenerateProject();
+				ImGui::CloseCurrentPopup();
+			}
 			ImGui::EndPopup();
 		}
 
@@ -647,6 +650,7 @@ namespace Project {
 		GEngine::FileSystem::Copy("Data/EngineContent.pak", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Data/EngineContent.pak", true, false);
 
 		SaveProjects();
+		/*
 		if (d->isNative()) {
 #ifndef GE_PLATFORM_WINDOWS
 			std::string permission = "chmod +x \"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
@@ -663,7 +667,18 @@ namespace Project {
 			std::string re = GEngine::Utility::sys::exec_command(cmd);
 			GE_CORE_DEBUG("RESULT: {0}", re);
 		}
+		*/
+	}
 
+	void ProjectSelectLayer::GenerateProject()
+	{
+		ProjectData* d = GetProjectDataFromPath(selectedProject);
+		std::string flags = Generation::GenerateProject::GenerateCommand(static_cast<Generation::PlatformFlags>(m_generatePlatform), static_cast<Generation::ProjectFlags>(m_generateBuild), m_generateFlags);
+		std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\" "+flags + " --engine-source=" + GEngine::FileSystem::GetParentExecuteableDir(4) + " --target-name=\""+d->name+"\"";
+		std::replace(cmd.begin(), cmd.end(), '/', '\\');
+		GE_CORE_DEBUG("CMD {0}", cmd);
+		std::string re = GEngine::Utility::sys::exec_command(cmd);
+		GE_CORE_DEBUG("RESULT: {0}", re);	
 	}
 
 	void ProjectSelectLayer::ShowProject(const std::string& path)

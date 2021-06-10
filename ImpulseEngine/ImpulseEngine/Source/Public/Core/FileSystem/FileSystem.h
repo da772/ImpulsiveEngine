@@ -48,6 +48,7 @@ namespace GEngine {
 		static std::string GetDefaultLocation();
 		static int ExtractZip(const std::string& zip, const std::string& location);
 		static int ZipDir(const std::string& dir, const std::string& out);
+		static int ZipFiles(const std::vector<std::string>& , const std::string& out);
 		static void CreateDirectories(const  std::string& dir);
 		static bool RemoveAllFolders(const std::string& dir);
 

@@ -29,7 +29,7 @@ namespace Project {
 		std::string m_newProjectError;
 		uint32_t m_newProjectLanguage = 0x01;
 		uint32_t m_generatePlatform = 0x01;
-		uint32_t m_generateFlags = 0x00;
+		uint64_t m_generateFlags = 0x00;
 		uint32_t m_generateBuild = 0x00;
 
 		std::string m_defaultProjectName = "MyProject";
@@ -54,6 +54,7 @@ namespace Project {
 		void CreateDeleteConfirmationDialog();
 		void CreateGenerateDialog();
 		void CreateProject(ProjectData* d);
+		void GenerateProject();
 		void ShowProject(const std::string& path);
 		void OpenProject(const std::string& path);
 		bool DeleteProject(const std::string& path);

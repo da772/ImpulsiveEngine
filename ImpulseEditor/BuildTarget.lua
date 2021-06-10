@@ -193,8 +193,7 @@ project (targetName)
 	defines
 	{
 		"GE_DYNAMIC_LINK",
-		"GE_PRJ_OFFSET=3",
-		"GE_EDITOR"
+		"GE_PRJ_OFFSET=3"
 	}
 	else
 	defines 
@@ -331,8 +330,24 @@ project (targetName)
 				"GE_PLATFORM_LINUX"
 			}
 	
+			if _OPTIONS["build-editor"] then
+				postbuildcommands
+				{
+					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}AndroidStudio\" \"%{prj.location}"..targetName.."/Content/Archives/AndroidStudio.zip\"",
+					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{wks.location}vendor\" \"%{prj.location}"..targetName.."/Content/Archives/vendor.zip\"",
+					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
+					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
+					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
+					"./\"%{wks.location}Tools/Packager_Linux\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\""
+					
+				}
+			else 
+				postbuildcommands
+				{
+					"./\"%{wks.location}Tools\\Packager_Linux\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\""
+				}
+			end
 			
-	
 			
 			filter "configurations:Debug"
 				defines "GE_DEBUG"
@@ -620,6 +635,23 @@ project (targetName)
 			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
 			--"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Res\" ${TARGET_BUILD_DIR}",
 		}
+
+		if _OPTIONS["build-editor"] then
+			postbuildcommands
+			{
+				"./\"%{wks.location}Tools/Packager_MacOSX\" -zip \"%{prj.location}AndroidStudio\" \"%{prj.location}"..targetName.."/Content/Archives/AndroidStudio.zip\"",
+				"./\"%{wks.location}Tools/Packager_MacOSX\" -zip \"%{wks.location}vendor\" \"%{prj.location}"..targetName.."/Content/Archives/vendor.zip\"",
+				"./\"%{wks.location}Tools/Packager_MacOSX\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
+				"./\"%{wks.location}Tools/Packager_MacOSX\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
+				"./\"%{wks.location}Tools/Packager_MacOSX\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
+				"./\"%{wks.location}Tools/Packager_MacOSX\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\""
+			}
+		else 
+			postbuildcommands
+			{
+				"./\"%{wks.location}Tools\\Packager_MacOSX\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\""
+			}
+		end
 
 		
 		filter "configurations:Debug"

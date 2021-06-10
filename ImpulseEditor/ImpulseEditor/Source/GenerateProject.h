@@ -77,6 +77,8 @@ namespace Generation {
 			return platformData;
 		}
 
+		static std::string GenerateCommand(const PlatformFlags& platform, const ProjectFlags& project, const uint64_t& generation);
+
 
 	private:
 		static std::unordered_map <ProjectFlags, std::pair<std::string ,std::string>> projectFlagsStr;

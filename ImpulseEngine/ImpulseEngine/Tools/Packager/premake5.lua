@@ -56,6 +56,14 @@ project "Packager"
 			"OpenAL.framework",
         }
 
+        filename ("Packager_MacOSX")
+
+        postbuildcommands
+        {
+            "cp -f %{prj.location}Bin/" .. outputdir .. "/%{prj.name}/Packager %{wks.location}Tools/Packager_MacOSX",
+            "chmod +x %{wks.location}Tools/Packager_MacOSX"
+        }
+
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"
@@ -74,9 +82,14 @@ project "Packager"
         postbuildcommands
         {
             "copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.dll\" \"$(TARGETDIR)ImpulseEngine.dll\"",
-            "copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.pdb\" \"$(TARGETDIR)ImpulseEngine.pdb\""
+            "copy /Y  \"%{wks.location}ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.pdb\" \"$(TARGETDIR)ImpulseEngine.pdb\"",
         }
         end
+
+        postbuildcommands 
+        {
+            "copy /Y  %{prj.location}Bin\\" .. outputdir .. "\\%{prj.name}\\Packager.exe %{wks.location}Tools\\Packager.exe"
+        }
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"
@@ -94,9 +107,17 @@ project "Packager"
         if _OPTIONS['hot-reload'] then
         pic "On"
         end
+
+        postbuildcommands
+        {
+            "cp -f %{prj.location}Bin/" .. outputdir .. "/%{prj.name}/Packager %{wks.location}Tools/Packager_Linux",
+            "chmod +x %{wks.location}Tools/Packager_Linux"
+        }
+
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"
         filter "configurations:Release"
             runtime "Release"
             optimize "On"
+        
