@@ -1,4 +1,7 @@
 #include "ProjectSelectLayer.h"
+
+#include "GenerateProject.h"
+
 #ifdef GE_EDITOR
 #include "imgui/imgui_internal.h"
 #endif
@@ -178,14 +181,17 @@ namespace Project {
 		if (ImGui::Button("Show", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
 			ShowProject(selectedProject);
 		}
-
+		
 		if (selectedProject.size() > 0 && GetProjectDataFromPath(selectedProject)->languages & (uint32_t)Project::ProjectDataLanguages::NATIVE) {
 			ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
 			if (ImGui::Button("Generate", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
 				GE_CORE_DEBUG("GENEREATE");
+				m_generateModal = true;
+				ImGui::OpenPopup("Generate Project");
 				//ShowProject(selectedProject);
 			}
 		}
+		CreateGenerateDialog();
 
 		ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
 		if (ImGui::Button("Remove", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
@@ -411,6 +417,93 @@ namespace Project {
 		//GE_CORE_DEBUG("FOLDER OPEN: {0}", str);
 	}
 
+	void ProjectSelectLayer::CreateGenerateDialog()
+	{
+#ifdef GE_EDITOR
+		if (m_generateModal) ImGui::SetNextWindowSize({ 400,0 });
+		if (ImGui::BeginPopupModal("Generate Project", &m_generateModal, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+
+			ImGui::Text("Platform: ");
+			ImGui::SameLine();
+			
+
+			auto& d = Generation::GenerateProject::GetPlatformData();
+			Generation::PlatformStructure platformStruct = d[static_cast<Generation::PlatformFlags>(m_generatePlatform)];
+
+			if (ImGui::BeginCombo("##Platform", Generation::GenerateProject::PlatformFlagToStr(static_cast<Generation::PlatformFlags>(m_generatePlatform)).c_str())) {
+
+				for (const auto& p : d) {
+
+					bool is_selected = (uint32_t)p.first == m_generatePlatform;
+					if (ImGui::Selectable(Generation::GenerateProject::PlatformFlagToStr(p.first).c_str(), is_selected)) {
+						m_generatePlatform = (uint32_t)p.first;
+						m_generateFlags = 0;
+						platformStruct = d[static_cast<Generation::PlatformFlags>(m_generatePlatform)];
+						m_generateBuild = (uint32_t)platformStruct.projectFlags[0];
+						for (int i = 0; i < platformStruct.generationFlags.size(); i++) {
+							m_generateFlags = m_generateFlags | (uint32_t)platformStruct.generationFlags[i];
+						}
+					}
+
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::Text("Project Type: ");
+			ImGui::SameLine();
+
+			if (ImGui::BeginCombo("##Project", Generation::GenerateProject::ProjectFlagToStr(static_cast<Generation::ProjectFlags>(m_generateBuild)).c_str())) {
+
+				for (const auto& p : platformStruct.projectFlags) {
+
+					bool is_selected = (uint32_t)p == m_generateBuild;
+					if (ImGui::Selectable(Generation::GenerateProject::ProjectFlagToStr(p).c_str(), is_selected)) {
+						m_generateBuild = (uint32_t)p;
+					}
+
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			if (platformStruct.generationFlags.size() > 1) {
+
+
+				ImGui::BeginChild("GenerateFlagsLeft", { ImGui::GetWindowWidth() / 2,  (platformStruct.generationFlags.size() / 2.f) * 40.f }, false);
+
+				for (int i = platformStruct.generationFlags.size() <= 1 ? 2 : platformStruct.generationFlags.size() / 2; i < platformStruct.generationFlags.size(); i++) {
+					ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[i]).c_str(), &m_generateFlags, (uint32_t)platformStruct.generationFlags[i]);
+				}
+
+				ImGui::EndChild();
+				ImGui::SameLine();
+				ImGui::BeginChild("GenerateFlagsRight", { ImGui::GetWindowWidth() / 2, (platformStruct.generationFlags.size() / 2.f) * 40.f}, false);
+
+				for (int i = 0; i < platformStruct.generationFlags.size() / 2; i++) {
+					ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[i]).c_str(), &m_generateFlags, (uint32_t)platformStruct.generationFlags[i]);
+				}
+
+				ImGui::EndChild();	
+				
+			}
+			else {
+				ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[0]).c_str(), &m_generateFlags, (uint32_t)platformStruct.generationFlags[0]);
+			}
+
+			ImGui::Separator();
+			ImGui::Button("Generate");
+			ImGui::EndPopup();
+		}
+
+#endif
+	}
+
 	void ProjectSelectLayer::CreateDeleteConfirmationDialog()
 	{
 #ifdef GE_EDITOR
@@ -460,6 +553,7 @@ namespace Project {
 		}
 #endif
 	}
+
 
 	void ProjectSelectLayer::OpenProject(const std::string& path)
 	{

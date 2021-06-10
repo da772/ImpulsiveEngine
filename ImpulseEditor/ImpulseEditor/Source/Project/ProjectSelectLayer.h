@@ -28,6 +28,9 @@ namespace Project {
 		std::string m_newProjectLocation;
 		std::string m_newProjectError;
 		uint32_t m_newProjectLanguage = 0x01;
+		uint32_t m_generatePlatform = 0x01;
+		uint32_t m_generateFlags = 0x00;
+		uint32_t m_generateBuild = 0x00;
 
 		std::string m_defaultProjectName = "MyProject";
 		std::string m_lastProjectDir;
@@ -35,6 +38,7 @@ namespace Project {
 		char m_search_char[512] = { 0 };
 		bool m_createProjectModal = false;
 		bool m_confirmDeleteModal = false;
+		bool m_generateModal = false;
 		bool m_deleteFail = false;
 
 		GEngine::Ref<GEngine::Texture2D> searchIcon;
@@ -48,12 +52,14 @@ namespace Project {
 		void ImportProject(const std::string& path);
 		void CreateNewProjectDialog();
 		void CreateDeleteConfirmationDialog();
+		void CreateGenerateDialog();
 		void CreateProject(ProjectData* d);
 		void ShowProject(const std::string& path);
 		void OpenProject(const std::string& path);
 		bool DeleteProject(const std::string& path);
 		void RemoveProject(const std::string& path);
 		ProjectData* GetProjectDataFromPath(const std::string& path);
+
 	};
 
 }

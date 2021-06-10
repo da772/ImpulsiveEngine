@@ -250,19 +250,25 @@ namespace GEngine {
 		char* name = (char*)malloc(GE_FILESYSTEM_CHAR_LENGTH * sizeof(char));
 		char* dat = NULL;
 		uint64_t s = 0;
+		bool found = false;
 		for (int i = 0; i < count; i++) {
 			
 			in.read((char*)name, sizeof(char) * 1024);
 			in.read((char*)&s, sizeof(uint64_t));
-			dat = (char*)realloc(dat, s);
-			in.read((char*)dat, s);
-			if (std::string(name) == file) {
-				fd = std::make_shared<FileData>(s, (unsigned char*)dat);
+			void* _dat = realloc(dat, s);
+			if (!_dat) {
 				break;
 			}
-			
+			dat = (char*)_dat;
+			in.read((char*)dat, s);
+			if ((const char*)name == file) {
+				fd = std::make_shared<FileData>(s, (unsigned char*)dat);
+				found = true;
+				break;
+			}
 		}
-		free(dat);
+		if (!found)
+			free(dat);
 		free(name);
 
 		in.close();
@@ -598,12 +604,11 @@ namespace GEngine {
 
 			for (int i = 0; i < filters.size(); i++) {
 				const std::pair<std::string, std::string>& p = filters[i];
-				filterItem[i] = { p.first.data(), p.second.data() };
+				filterItem[i] = { p.first.c_str(), p.second.c_str() };
 			}
 
-			
-
 			result = NFD_OpenDialog(&outPath, filterItem, filters.size(), startPath);
+			free(filterItem);
 		}
 		else {
 			result = NFD_PickFolder(&outPath, startPath);
