@@ -54,7 +54,7 @@ namespace Project {
 		void CreateDeleteConfirmationDialog();
 		void CreateGenerateDialog();
 		void CreateProject(ProjectData* d);
-		void GenerateProject();
+		void GenerateProject(bool retry = true);
 		void ShowProject(const std::string& path);
 		void OpenProject(const std::string& path);
 		bool DeleteProject(const std::string& path);

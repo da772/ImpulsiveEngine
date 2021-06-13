@@ -45,6 +45,8 @@ namespace Project {
 		folderIcon = GEngine::Texture2D::Create("Content/Textures/folderIcon172x172.png");
 		checkerBoardIcon = GEngine::Texture2D::Create("Content/Textures/Checkerboard.png");
 
+        
+        
 		LoadProjects();
 		Sort(0);
 
@@ -670,14 +672,28 @@ namespace Project {
 		*/
 	}
 
-	void ProjectSelectLayer::GenerateProject()
+	void ProjectSelectLayer::GenerateProject(bool retry)
 	{
 		ProjectData* d = GetProjectDataFromPath(selectedProject);
+        std::string path = GEngine::FileSystem::GetParentExecuteableDir(4);
+        
 		std::string flags = Generation::GenerateProject::GenerateCommand(static_cast<Generation::PlatformFlags>(m_generatePlatform), static_cast<Generation::ProjectFlags>(m_generateBuild), m_generateFlags);
-		std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\" "+flags + " --engine-source=" + GEngine::FileSystem::GetParentExecuteableDir(4) + " --target-name=\""+d->name+"\"";
+		std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\" "+flags + " --engine-source=" +  path + " --target-name=\""+d->name+"\"";
+#ifdef GE_PLATFORM_WINDOWS
 		std::replace(cmd.begin(), cmd.end(), '/', '\\');
+#endif
 		GE_CORE_DEBUG("CMD {0}", cmd);
 		std::string re = GEngine::Utility::sys::exec_command(cmd);
+#ifndef GE_PLATFORM_WINDOWS
+        if (retry) {
+            if (re.find("Permission denied") != std::string::npos) {
+                std::string chmod = "chmod +x \"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
+                GE_CORE_DEBUG("CMD {0}", chmod);
+                GEngine::Utility::sys::exec_command(chmod);
+                GenerateProject(false);
+            }
+        }
+#endif
 		GE_CORE_DEBUG("RESULT: {0}", re);	
 	}
 
