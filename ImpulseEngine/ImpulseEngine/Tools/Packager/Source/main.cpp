@@ -9,7 +9,6 @@ static std::string help();
 using cmd_func = std::unordered_map<std::string, std::function<void(int*, char*, int, char**)>>;
 using cmd_help = std::unordered_map<std::string, std::function<std::string()>>;
 
-
 static cmd_func commands =
 {
 	{"help", [](int* p, char*, int argc,char** argv) {

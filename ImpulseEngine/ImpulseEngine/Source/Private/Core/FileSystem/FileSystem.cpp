@@ -600,7 +600,11 @@ namespace GEngine {
 #ifdef GE_CONSOLE_APP
 		std::error_code er = {};
 		uintmax_t count = 0;
+#ifdef GE_PLATFORM_WINDOWS
 		std::filesystem::_Remove_all_dir(dir, er, count);
+#else
+       // std::filesystem::remove_all(dir, er, count);
+#endif
 		if (er.value() != 0) return false;
 		return true;
 #endif

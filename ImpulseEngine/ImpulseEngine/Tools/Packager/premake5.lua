@@ -56,12 +56,12 @@ project "Packager"
 			"OpenAL.framework",
         }
 
-        filename ("Packager_MacOSX")
+        targetname "Packager_MacOSX"
 
         postbuildcommands
         {
-            "cp -f %{prj.location}Bin/" .. outputdir .. "/%{prj.name}/Packager %{wks.location}Tools/Packager_MacOSX",
-            "chmod +x %{wks.location}Tools/Packager_MacOSX"
+            "cp -f ./Bin/" .. outputdir .. "/%{prj.name}/Packager_MacOSX %{wks.location}/Tools/",
+            "chmod +x %{wks.location}/Tools/Packager_MacOSX"
         }
 
         filter "configurations:Debug"
@@ -108,10 +108,12 @@ project "Packager"
         pic "On"
         end
 
+        targetname "Packager_Linux"
+
         postbuildcommands
         {
-            "cp -f %{prj.location}Bin/" .. outputdir .. "/%{prj.name}/Packager %{wks.location}Tools/Packager_Linux",
-            "chmod +x %{wks.location}Tools/Packager_Linux"
+            "cp -f ./Bin/" .. outputdir .. "/%{prj.name}/Packager_Linux %{wks.location}/Tools/",
+            "chmod +x %{wks.location}/Tools/Packager_Linux"
         }
 
         filter "configurations:Debug"
