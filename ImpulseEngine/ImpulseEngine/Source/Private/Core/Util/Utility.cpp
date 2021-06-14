@@ -397,23 +397,23 @@ namespace GEngine {
 
 	}
 #endif
-	bool Utility::__LoadLib(const std::string& name, dllptr* lib, refl::store::storage* store)
+	bool Utility::__LoadLib(const std::string& _loc, const std::string& name, dllptr* lib, refl::store::storage* store)
 	{
 		if (*lib) {
 			GE_CORE_ERROR("Native Library already loaded (Unload before loading)");
 			return false;
 		}
 
-		std::string loc = FileSystem::GetParentExecuteableDir(0) + Utility::dll::GetDLLExtensionName((_renameDLL ? __DLL_prefix : "") + name);
+		std::string loc = _loc + Utility::dll::GetDLLExtensionName((_renameDLL ? __DLL_prefix : "") + name);
 		if (_renameDLL) {
-			std::ifstream src(FileSystem::GetParentExecuteableDir(0) + Utility::dll::GetDLLExtensionName(name), std::ios::binary);
+			std::ifstream src(_loc + Utility::dll::GetDLLExtensionName(name), std::ios::binary);
 
 			std::ofstream  dst(loc, std::ios::binary);
 			dst << src.rdbuf();
 			dst.close();
 		}
 #ifdef _WIN32
-		Utility::dll::movePDB(FileSystem::GetParentExecuteableDir(0), name, "_"+name, true);
+		Utility::dll::movePDB(_loc, name, "_"+name, true);
 #endif
 		* lib = Utility::dll::dlopen(loc.c_str(), 0);
 
@@ -423,7 +423,7 @@ namespace GEngine {
 		}
 		else {
 #ifdef _WIN32
-			Utility::dll::movePDB(FileSystem::GetParentExecuteableDir(0), "_"+name, name, true);
+			Utility::dll::movePDB(_loc, "_"+name, name, true);
 #endif
 		}
 

@@ -51,11 +51,19 @@ void ExampleLayer::OnAttach()
 	//GEngine::SceneManager::AddScene<SplashScreenScene>("splashScreen");
 	//GEngine::SceneManager::AddScene<MainGameScene>("mainGame");
 #ifdef GE_HOT_RELOAD
+	/*
+	ScriptApi::SetBuild_Native(FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/NativeScripts/", "NativeScripts");
+	ScriptApi::SetMake_Native(FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "Generate/", "GenerateProject_Scripting");
+	ScriptApi::OutputDir_Native(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/NativeScripts/Generated/");
+	ScriptApi::SetRelativePath_Native("../Scripts/");
+	ScriptApi::Load(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/NativeScripts/Scripts/", ".h");
+	ScriptApi::GetReflector_Native()->CallStaticFunction<void>("ExampleScript", "TestFunction");
+	*/
 #else
 	__ReflectionMap__loadGeneratedFiles(ScriptApi::GetStorage_Native());
 #endif
-	GEngine::SceneManager::AddScene<MenuScene>("menuScene");
-	GEngine::SceneManager::SetCurrentScene("menuScene");
+	//GEngine::SceneManager::AddScene<MenuScene>("menuScene");
+	//GEngine::SceneManager::SetCurrentScene("menuScene");
 	//*/
 }
 
@@ -163,6 +171,8 @@ ImpulseEditor::ImpulseEditor()
 #endif
 #ifdef GE_EDITOR
 	if (s_debugTools) {
+		m_ExampleLayer = new ExampleLayer();
+		PushLayer(m_ExampleLayer);
 		m_ProjectSelectLayer = new Project::ProjectSelectLayer("ProjectSelect");
 		PushLayer(m_ProjectSelectLayer);
 	}

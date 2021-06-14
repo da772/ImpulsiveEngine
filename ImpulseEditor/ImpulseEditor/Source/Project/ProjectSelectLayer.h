@@ -3,6 +3,20 @@
 #include "ProjectData.h"
 
 namespace Project {
+
+	struct LocalProject {
+		ProjectData data;
+		uint32_t platformFlags;
+		uint64_t generateFlags;
+		uint32_t buildFlags;
+
+
+		inline bool operator==(const ProjectData& other) {
+			return other.path == this->data.path && other.name == this->data.name;
+		}
+
+	};
+
 	class ProjectSelectLayer : public GEngine::Layer
 	{
 	public:
@@ -19,8 +33,8 @@ namespace Project {
 
 
 	private:
-		std::vector<ProjectData> m_projectData;
-		std::vector<ProjectData> m_projectData_Searched;
+		std::vector<LocalProject> m_projectData;
+		std::vector<LocalProject> m_projectData_Searched;
 		std::string selectedProject = "";
 		std::vector<std::string> m_sortTypes = { "Last Modified" , "Name", "Directory" };
 		int m_sortType = 0;
@@ -54,12 +68,12 @@ namespace Project {
 		void CreateDeleteConfirmationDialog();
 		void CreateGenerateDialog();
 		void CreateProject(ProjectData* d);
-		void GenerateProject(bool retry = true);
+		bool GenerateProject(bool retry = true);
 		void ShowProject(const std::string& path);
 		void OpenProject(const std::string& path);
 		bool DeleteProject(const std::string& path);
 		void RemoveProject(const std::string& path);
-		ProjectData* GetProjectDataFromPath(const std::string& path);
+		LocalProject* GetProjectDataFromPath(const std::string& path);
 
 	};
 

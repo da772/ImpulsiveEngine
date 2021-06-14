@@ -39,8 +39,9 @@ namespace GEngine {
 		static void Clear_Native();
 		static void OutputDir_Native(const std::string& s);
 		static NativeStorage GetStorage_Native();
-		static void SetMake_Native(const std::string& dir, const std::string& name);
+		static void SetMake_Native(const std::string& dir, const std::string& name, const std::function<bool()>& command = nullptr);
 		static void SetBuild_Native(const std::string& dir, const std::string& name);
+        static void SetDLLDir_Native(const std::string& dir);
         static void SetRelativePath_Native(const std::string& includeDir);
 		static inline NativeReflector GetReflector_Native() { return s_nativeReflector; }
 
@@ -70,6 +71,8 @@ namespace GEngine {
 		static refl::reflector* s_nativeReflector;
 		static std::string dirMake_Native;
 		static std::string nameMake_Native;
+        static std::function<bool()> cmdMake_Native;
+        static std::string dllDir_Native;
 		static std::string dirBuild_Native;
 		static std::string nameBuild_Native;
         static void _NativeLog(uint8_t i, const std::string& s);

@@ -10,6 +10,8 @@ namespace GEngine {
 	std::string ScriptApi::nameMake_Native = "";
 	std::string ScriptApi::dirBuild_Native = "";
 	std::string ScriptApi::nameBuild_Native = "";
+	std::string ScriptApi::dllDir_Native = "";
+	std::function<bool()> ScriptApi::cmdMake_Native = nullptr;
 
 	static dllptr lib;
 
@@ -57,7 +59,7 @@ namespace GEngine {
 		bool compileFail = false;
 		if (lib) {
             s_nativeReflector->Clear();
-			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
+			Utility::__UnloadLib("NativeScripts", &lib, s_nativeReflector->GetStorage());
 		}
 
 #if 1
@@ -70,10 +72,18 @@ namespace GEngine {
 #endif
 #if 1
 		uint64_t ms = Time::GetEpochTimeMS();
-		std::string buildOut = Utility::sys::build_proj(dirMake_Native, nameMake_Native);
-		if (buildOut.size() > 0) {
-			if (buildOut.find("Error:") != std::string::npos) {
-				GE_CORE_ERROR("Native Build: Error: {0}", buildOut);
+		if (cmdMake_Native) {
+			if (!cmdMake_Native()) {
+				GE_CORE_ERROR("CMDMAKE_NATIVE FAILED");
+				return false;
+			}
+		}
+		else {
+			std::string buildOut = Utility::sys::build_proj(dirMake_Native, nameMake_Native);
+			if (buildOut.size() > 0) {
+				if (buildOut.find("Error:") != std::string::npos) {
+					GE_CORE_ERROR("Native Build: Error: {0}", buildOut);
+				}
 			}
 		}
 		ms = Time::GetEpochTimeMS() - ms;
@@ -94,7 +104,7 @@ namespace GEngine {
 		ms = Time::GetEpochTimeMS() - ms;
 		GE_CORE_TRACE("Native Compile: Complete... ({0}ms)", ms);
 		ms = Time::GetEpochTimeMS();
-		if (Utility::__LoadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage())) {
+		if (Utility::__LoadLib(dllDir_Native,"NativeScripts", &lib, s_nativeReflector->GetStorage())) {
 			ms = Time::GetEpochTimeMS() - ms;
 			GE_CORE_TRACE("Native Link: Complete... ({0}ms)", ms);
 		}
@@ -115,7 +125,7 @@ namespace GEngine {
 	void ScriptApi::Unload_Native()
 	{
 		if (lib) {
-			Utility::__UnloadLib("Scripts_CPP", &lib, s_nativeReflector->GetStorage());
+			Utility::__UnloadLib("NativeScripts", &lib, s_nativeReflector->GetStorage());
 			s_nativeReflector->Clear();
 		}
 	}
@@ -135,16 +145,22 @@ namespace GEngine {
 		return s_nativeReflector->GetStorage();
 	}
 
-	void ScriptApi::SetMake_Native(const std::string& dir, const std::string& name)
+	void ScriptApi::SetMake_Native(const std::string& dir, const std::string& name, const std::function<bool()>& f )
 	{
 		dirMake_Native = dir;
 		nameMake_Native = name;
+		cmdMake_Native = f;
 	}
 
 	void ScriptApi::SetBuild_Native(const std::string& dir, const std::string& name)
 	{
 		dirBuild_Native = dir;
 		nameBuild_Native = name;
+	}
+
+	void ScriptApi::SetDLLDir_Native(const std::string& dir)
+	{
+		dllDir_Native = dir;
 	}
 
 	void ScriptApi::SetRelativePath_Native(const std::string& includeDir)

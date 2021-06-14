@@ -1,10 +1,10 @@
 #include "ProjectSelectLayer.h"
-
 #include "GenerateProject.h"
 
 #ifdef GE_EDITOR
 #include "imgui/imgui_internal.h"
 #endif
+
 #ifdef GE_PLATFORM_WINDOWS
 #define GE_PLATFORM_OS "windows"
 #define GE_PLATFORM_MAKE "vs2019"
@@ -122,7 +122,8 @@ namespace Project {
 		ImGui::EndChild();
 
 		ImGui::BeginChild("Projects", { (float)GEngine::Application::GetWindowWidth() * .85f,(float)GEngine::Application::GetWindowHeight() * .85f }, true);
-		for (const ProjectData& p : strlen(m_search_char) > 0 ? m_projectData_Searched : m_projectData) {
+		for (const LocalProject& proj : strlen(m_search_char) > 0 ? m_projectData_Searched : m_projectData) {
+			const ProjectData& p = proj.data;
 			std::string s = "##" + p.name;
 			if (ImGui::Selectable(s.c_str(), selectedProject == (p.path + "/" + p.name), 0, { 0.f, 60.f })) {
 				selectedProject = p.path + "/" + p.name;
@@ -184,10 +185,13 @@ namespace Project {
 			ShowProject(selectedProject);
 		}
 		
-		if (selectedProject.size() > 0 && GetProjectDataFromPath(selectedProject)->languages & (uint32_t)Project::ProjectDataLanguages::NATIVE) {
+		if (selectedProject.size() > 0 && GetProjectDataFromPath(selectedProject)->data.languages & (uint32_t)Project::ProjectDataLanguages::NATIVE) {
 			ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
 			if (ImGui::Button("Generate", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
-				GE_CORE_DEBUG("GENEREATE");
+				LocalProject* proj = GetProjectDataFromPath(selectedProject);
+				m_generateFlags = proj->generateFlags;
+				m_generateBuild = proj->buildFlags;
+				m_generatePlatform = proj->platformFlags;
 				m_generateModal = true;
 				ImGui::OpenPopup("Generate Project");
 				//ShowProject(selectedProject);
@@ -237,8 +241,8 @@ namespace Project {
 	{
 		m_projectData_Searched.clear();
 		if (strlen(m_search_char) <= 0) return;
-		for (const ProjectData& p : m_projectData) {
-			std::string name = p.name;
+		for (const LocalProject& p : m_projectData) {
+			std::string name = p.data.name;
 			std::string s = m_search_char;
 			std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 			std::transform(s.begin(), s.end(), s.begin(), ::tolower);
@@ -250,24 +254,24 @@ namespace Project {
 
 	void ProjectSelectLayer::Sort(int i)
 	{
-		std::vector<ProjectData>& d = m_projectData_Searched.size() > 0 ? m_projectData_Searched : m_projectData;
+		std::vector<LocalProject>& d = m_projectData_Searched.size() > 0 ? m_projectData_Searched : m_projectData;
 		switch (i) {
 		default:
 		case 0: {
-			std::sort(d.begin(), d.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
-				return lhs.lastModified > rhs.lastModified;
+			std::sort(d.begin(), d.end(), [](const LocalProject& lhs, const LocalProject& rhs) {
+				return lhs.data.lastModified > rhs.data.lastModified;
 				});
 			break;
 		}
 		case 1: {
-			std::sort(d.begin(), d.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
-				return lhs.name.compare(rhs.name) < 0;
+			std::sort(d.begin(), d.end(), [](const LocalProject& lhs, const LocalProject& rhs) {
+				return lhs.data.name.compare(rhs.data.name) < 0;
 				});
 			break;
 		}
 		case 2: {
-			std::sort(d.begin(), d.end(), [](const ProjectData& lhs, const ProjectData& rhs) {
-				return lhs.path.compare(rhs.path) < 0;
+			std::sort(d.begin(), d.end(), [](const LocalProject& lhs, const LocalProject& rhs) {
+				return lhs.data.path.compare(rhs.data.path) < 0;
 				});
 			break;
 		}
@@ -286,17 +290,21 @@ namespace Project {
 		}
 
 		if (stream.is_open()) {
-			char path[1024] = { 0 };
+			char path[1008] = { 0 };
 			memcpy(path, m_lastProjectDir.data(), sizeof(char) * m_lastProjectDir.size());
-			stream.write(path, 1024 * sizeof(char));
-			memset(path, 0, 1024 * sizeof(char));
+			stream.write(path, 1008 * sizeof(char));
+			memset(path, 0, 1008 * sizeof(char));
 			uint64_t prjCount = m_projectData.size();
 			stream.write((char*)&prjCount, sizeof(uint64_t));
-			for (ProjectData& p : m_projectData) {
+			for (LocalProject& proj : m_projectData) {
+				const ProjectData& p = proj.data;
 				std::string _path = p.path + "/" + p.name + "/" + p.name + ".proj";
 				memcpy(path, _path.data(), _path.size() * sizeof(char));
-				stream.write(path, 1024 * sizeof(char));
-				memset(path, 0, 1024 * sizeof(char));
+				stream.write(path, 1008 * sizeof(char));
+				stream.write((const char*)&proj.generateFlags, sizeof(proj.generateFlags));
+				stream.write((const char*)&proj.buildFlags, sizeof(proj.buildFlags));
+				stream.write((const char*)&proj.platformFlags, sizeof(proj.platformFlags));
+				memset(path, 0, 1008 * sizeof(char));
 			}
 			stream.close();
 		}
@@ -309,22 +317,24 @@ namespace Project {
 		std::ifstream stream(saveLoc, std::ios::in | std::ios::binary);
 
 		if (stream.is_open()) {
-			char path[1024] = { 0 };
-			stream.read(path, sizeof(char) * 1024);
+			char path[1008] = { 0 };
+			stream.read(path, sizeof(char) * 1008);
 			m_lastProjectDir = path;
-			memset(path, 0, 1024 * sizeof(char));
+			memset(path, 0, 1008 * sizeof(char));
 			uint64_t prjCount = 0;
 			stream.read((char*)&prjCount, sizeof(uint64_t));
-
+			LocalProject proj;
 			for (int i = 0; i < prjCount; i++) {
-				stream.read(path, sizeof(char) * 1024);
-				ProjectData pData;
+				stream.read(path, sizeof(char) * 1008);
+				stream.read((char*)&proj.generateFlags, sizeof(proj.generateFlags));
+				stream.read((char*)&proj.buildFlags, sizeof(proj.buildFlags));
+				stream.read((char*)&proj.platformFlags, sizeof(proj.platformFlags));
 				std::ifstream in(path, std::ios::in | std::ios::binary);
-				in >> pData;
+				in >> proj.data;
 				in.close();
-				if (pData.path.size() > 0)
-					m_projectData.push_back(std::move(pData));
-				memset(path, 0, 1024 * sizeof(char));
+				if (proj.data.path.size() > 0)
+					m_projectData.push_back(std::move(proj));
+				memset(path, 0, 1008 * sizeof(char));
 			}
 
 			stream.close();
@@ -384,7 +394,7 @@ namespace Project {
 			if (ImGui::Button("Create", ImVec2(120, 0))) {
 				m_newProjectError = "";
 				for (auto& p : m_projectData) {
-					if ((p.path + "/" + p.name) == (m_newProjectLocation + "/" + m_newProjectName)) {
+					if ((p.data.path + "/" + p.data.name) == (m_newProjectLocation + "/" + m_newProjectName)) {
 						m_newProjectError = "Project already created in that directory";
 					}
 				}
@@ -396,13 +406,15 @@ namespace Project {
 					transTime.clear();
 					std::replace(m_newProjectLocation.begin(), m_newProjectLocation.end(), '\\', '/');
 					m_lastProjectDir = m_newProjectLocation;
-					m_projectData.push_back({ m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, m_newProjectLanguage});
+					m_projectData.push_back({ { m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, m_newProjectLanguage}, 1,0,0 });
 					Sort(m_sortType);
 					Search();
 					selectedProject = m_newProjectLocation + "/" + m_newProjectName;
-					CreateProject(GetProjectDataFromPath(selectedProject));
+					CreateProject(&GetProjectDataFromPath(selectedProject)->data);
 					m_createProjectModal = false;
 					ImGui::CloseCurrentPopup();
+
+
 				}
 			}
 
@@ -527,7 +539,7 @@ namespace Project {
 				ImGui::CloseCurrentPopup();
 			}
 
-			ProjectData* d = GetProjectDataFromPath(selectedProject);
+			ProjectData* d = &GetProjectDataFromPath(selectedProject)->data;
 			ImGui::TextColored({ 1.f,0.f,0.f,1.f }, (std::string("Are you sure you want to delete:")).c_str());
 			std::string _path = d->path + "/" + d->name;
 			std::replace(_path.begin(), _path.end(), '\\', '/');
@@ -563,6 +575,20 @@ namespace Project {
 	void ProjectSelectLayer::OpenProject(const std::string& path)
 	{
 		GE_CORE_DEBUG("@TODO OPEN PROJECT: {0}", path);
+
+		LocalProject* proj = GetProjectDataFromPath(selectedProject);
+		ProjectData* d = &proj->data;
+		if (d->isNative()) {
+			GEngine::ScriptApi::SetBuild_Native(path + "/" + d->name + "/" + d->name + "/NativeScripts/", "NativeScripts");
+			GEngine::ScriptApi::SetMake_Native("", "", [this]() {
+				return GenerateProject();
+				});
+			GEngine::ScriptApi::SetDLLDir_Native(path + "/" + d->name + "/Bin/Release-" + Generation::GenerateProject::PlatformFlagToStr(static_cast<Generation::PlatformFlags>(m_generatePlatform)) + "-x86_64/"+d->name+"/");
+			GEngine::ScriptApi::OutputDir_Native(path + "/" + d->name + "/" + d->name + "/NativeScripts/Generated/");
+			GEngine::ScriptApi::SetRelativePath_Native("../Scripts/");
+			GEngine::ScriptApi::Load(path + "/" + d->name + "/" + d->name + "/NativeScripts/Scripts/", ".h");
+			//GEngine::ScriptApi::GetReflector_Native()->CallStaticFunction<void>("ExampleScript", "TestFunction");
+		}
 	}
 
 	void ProjectSelectLayer::ImportProject(const std::string& path) {
@@ -578,7 +604,7 @@ namespace Project {
 			if (test) {
 				test.close();
 				if (std::find(m_projectData.begin(), m_projectData.end(), pData) == m_projectData.end()) {
-					m_projectData.push_back(std::move(pData));
+					m_projectData.push_back({ pData, 1,0,0 });
 					Search();
 					Sort(0);
 				}
@@ -589,11 +615,11 @@ namespace Project {
 
 	bool ProjectSelectLayer::DeleteProject(const std::string& path)
 	{
-		std::vector<ProjectData>::iterator it = m_projectData.begin();
+		std::vector<LocalProject>::iterator it = m_projectData.begin();
 		std::string dir;
 		while (it != m_projectData.end()) {
-			if ((it->path + "/" + it->name) == path) {
-				dir = it->path + "/" + it->name + "/";
+			if ((it->data.path + "/" + it->data.name) == path) {
+				dir = it->data.path + "/" + it->data.name + "/";
 				break;
 			}
 			it++;
@@ -614,11 +640,11 @@ namespace Project {
 
 	void ProjectSelectLayer::RemoveProject(const std::string& path)
 	{
-		std::vector<ProjectData>::iterator it = m_projectData.begin();
+		std::vector<LocalProject>::iterator it = m_projectData.begin();
 		std::string dir;
 		while (it != m_projectData.end()) {
-			if ((it->path + "/" + it->name) == path) {
-				dir = it->path + "/" + it->name + "/";
+			if ((it->data.path + "/" + it->data.name) == path) {
+				dir = it->data.path + "/" + it->data.name + "/";
 				m_projectData.erase(it);
 				selectedProject = "";
 				break;
@@ -672,9 +698,9 @@ namespace Project {
 		*/
 	}
 
-	void ProjectSelectLayer::GenerateProject(bool retry)
+	bool ProjectSelectLayer::GenerateProject(bool retry)
 	{
-		ProjectData* d = GetProjectDataFromPath(selectedProject);
+		ProjectData* d = &GetProjectDataFromPath(selectedProject)->data;
         std::string path = GEngine::FileSystem::GetParentExecuteableDir(4);
         
 		std::string flags = Generation::GenerateProject::GenerateCommand(static_cast<Generation::PlatformFlags>(m_generatePlatform), static_cast<Generation::ProjectFlags>(m_generateBuild), m_generateFlags);
@@ -690,17 +716,24 @@ namespace Project {
                 std::string chmod = "chmod +x \"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
                 GE_CORE_DEBUG("CMD {0}", chmod);
                 GEngine::Utility::sys::exec_command(chmod);
-                GenerateProject(false);
+                return GenerateProject(false);
             }
         }
 #endif
+		LocalProject* proj = GetProjectDataFromPath(selectedProject);
+		proj->buildFlags = m_generateBuild;
+		proj->generateFlags = m_generateFlags;
+		proj->platformFlags = m_generatePlatform;
+		SaveProjects();
+		return true;
 		GE_CORE_DEBUG("RESULT: {0}", re);	
 	}
 
 	void ProjectSelectLayer::ShowProject(const std::string& path)
 	{
 #ifdef GE_PLATFORM_WINDOWS
-		ProjectData* d = GetProjectDataFromPath(selectedProject);
+		ProjectData* d = &GetProjectDataFromPath(selectedProject)->data;
+		GE_CORE_WARN("FLAGS: {0}, {1}, {2}", GetProjectDataFromPath(selectedProject)->buildFlags, GetProjectDataFromPath(selectedProject)->generateFlags, GetProjectDataFromPath(selectedProject)->platformFlags);
 		std::string cmd = "explorer /select,\"" + selectedProject + "/" + d->name + ".proj\"";
 		std::replace(cmd.begin() + 15, cmd.end(), '/', '\\');
 		GEngine::Utility::sys::exec_command(cmd);
@@ -715,11 +748,11 @@ namespace Project {
 
 	}
 
-	ProjectData* ProjectSelectLayer::GetProjectDataFromPath(const std::string& path)
+	LocalProject* ProjectSelectLayer::GetProjectDataFromPath(const std::string& path)
 	{
-		std::vector<ProjectData>::iterator it = m_projectData.begin();
+		std::vector<LocalProject>::iterator it = m_projectData.begin();
 		while (it != m_projectData.end()) {
-			if ((it->path + "/" + it->name) == path) {
+			if ((it->data.path + "/" + it->data.name) == path) {
 				return &*it; // 1:12
 			}
 			it++;

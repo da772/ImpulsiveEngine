@@ -53,7 +53,7 @@ namespace GEngine {
 		}
 		GE_API void __UnloadLib(const std::string& name, dllptr* lib, refl::store::storage* store);
 		GE_API void __GenerateLib(const std::string& path, const std::string& name, refl::reflector& r);
-		GE_API bool __LoadLib(const std::string& name, dllptr* lib, refl::store::storage* store);
+		GE_API bool __LoadLib(const std::string& loc, const std::string& name, dllptr* lib, refl::store::storage* store);
 
 		}
 

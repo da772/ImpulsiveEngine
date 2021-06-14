@@ -25,8 +25,8 @@ project "NativeScripts"
 
     includedirs
     {
-		"%{wks.location}/ImpulseEngine/ImpulseEngine/Source",
-		"%{wks.location}/ImpulseEngine/ImpulseEngine/vendor",
+		engineSrc.."/ImpulseEngine/ImpulseEngine/Source",
+		engineSrc.."/ImpulseEngine/ImpulseEngine/vendor",
         "%{IncludeDir.spdlog}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
