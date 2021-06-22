@@ -29,7 +29,7 @@ namespace Generation {
 
 	};
 
-	enum class ProjectFlags : uint32_t {
+	enum class ProjectTypeFlags : uint32_t {
 		
 		VISUAL_STUDIO_19 = 0x01,
 		VISUAL_STUDIO_17 = 0x02,
@@ -41,7 +41,7 @@ namespace Generation {
 
 	struct PlatformStructure {
 
-		std::vector<ProjectFlags> projectFlags;
+		std::vector<ProjectTypeFlags> projectFlags;
 		std::vector<GenerationFlags> generationFlags;
 
 	};
@@ -49,11 +49,11 @@ namespace Generation {
 	class GenerateProject {
 
 	public:
-		static inline std::string ProjectFlagToStr(ProjectFlags f) {
+		static inline std::string ProjectFlagToStr(ProjectTypeFlags f) {
 			return projectFlagsStr[f].first;
 		}
 
-		static inline std::string ProjectFlagToFlag(ProjectFlags f) {
+		static inline std::string ProjectFlagToFlag(ProjectTypeFlags f) {
 			return projectFlagsStr[f].second;
 		}
 
@@ -77,11 +77,14 @@ namespace Generation {
 			return platformData;
 		}
 
-		static std::string GenerateCommand(const PlatformFlags& platform, const ProjectFlags& project, const uint64_t& generation);
+		static ProjectTypeFlags GetDefaultProjectType(const PlatformFlags& p);
+		static uint64_t GetDefaultGenerationFlags(const PlatformFlags& p);
+
+		static std::string GenerateCommand(const PlatformFlags& platform, const ProjectTypeFlags& project, const uint64_t& generation);
 
 
 	private:
-		static std::unordered_map <ProjectFlags, std::pair<std::string ,std::string>> projectFlagsStr;
+		static std::unordered_map <ProjectTypeFlags, std::pair<std::string ,std::string>> projectFlagsStr;
 		static std::unordered_map <PlatformFlags, std::pair<std::string, std::string>> platformFlagsStr;
 		static std::unordered_map <GenerationFlags, std::pair<std::string, std::string>> generationFlagsStr;
 		static std::unordered_map <PlatformFlags, PlatformStructure> platformData;

@@ -34,6 +34,7 @@ newoption {
 }
 
 
+
 if not _OPTIONS["target-name"] then
 	_OPTIONS["target-name"] = "ImpulseEditor"
 end
@@ -46,6 +47,7 @@ else
 	engineSrc = _OPTIONS["engine-source"]
 	vendorSrc = _OPTIONS["engine-source"]
 end
+
 
 workspace(targetName)
 	architecture "x64"
@@ -244,7 +246,9 @@ project (targetName)
 				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
 				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
 				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
+				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}"..targetName.."/Source/Shared\" \"%{prj.location}"..targetName.."/Content/Archives/Shared.zip\"",
 				"call \"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\""
+				
 				
 			}
 		else 
@@ -644,6 +648,7 @@ project (targetName)
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -zip \"%{prj.location}/Generate\" \"%{prj.location}/"..targetName.."/Content/Archives/Generate.zip\"",
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -zip \"%{prj.location}/BuildTarget.lua\" \"%{prj.location}/"..targetName.."/Content/Archives/BuildTarget.zip\"",
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -zip \"%{wks.location}/Tools\" \"%{prj.location}/"..targetName.."/Content/Archives/Tools.zip\"",
+				"\"%{wks.location}/Tools/Packager_MacOSX\" -zip \"%{prj.location}/"..targetName.."/Source/Shared\" \"%{prj.location}/"..targetName.."/Content/Archives/Shared.zip\"",
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -pak \"%{prj.location}/"..targetName.."/Content\" \"%{prj.location}/"..targetName.."/Data/EngineContent.pak\""
 			}
 		else 

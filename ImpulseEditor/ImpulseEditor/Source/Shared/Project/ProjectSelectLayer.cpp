@@ -406,15 +406,24 @@ namespace Project {
 					transTime.clear();
 					std::replace(m_newProjectLocation.begin(), m_newProjectLocation.end(), '\\', '/');
 					m_lastProjectDir = m_newProjectLocation;
-					m_projectData.push_back({ { m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, m_newProjectLanguage}, 1,0,0 });
+#ifdef GE_PLATFORM_WINDOWS
+					m_generatePlatform = (uint32_t)Generation::PlatformFlags::WINDOWS;
+#elif GE_PLATFORM_MACOSX
+					m_generatePlatform = (uint32_t)Generation::PlatformFlags::MACOSX;
+#else
+					m_generatePlatform = (uint32_t)Generation::PlatformFlags::LINUX;
+#endif
+
+					m_generateFlags = Generation::GenerateProject::GetDefaultGenerationFlags(static_cast<Generation::PlatformFlags>(m_generatePlatform));
+					m_generateBuild = (uint32_t)Generation::GenerateProject::GetDefaultProjectType(static_cast<Generation::PlatformFlags>(m_generatePlatform));
+
+					m_projectData.push_back({ { m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, m_newProjectLanguage}, m_generatePlatform,m_generateFlags,m_generateBuild });
 					Sort(m_sortType);
 					Search();
 					selectedProject = m_newProjectLocation + "/" + m_newProjectName;
 					CreateProject(&GetProjectDataFromPath(selectedProject)->data);
 					m_createProjectModal = false;
 					ImGui::CloseCurrentPopup();
-
-
 				}
 			}
 
@@ -451,12 +460,9 @@ namespace Project {
 					bool is_selected = (uint32_t)p.first == m_generatePlatform;
 					if (ImGui::Selectable(Generation::GenerateProject::PlatformFlagToStr(p.first).c_str(), is_selected)) {
 						m_generatePlatform = (uint32_t)p.first;
-						m_generateFlags = 0;
+						m_generateFlags = Generation::GenerateProject::GetDefaultGenerationFlags(static_cast<Generation::PlatformFlags>(m_generatePlatform));
 						platformStruct = d[static_cast<Generation::PlatformFlags>(m_generatePlatform)];
-						m_generateBuild = (uint32_t)platformStruct.projectFlags[0];
-						for (int i = 0; i < platformStruct.generationFlags.size(); i++) {
-							m_generateFlags = m_generateFlags | (uint32_t)platformStruct.generationFlags[i];
-						}
+						m_generateBuild = (uint32_t)Generation::GenerateProject::GetDefaultProjectType(static_cast<Generation::PlatformFlags>(m_generatePlatform));
 					}
 
 					if (is_selected) {
@@ -470,7 +476,7 @@ namespace Project {
 			ImGui::Text("Project Type: ");
 			ImGui::SameLine();
 
-			if (ImGui::BeginCombo("##Project", Generation::GenerateProject::ProjectFlagToStr(static_cast<Generation::ProjectFlags>(m_generateBuild)).c_str())) {
+			if (ImGui::BeginCombo("##Project", Generation::GenerateProject::ProjectFlagToStr(static_cast<Generation::ProjectTypeFlags>(m_generateBuild)).c_str())) {
 
 				for (const auto& p : platformStruct.projectFlags) {
 
@@ -666,7 +672,7 @@ namespace Project {
 			GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
 			GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name + "/vendor");
 			GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/NativeScripts");
-			GEngine::FileSystem::ExtractZip("Content/Archives/Source.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name);
+			GEngine::FileSystem::ExtractZip("Content/Archives/Shared.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Source/Shared");
 			GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false, false);
 		}
 
@@ -703,7 +709,7 @@ namespace Project {
 		ProjectData* d = &GetProjectDataFromPath(selectedProject)->data;
         std::string path = GEngine::FileSystem::GetParentExecuteableDir(4);
         
-		std::string flags = Generation::GenerateProject::GenerateCommand(static_cast<Generation::PlatformFlags>(m_generatePlatform), static_cast<Generation::ProjectFlags>(m_generateBuild), m_generateFlags);
+		std::string flags = Generation::GenerateProject::GenerateCommand(static_cast<Generation::PlatformFlags>(m_generatePlatform), static_cast<Generation::ProjectTypeFlags>(m_generateBuild), m_generateFlags);
 		std::string cmd = "\"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\" "+flags + " --engine-source=" +  path + " --target-name=\""+d->name+"\"";
 #ifdef GE_PLATFORM_WINDOWS
 		std::replace(cmd.begin(), cmd.end(), '/', '\\');

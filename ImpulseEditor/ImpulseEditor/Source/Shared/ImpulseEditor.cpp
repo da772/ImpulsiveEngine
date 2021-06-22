@@ -1,16 +1,10 @@
 #include "ImpulseEditor.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include "SplashScreenScene.h"
-#include "MapEditor.hpp"
 #ifdef GE_EDITOR
 #include "Project/ProjectSelectLayer.h"
 #endif
 
 
-#include "MainGameScene.h"
-#include "MenuScene.h"
-
-#include "Lighting/Lighting.hpp"
 #include "Reflection.map.generated.h"
 
 
@@ -60,7 +54,8 @@ void ExampleLayer::OnAttach()
 	ScriptApi::GetReflector_Native()->CallStaticFunction<void>("ExampleScript", "TestFunction");
 	*/
 #else
-	__ReflectionMap__loadGeneratedFiles(ScriptApi::GetStorage_Native());
+	__ReflectionMap__loadGeneratedFiles(GEngine::ScriptApi::GetStorage_Native());
+
 #endif
 	//GEngine::SceneManager::AddScene<MenuScene>("menuScene");
 	//GEngine::SceneManager::SetCurrentScene("menuScene");
@@ -83,8 +78,8 @@ void ExampleLayer::OnDraw()
 
 void ExampleLayer::OnEvent(GEngine::Event& event)
 {
-	if (event.GetEventType() == EventType::WindowResize) {
-		if (!Application::DebugTools()) {
+	if (event.GetEventType() == GEngine::EventType::WindowResize) {
+		if (!GEngine::Application::DebugTools()) {
 			const std::vector<GEngine::FPipeline> pipelines = GEngine::Renderer::GetPipelines();
 			for (const GEngine::FPipeline& p : pipelines) {
 				p.p->GetFrameBuffer()->UpdateSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
@@ -123,10 +118,17 @@ ImpulseEditor::ImpulseEditor()
 #endif
 #endif
 
+#ifdef GE_EDITOR
 	GEngine::FileSystem::LoadPak("Data/ImpulseEditorContent.pak");
-	GE_LOG_INFO("Cores: {0}, Freq: {1}", DeviceInfo::GetCpuCount(), DeviceInfo::GetCpuFreq());
+#else 
+	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
+#endif
+
+	GE_LOG_INFO("Cores: {0}, Freq: {1}", GEngine::DeviceInfo::GetCpuCount(), GEngine::DeviceInfo::GetCpuFreq());
 	SetRenderScale(1.f);
 	SetRenderSamples(0);
+
+
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
@@ -179,8 +181,6 @@ ImpulseEditor::ImpulseEditor()
 #else
 	m_ExampleLayer = new ExampleLayer();
 	PushLayer(m_ExampleLayer);
-
-	Lighting::Initialize();
 #endif
 }
 
