@@ -24,7 +24,7 @@ namespace GEngine {
 		if (b_debug)
 			m_debug = 2;
 		if (s_ShapeFactory == nullptr) {
-			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
+			std::string path = std::string("EngineContent/shaders//TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
 			m_Shader = Ref<Shader>(Shader::Create(path));
 			ButtonComponent::s_ShapeFactory = UIComponent::s_ShapeFactory;
 			s_ShapeFactory->SetRenderType(ERenderType::UI);

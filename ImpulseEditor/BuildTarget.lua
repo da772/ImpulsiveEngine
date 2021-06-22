@@ -234,10 +234,7 @@ project (targetName)
 			"GE_PLATFORM_WINDOWS",
 			"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 		}
-		postbuildcommands
-		{
-			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
-		}
+		
 		if _OPTIONS["build-editor"] then
 			postbuildcommands
 			{
@@ -247,8 +244,8 @@ project (targetName)
 				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
 				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
 				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}"..targetName.."/Source/Shared\" \"%{prj.location}"..targetName.."/Content/Archives/Shared.zip\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\""
-				
+				"call \"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Engine/EngineContent\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\"",
+				"call \"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EditorContent.pak\""
 				
 			}
 		else 
@@ -264,6 +261,11 @@ project (targetName)
 			"copy /Y  \""..engineSrc.."ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.pdb\" \"$(TARGETDIR)ImpulseEngine.pdb\""
 		}
 		end
+
+		postbuildcommands
+		{
+			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
+		}
 
 
 
@@ -342,7 +344,8 @@ project (targetName)
 					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
 					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
 					"./\"%{wks.location}Tools/Packager_Linux\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
-					"./\"%{wks.location}Tools/Packager_Linux\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\""
+					"./\"%{wks.location}Tools/Packager_Linux\" -pak \"%{prj.location}"..targetName.."/Engine/EngineContent\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\"",
+					"./\"%{wks.location}Tools/Packager_Linux\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EditorContent.pak\""
 					
 				}
 			else 
@@ -634,11 +637,6 @@ project (targetName)
 
 		}
 
-		postbuildcommands
-		{
-			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
-			--"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Res\" ${TARGET_BUILD_DIR}",
-		}
 
 		if _OPTIONS["build-editor"] then
 			postbuildcommands
@@ -649,7 +647,8 @@ project (targetName)
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -zip \"%{prj.location}/BuildTarget.lua\" \"%{prj.location}/"..targetName.."/Content/Archives/BuildTarget.zip\"",
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -zip \"%{wks.location}/Tools\" \"%{prj.location}/"..targetName.."/Content/Archives/Tools.zip\"",
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -zip \"%{prj.location}/"..targetName.."/Source/Shared\" \"%{prj.location}/"..targetName.."/Content/Archives/Shared.zip\"",
-				"\"%{wks.location}/Tools/Packager_MacOSX\" -pak \"%{prj.location}/"..targetName.."/Content\" \"%{prj.location}/"..targetName.."/Data/EngineContent.pak\""
+				"\"%{wks.location}/Tools/Packager_MacOSX\" -pak \"%{prj.location}/"..targetName.."/Content\" \"%{prj.location}/"..targetName.."/Data/EditorContent.pak\"",
+				"\"%{wks.location}/Tools/Packager_MacOSX\" -pak \"%{prj.location}/"..targetName.."/Engine/EngineContent\" \"%{prj.location}/"..targetName.."/Data/EngineContent.pak\""
 			}
 		else 
 			postbuildcommands
@@ -657,6 +656,12 @@ project (targetName)
 				"\"%{wks.location}/Tools/Packager_MacOSX\" -pak \"%{prj.location}/"..targetName.."/Content\" \"%{prj.location}/"..targetName.."/Data/"..targetName.."Content.pak\""
 			}
 		end
+
+		postbuildcommands
+		{
+			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
+			--"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Res\" ${TARGET_BUILD_DIR}",
+		}
 
 		
 		filter "configurations:Debug"

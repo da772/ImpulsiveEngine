@@ -1,7 +1,7 @@
 #include "ImpulseEditor.h"
 #include <glm/gtc/matrix_transform.hpp>
 #ifdef GE_EDITOR
-#include "Project/ProjectSelectLayer.h"
+#include "Editor/Project/ProjectSelectLayer.h"
 #endif
 
 
@@ -106,28 +106,26 @@ ImpulseEditor::ImpulseEditor()
 	this->m_height = 540;
 
 #ifndef GE_PACKAGE
-	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET)+"ImpulseEditor/Content",
-		GEngine::FileSystem::FilePath("Data/ImpulseEditorContent.pak"), false);
+	/*
+	GEngine::FileSystem::PakDirectory(GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET)+"ImpulseEditor/Engine/EngineContent",
+		GEngine::FileSystem::FilePath("Data/EngineContent.pak"), false);
 
-
-
-
-
-	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/ImpulseEditorContent.pak"), 
-		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/ImpulseEditorContent.pak", false, false);
+	GEngine::FileSystem::Copy(GEngine::FileSystem::FilePath("Data/EngineContent.pak"), 
+		GEngine::FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/Data/EngineContent.pak", false, false);
+	*/
 #endif
 #endif
 
 #ifdef GE_EDITOR
-	GEngine::FileSystem::LoadPak("Data/ImpulseEditorContent.pak");
-#else 
-	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
+	GEngine::FileSystem::LoadPak("Data/EditorContent.pak");
 #endif
+	//GEngine::FileSystem::LoadPak("Data/EditorContent.pak");
+	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
+
 
 	GE_LOG_INFO("Cores: {0}, Freq: {1}", GEngine::DeviceInfo::GetCpuCount(), GEngine::DeviceInfo::GetCpuFreq());
 	SetRenderScale(1.f);
 	SetRenderSamples(0);
-
 
 
 	SetGraphicsApi(GetDefaultGraphicsApi());

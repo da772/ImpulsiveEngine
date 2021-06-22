@@ -56,7 +56,7 @@ namespace Project {
 		bool m_deleteFail = false;
 
 		GEngine::Ref<GEngine::Texture2D> searchIcon;
-		GEngine::Ref<GEngine::Texture2D> checkerBoardIcon;
+		GEngine::Ref<GEngine::Texture2D> projectSelectionIcon;
 		GEngine::Ref<GEngine::Texture2D> folderIcon;
 
 		void Search();

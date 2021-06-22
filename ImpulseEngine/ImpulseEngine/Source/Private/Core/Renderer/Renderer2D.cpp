@@ -43,7 +43,7 @@ namespace GEngine {
 		uint32_t whiteTextureData = 0xffffffff;
 		sData->WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 
-		sData->TextureShader = Shader::Create("Content/shaders/TextureShader.glsl");
+		sData->TextureShader = Shader::Create("EngineContent/shaders/TextureShader.glsl");
 		sData->TextureShader->Bind();
 		sData->TextureShader->UploadUniformInt("u_Texture", 0);
 

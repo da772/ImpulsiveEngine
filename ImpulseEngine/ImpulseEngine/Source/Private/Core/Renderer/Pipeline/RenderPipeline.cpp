@@ -17,7 +17,7 @@ namespace GEngine {
 	RenderPipeline::RenderPipeline()
 	{
 		m_frameBuffer = FrameBuffer::Create(0, 0, m_textureFlags, m_name.c_str(), m_renderScale);
-		m_shader = Shader::Create("Content/shaders/ViewportShader.glsl");
+		m_shader = Shader::Create("EngineContent/shaders/ViewportShader.glsl");
 	}
 
 	RenderPipeline::RenderPipeline(const char* name, const float renderScale, uint32_t textureFlags)
@@ -26,7 +26,7 @@ namespace GEngine {
 		m_renderScale = renderScale;
 		m_textureFlags = textureFlags;
 		m_frameBuffer = FrameBuffer::Create(0, 0, m_textureFlags, m_name.c_str(), m_renderScale);
-		m_shader = Shader::Create("Content/shaders/ViewportShader.glsl");
+		m_shader = Shader::Create("EngineContent/shaders/ViewportShader.glsl");
 	}
 
 	void RenderPipeline::Render()

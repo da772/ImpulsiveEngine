@@ -41,12 +41,11 @@ namespace Project {
 
 	void ProjectSelectLayer::OnAttach()
 	{
-		searchIcon = GEngine::Texture2D::Create("Content/Textures/searchIcon172x172.png");
-		folderIcon = GEngine::Texture2D::Create("Content/Textures/folderIcon172x172.png");
-		checkerBoardIcon = GEngine::Texture2D::Create("Content/Textures/Checkerboard.png");
+		searchIcon = GEngine::Texture2D::Create("Content/Textures/Icons/searchIcon172x172.png", TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear);
+		folderIcon = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
+		projectSelectionIcon = GEngine::Texture2D::Create("Content/Textures/Icons/projectIcon96x96.png");
 
-        
-        
+
 		LoadProjects();
 		Sort(0);
 
@@ -67,13 +66,13 @@ namespace Project {
 	void ProjectSelectLayer::OnImGuiRender()
 	{
 #ifdef GE_EDITOR
-
 		//ImGui::ShowDemoWindow();
-
 		ImGui::SetNextWindowSize({ (float)GEngine::Application::GetWindowWidth(), (float)GEngine::Application::GetWindowHeight() });
 		ImGui::SetNextWindowPos({ 0.f, 0.f });
 		ImGui::Begin("Project Selector", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDecoration);
 		ImGui::Text("Select a Project:");
+
+
 
 		ImGui::Separator();
 
@@ -115,6 +114,7 @@ namespace Project {
 				Search();
 			}
 		}
+
 		ImGui::SameLine(0, 0);
 		pos = ImGui::GetCursorPos();
 		ImGui::SetCursorPos({ pos.x - 20.f, pos.y + 5.f });
@@ -137,7 +137,7 @@ namespace Project {
 			ImGui::SetCursorPos({ pos.x, pos.y + 5.f });
 			GEngine::Ref<GEngine::Texture2D> tex = p.thumbNail;
 			if (tex == nullptr) {
-				tex = checkerBoardIcon;
+				tex = projectSelectionIcon;
 			}
 			ImGui::Image((ImTextureID)tex->GetRendererID(), { 50.f,50.f }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();

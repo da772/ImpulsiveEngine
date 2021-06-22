@@ -163,9 +163,13 @@ namespace GEngine {
 #ifndef GE_PLATFORM_ANDROID
 		path = FilePath(path);
 #endif
-
+		
+		// 1 MB smallest temp destination size
+		size_t dstSize = 1e6 > fd->GetDataSize() ? 1e6 : fd->GetDataSize();
+		// Realloc increment size
+		size_t incSize = dstSize/2.f;
 		// Allocate uncompressed data size of compressed data size ( for now )
-		unsigned char* dstPtr = (unsigned char*)malloc(fd->GetDataSize());
+		unsigned char* dstPtr = (unsigned char*)malloc(dstSize);
 
 		// Initalize z_stream
 		z_stream infstream;
@@ -183,9 +187,6 @@ namespace GEngine {
 		// Init stream
 		inflateInit(&infstream);
 		int _res = Z_OK;
-		unsigned long dstSize = fd->GetDataSize();
-		// Realloc increment size
-		unsigned long incSize = fd->GetDataSize() / 2.f;
 		// Wait until we reach end of stream
 		while (_res != Z_STREAM_END) {
 			// Check for errors

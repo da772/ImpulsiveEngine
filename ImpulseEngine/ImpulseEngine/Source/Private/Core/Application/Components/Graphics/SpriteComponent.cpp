@@ -24,7 +24,7 @@ namespace GEngine {
 		go_tag = "Sprite Component";
 		if (shader != nullptr || pipelineId.size() > 0) {
 			if (shader == nullptr) {
-				std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
+				std::string path = std::string("EngineContent/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
 				shader = Ref<Shader>(Shader::Create(path));
 			}
 			m_Shader = shader;
@@ -32,7 +32,7 @@ namespace GEngine {
 				1000, m_Shader, pipelineId.size() > 0 ? pipelineId.c_str() : nullptr, shaderFunc));
 			return;
 		} else if (s_ShapeFactory == nullptr) {
-			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
+			std::string path = std::string("EngineContent/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
 			m_Shader = Ref<Shader>(Shader::Create(path));
 			SpriteComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
 				1000, m_Shader, nullptr, shaderFunc));

@@ -133,7 +133,7 @@ namespace GEngine {
 			 m_BlankTexture->SetData(&whiteTextureData, sizeof(u32));
 		 }
 		 if (m_Shader == nullptr)
-			 m_Shader = Ref<Shader>(Shader::Create((std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl")));
+			 m_Shader = Ref<Shader>(Shader::Create((std::string("EngineContent/shaders//TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl")));
 		 if (m_IndexBuffer == nullptr) {
 			 m_IndexBuffer = Ref<IndexBuffer>(IndexBuffer::Create(m_Indices.data(), m_MaxIndices));
 		 }

@@ -93,7 +93,7 @@ namespace GEngine {
         }
 		s_ShapeData.reset(new ShapeData());
 
-		s_ShapeData->shape_shader = Shader::Create("Content/shaders/TextureShader.glsl");
+		s_ShapeData->shape_shader = Shader::Create("EngineContent/shaders/TextureShader.glsl");
 		s_ShapeData->empty_texture.reset();
 		s_ShapeData->empty_texture = std::shared_ptr<GEngine::Texture2D>(GEngine::Texture2D::Create("batchBlank", 1, 1));
 		uint32_t whiteTextureData = 0xffffffff;

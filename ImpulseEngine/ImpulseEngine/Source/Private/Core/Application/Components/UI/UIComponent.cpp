@@ -23,7 +23,7 @@ namespace GEngine {
 	{
 		go_tag = "UI Component";
 		if (s_ShapeFactory == nullptr) {
-			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
+			std::string path = std::string("EngineContent/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
 			m_Shader = shader != nullptr ? shader : Ref<Shader>(Shader::Create(path));
 			UIComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::UI, Ref<Quad>(new Quad()), 5000, m_Shader));
 			s_ShapeFactory->SetRenderType(ERenderType::UI);
@@ -35,7 +35,7 @@ namespace GEngine {
 	{
 		go_tag = "UI Component";
 		if (s_ShapeFactory == nullptr) {
-			std::string path = std::string("Content/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
+			std::string path = std::string("EngineContent/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
 			m_Shader = Ref<Shader>(Shader::Create(path));
 			UIComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::UI, Ref<Quad>(new Quad()), 5000, m_Shader));
 			s_ShapeFactory->SetRenderType(ERenderType::UI);

@@ -54,7 +54,7 @@ namespace GEngine {
 		ImGui::StyleColorsCustom();
 
 		ImFont* font1 = io.Fonts->AddFontDefault();
-		Ref<FileData> fd = FileSystem::FileDataFromPath("Content/Fonts/roboto.ttf");
+		Ref<FileData> fd = FileSystem::FileDataFromPath("EngineContent/Fonts/roboto.ttf");
 
 		void* fnt = malloc(fd->GetDataSize());
 		memcpy( fnt, fd->GetData(), fd->GetDataSize());
