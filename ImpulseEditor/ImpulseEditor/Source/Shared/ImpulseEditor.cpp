@@ -16,7 +16,6 @@ ExampleLayer::ExampleLayer()
 
 
 
-
 }
 
 ExampleLayer::~ExampleLayer()

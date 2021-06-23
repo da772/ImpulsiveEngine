@@ -53,6 +53,9 @@ namespace GEngine {
 		inline FGraphicsApi GetGraphicsApi() { return Application::s_graphicsApi; }
 
 
+		virtual inline void MaximizeWindow() {};
+		virtual inline void RestoreWindow() {};
+
 		inline void SetTargetCamera(Camera* camera) { m_Camera = camera;  }
 		inline void SetTargetCameraController(CameraController* camera) { m_CameraContoller = camera; }
 		inline Camera* GetTargetCamera() { return m_Camera; }
@@ -123,11 +126,11 @@ namespace GEngine {
 		
 		std::string AddOnGamePauseCallback(std::function<void(bool)> f);
 		inline void RemoveOnGamePauseCallback(std::string s) { m_onPausedCallbacks.erase(s); }
-
-
-	protected:
 		void SetWindowApi(const FWindowApi& windowApi);
 		void SetGraphicsApi(const FGraphicsApi& graphicsApi);
+
+	protected:
+		
 		Scope<Window> m_Window;
 		inline virtual void OnCleanDirtyApi() {};
 		inline virtual void OnUpdate(Timestep timeStep) {};

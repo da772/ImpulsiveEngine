@@ -38,7 +38,12 @@ namespace GEngine {
             return 0.f;
         };
         
-        void ServerWindow::Init(const WindowData& props) {
+		void ServerWindow::SetWindowHint(int hint, int value)
+		{
+
+		}
+
+		void ServerWindow::Init(const WindowData& props) {
             m_Data.Title = props.Title;
             m_Data.Width = props.Width;
             m_Data.Height = props.Height;

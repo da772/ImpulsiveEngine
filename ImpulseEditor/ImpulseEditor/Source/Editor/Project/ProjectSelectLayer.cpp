@@ -1,5 +1,6 @@
 #include "ProjectSelectLayer.h"
 #include "GenerateProject.h"
+#include "EditorLayer.h"
 
 #ifdef GE_EDITOR
 #include "imgui/imgui_internal.h"
@@ -594,6 +595,13 @@ namespace Project {
 			GEngine::ScriptApi::SetRelativePath_Native("../Scripts/");
 			GEngine::ScriptApi::Load(path + "/" + d->name + "/" + d->name + "/NativeScripts/Scripts/", ".h");
 			//GEngine::ScriptApi::GetReflector_Native()->CallStaticFunction<void>("ExampleScript", "TestFunction");
+		}
+
+		EditorLayer* layer = EditorLayer::Create();
+		if (layer) {
+			GEngine::Application::GetApp()->PushLayer(layer);
+			GEngine::Application::GetApp()->PopLayer(this);
+			delete this;
 		}
 	}
 

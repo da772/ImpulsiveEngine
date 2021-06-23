@@ -88,6 +88,10 @@ namespace GEngine {
 
 		virtual void Shutdown() = 0;
 
+		virtual void SetWindowHint(int hint, int value) = 0;
+
+		inline virtual void MaximizeWindow() {};
+		inline virtual void RestoreWindow() {};
         
         virtual void GetFrameBufferSize(int* width, int* height) = 0;
 

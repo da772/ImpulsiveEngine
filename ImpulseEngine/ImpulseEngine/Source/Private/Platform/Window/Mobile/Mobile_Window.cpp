@@ -103,7 +103,12 @@ namespace GEngine {
             Mobile_Interface::SetKeyboardValue(text);
 		}
 
-		void MobileWindow::HideKeyboard() 
+		void MobileWindow::SetWindowHint(int hint, int value)
+		{
+
+		}
+
+		void MobileWindow::HideKeyboard()
 		{
             Mobile_Interface::HideKeyboard();
 		}

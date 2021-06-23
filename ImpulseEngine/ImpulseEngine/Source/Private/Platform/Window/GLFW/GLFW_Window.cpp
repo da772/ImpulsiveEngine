@@ -203,6 +203,21 @@ namespace GEngine {
 		return (float)glfwGetTime();
 	}
 
+	void GLFW_Window::MaximizeWindow()
+	{
+		glfwMaximizeWindow(m_Window);
+	}
+
+	void GLFW_Window::RestoreWindow()
+	{
+		glfwRestoreWindow(m_Window);
+	}
+
+	void GLFW_Window::SetWindowHint(int hint, int value)
+	{
+		glfwWindowHint(hint, value);
+	}
+
 	void GLFW_Window::OnUpdate(bool m_Minimized)
 	{
 

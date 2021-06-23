@@ -32,6 +32,12 @@ namespace GEngine {
 		virtual float const GetTime() const override;
 
 
+		virtual void MaximizeWindow() override;
+		virtual void RestoreWindow() override;
+
+
+		virtual void SetWindowHint(int hint, int value) override;
+
 		virtual void Init(const WindowData& props) override;
 
 

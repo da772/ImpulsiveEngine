@@ -39,6 +39,8 @@ namespace GEngine {
 
         virtual void SetKeyboardString(const std::string& text);
 
+        virtual void SetWindowHint(int hint, int value) override;
+
         virtual void HideKeyboard();
 
         virtual void GetSafeArea(int* top, int* bottom, int* left, int* right) override;

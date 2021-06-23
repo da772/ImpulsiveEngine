@@ -27,6 +27,7 @@ namespace GEngine {
 		inline virtual void* GetNativeWindow() const { return m_Window; }
 		bool IsVSync() const override;
 		virtual void Shutdown() override;
+		inline virtual void SetWindowHint(int hint, int value) override {};
 		inline virtual const float GetTime() const override { return 0.f; }
 
 

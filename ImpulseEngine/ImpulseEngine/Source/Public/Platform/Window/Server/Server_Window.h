@@ -27,6 +27,7 @@ namespace GEngine {
         bool IsVSync() const override;
         virtual void Shutdown() override;
         virtual float const GetTime() const override;
+        virtual void SetWindowHint(int hint, int value) override;
         
         virtual void Init(const WindowData& props) override;
         virtual void GetSafeArea(int* top, int* bottom, int* left, int* right) override;
