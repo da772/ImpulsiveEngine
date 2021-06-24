@@ -9,13 +9,18 @@ namespace Project {
 	};
 
 	struct ProjectData {
-		std::string name;
-		GEngine::Ref<GEngine::Texture2D> thumbNail;
-		std::string path;
-		std::string time;
-		uint64_t lastModified;
-		uint32_t languages;
+		std::string name = "";
+		GEngine::Ref<GEngine::Texture2D> thumbNail = nullptr;
+		std::string path = "";
+		std::string time = "";
+		uint64_t lastModified = 0;
+		uint32_t languages = 0;
 
+		inline ProjectData(const std::string& name = "", GEngine::Ref<GEngine::Texture2D> thumb = nullptr, const std::string& path = "", const std::string& time = "", uint64_t lastModified = 0, uint32_t langauges = 0) :
+			name(name), thumbNail(thumb), path(path), time(time), lastModified(lastModified), languages(languages) {};
+		inline ProjectData(ProjectData* d) {
+			*this = *d;
+		}
 
 		inline bool isValid() const {
 			return name.size() > 0 && path.size() > 0;

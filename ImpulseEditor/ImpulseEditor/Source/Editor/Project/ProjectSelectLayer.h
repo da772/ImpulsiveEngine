@@ -70,7 +70,7 @@ namespace Project {
 		void CreateProject(ProjectData* d);
 		bool GenerateProject(bool retry = true);
 		void ShowProject(const std::string& path);
-		void OpenProject(const std::string& path);
+		bool OpenProject(const std::string& path);
 		bool DeleteProject(const std::string& path);
 		void RemoveProject(const std::string& path);
 		LocalProject* GetProjectDataFromPath(const std::string& path);

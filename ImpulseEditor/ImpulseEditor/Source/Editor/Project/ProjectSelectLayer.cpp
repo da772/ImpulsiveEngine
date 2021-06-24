@@ -1,6 +1,6 @@
 #include "ProjectSelectLayer.h"
 #include "GenerateProject.h"
-#include "EditorLayer.h"
+#include "Editor/EditorLayer.h"
 
 #ifdef GE_EDITOR
 #include "imgui/imgui_internal.h"
@@ -42,9 +42,9 @@ namespace Project {
 
 	void ProjectSelectLayer::OnAttach()
 	{
-		searchIcon = GEngine::Texture2D::Create("Content/Textures/Icons/searchIcon172x172.png", TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear);
+		searchIcon = GEngine::Texture2D::Create("Content/Textures/Icons/searchIcon160x160.png", TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear);
 		folderIcon = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
-		projectSelectionIcon = GEngine::Texture2D::Create("Content/Textures/Icons/projectIcon96x96.png");
+		projectSelectionIcon = GEngine::Texture2D::Create("Content/Textures/Icons/package160x160.png");
 
 
 		LoadProjects();
@@ -130,7 +130,11 @@ namespace Project {
 				selectedProject = p.path + "/" + p.name;
 			}
 			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-				OpenProject(selectedProject);
+				if (OpenProject(selectedProject)) {
+					ImGui::EndChild();
+					ImGui::End();
+					return;
+				}
 			}
 
 			ImGui::SameLine();
@@ -579,12 +583,13 @@ namespace Project {
 	}
 
 
-	void ProjectSelectLayer::OpenProject(const std::string& path)
+	bool ProjectSelectLayer::OpenProject(const std::string& path)
 	{
 		GE_CORE_DEBUG("@TODO OPEN PROJECT: {0}", path);
 
 		LocalProject* proj = GetProjectDataFromPath(selectedProject);
 		ProjectData* d = &proj->data;
+#if 0
 		if (d->isNative()) {
 			GEngine::ScriptApi::SetBuild_Native(path + "/" + d->name + "/" + d->name + "/NativeScripts/", "NativeScripts");
 			GEngine::ScriptApi::SetMake_Native("", "", [this]() {
@@ -596,13 +601,15 @@ namespace Project {
 			GEngine::ScriptApi::Load(path + "/" + d->name + "/" + d->name + "/NativeScripts/Scripts/", ".h");
 			//GEngine::ScriptApi::GetReflector_Native()->CallStaticFunction<void>("ExampleScript", "TestFunction");
 		}
+#endif
 
-		EditorLayer* layer = EditorLayer::Create();
+		Editor::EditorLayer* layer = Editor::EditorLayer::Create(&proj->data);
 		if (layer) {
 			GEngine::Application::GetApp()->PushLayer(layer);
 			GEngine::Application::GetApp()->PopLayer(this);
-			delete this;
+			delete this;// TODO change this
 		}
+		return true;
 	}
 
 	void ProjectSelectLayer::ImportProject(const std::string& path) {
