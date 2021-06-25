@@ -15,6 +15,7 @@
 #define _HAS_STD_BYTE 0
 #include <shlwapi.h>
 #include <shlobj.h>
+#include <fileapi.h>
 #endif
 
 #ifdef GE_CONSOLE_APP
@@ -609,6 +610,17 @@ namespace GEngine {
 		if (er.value() != 0) return false;
 		return true;
 #endif
+	}
+
+	bool FileSystem::MoveFile(const std::string& file, const std::string& dst)
+	{
+		std::filesystem::rename(file, dst);
+		return true;
+	}
+
+	bool FileSystem::DeleteFile(const std::string& file)
+	{
+		return std::filesystem::remove(file);
 	}
 
 	void FileSystem::OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& _startPath, bool isFolder)

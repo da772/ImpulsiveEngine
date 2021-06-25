@@ -51,6 +51,8 @@ namespace GEngine {
 		static int ZipFiles(const std::vector<std::string>& , const std::string& out);
 		static void CreateDirectories(const  std::string& dir);
 		static bool RemoveAllFolders(const std::string& dir);
+		static bool MoveFile(const std::string& file, const std::string& dst);
+		static bool DeleteFile(const std::string& file);
 
 		static void OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& startPath = "", bool isFolder = false);
 
