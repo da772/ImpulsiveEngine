@@ -30,13 +30,17 @@ namespace Editor {
 	private:
 		void FolderViewPanel();
 		void DropDownViewPanel();
+        void ResizePanel();
 		void GetChildren(const std::filesystem::directory_entry& entry);
 		void SelectView(const DirectoryPath& d, int fl);
 
 	private:
 		std::filesystem::directory_entry m_directoryBase;
 		std::filesystem::directory_entry m_currentEntry;
-
+        bool isDragging = false;
+        float lastX = -1;
+        float dropDownPanelWidth = .15f;
+        std::vector<DirectoryPath> directories = {};
 		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
 		
 		std::string m_selectedEntry;

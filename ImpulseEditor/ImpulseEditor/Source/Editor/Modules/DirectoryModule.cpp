@@ -14,9 +14,11 @@ namespace Editor {
 	std::string DirectoryModule::Create(bool* is_open, uint32_t flags)
 	{
 		ImGui::Begin(moduleName.c_str(), is_open, flags);
-
+        // TODO: optimize direcroties
 		DropDownViewPanel();
 		ImGui::SameLine();
+        ResizePanel();
+        ImGui::SameLine();
 		FolderViewPanel();
 
 		ImGui::End();
@@ -24,12 +26,49 @@ namespace Editor {
 		return "";
 	}
 
+    void DirectoryModule::ResizePanel() {
+        ImVec2 pos = ImGui::GetCursorScreenPos();
+        float height = ImGui::GetContentRegionAvail().y;
+        ImGui::BeginChild("Resizeable", {5, 0}, 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::GetForegroundDrawList()->AddRectFilled({pos.x, pos.y}, {pos.x+5, pos.y+height}, IM_COL32(125,125,125,125));
+        if (ImGui::IsMouseHoveringRect({pos.x, pos.y}, {pos.x+5, pos.y+height})) {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+            if (ImGui::IsMouseDown(0)) {
+                isDragging = true;
+                lastX = ImGui::GetMousePos().x;
+            } else {
+                isDragging = false;
+            }
+        }
+        if (!ImGui::IsMouseDown(0)) {
+            isDragging = false;
+        } else if (isDragging) {
+            float xPos =ImGui::GetMousePos().x;
+            float xDist = xPos - lastX;
+            if (xDist != 0) {
+                
+                xDist /= 1000.f;
+                
+                dropDownPanelWidth += xDist;
+                
+                if (dropDownPanelWidth > .6f) {
+                    dropDownPanelWidth = .6f;
+                } else if (dropDownPanelWidth < .15f) {
+                    dropDownPanelWidth = .15f;
+                }
+                
+                lastX = xPos;
+            }
+        }
+        ImGui::EndChild();
+    }
+
 	void DirectoryModule::FolderViewPanel()
 	{
 		std::vector<DirectoryPath> directories = {};
-
-		ImGui::BeginChild("IconFolderViewer", { ImGui::GetWindowWidth() * .85f, 0 }, true);
-
+        if (ImGui::GetWindowWidth()* (1-dropDownPanelWidth) < 100) return;
+		ImGui::BeginChild("IconFolderViewer", { 0, 0 }, true, ImGuiWindowFlags_AlwaysAutoResize);
+        
 		if (depth > 0) {
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			if (ImGui::ImageButton((ImTextureID)m_textures["undoIcon"]->GetRendererID(), { 15, 15 }, { 0,1 }, { 1,0 })) {
@@ -50,6 +89,9 @@ namespace Editor {
 		ImGui::Separator();
 
 		for (const auto& entry : std::filesystem::directory_iterator(m_currentEntry)) {
+#ifdef GE_PLATFORM_MACOSX
+            if (entry.path().filename() == ".DS_Store") continue;
+#endif
 			directories.push_back({ entry.path().generic_string(), entry.path().filename().generic_string(), entry.path().extension().generic_string(), entry.is_directory(), std::filesystem::is_empty(entry.path()) });
 		}
 
@@ -62,9 +104,9 @@ namespace Editor {
 		int cols = std::max((int)width / 100, 1);
 
 		ImGui::Columns(cols, "DIRECTORYCOLS", false);
-		bool open = true;
 
-		float lineHeight = ImGui::CalcTextSize("A").y + 5;
+		float lineHeight = ImGui::CalcTextSize("A").y;
+        lineHeight += lineHeight/2;
 
 		for (const auto& p : directories) {
 			GEngine::Ref<GEngine::Texture2D> texture = nullptr;
@@ -102,10 +144,11 @@ namespace Editor {
 			}
 
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			ImVec2 textSize = ImGui::CalcTextSize(p.name.c_str(), 0, true, ImGui::GetContentRegionAvailWidth());
+            float availWidth =ImGui::GetContentRegionAvailWidth();
+			ImVec2 textSize = ImGui::CalcTextSize(p.name.c_str(), 0, false, availWidth+1);
 			bool isMouseOver = ImGui::IsMouseHoveringRect({ pos.x, pos.y }, { pos.x + ImGui::GetContentRegionAvailWidth(), pos.y + +imageSize + textSize.y + lineHeight / 2 });
 			if (m_selectedEntry == p.path || isMouseOver) {
-				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x, pos.y }, { pos.x + ImGui::GetContentRegionAvailWidth(), pos.y + imageSize + textSize.y + lineHeight / 2 }, IM_COL32(125, 125, 125, 100));
+				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x, pos.y }, { pos.x + availWidth, pos.y + imageSize + textSize.y + lineHeight / 2 }, IM_COL32(125, 125, 125, 100));
 				if (isMouseOver && ImGui::IsMouseClicked(0)) {
 					m_selectedEntry = p.path;
 				}
@@ -121,7 +164,7 @@ namespace Editor {
 			}
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvailWidth() / 2 - imageSize + imageSize / 2);
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 - imageSize + imageSize / 2);
 
 			ImGui::Image((ImTextureID)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
 
@@ -133,8 +176,8 @@ namespace Editor {
 			int startIndex = 0;
 			for (int i = 0; i < p.name.size(); i++) {
 				ImVec2 size = ImGui::CalcTextSize(&p.name[startIndex], &p.name[i], true);
-				if (size.x > ImGui::GetContentRegionAvailWidth() - 10) {
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvailWidth() / 2 -
+				if (size.x > availWidth - 10) {
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
 						size.x + (size.x / 2));
 					std::string s(&p.name[startIndex], &p.name[i]);
 					ImGui::Text(s.c_str());
@@ -142,7 +185,7 @@ namespace Editor {
 					i -= 1;
 				}
 				else if (i == p.name.size() - 1) {
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvailWidth() / 2 -
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
 						size.x + (size.x / 2));
 					std::string s(&p.name[startIndex]);
 					ImGui::Text(s.c_str());
@@ -159,7 +202,7 @@ namespace Editor {
 
 	void DirectoryModule::DropDownViewPanel()
 	{
-		ImGui::BeginChild("DropDownViewer", { ImGui::GetWindowWidth() * .125f, 0 }, true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+		ImGui::BeginChild("DropDownViewer", { ImGui::GetWindowWidth() * dropDownPanelWidth, 0 }, true, ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
 
 		ImGui::Text("Viewer");
 		ImGui::Separator();

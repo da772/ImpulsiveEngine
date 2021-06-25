@@ -182,7 +182,11 @@ namespace Project {
 		}
 		ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);
 		if (ImGui::Button("Open", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
-			OpenProject(selectedProject);
+            if (OpenProject(selectedProject)) {
+                ImGui::EndChild();
+                ImGui::End();
+                return;
+            }
 		}
 
 		ImGui::SetCursorPosX((float)GEngine::Application::GetWindowWidth() * .125f / 2.f - (float)GEngine::Application::GetWindowWidth() * .125f * .75f / 2.f);

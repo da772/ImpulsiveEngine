@@ -12,7 +12,7 @@ Pods/
 build/
 .gradle/
 .idea/
-ImpulsiveEditor/ImpulsiveEditor/Content/Archives/
+ImpulseEditor/ImpulseEditor/Content/Archives/
 
 # Files
 *.user
