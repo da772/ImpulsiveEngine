@@ -66,10 +66,13 @@ namespace Editor {
 		void DropDownViewPanel();
         void ResizePanel();
 		void SettingsModal();
+		void Filterbar();
 		void GetChildren(const std::filesystem::directory_entry& entry);
-		void SelectView(const DirectoryPath& d, int fl);
+		void SelectView(const DirectoryPath& d);
 		void ShowSetingsModal(const DirectoryPath& flags);
 		void AcceptDirPayload(const DirectoryPath& p);
+		void CreateFolderView(const DirectoryPath& p, int fl, float fontSize);
+
 
 	private:
 		std::filesystem::directory_entry m_directoryBase;
@@ -80,7 +83,7 @@ namespace Editor {
         float dropDownPanelWidth = .15f;
         std::vector<DirectoryPath> directories = {};
 		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
-		
+		char filterBuffer[255] = { 0 };
 		std::string m_selectedEntry;
 		std::string m_selectedViewEntry;
 

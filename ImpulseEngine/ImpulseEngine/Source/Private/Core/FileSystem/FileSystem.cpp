@@ -590,11 +590,12 @@ namespace GEngine {
 #endif
 	}
 
-	void FileSystem::CreateDirectories(const std::string& dir)
+	bool FileSystem::CreateDirectories(const std::string& dir)
 	{
 #ifdef GE_CONSOLE_APP
-		std::filesystem::create_directories(dir);
+		return std::filesystem::create_directories(dir);
 #endif
+		return false;
 	}
 
 	bool FileSystem::RemoveAllFolders(const std::string& dir)

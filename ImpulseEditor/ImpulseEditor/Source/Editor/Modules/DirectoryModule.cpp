@@ -2,6 +2,8 @@
 
 namespace Editor {
 
+	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
+
 	DirectoryModule::DirectoryModule(const std::string& directoryBase) : m_currentEntry(directoryBase), m_directoryBase(directoryBase)
 	{
 		m_textures["folderIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
@@ -9,6 +11,7 @@ namespace Editor {
 		m_textures["folderFull"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderFull160x160.png");
 		m_textures["fileIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/document160x160.png");
 		m_textures["undoIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/undo160x160.png"); 
+		m_textures["searchIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/searchIcon160x160.png", TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
 	}
 
 	std::string DirectoryModule::Create(bool* is_open, uint32_t flags)
@@ -16,6 +19,7 @@ namespace Editor {
 		ImGui::Begin(moduleName.c_str(), is_open, flags);
         // TODO: optimize direcroties
 	
+		Filterbar();
 		DropDownViewPanel();
 		ImGui::SameLine();
         ResizePanel();
@@ -48,14 +52,14 @@ namespace Editor {
             float xDist = xPos - lastX;
             if (xDist != 0) {
                 
-                xDist /= 1000.f;
+                xDist /= (float)GEngine::Application::GetWindowWidth();
                 
                 dropDownPanelWidth += xDist;
                 
                 if (dropDownPanelWidth > .6f) {
                     dropDownPanelWidth = .6f;
-                } else if (dropDownPanelWidth < .15f) {
-                    dropDownPanelWidth = .15f;
+                } else if (dropDownPanelWidth < .1f) {
+                    dropDownPanelWidth = .1f;
                 }
                 
                 lastX = xPos;
@@ -71,7 +75,7 @@ namespace Editor {
 
 			if (m_rightClicked.is_directory) {
 				if (ImGui::Button("Open")) {
-					SelectView(m_rightClicked, 0);
+					SelectView(m_rightClicked);
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Rename")) {
@@ -84,7 +88,29 @@ namespace Editor {
 			}
 			else if (m_rightClicked.path == "NULL") {
 				if (ImGui::Button("New Folder")) {
-					GEngine::FileSystem::CreateDirectories(m_currentEntry.path().generic_string() + "NewFolder");
+					std::string s = m_currentEntry.path().generic_string();
+					if (s[s.size() - 1] == '/') {
+						s += "NewFolder";
+					}
+					else {
+						s += "/NewFolder";
+					}
+
+					int counter = 0;
+					while (!GEngine::FileSystem::CreateDirectories(s)) {
+						s = m_currentEntry.path().generic_string();
+						if (s[s.size() - 1] != '/') {
+							s += "/";
+						}
+						if (counter > 0) {
+							s += "NewFolder_" + std::to_string(counter);
+						}
+						else {
+							s += "NewFolder";
+						}
+
+						counter++;
+					}
 					ImGui::CloseCurrentPopup();
 				}
 			} 
@@ -106,6 +132,26 @@ namespace Editor {
 		}
 	}
 
+	void DirectoryModule::Filterbar()
+	{
+		ImGui::BeginChild("DirectoryFilterBar", { 0, ImGui::GetTextLineHeight() * 1.5f }, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		ImGui::SameLine();
+		ImGui::BeginChild("filterBarSpacer", { ImGui::GetContentRegionAvailWidth() * .75f, ImGui::GetTextLineHeight() * 1.5f }, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		ImGui::EndChild();
+		ImGui::SameLine();
+		ImGui::Text("Filter:");
+		ImGui::SameLine();
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.f);
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() * .7f);
+		ImGui::InputText("##FilterInput", filterBuffer, 255);
+		ImGui::PopItemWidth();
+		ImGui::PopStyleVar();
+		ImGui::SameLine();
+		ImGui::SetCursorPos({ ImGui::GetCursorPosX()-30.f, ImGui::GetCursorPosY() + 5.f });
+		ImGui::Image((ImTextureID)m_textures["searchIcon"]->GetRendererID(), { ImGui::GetTextLineHeight() * .85f, ImGui::GetTextLineHeight() * .85f }, { 0,1 }, { 1,0 });
+		ImGui::EndChild();
+	}
+
 	void DirectoryModule::FolderViewPanel()
 	{
 		std::vector<DirectoryPath> directories = {};
@@ -113,32 +159,64 @@ namespace Editor {
 		isDragAndDrop = false;
         if (ImGui::GetWindowWidth()* (1-dropDownPanelWidth) < 100) return;
 		ImGui::BeginChild("IconFolderViewer", { 0, 0 }, true, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove);
-        
-		if (depth > 0) {
-			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
-			if (ImGui::ImageButton((ImTextureID)m_textures["undoIcon"]->GetRendererID(), { 15, 15 }, { 0,1 }, { 1,0 })) {
-				m_currentEntry = std::filesystem::directory_entry(m_currentEntry.path().parent_path());
-				m_selectedViewEntry = m_currentEntry.path().generic_string();
-				lastDepth = depth;
-				depth--;
-			}
-			ImGui::PopStyleColor();
-			ImGui::SameLine();
-		}
+		ImGui::BeginChild("IconFolderNavigator", { 0, ImGui::GetFontSize() * 1.75f }, false, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_HorizontalScrollbar);
+		{
+		ImVec2 startPos = ImGui::GetCursorScreenPos();
+		float width = ImGui::GetContentRegionAvailWidth();
 		if (depth == 0) {
-			ImGui::Text("Content");
+			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+			ImGui::Button("Content");
+			ImGui::PopStyleColor();
 		}
 		else {
-			ImGui::Text(&m_currentEntry.path().generic_string().c_str()[m_directoryBase.path().generic_string().size() - m_directoryBase.path().parent_path().filename().generic_string().size() - 1]);
+			std::vector<std::filesystem::path> dirs;
+			std::filesystem::path curPath = m_currentEntry.path();
+			while (curPath.generic_string() != m_directoryBase.path().parent_path().generic_string()) {
+				dirs.push_back(curPath);
+				curPath = curPath.parent_path();
+				//ImGui::Text(&m_currentEntry.path().generic_string().c_str()[m_directoryBase.path().generic_string().size() - m_directoryBase.path().parent_path().filename().generic_string().size() - 1]);
+			}
+			dirs.push_back(curPath);
+
+			for (int i = dirs.size() - 1; i >= 0; i--) {
+				if (dirs.size() - 1 != i) {
+					ImGui::SameLine();
+					ImGui::Text(">");
+					ImGui::SameLine();
+				}
+				ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+				if (ImGui::Button((dirs[i].filename().generic_string()).c_str())) {
+					DirectoryPath d = { dirs[i].generic_string(), dirs[i].filename().generic_string(), dirs[i].extension().generic_string(), false, false };
+					SelectView(d);
+				}
+				ImGui::PopStyleColor();
+			}
 		}
 
-		ImGui::Separator();
+		ImGui::GetWindowDrawList()->AddLine({ startPos.x, ImGui::GetCursorScreenPos().y }, { startPos.x + width, ImGui::GetCursorScreenPos().y }, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Border)));
+		}
+		ImGui::EndChild();
 
 		for (const auto& entry : std::filesystem::directory_iterator(m_currentEntry)) {
 #ifdef GE_PLATFORM_MACOSX
             if (entry.path().filename() == ".DS_Store") continue;
 #endif
-			directories.push_back({ entry.path().generic_string(), entry.path().filename().generic_string(), entry.path().extension().generic_string(), entry.is_directory(), std::filesystem::is_empty(entry.path()) });
+			DirectoryPath d = { entry.path().generic_string(), entry.path().filename().generic_string(), entry.path().extension().generic_string(), entry.is_directory(), std::filesystem::is_empty(entry.path()) };
+			if (strlen(filterBuffer) > 0) {
+				std::string filter(filterBuffer);
+				std::string nme = d.name;
+				std::transform(filter.begin(), filter.end(), filter.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(nme.begin(), nme.end(), nme.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				if (nme.find(filter) != std::string::npos) {
+					directories.push_back(d);
+				}
+
+			}
+			else {
+				directories.push_back(d);
+			}
 		}
 
 		std::sort(directories.begin(), directories.end(), [](const DirectoryPath& lhs, const DirectoryPath& rhs) {
@@ -195,7 +273,7 @@ namespace Editor {
 			ImVec2 textSize = ImGui::CalcTextSize(p.name.c_str(), 0, false, availWidth + 1);
 			ImVec2 pos = ImGui::GetCursorScreenPos();
 
-			ImGui::BeginChild(p.path.c_str(), { availWidth, imageSize + textSize.y + lineHeight });
+			ImGui::BeginChild(p.path.c_str(), { availWidth, imageSize + textSize.y + lineHeight } , false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 			bool isMouseOver = ImGui::IsMouseHoveringRect({ pos.x, pos.y }, { pos.x + ImGui::GetContentRegionAvailWidth(), pos.y + +imageSize + textSize.y + lineHeight / 2 });
 			if (isMouseOver)
 				isFileHovered = isMouseOver; 
@@ -305,61 +383,17 @@ namespace Editor {
 
 		ImGui::Text("Viewer");
 		ImGui::Separator();
-		DirectoryPath d = { m_directoryBase.path().generic_string(), m_directoryBase.path().filename().generic_string(), m_directoryBase.path().extension().generic_string(), m_directoryBase.is_directory(), std::filesystem::is_empty(m_directoryBase.path()) };
+		DirectoryPath d = { m_directoryBase.path().generic_string(), m_directoryBase.path().parent_path().filename().generic_string(), m_directoryBase.path().extension().generic_string(), m_directoryBase.is_directory(), std::filesystem::is_empty(m_directoryBase.path()) };
 		ImGuiTreeNodeFlags fl = m_selectedViewEntry == d.path ? ImGuiTreeNodeFlags_Selected : 0;
-		if (ImGui::TreeNodeEx("Content", ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
-			if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-			AcceptDirPayload(d);
-			for (const auto& entry : std::filesystem::directory_iterator(m_directoryBase)) {
-				DirectoryPath d = { entry.path().generic_string(), entry.path().filename().generic_string(), entry.path().extension().generic_string(), entry.is_directory(), std::filesystem::is_empty(entry.path()) };
-				fl = m_selectedViewEntry == d.path ? ImGuiTreeNodeFlags_Selected : 0;
-				if (d.is_directory) {
-					d.is_empty = true;
-					for (const auto& _entry : std::filesystem::directory_iterator(entry)) {
-						if (_entry.is_directory()) {
-							d.is_empty = false;
-							break;
-						}
-					}
-					if (d.is_empty) {
-						if (ImGui::TreeNodeEx(d.name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow |  fl)) {
-							if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-							AcceptDirPayload(d);
-							ImGui::TreePop();
-						}
-						else {
-							if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-							AcceptDirPayload(d);
-						}
-						
-					}
-					else {
-						if (ImGui::TreeNodeEx(d.name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
-							if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-							AcceptDirPayload(d);
-							GetChildren(entry);
-							ImGui::TreePop();
-						}
-						else
-						{
-							if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-							AcceptDirPayload(d);
-						}
-					}
-				}
-			}
-			ImGui::TreePop();
-		}
-		else {
-			if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-			AcceptDirPayload(d);
-		}
+		float fontSize = ImGui::GetFontSize();
+		CreateFolderView(d, fl, fontSize);
 
 		ImGui::EndChild();
 	}
 
 	void DirectoryModule::GetChildren(const std::filesystem::directory_entry& _entry)
 	{
+		float fontSize = ImGui::GetFontSize();
 		for (const auto& entry : std::filesystem::directory_iterator(_entry)) {
 			DirectoryPath d = { entry.path().generic_string(), entry.path().filename().generic_string(), entry.path().extension().generic_string(), entry.is_directory(), std::filesystem::is_empty(entry.path()) };
 			ImGuiTreeNodeFlags fl = (m_currentEntry == d.path && m_selectedViewEntry == d.path) ? ImGuiTreeNodeFlags_Selected : 0;
@@ -371,48 +405,115 @@ namespace Editor {
 					}
 				}
 				if (d.is_empty) {
-					if (ImGui::TreeNodeEx(d.name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow |  fl)) {
-						if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-						AcceptDirPayload(d);
-						ImGui::TreePop();
-					}
-					else {
-						if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-						AcceptDirPayload(d);
-					}
+					CreateFolderView(d, fl, fontSize);
 				}
 				else {
-					if (ImGui::TreeNodeEx(d.name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
-						if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-						AcceptDirPayload(d);
-						GetChildren(entry);
-						ImGui::TreePop();
-					}
-					else {
-						if (!fl && ImGui::IsItemClicked() && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > ImGui::GetTreeNodeToLabelSpacing()) SelectView(d, fl);
-						AcceptDirPayload(d);
-					}
+					CreateFolderView(d, fl, fontSize);
 					
 				}
 			}
 		}
 	}
 
-	void DirectoryModule::SelectView(const DirectoryPath& d, int fl)
+	void DirectoryModule::CreateFolderView(const DirectoryPath& d, int fl, float fontSize)
+	{
+		float availWidth = ImGui::GetContentRegionAvailWidth();
+		ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+		float offset = d.is_empty ? 0 : ImGui::GetTreeNodeToLabelSpacing();
+
+		if (ImGui::TreeNodeEx(("##" + d.name).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
+			ImGui::SameLine();
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+			if (ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize })) {
+				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
+				if (!d.is_empty)
+					RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize * 1.75f) / 2.f - (fontSize * 0.40f * .75f), pos.y + (fontSize * 0.40f * .75f) / 2.f }, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Down, .75f);
+				if (ImGui::IsMouseClicked(0) && !isDragAndDrop && !isDragging && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) SelectView(d);
+			}
+			else if (d.is_empty) {
+					ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
+			}
+
+			ImGui::Image((ImTextureID)m_textures[d.is_empty ? "folderIcon" : "folderEmpty"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::SameLine();
+			ImGui::Text(d.name.c_str());
+
+			AcceptDirPayload(d);
+			if (!d.is_empty)
+				GetChildren(std::filesystem::directory_entry(d.path));
+			ImGui::TreePop();
+		}
+		else {
+			ImGui::SameLine();
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+			if (ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize })) {
+				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
+				if (!d.is_empty)
+					RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize*1.75f)/2.f- (fontSize * 0.40f * .85f), pos.y+ (fontSize * 0.40f * .85f)/2.f}, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Right, .75f);
+				if (!fl && ImGui::IsMouseClicked(0) && !isDragAndDrop && !isDragging && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) SelectView(d);
+			}
+			else if (d.is_empty) {
+				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
+			}
+			
+			ImGui::Image((ImTextureID)m_textures[d.is_empty ? "folderIcon" : "folderEmpty"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::SameLine();
+			ImGui::Text(d.name.c_str());
+			AcceptDirPayload(d);
+		}
+	}
+
+	static void RenderArrow(ImDrawList* drawList,  float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale)
+	{
+		const float h = fontSize * 1.00f;
+		float r = h * 0.40f * scale;
+		ImVec2 center = { pos.x + h * 0.50f, pos.y + h * 0.50f * scale };
+		ImVec2 a, b, c;
+		switch (dir)
+		{
+		case ImGuiDir_Up:
+		case ImGuiDir_Down:
+			if (dir == ImGuiDir_Up) r = -r;
+			a = { +0.000f * r, +0.750f * r };
+			b = ImVec2(-0.866f*r, -0.750f * r);
+			c = ImVec2(+0.866f*r, -0.750f * r);
+			break;
+		case ImGuiDir_Left:
+		case ImGuiDir_Right:
+			if (dir == ImGuiDir_Left) r = -r;
+			a = ImVec2(+0.750f*r, +0.000f * r);
+			b = ImVec2(-0.750f*r, +0.866f* r);
+			c = ImVec2(-0.750f*r, -0.866f * r);
+			break;
+		case ImGuiDir_None:
+		case ImGuiDir_COUNT:
+			IM_ASSERT(0);
+			break;
+		}
+		drawList->AddTriangleFilled({ center.x + a.x , center.y + a.y }, { center.x + b.x , center.y + b.y }, { center.x + c.x , center.y + c.y }, col);
+	}
+
+	void DirectoryModule::SelectView(const DirectoryPath& d)
 	{
 		
 		m_selectedViewEntry = d.path;
 		m_currentEntry = std::filesystem::directory_entry(m_selectedViewEntry);
-		std::string s(&d.path[m_directoryBase.path().generic_string().size()]);
-		if (s.size() <= 0) {
+		if (m_currentEntry.path() != m_directoryBase.path().parent_path()) {
+			std::string s(&d.path[m_directoryBase.path().generic_string().size()]);
+			if (s.size() <= 0) {
+				depth = 0;
+				return;
+			}
+			int de = 1;
+			for (int i = 0; i < s.size() - 1; i++) {
+				if (s[i] == '/') de++;
+			}
+			depth = de;
+			
+		}
+		else {
 			depth = 0;
-			return;
 		}
-		int de = 1;
-		for (int i = 0; i < s.size() - 1; i++) {
-			if (s[i] == '/') de++;
-		}
-		depth = de;
 		m_selectedEntry = "";
 		
 	}
@@ -442,4 +543,4 @@ namespace Editor {
 		}
 	}
 
-}
+	}
