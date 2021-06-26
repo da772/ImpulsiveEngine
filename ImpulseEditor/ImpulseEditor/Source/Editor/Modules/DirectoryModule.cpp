@@ -231,7 +231,7 @@ namespace Editor {
 
 		float lineHeight = ImGui::CalcTextSize("A").y;
         lineHeight += lineHeight/2;
-		std::vector<DirectoryPath>::iterator& _p = directories.begin();
+		std::vector<DirectoryPath>::iterator _p = directories.begin();
 		int dirCounter = 1;
 		while ( _p != directories.end() ) {
 			GEngine::Ref<GEngine::Texture2D> texture = nullptr;
@@ -396,7 +396,7 @@ namespace Editor {
 		float fontSize = ImGui::GetFontSize();
 		for (const auto& entry : std::filesystem::directory_iterator(_entry)) {
 			DirectoryPath d = { entry.path().generic_string(), entry.path().filename().generic_string(), entry.path().extension().generic_string(), entry.is_directory(), std::filesystem::is_empty(entry.path()) };
-			ImGuiTreeNodeFlags fl = (m_currentEntry == d.path && m_selectedViewEntry == d.path) ? ImGuiTreeNodeFlags_Selected : 0;
+			ImGuiTreeNodeFlags fl = (m_currentEntry.path().generic_string() == d.path && m_selectedViewEntry == d.path) ? ImGuiTreeNodeFlags_Selected : 0;
 			if (d.is_directory) {
 				d.is_empty = true;
 				for (const auto& __entry : std::filesystem::directory_iterator(entry)) {
