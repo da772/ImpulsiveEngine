@@ -1,5 +1,7 @@
 #pragma once
 
+#define GE_MAX_PATH MAX_PATH
+
 namespace GEngine {
 
 	class GE_API FileData {
@@ -50,6 +52,7 @@ namespace GEngine {
 		static int ZipDir(const std::string& dir, const std::string& out);
 		static int ZipFiles(const std::vector<std::string>& , const std::string& out);
 		static bool CreateDirectories(const  std::string& dir);
+		static bool CreateDirectory(const std::string& dir);
 		static bool RemoveAllFolders(const std::string& dir);
 		static bool MoveFile(const std::string& file, const std::string& dst);
 		static bool DeleteFile(const std::string& file);

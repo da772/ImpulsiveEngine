@@ -433,6 +433,8 @@ namespace Project {
 					CreateProject(&GetProjectDataFromPath(selectedProject)->data);
 					m_createProjectModal = false;
 					ImGui::CloseCurrentPopup();
+
+
 				}
 			}
 
@@ -506,7 +508,7 @@ namespace Project {
 
 				ImGui::BeginChild("GenerateFlagsLeft", { ImGui::GetWindowWidth() / 2,  (platformStruct.generationFlags.size() / 2.f) * 40.f }, false);
 
-				for (int i = platformStruct.generationFlags.size() <= 1 ? 2 : platformStruct.generationFlags.size() / 2; i < platformStruct.generationFlags.size(); i++) {
+				for (size_t i = platformStruct.generationFlags.size() <= 1 ? 2 : platformStruct.generationFlags.size() / 2; i < platformStruct.generationFlags.size(); i++) {
 					ImGui::CheckboxFlags(Generation::GenerateProject::GenerateFlagStr(platformStruct.generationFlags[i]).c_str(), (unsigned int*)&m_generateFlags, (uint32_t)platformStruct.generationFlags[i]);
 				}
 

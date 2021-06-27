@@ -1,4 +1,8 @@
 #include "EditorLayer.h"
+#include "Modules/DockModule.h"
+#include "Modules/DirectoryModule.h"
+#include "Modules/ProfilerModule.h"
+#include "Modules/DockModule.h"
 
 namespace Editor {
 
@@ -26,7 +30,12 @@ namespace Editor {
 
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.name, m_projectData.path);
 		
-		directoryModule = new DirectoryModule(m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name+"/Content/");
+
+		AddModule<DirectoryModule>("Content Browser", true, 0, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name+"/Content/");
+		AddModule<ProfilerModule>("Profiler", true, 0);
+
+
+		AddModule<DockModule>("Dock", true, 0, std::vector < std::pair < std::string, std::string>>());
 
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}
@@ -67,7 +76,12 @@ namespace Editor {
 
 	void EditorLayer::OnImGuiRender()
 	{
-		directoryModule->Create( nullptr, 0);
+		for (auto & d : modules) {
+			if (!d.second.isOpen) continue;
+			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
+		}
+
+		GEngine::Log::GetImGuiLog()->Draw("Console Log", 0);
 	}
 
 	void EditorLayer::OnDraw()

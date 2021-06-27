@@ -477,7 +477,10 @@ namespace GEngine {
                 break;
             Layer* layer = *(m_LayerStack.begin()+i);
             layer->OnDraw();
-            if (b_EnableImGui) layer->OnImGuiRender();
+            {
+                GE_PROFILE_TIMER("Application:ImGui", &profile["ImGui"]);
+                if (b_EnableImGui) layer->OnImGuiRender();
+            }
 		}
         if (SceneManager::GetCurrentScene() && b_EnableImGui) SceneManager::ImGuiRender();
         if (b_EnableImGui) m_ImGuiLayer->End();

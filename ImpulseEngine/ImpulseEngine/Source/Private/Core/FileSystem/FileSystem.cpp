@@ -23,8 +23,13 @@
 #include <zip.h>
 #endif
 
+#ifdef GE_PLATFORM_LINUX
+#include <limits.h>
+#endif
+
 #ifdef GE_PLATFORM_MACOSX
 #include "ObjCWrapper/MacUtil.h"
+#include <sys/syslimits.h>
 #endif
 
 #ifdef GE_PLATFORM_ANDROID
@@ -592,10 +597,19 @@ namespace GEngine {
 
 	bool FileSystem::CreateDirectories(const std::string& dir)
 	{
+		
 #ifdef GE_CONSOLE_APP
 		return std::filesystem::create_directories(dir);
 #endif
 		return false;
+	}
+
+	bool FileSystem::CreateDirectory(const std::string& dir)
+	{
+#ifdef GE_CONSOLE_APP
+			return std::filesystem::create_directory(dir);
+#endif
+			return false;
 	}
 
 	bool FileSystem::RemoveAllFolders(const std::string& dir)

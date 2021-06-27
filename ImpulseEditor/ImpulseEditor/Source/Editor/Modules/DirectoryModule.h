@@ -49,10 +49,7 @@ namespace Editor {
 
 	public:
 		DirectoryModule(const std::string& directoryBase);
-		std::string Create(bool* is_open, uint32_t flags);
-
-	protected:
-		std::string moduleName = "Content Browser";
+		virtual void Create(const std::string& name, bool* is_open, uint32_t flags) override;
 
 	private:
 		enum class PopupFlags : uint32_t {

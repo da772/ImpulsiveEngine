@@ -108,7 +108,9 @@ namespace GEngine {
 		{"OnRender", 0.f},
 		{"FrameTime", 0.f},
 		{"Run", 0.f},
-		{"Physics", 0.f}
+		{"Physics", 0.f},
+		{"ImGui", 0.f}
+
 		};
 
 		inline bool IsRunning() { return m_Running; }

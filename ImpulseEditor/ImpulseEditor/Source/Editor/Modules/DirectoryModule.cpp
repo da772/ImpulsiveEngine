@@ -14,12 +14,12 @@ namespace Editor {
 		m_textures["searchIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/searchIcon160x160.png", TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
 	}
 
-	std::string DirectoryModule::Create(bool* is_open, uint32_t flags)
+	void DirectoryModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
-		ImGui::Begin(moduleName.c_str(), is_open, flags);
+		ImGui::Begin(name.c_str(), is_open, flags);
         // TODO: optimize direcroties
-	
-		Filterbar();
+		
+		//Filterbar();
 		DropDownViewPanel();
 		ImGui::SameLine();
         ResizePanel();
@@ -27,8 +27,6 @@ namespace Editor {
 		FolderViewPanel();
 		ImGui::End();
 
-
-		return "";
 	}
 
     void DirectoryModule::ResizePanel() {
@@ -82,7 +80,10 @@ namespace Editor {
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Delete")) {
-					GEngine::FileSystem::DeleteFile(m_rightClicked.path);
+					if (m_rightClicked.is_directory)
+						GEngine::FileSystem::RemoveAllFolders(m_rightClicked.path);
+					else
+						GEngine::FileSystem::DeleteFile(m_rightClicked.path);
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -97,19 +98,22 @@ namespace Editor {
 					}
 
 					int counter = 0;
-					while (!GEngine::FileSystem::CreateDirectories(s)) {
-						s = m_currentEntry.path().generic_string();
-						if (s[s.size() - 1] != '/') {
-							s += "/";
+					uint32_t mpath = 250;
+					if (s.size() < mpath) {
+						while (!GEngine::FileSystem::CreateDirectory(s)) {
+							s = m_currentEntry.path().generic_string();
+							if (s[s.size() - 1] != '/') {
+								s += "/";
+							}
+							if (counter > 0) {
+								s += "NewFolder_" + std::to_string(counter);
+							}
+							else {
+								s += "NewFolder";
+							}
+							if (s.size() >= mpath) break;
+							counter++;
 						}
-						if (counter > 0) {
-							s += "NewFolder_" + std::to_string(counter);
-						}
-						else {
-							s += "NewFolder";
-						}
-
-						counter++;
 					}
 					ImGui::CloseCurrentPopup();
 				}
@@ -269,12 +273,15 @@ namespace Editor {
 				}
 			}
 
-			float availWidth = ImGui::GetContentRegionAvailWidth();
-			ImVec2 textSize = ImGui::CalcTextSize(p.name.c_str(), 0, false, availWidth + 1);
+			
+			
 			ImVec2 pos = ImGui::GetCursorScreenPos();
+			ImVec2 textSize = ImGui::CalcTextSize(p.name.c_str(), 0, false, ImGui::GetContentRegionAvailWidth() -ImGui::GetFontSize() / 2.f);
 
-			ImGui::BeginChild(p.path.c_str(), { availWidth, imageSize + textSize.y + lineHeight } , false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-			bool isMouseOver = ImGui::IsMouseHoveringRect({ pos.x, pos.y }, { pos.x + ImGui::GetContentRegionAvailWidth(), pos.y + +imageSize + textSize.y + lineHeight / 2 });
+			ImGui::BeginChild(p.path.c_str(), { ImGui::GetContentRegionAvailWidth(), imageSize + textSize.y + lineHeight } , false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+			float availWidth = ImGui::GetContentRegionAvailWidth();
+			
+			bool isMouseOver = ImGui::IsMouseHoveringRect({ pos.x, pos.y }, { pos.x + availWidth, pos.y + +imageSize + textSize.y + lineHeight / 2 });
 			if (isMouseOver)
 				isFileHovered = isMouseOver; 
 			if (m_selectedEntry == p.path || isMouseOver) {
@@ -292,11 +299,10 @@ namespace Editor {
 				}
 			}
 			else {
-				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x, pos.y }, { pos.x + ImGui::GetContentRegionAvailWidth(), pos.y + 100 + textSize.y }, IM_COL32(255, 0, 0, 0));
+				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x, pos.y }, { pos.x + availWidth, pos.y + 100 + textSize.y }, IM_COL32(255, 0, 0, 0));
 			}
 
-			ImGui::PushID(dirCounter);
-			if (ImGui::BeginDragDropSource()) {
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				DirectoryPayload* payload = new DirectoryPayload(p);
 				isDragAndDrop = true;
 				ImGui::SetDragDropPayload("DirectoryPath", (void*)payload, sizeof(DirectoryPayload));
@@ -306,7 +312,7 @@ namespace Editor {
 				int startIndex = 0;
 				for (int i = 0; i < p.name.size(); i++) {
 					ImVec2 size = ImGui::CalcTextSize(&p.name[startIndex], &p.name[i], true);
-					if (size.x > availWidth - 10) {
+					if (size.x > availWidth) {
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
 							size.x + (size.x / 2));
 						std::string s(&p.name[startIndex], &p.name[i]);
@@ -323,7 +329,6 @@ namespace Editor {
 				}
 				ImGui::EndDragDropSource();
 			}
-			ImGui::PopID();
 
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 - imageSize + imageSize / 2);
 			ImGui::Image((ImTextureID)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
@@ -334,9 +339,9 @@ namespace Editor {
 			int startIndex = 0;
 			for (int i = 0; i < p.name.size(); i++) {
 				ImVec2 size = ImGui::CalcTextSize(&p.name[startIndex], &p.name[i], true);
-				if (size.x > availWidth - 10) {
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
-						size.x + (size.x / 2));
+				if (size.x > availWidth-ImGui::GetFontSize()/2.f) {
+ 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
+ 						size.x + (size.x / 2));
 					std::string s(&p.name[startIndex], &p.name[i]);
 					ImGui::Text(s.c_str());
 					startIndex = i;
