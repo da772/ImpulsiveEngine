@@ -104,7 +104,7 @@ namespace GEngine {
 
 	void Entity::AddHash(const uint64_t& h)
 	{
-		comp_hashes.push_back(h);
+		comp_hashes.push_front(h);
 	}
 
 	void Entity::Clean()

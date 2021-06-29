@@ -33,6 +33,18 @@ namespace GEngine {
 		}
 
 
+		template<class C, typename ... Args>
+		inline C* AddComponentHash(const uint64_t& hash, Args&& ... args) {
+			AddHash(hash);
+			C* c = new C(this, std::forward<Args>(args)...);
+			components.insert(c);
+			if (bInit) {
+				c->Begin();
+			}
+			return c;
+		}
+
+
 		template<class C>
 		inline C* RemoveComponent(C* component)
 		{
