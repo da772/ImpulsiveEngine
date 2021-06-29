@@ -7,12 +7,14 @@
 #include "Modules/ConsoleModule.h"
 #include "Modules/MainMenuModule.h"
 #include "Modules/HierarchyModule.h"
+#include "Modules/InspectorModule.h"
 
 #include "Scene/EditorScene.h"
 
 namespace Editor {
 
 	EditorLayer* EditorLayer::s_singleton = nullptr;
+	EditorDispatcher EditorLayer::s_dispatcher = EditorDispatcher();
 
 	EditorLayer* EditorLayer::Create(Project::ProjectData* data)
 	{
@@ -36,10 +38,10 @@ namespace Editor {
 
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.name, m_projectData.path);
 
-
 		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name+"/Content/");
 		AddModule<ConsoleModule>("Console Log", true, 0, true);
 		AddModule<ProfilerModule>("Profiler", true, 0, true);
+		AddModule<InspectorModule>("Inspector", true, 0, true);
 		AddModule<DockModule>("Dock", true, 0, false, std::vector < std::pair < std::string, std::string>>());
 		AddModule<ViewportModule>("Viewport", true, 0, false, "viewport");
 		AddModule<HierarchyModule>("Hierarchy", true, 0, true);
@@ -88,10 +90,12 @@ namespace Editor {
 
 	void EditorLayer::OnImGuiRender()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 5.f);
 		for (auto & d : modules) {
 			if (!d.second.isOpen) continue;
 			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
 		}
+		ImGui::PopStyleVar();
 
 		//GEngine::Log::GetImGuiLog()->Draw("Console Log", 0);
 	}

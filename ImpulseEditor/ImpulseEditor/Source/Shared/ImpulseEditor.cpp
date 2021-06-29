@@ -102,8 +102,8 @@ ImpulseEditor::ImpulseEditor()
 	s_debugTools = true;
 	this->m_width = 960;
 	this->m_height = 540;
-	this->m_viewPortWidth = 1080;
-	this->m_viewPortHeight = 1920;
+	this->m_viewPortWidth = 1920;
+	this->m_viewPortHeight = 1080;
 
 #ifndef GE_PACKAGE
 	/*

@@ -1,4 +1,7 @@
 #include "ViewportModule.h"
+#include "Editor/EditorLayer.h"
+#include "Editor/Events/EditorApplicationEvents.h"
+#include "imgui/imgui_internal.h"
 
 using namespace GEngine;
 
@@ -30,34 +33,38 @@ namespace Editor {
 			if (GEngine::Application::IsGamePaused()) {
 				if (ImGui::Button(">")) {
 					GEngine::Application::ResumeGame();
+					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationResumeEvent>();
 				}
 				ImGui::SameLine();
 				if (ImGui::Button(">>")) {
 					GEngine::Application::ResumeGame();
-					GEngine::ThreadPool::AddEndFrameFunction([]() {GEngine::Application::PauseGame(); });
+					GEngine::ThreadPool::AddEndFrameFunction([]() {GEngine::Application::PauseGame();
+					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPauseEvent>(); });
 				}
 				ImGui::SameLine();
 			}
 			else {
 				if (ImGui::Button("||")) {
 					GEngine::Application::PauseGame();
+					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPauseEvent>();
 				}
 				ImGui::SameLine();
 			}
 			
-			if (ImGui::Button("[]")) {
+			if (ImGui::Button("[ ]")) {
 				const std ::string name =  GEngine::SceneManager::GetCurrentScene()->GetId();
 				if (GEngine::Application::IsGamePaused()) {
 					GEngine::Application::ResumeGame();
 				}
 				GEngine::SceneManager::SetCurrentScene(name.c_str(), false);
-				
+				EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationStopEvent>();
 			}
 			
 		}
 		else {
 			if (ImGui::Button(">")) {
 				GEngine::SceneManager::Begin();
+				EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPlayEvent>();
 			}
 			
 		}
@@ -75,6 +82,7 @@ namespace Editor {
 			GEngine::Application::GetApp()->m_viewPortHeight = finalSize.y;
 			//pipeline->GetFrameBuffer()->UpdateSize(1080, 1920);
 			lastFrameSize = sz;
+
 			/*
 			handleResize = false;
 			*/
@@ -85,6 +93,8 @@ namespace Editor {
 		ImGui::Image((void*)(intptr_t)pipeline->GetFrameBuffer()->GetTexture()->GetRendererID(), { (float)finalSize.x,(float)finalSize.y }, { 0,1 }, { 1,0 });
 
 
+		if (ImGui::GetWindowDockNode())
+			ImGui::GetWindowDockNode()->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}

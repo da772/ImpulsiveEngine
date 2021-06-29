@@ -1,5 +1,6 @@
 #include "gepch.h"
 #include "Public/Core/ImGui/ImGuiLog.h"
+#include "imgui/imgui_internal.h"
 #ifndef GE_GRAPHICS_API_NONE
 namespace GEngine {
 
@@ -62,6 +63,8 @@ namespace GEngine {
 			ImGui::End();
 			return;
 		}
+		if (ImGui::GetWindowDockNode())
+			ImGui::GetWindowDockNode()->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
 		if (ImGui::Button("Clear")) Clear();
 		ImGui::SameLine();
 		bool copy = ImGui::Button("Copy");

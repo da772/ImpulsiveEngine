@@ -3,6 +3,7 @@
 #include <GEngine.h>
 #include "Project/ProjectData.h"
 #include "Modules/EditorModule.h"
+#include "Events/EditorEvents.h"
 
 
 namespace Editor {
@@ -36,10 +37,10 @@ namespace Editor {
 			return modules[id];
 		}
 
-
+		static inline EditorDispatcher* GetDispatcher() { return &s_dispatcher; }
 		static EditorLayer* GetEditor();
 	private:
-
+		static EditorDispatcher s_dispatcher;
 		std::unordered_map<std::string, EditorModuleData> modules;
 
 	private:

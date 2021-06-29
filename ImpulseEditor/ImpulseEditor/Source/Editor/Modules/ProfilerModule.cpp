@@ -1,4 +1,5 @@
 #include "ProfilerModule.h"
+#include "imgui/imgui_internal.h"
 
 
 namespace Editor {
@@ -19,6 +20,8 @@ namespace Editor {
 		ImGui::Text("FPS: %d", (int)GEngine::Application::GetApp()->profile["FPS"]);
 		ImGui::Text("Run: %.3f MS", GEngine::Application::GetApp()->profile["Run"]);
 		ImGui::Text("ImGui: %.3f MS", GEngine::Application::GetApp()->profile["ImGui"]);
+		if (ImGui::GetWindowDockNode())
+			ImGui::GetWindowDockNode()->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
 		ImGui::End();
 	}
 

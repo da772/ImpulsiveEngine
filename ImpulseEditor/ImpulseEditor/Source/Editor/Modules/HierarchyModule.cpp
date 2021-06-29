@@ -1,4 +1,5 @@
 #include "HierarchyModule.h"
+#include "imgui/imgui_internal.h"
 
 namespace Editor {
 
@@ -31,6 +32,8 @@ namespace Editor {
 			ImGui::TreePop();
 		}
 
+		if (ImGui::GetWindowDockNode())
+			ImGui::GetWindowDockNode()->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
 		ImGui::End();
 	}
 

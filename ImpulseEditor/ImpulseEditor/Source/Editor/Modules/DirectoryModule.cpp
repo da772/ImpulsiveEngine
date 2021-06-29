@@ -1,5 +1,7 @@
 #include "DirectoryModule.h"
 
+#include "imgui/imgui_internal.h"
+
 namespace Editor {
 
 	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
@@ -18,13 +20,16 @@ namespace Editor {
 	{
 		ImGui::Begin(name.c_str(), is_open, flags);
         // TODO: optimize direcroties
-
+		
 		//Filterbar();
 		DropDownViewPanel();
 		ImGui::SameLine();
         ResizePanel();
         ImGui::SameLine();
 		FolderViewPanel();
+		// Dock flags
+		if (ImGui::GetWindowDockNode())
+			ImGui::GetWindowDockNode()->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
 		ImGui::End();
 
 
@@ -385,7 +390,7 @@ namespace Editor {
 
 	void DirectoryModule::DropDownViewPanel()
 	{
-		ImGui::BeginChild("DropDownViewer", { ImGui::GetWindowWidth() * dropDownPanelWidth, 0 }, true, ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::BeginChild("DropDownViewer", { ImGui::GetWindowWidth() * dropDownPanelWidth, 0 }, true, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
 
 		ImGui::Text("Viewer");
 		ImGui::Separator();

@@ -21,6 +21,8 @@ namespace Editor {
 		float buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
 		float buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
 
+		textComponent->CreateQuad({ 0.f, 0.f, 0.f }, 0.f, { 5.f,5.f,2.f }, { 1.f,0.f,1.f,1.f });
+
 		startButton = buttonsEntity->AddComponent<ButtonComponent>(Vector3f(0, 0, 10), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
 		startButton->SetImageTexture(buttonTexture);
 
@@ -33,6 +35,18 @@ namespace Editor {
 
 	void EditorScene::OnUpdate(GEngine::Timestep timestep)
 	{
+		startButton->SetImageColor({ r,g,b,1 });
+
+		if (r < 1.0001f) {
+			r += .01f;
+		}
+		else if (g < 1.001f) {
+			g += .01f;
+		}
+		else if (b < 1.001f) {
+			b += .01f;
+		}
+
 		GE_LOG_DEBUG("UPDATING: {0}", timestep);
 	}
 

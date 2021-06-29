@@ -25,6 +25,9 @@ namespace Editor {
 		GEngine::ButtonComponent* startButton = nullptr;
 		GEngine::Ref<GEngine::Texture2D> buttonTexture = nullptr;
 		GEngine::Scope<GEngine::Orthographic_CameraController> m_CameraController;
+		float r = 1;
+		float g = 0;
+		float b = 0;
 
 	};
 	
