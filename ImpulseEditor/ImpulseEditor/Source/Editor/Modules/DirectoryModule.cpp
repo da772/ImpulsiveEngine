@@ -77,12 +77,15 @@ namespace Editor {
 		bool b = true;
 		if (ImGui::BeginPopup("DirectoryModal")) {
 
+			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			if (m_rightClicked.is_directory) {
 				if (ImGui::Button("Open")) {
 					SelectView(m_rightClicked);
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Rename")) {
+					rename = true;
+					m_selectedEntry = m_rightClicked.path;
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Delete")) {
@@ -94,6 +97,10 @@ namespace Editor {
 				}
 			}
 			else if (m_rightClicked.path == "NULL") {
+				if (ImGui::Button("New File")) {
+					
+					ImGui::CloseCurrentPopup();
+				}
 				if (ImGui::Button("New Folder")) {
 					std::string s = m_currentEntry.path().generic_string();
 					if (s[s.size() - 1] == '/') {
@@ -129,6 +136,8 @@ namespace Editor {
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Rename")) {
+					rename = true;
+					m_selectedEntry = m_rightClicked.path;
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Delete")) {
@@ -137,7 +146,7 @@ namespace Editor {
 				}
 			}
 
-
+			ImGui::PopStyleColor();
 			ImGui::EndPopup();
 		}
 	}
@@ -293,7 +302,10 @@ namespace Editor {
 			if (m_selectedEntry == p.path || isMouseOver) {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x, pos.y }, { pos.x + availWidth, pos.y + imageSize + textSize.y + lineHeight / 2 }, IM_COL32(125, 125, 125, 100));
 				if (isMouseOver && ImGui::IsMouseClicked(0)) {
-					m_selectedEntry = p.path;
+					if (m_selectedEntry != p.path) {
+						m_selectedEntry = p.path;
+						rename = false;
+					}
 				}
 				if (isMouseOver && p.is_directory && ImGui::IsMouseDoubleClicked(0)) {
 					std::filesystem::directory_entry entry(p.path);
@@ -337,27 +349,40 @@ namespace Editor {
 			}
 
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 - imageSize + imageSize / 2);
-			ImGui::Image((ImTextureID)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
+			if (texture)
+				ImGui::Image((ImTextureID)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
 
 			//if (textSize.y <= lineHeight) {
 
 			//}
 			int startIndex = 0;
-			for (int i = 0; i < p.name.size(); i++) {
-				ImVec2 size = ImGui::CalcTextSize(&p.name[startIndex], &p.name[i], true);
-				if (size.x > availWidth-ImGui::GetFontSize()/2.f) {
- 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
- 						size.x + (size.x / 2));
-					std::string s(&p.name[startIndex], &p.name[i]);
-					ImGui::Text(s.c_str());
-					startIndex = i;
-					i -= 1;
+			if (m_selectedEntry == p.path && rename) {
+				memcpy(renameBuffer, p.name.c_str(), p.name.size());
+				if (ImGui::InputTextEx("##input", "Rename", renameBuffer, 255, {availWidth, 0}, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue)) {
+					std::string newPath(p.path.c_str(), p.path.size() - p.name.size());
+					newPath += renameBuffer;
+					memset(renameBuffer, 0, 255);
+					rename = false;
+					GEngine::FileSystem::MoveFile(p.path, newPath);
 				}
-				else if (i == p.name.size() - 1) {
-					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
-						size.x + (size.x / 2));
-					std::string s(&p.name[startIndex]);
-					ImGui::Text(s.c_str());
+			}
+			else {
+				for (int i = 0; i < p.name.size(); i++) {
+					ImVec2 size = ImGui::CalcTextSize(&p.name[startIndex], &p.name[i], true);
+					if (size.x > availWidth - ImGui::GetFontSize() / 2.f) {
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
+							size.x + (size.x / 2));
+						std::string s(&p.name[startIndex], &p.name[i]);
+						ImGui::Text(s.c_str());
+						startIndex = i;
+						i -= 1;
+					}
+					else if (i == p.name.size() - 1) {
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
+							size.x + (size.x / 2));
+						std::string s(&p.name[startIndex]);
+						ImGui::Text(s.c_str());
+					}
 				}
 			}
 
@@ -377,11 +402,13 @@ namespace Editor {
 		if (!isFileHovered && ImGui::IsWindowHovered()) {
 			if (ImGui::IsMouseDown(1)) {
 				m_selectedEntry = "";
+				rename = false;
 				m_rightClicked = {"NULL"};
 				ImGui::OpenPopup("DirectoryModal");
 			}
 			if (ImGui::IsMouseDown(0)) {
 				m_selectedEntry = "";
+				rename = false;
 			} 
 		}
 		SettingsModal();
@@ -526,6 +553,7 @@ namespace Editor {
 			depth = 0;
 		}
 		m_selectedEntry = "";
+		rename = false;
 		
 	}
 

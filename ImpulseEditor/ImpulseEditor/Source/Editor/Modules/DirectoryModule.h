@@ -81,6 +81,8 @@ namespace Editor {
         std::vector<DirectoryPath> directories = {};
 		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
 		char filterBuffer[255] = { 0 };
+		char renameBuffer[255] = { 0 };
+		bool rename = false;
 		std::string m_selectedEntry;
 		std::string m_selectedViewEntry;
 

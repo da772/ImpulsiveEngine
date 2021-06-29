@@ -16,12 +16,15 @@ namespace Editor {
 
 		buttonsEntity = CreateEntity<Entity>();
 		textComponent = buttonsEntity->AddComponent<UIComponent>();
+		background = buttonsEntity->AddComponent<SpriteComponent>();
+
+		background->CreateQuad({ 0,0,0 }, 0, { 10,10,10 }, { 0, 1,0,1 });
 
 		float size = std::max((float)Application::GetWidth() / (float)Application::GetUIResolutionWidth(), (float)Application::GetHeight() / (float)Application::GetUIResolutionHeight());
 		float buttonY = size * ((float)buttonTexture->GetHeight() / (float)Application::GetHeight()) * 5.f;
 		float buttonX = size * ((float)buttonTexture->GetWidth() / (float)Application::GetWidth()) * 5.f;
 
-		textComponent->CreateQuad({ 0.f, 0.f, 0.f }, 0.f, { 5.f,5.f,2.f }, { 1.f,0.f,1.f,1.f });
+		
 
 		startButton = buttonsEntity->AddComponent<ButtonComponent>(Vector3f(0, 0, 10), 0.f, Vector2f(buttonX, buttonY), Vector4f(1, 1, 1, 1.f));
 		startButton->SetImageTexture(buttonTexture);

@@ -23,6 +23,7 @@ namespace Editor {
 		GEngine::Entity* buttonsEntity = nullptr;
 		GEngine::UIComponent* textComponent = nullptr;
 		GEngine::ButtonComponent* startButton = nullptr;
+		GEngine::SpriteComponent* background = nullptr;
 		GEngine::Ref<GEngine::Texture2D> buttonTexture = nullptr;
 		GEngine::Scope<GEngine::Orthographic_CameraController> m_CameraController;
 		float r = 1;
