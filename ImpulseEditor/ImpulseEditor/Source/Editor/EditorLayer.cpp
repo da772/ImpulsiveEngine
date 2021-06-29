@@ -42,9 +42,9 @@ namespace Editor {
 		AddModule<ConsoleModule>("Console Log", true, 0, true);
 		AddModule<ProfilerModule>("Profiler", true, 0, true);
 		AddModule<InspectorModule>("Inspector", true, 0, true);
+        AddModule<ViewportModule>("Viewport", true, 0, false, "viewport");
+        AddModule<HierarchyModule>("Hierarchy", true, 0, true);
 		AddModule<DockModule>("Dock", true, 0, false, std::vector < std::pair < std::string, std::string>>());
-		AddModule<ViewportModule>("Viewport", true, 0, false, "viewport");
-		AddModule<HierarchyModule>("Hierarchy", true, 0, true);
 		AddModule<MainMenuModule>("MainMenu", true, 0, false, &modules);
 		
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");

@@ -23,7 +23,7 @@ namespace Editor {
 		}
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		ImGui::Begin(name.c_str(), false, flags);
+		ImGui::Begin(name.c_str(), 0, flags);
 
 
 
