@@ -24,11 +24,22 @@ namespace GEngine {
 		if (b_debug)
 			m_debug = 2;
 		if (s_ShapeFactory == nullptr) {
-			std::string path = std::string("EngineContent/shaders//TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
+			std::string path = std::string("EngineContent/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "UIBatch.glsl";
 			m_Shader = Ref<Shader>(Shader::Create(path));
 			ButtonComponent::s_ShapeFactory = UIComponent::s_ShapeFactory;
 			s_ShapeFactory->SetRenderType(ERenderType::UI);
 		}
+
+		for (int i = 0; i < m_debug; i++) {
+			if (i == 0)
+				m_ids[i] = s_ShapeFactory->AddShape(m_imagePosition + m_entity->GetPosition(), m_imageRotation, m_imageScale, m_color, m_texture, m_textureScale);
+			if (i == 1) {
+				Vector3f m_p = m_colliderPosition;
+				m_p.z += .1f;
+				m_ids[i] = s_ShapeFactory->AddShape(m_p + m_entity->GetPosition(), m_colliderRotation, m_colliderScale, Vector4f(1, 0, 0, .25f));
+			}
+		}
+
 	}
 
 	ButtonComponent::~ButtonComponent()
@@ -115,16 +126,6 @@ namespace GEngine {
 
 	void ButtonComponent::OnBegin()
 	{
-		for (int i = 0; i < m_debug; i++) {
-			if (i == 0)
-				m_ids[i] = s_ShapeFactory->AddShape(m_imagePosition+m_entity->GetPosition(), m_imageRotation, m_imageScale, m_color, m_texture, m_textureScale);
-			if (i == 1) {
-				Vector3f m_p = m_colliderPosition;
-				m_p.z += .1f;
-				m_ids[i] = s_ShapeFactory->AddShape(m_p + m_entity->GetPosition(), m_colliderRotation, m_colliderScale, Vector4f(1, 0, 0, .25f));
-			}
-		}
-		
 		m_worldPosition = Vector2f(m_colliderPosition.x + m_entity->GetPosition().x, m_colliderPosition.y + m_entity->GetPosition().y);
 		m_worldScale = Vector2f(m_colliderScale.x * m_entity->GetScale().x, m_colliderScale.y * m_entity->GetScale().y);
 		m_worldRotation = m_colliderRotation + m_entity->GetRotation().z;

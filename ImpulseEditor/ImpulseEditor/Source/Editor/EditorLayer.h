@@ -7,17 +7,7 @@
 
 namespace Editor {
 
-	struct EditorModuleData {
-		GEngine::Ref<EditorModule> data;
-		bool isOpen = true;
-		int flags = 0;
-
-		template<typename T = EditorModule>
-		inline GEngine::Ref<T> DataAs() {
-			return std::dynamic_pointer_cast<T>(data);
-		}
-
-	};
+	
 
 	class EditorLayer : public GEngine::Layer {
 
@@ -36,9 +26,9 @@ namespace Editor {
 		void End() override;
 
 		template<typename T = EditorModule, typename ... Args>
-		inline GEngine::Ref<T> AddModule(const std::string & id, bool isOpen, int flags, Args&& ... args) {
+		inline GEngine::Ref<T> AddModule(const std::string & id, bool isOpen, int flags, bool togglable, Args&& ... args) {
 			std::shared_ptr<T> e = std::make_shared<T>(std::forward<Args>(args)...);
-			modules[id] = {e, isOpen, flags};
+			modules[id] = {e, isOpen, flags, togglable};
 			return e;
 		}
 

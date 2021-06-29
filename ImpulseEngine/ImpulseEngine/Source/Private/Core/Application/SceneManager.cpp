@@ -25,13 +25,13 @@ namespace GEngine {
 		return SceneManager::scene;
 	}
 
-	void SceneManager::SetCurrentScene(const std::string& name)
+	void SceneManager::SetCurrentScene(const std::string& name, bool start)
 	{
 
 		if (!b_changingScene) {
 			b_changingScene = true;
 			CollisionDetection::Reset();
-			ThreadPool::AddEndFrameFunction([name]() {
+			ThreadPool::AddEndFrameFunction([name, start]() {
 				b_changingScene = false;
 				CollisionDetection::Reset();
 				if (SceneManager::scene != nullptr) {
@@ -40,10 +40,11 @@ namespace GEngine {
 					delete SceneManager::scene;
 					SceneManager::scene = nullptr;
 				}
-
+				b_started = false;
 				if (SceneManager::scenes.find(name.c_str()) != SceneManager::scenes.end()) {
 					SceneManager::scene = SceneManager::scenes[name]();
-					Begin();
+					if (start)
+						Begin();
 				}
 				
 				});
@@ -52,7 +53,7 @@ namespace GEngine {
 
 	void SceneManager::Update(Timestep ts)
 	{
-		if (scene != nullptr && !b_paused) {
+		if (scene != nullptr && b_started == true && !b_paused) {
 			scene->Update(ts);
 		}
 	}
@@ -67,7 +68,7 @@ namespace GEngine {
 
 	void SceneManager::End()
 	{
-		if (scene != nullptr) {
+		if (scene != nullptr && b_started) {
 			SceneManager::b_started = false;
 			scene->End();
 		}
@@ -95,6 +96,11 @@ namespace GEngine {
 			delete scene;
 			scene = nullptr;
 		}
+	}
+
+	bool SceneManager::HasBegun()
+	{
+		return b_started;
 	}
 
 	void SceneManager::OnEvent(Event& e)

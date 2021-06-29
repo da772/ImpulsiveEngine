@@ -18,7 +18,7 @@ namespace GEngine {
 			};
 		};
 		static Scene* GetCurrentScene();
-		static void SetCurrentScene(const std::string& name);
+		static void SetCurrentScene(const std::string& name, bool start = true);
 		static void Update(Timestep ts);
 		static void Begin();
 		static void End();
@@ -30,6 +30,7 @@ namespace GEngine {
 		static void ReloadGraphics();
 		static void UnloadGraphics();
 		static void Shutdown();
+		static bool HasBegun();
 
 	private:
 		static std::unordered_map<std::string, std::function<Scene*()>> scenes;

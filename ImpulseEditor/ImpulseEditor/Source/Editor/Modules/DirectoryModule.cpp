@@ -18,7 +18,7 @@ namespace Editor {
 	{
 		ImGui::Begin(name.c_str(), is_open, flags);
         // TODO: optimize direcroties
-		
+
 		//Filterbar();
 		DropDownViewPanel();
 		ImGui::SameLine();
@@ -27,13 +27,14 @@ namespace Editor {
 		FolderViewPanel();
 		ImGui::End();
 
+
 	}
 
     void DirectoryModule::ResizePanel() {
         ImVec2 pos = ImGui::GetCursorScreenPos();
         float height = ImGui::GetContentRegionAvail().y;
         ImGui::BeginChild("Resizeable", {5, 0}, 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::GetForegroundDrawList()->AddRectFilled({pos.x, pos.y}, {pos.x+5, pos.y+height}, IM_COL32(125,125,125,125));
+        ImGui::GetWindowDrawList()->AddRectFilled({pos.x, pos.y}, {pos.x+5, pos.y+height}, IM_COL32(125,125,125,125));
         if (ImGui::IsMouseHoveringRect({pos.x, pos.y}, {pos.x+5, pos.y+height})) {
             ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
             if (ImGui::IsMouseDown(0)) {

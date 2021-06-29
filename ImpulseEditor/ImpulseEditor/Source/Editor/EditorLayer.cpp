@@ -3,6 +3,12 @@
 #include "Modules/DirectoryModule.h"
 #include "Modules/ProfilerModule.h"
 #include "Modules/DockModule.h"
+#include "Modules/ViewportModule.h"
+#include "Modules/ConsoleModule.h"
+#include "Modules/MainMenuModule.h"
+#include "Modules/HierarchyModule.h"
+
+#include "Scene/EditorScene.h"
 
 namespace Editor {
 
@@ -29,14 +35,16 @@ namespace Editor {
 			s_singleton = this;
 
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.name, m_projectData.path);
+
+
+		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name+"/Content/");
+		AddModule<ConsoleModule>("Console Log", true, 0, true);
+		AddModule<ProfilerModule>("Profiler", true, 0, true);
+		AddModule<DockModule>("Dock", true, 0, false, std::vector < std::pair < std::string, std::string>>());
+		AddModule<ViewportModule>("Viewport", true, 0, false, "viewport");
+		AddModule<HierarchyModule>("Hierarchy", true, 0, true);
+		AddModule<MainMenuModule>("MainMenu", true, 0, false, &modules);
 		
-
-		AddModule<DirectoryModule>("Content Browser", true, 0, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name+"/Content/");
-		AddModule<ProfilerModule>("Profiler", true, 0);
-
-
-		AddModule<DockModule>("Dock", true, 0, std::vector < std::pair < std::string, std::string>>());
-
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}
 
@@ -50,13 +58,17 @@ namespace Editor {
 
 	void EditorLayer::Begin()
 	{
-
+		
+	
 	}
 
 	void EditorLayer::OnAttach()
 	{
 		GEngine::Application::GetWindow()->MaximizeWindow();
 		GEngine::Application::GetWindow()->SetTitle(m_projectData.name + " | Impulse Editor");
+		GEngine::SceneManager::AddScene<EditorScene>("EditorScene");
+		GEngine::SceneManager::SetCurrentScene("EditorScene", false);
+		
 	}
 
 	void EditorLayer::OnDetach()
@@ -81,7 +93,7 @@ namespace Editor {
 			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
 		}
 
-		GEngine::Log::GetImGuiLog()->Draw("Console Log", 0);
+		//GEngine::Log::GetImGuiLog()->Draw("Console Log", 0);
 	}
 
 	void EditorLayer::OnDraw()

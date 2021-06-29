@@ -42,7 +42,6 @@ void ExampleLayer::OnAttach()
 #endif
 */
 	//GEngine::SceneManager::AddScene<SplashScreenScene>("splashScreen");
-	//GEngine::SceneManager::AddScene<MainGameScene>("mainGame");
 #ifdef GE_HOT_RELOAD
 	/*
 	ScriptApi::SetBuild_Native(FileSystem::GetParentExecuteableDir(GE_PRJ_OFFSET) + "ImpulseEditor/NativeScripts/", "NativeScripts");
@@ -103,6 +102,8 @@ ImpulseEditor::ImpulseEditor()
 	s_debugTools = true;
 	this->m_width = 960;
 	this->m_height = 540;
+	this->m_viewPortWidth = 1080;
+	this->m_viewPortHeight = 1920;
 
 #ifndef GE_PACKAGE
 	/*

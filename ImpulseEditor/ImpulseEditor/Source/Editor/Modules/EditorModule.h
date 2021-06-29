@@ -4,6 +4,7 @@
 
 namespace Editor {
 
+
 	class EditorModule {
 
 	public:
@@ -14,6 +15,20 @@ namespace Editor {
 	protected:
 		std::string moduleName;
 		bool isOpen = true;
+
+	};
+
+
+	struct EditorModuleData {
+		GEngine::Ref<EditorModule> data;
+		bool isOpen = true;
+		int flags = 0;
+		bool toggable = true;
+
+		template<typename T = EditorModule>
+		inline GEngine::Ref<T> DataAs() {
+			return std::dynamic_pointer_cast<T>(data);
+		}
 
 	};
 
