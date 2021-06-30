@@ -73,6 +73,8 @@ namespace Editor {
 
 	private:
 		std::filesystem::directory_entry m_directoryBase;
+		std::filesystem::directory_entry m_scriptDirectoryBase;
+		std::filesystem::directory_entry m_contentDirectoryBase;
 		std::filesystem::directory_entry m_currentEntry;
         bool isDragging = false;
 		bool isDragAndDrop = false;

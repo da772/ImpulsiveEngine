@@ -12,7 +12,7 @@ namespace GEngine {
 	class Entity;
 	class Event;
 
-	class GE_API Scene : public GameObject {
+	class GE_API Scene {
 
 	public:
 		Scene(const char* id, Camera* camera);
@@ -58,7 +58,7 @@ namespace GEngine {
 		inline virtual bool GetLoaded() { return b_loaded; }
 		inline virtual void SetLoaded(bool bLoaded) {  }
 
-		inline const std::unordered_map<uint32_t, Entity*>& GetEntities() const { return entities; }
+		inline const std::unordered_map<uint64_t, Entity*>& GetEntities() const { return entities; }
 
 		
 	protected:
@@ -66,7 +66,7 @@ namespace GEngine {
 		Camera* camera;
 		bool b_loaded = false;
 		bool b_init = false;
-		std::unordered_map<uint32_t, Entity*> entities;
+		std::unordered_map<uint64_t, Entity*> entities;
 		bool b_paused = false;
 
 	private:

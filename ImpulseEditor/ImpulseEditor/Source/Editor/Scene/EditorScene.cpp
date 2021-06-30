@@ -15,6 +15,7 @@ namespace Editor {
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
 
 		buttonsEntity = CreateEntity<Entity>();
+		buttonsEntity->SetTag("TestEntity");
 		textComponent = buttonsEntity->AddComponent<UIComponent>();
 		background = buttonsEntity->AddComponent<SpriteComponent>();
 

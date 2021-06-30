@@ -6,7 +6,7 @@ namespace Editor {
 
 	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
 
-	DirectoryModule::DirectoryModule(const std::string& directoryBase) : m_currentEntry(directoryBase), m_directoryBase(directoryBase)
+	DirectoryModule::DirectoryModule(const std::string& directoryBase) : m_directoryBase(directoryBase+"/"), m_contentDirectoryBase(directoryBase + "/Content/"), m_scriptDirectoryBase(directoryBase +"/NativeScripts/Scripts/"), m_currentEntry(m_contentDirectoryBase)
 	{
 		m_textures["folderIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
 		m_textures["folderEmpty"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderEmpty160x160.png");
@@ -184,13 +184,17 @@ namespace Editor {
 		float width = ImGui::GetContentRegionAvailWidth();
 		if (depth == 0) {
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
-			ImGui::Button("Content");
+			std::string dir = m_contentDirectoryBase.path().generic_string();
+			dir.erase(dir.size() - 1);
+			std::string current_folder = m_currentEntry.path().generic_string().find(dir) != std::string::npos ? "Content" : "Scripts";
+			ImGui::Button(current_folder.c_str());
 			ImGui::PopStyleColor();
 		}
 		else {
+			std::filesystem::directory_entry current_base = m_currentEntry.path().generic_string().find(m_contentDirectoryBase.path().generic_string()) != std::string::npos ? m_contentDirectoryBase: m_scriptDirectoryBase;
 			std::vector<std::filesystem::path> dirs;
 			std::filesystem::path curPath = m_currentEntry.path();
-			while (curPath.generic_string() != m_directoryBase.path().parent_path().generic_string()) {
+			while (curPath.generic_string() != current_base.path().parent_path().generic_string()) {
 				dirs.push_back(curPath);
 				curPath = curPath.parent_path();
 				//ImGui::Text(&m_currentEntry.path().generic_string().c_str()[m_directoryBase.path().generic_string().size() - m_directoryBase.path().parent_path().filename().generic_string().size() - 1]);
@@ -207,6 +211,7 @@ namespace Editor {
 				if (ImGui::Button((dirs[i].filename().generic_string()).c_str())) {
 					DirectoryPath d = { dirs[i].generic_string(), dirs[i].filename().generic_string(), dirs[i].extension().generic_string(), false, false };
 					SelectView(d);
+					depth = dirs.size()-1 - i;
 				}
 				ImGui::PopStyleColor();
 			}
@@ -369,7 +374,7 @@ namespace Editor {
 			else {
 				for (int i = 0; i < p.name.size(); i++) {
 					ImVec2 size = ImGui::CalcTextSize(&p.name[startIndex], &p.name[i], true);
-					if (size.x > availWidth - ImGui::GetFontSize() / 2.f) {
+					if (size.x > availWidth - ImGui::GetFontSize()) {
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 -
 							size.x + (size.x / 2));
 						std::string s(&p.name[startIndex], &p.name[i]);
@@ -421,9 +426,12 @@ namespace Editor {
 
 		ImGui::Text("Viewer");
 		ImGui::Separator();
-		DirectoryPath d = { m_directoryBase.path().generic_string(), m_directoryBase.path().parent_path().filename().generic_string(), m_directoryBase.path().extension().generic_string(), m_directoryBase.is_directory(), std::filesystem::is_empty(m_directoryBase.path()) };
+		DirectoryPath d = { m_contentDirectoryBase.path().generic_string(), m_contentDirectoryBase.path().parent_path().filename().generic_string(), m_contentDirectoryBase.path().extension().generic_string(), m_contentDirectoryBase.is_directory(), std::filesystem::is_empty(m_contentDirectoryBase.path()) };
 		ImGuiTreeNodeFlags fl = m_selectedViewEntry == d.path ? ImGuiTreeNodeFlags_Selected : 0;
 		float fontSize = ImGui::GetFontSize();
+		CreateFolderView(d, fl, fontSize);
+		d = { m_scriptDirectoryBase.path().generic_string(), m_scriptDirectoryBase.path().parent_path().filename().generic_string(), m_scriptDirectoryBase.path().extension().generic_string(), m_scriptDirectoryBase.is_directory(), std::filesystem::is_empty(m_scriptDirectoryBase.path()) };
+		fl = m_selectedViewEntry == d.path ? ImGuiTreeNodeFlags_Selected : 0;
 		CreateFolderView(d, fl, fontSize);
 
 		ImGui::EndChild();
@@ -536,8 +544,9 @@ namespace Editor {
 		
 		m_selectedViewEntry = d.path;
 		m_currentEntry = std::filesystem::directory_entry(m_selectedViewEntry);
-		if (m_currentEntry.path() != m_directoryBase.path().parent_path()) {
-			std::string s(&d.path[m_directoryBase.path().generic_string().size()]);
+		std::filesystem::directory_entry current_base = m_currentEntry.path().generic_string().find(m_scriptDirectoryBase.path().generic_string()) != std::string::npos ? m_scriptDirectoryBase : m_contentDirectoryBase;
+		if (m_currentEntry.path() != current_base.path().parent_path()) {
+			std::string s(&d.path[current_base.path().generic_string().size()]);
 			if (s.size() <= 0) {
 				depth = 0;
 				return;

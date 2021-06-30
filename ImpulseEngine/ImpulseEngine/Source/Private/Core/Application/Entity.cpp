@@ -11,9 +11,8 @@
 namespace GEngine {
 
 
-	Entity::Entity(const uint64_t& id, const std::string& s)
+	Entity::Entity(const uint64_t& id, const std::string& s) : GameObject(id)
 	{
-		go_hash = id;
 		if (s.size() > 0) go_tag = s;
 		transform = AddComponent<Transform>();
 		GE_CORE_DEBUG("ENTITY HASH: {0}", Factory::HashToString(go_hash));

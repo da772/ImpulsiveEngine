@@ -21,6 +21,7 @@ namespace GEngine {
 	ButtonComponent::ButtonComponent(Entity* e, const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale /*= 1*/) : Component(e),
 		m_colliderPosition(pos), m_colliderRotation(rot), m_colliderScale(scale), m_imagePosition(pos), m_imageRotation(rot), m_imageScale(scale), m_color(color), m_textureScale(textureScale)
 	{
+		go_tag = "Button Component";
 		if (b_debug)
 			m_debug = 2;
 		if (s_ShapeFactory == nullptr) {

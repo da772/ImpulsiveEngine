@@ -38,7 +38,7 @@ namespace Editor {
 
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.name, m_projectData.path);
 
-		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name+"/Content/");
+		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name);
 		AddModule<ConsoleModule>("Console Log", true, 0, true);
 		AddModule<ProfilerModule>("Profiler", true, 0, true);
 		AddModule<InspectorModule>("Inspector", true, 0, true);
@@ -62,6 +62,8 @@ namespace Editor {
 	{
 		
 	
+
+
 	}
 
 	void EditorLayer::OnAttach()

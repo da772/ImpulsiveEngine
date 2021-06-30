@@ -48,6 +48,7 @@ namespace GEngine {
 		Entity* m_entity;
 		bool bInit = false;
 		bool bUpdates = false;
+		bool is_component = true;
 
 	};
 }
