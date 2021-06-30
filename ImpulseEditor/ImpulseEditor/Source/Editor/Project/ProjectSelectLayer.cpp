@@ -425,8 +425,8 @@ namespace Project {
 
 					m_generateFlags = Generation::GenerateProject::GetDefaultGenerationFlags(static_cast<Generation::PlatformFlags>(m_generatePlatform));
 					m_generateBuild = (uint32_t)Generation::GenerateProject::GetDefaultProjectType(static_cast<Generation::PlatformFlags>(m_generatePlatform));
-
-					m_projectData.push_back({ { m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, m_newProjectLanguage}, m_generatePlatform,m_generateFlags,m_generateBuild });
+                    
+					m_projectData.push_back({ ProjectData(m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, (uint32_t)m_newProjectLanguage), m_generatePlatform,m_generateFlags,m_generateBuild });
 					Sort(m_sortType);
 					Search();
 					selectedProject = m_newProjectLocation + "/" + m_newProjectName;
@@ -631,7 +631,7 @@ namespace Project {
 			if (test) {
 				test.close();
 				if (std::find(m_projectData.begin(), m_projectData.end(), pData) == m_projectData.end()) {
-					m_projectData.push_back({ pData, 1,0,0 });
+					m_projectData.push_back(LocalProject( pData, 1,0,0 ));
 					Search();
 					Sort(0);
 				}

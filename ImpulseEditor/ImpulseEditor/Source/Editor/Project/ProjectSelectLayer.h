@@ -4,7 +4,11 @@
 
 namespace Project {
 
-	struct LocalProject {
+	class LocalProject {
+    public:
+        inline LocalProject() {};
+        inline LocalProject(const ProjectData& data, uint32_t platformFlags, uint64_t generateFlags, uint32_t buildFlags) : data(data), platformFlags(platformFlags), generateFlags(generateFlags), buildFlags(buildFlags) {};
+        inline ~LocalProject() {};
 		ProjectData data;
 		uint32_t platformFlags;
 		uint64_t generateFlags;
