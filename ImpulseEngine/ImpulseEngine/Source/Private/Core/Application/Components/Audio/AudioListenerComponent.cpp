@@ -44,17 +44,17 @@ namespace GEngine {
 
 	void AudioListenerComponent::OnBegin()
 	{
-		AudioManager::SetListenerPosition(m_entity->GetPosition());
-		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+		AudioManager::SetListenerPosition(m_entity->GetTransform()->GetWorldPosition());
+		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
 			if (IsInitialized()) {
-				AudioManager::SetListenerPosition(transform->GetPosition());
+				AudioManager::SetListenerPosition(transform->GetWorldPosition());
 			}
 			});
 	}
 
 	void AudioListenerComponent::OnEnd()
 	{
-		m_entity->RemoveTransformCallback(this);
+		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
 		Vector3f pos = Vector3f(0, 0, 0);
 		AudioManager::SetListenerPosition(pos);
 	}

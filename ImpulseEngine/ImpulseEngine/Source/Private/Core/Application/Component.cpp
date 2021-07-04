@@ -6,7 +6,7 @@
 
 namespace GEngine {
 
-	Component::Component(Entity* e) : GameObject(e->GetHash()), m_entity(e)
+	Component::Component(Entity* e) : GameObject(e->GetNextHash()), m_entity(e)
 	{
 		go_tag = "Component";
 		GE_CORE_DEBUG("COMPONENT HASH: {0}", Factory::HashToString(go_hash));

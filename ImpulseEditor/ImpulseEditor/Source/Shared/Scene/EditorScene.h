@@ -26,7 +26,7 @@ namespace Editor {
 		GEngine::SpriteComponent* background = nullptr;
 		GEngine::Ref<GEngine::Texture2D> buttonTexture = nullptr;
 		GEngine::Scope<GEngine::Orthographic_CameraController> m_CameraController;
-		float r = 1;
+		float r = 255;
 		float g = 0;
 		float b = 0;
 

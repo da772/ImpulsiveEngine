@@ -6,7 +6,8 @@ namespace Editor {
 
 	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
 
-	DirectoryModule::DirectoryModule(const std::string& directoryBase) : m_directoryBase(directoryBase+"/"), m_contentDirectoryBase(directoryBase + "/Content/"), m_scriptDirectoryBase(directoryBase +"/NativeScripts/Scripts/"), m_currentEntry(m_contentDirectoryBase)
+	DirectoryModule::DirectoryModule(const std::string& directoryBase, Project::ProjectData* projectData) : m_directoryBase(directoryBase+"/"), m_contentDirectoryBase(directoryBase + "/Content/"), m_scriptDirectoryBase(directoryBase +"/NativeScripts/Scripts/"), m_currentEntry(m_contentDirectoryBase)
+		, m_projectData(projectData)
 	{
 		m_textures["folderIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
 		m_textures["folderEmpty"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderEmpty160x160.png");
@@ -79,16 +80,16 @@ namespace Editor {
 
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			if (m_rightClicked.is_directory) {
-				if (ImGui::Button("Open")) {
+				if (ImGui::Button("Open", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 					SelectView(m_rightClicked);
 					ImGui::CloseCurrentPopup();
 				}
-				if (ImGui::Button("Rename")) {
+				if (ImGui::Button("Rename", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 					rename = true;
 					m_selectedEntry = m_rightClicked.path;
 					ImGui::CloseCurrentPopup();
 				}
-				if (ImGui::Button("Delete")) {
+				if (ImGui::Button("Delete", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 					if (m_rightClicked.is_directory)
 						GEngine::FileSystem::RemoveAllFolders(m_rightClicked.path);
 					else
@@ -97,11 +98,11 @@ namespace Editor {
 				}
 			}
 			else if (m_rightClicked.path == "NULL") {
-				if (ImGui::Button("New File")) {
+				if (ImGui::Button("New File", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 					
 					ImGui::CloseCurrentPopup();
 				}
-				if (ImGui::Button("New Folder")) {
+				if (ImGui::Button("New Folder", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 					std::string s = m_currentEntry.path().generic_string();
 					if (s[s.size() - 1] == '/') {
 						s += "NewFolder";
@@ -130,17 +131,32 @@ namespace Editor {
 					}
 					ImGui::CloseCurrentPopup();
 				}
-			} 
-			else  {
-				if (ImGui::Button("Open")) {
+				if (ImGui::Button("Show", { ImGui::GetContentRegionAvailWidth(), 0 })) {
+#ifdef GE_PLATFORM_WINDOWS
+					std::string cmd = "explorer /select,\"" + m_currentEntry.path().generic_string();
+					std::replace(cmd.begin() + 15, cmd.end(), '/', '\\');
+					GEngine::Utility::sys::exec_command(cmd);
+
+#endif
+#ifdef GE_PLATFORM_LINUX
+					GEngine::Utility::sys::exec_command("xdg-open " + m_currentEntry.path().generic_string());
+#endif
+#ifdef GE_PLATFORM_MACOSX
+					GEngine::Utility::sys::exec_command("open " + m_currentEntry.path().generic_string());
+#endif
 					ImGui::CloseCurrentPopup();
 				}
-				if (ImGui::Button("Rename")) {
+			} 
+			else  {
+				if (ImGui::Button("Open", { ImGui::GetContentRegionAvailWidth(), 0 })) {
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::Button("Rename", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 					rename = true;
 					m_selectedEntry = m_rightClicked.path;
 					ImGui::CloseCurrentPopup();
 				}
-				if (ImGui::Button("Delete")) {
+				if (ImGui::Button("Delete", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 					GEngine::FileSystem::DeleteFile(m_rightClicked.path);
 					ImGui::CloseCurrentPopup();
 				}
@@ -249,7 +265,7 @@ namespace Editor {
 
 		float width = ImGui::GetWindowWidth();
 		float imageSize = 50;
-		int cols = std::max((int)width / 100, 1);
+		int cols = std::max((int)width / 110, 1);
 
 		ImGui::Columns(cols, "DIRECTORYCOLS", false);
 
@@ -430,9 +446,11 @@ namespace Editor {
 		ImGuiTreeNodeFlags fl = m_selectedViewEntry == d.path ? ImGuiTreeNodeFlags_Selected : 0;
 		float fontSize = ImGui::GetFontSize();
 		CreateFolderView(d, fl, fontSize);
-		d = { m_scriptDirectoryBase.path().generic_string(), m_scriptDirectoryBase.path().parent_path().filename().generic_string(), m_scriptDirectoryBase.path().extension().generic_string(), m_scriptDirectoryBase.is_directory(), std::filesystem::is_empty(m_scriptDirectoryBase.path()) };
-		fl = m_selectedViewEntry == d.path ? ImGuiTreeNodeFlags_Selected : 0;
-		CreateFolderView(d, fl, fontSize);
+		if (m_projectData->isNative()) {
+			d = { m_scriptDirectoryBase.path().generic_string(), m_scriptDirectoryBase.path().parent_path().filename().generic_string(), m_scriptDirectoryBase.path().extension().generic_string(), m_scriptDirectoryBase.is_directory(), std::filesystem::is_empty(m_scriptDirectoryBase.path()) };
+			fl = m_selectedViewEntry == d.path ? ImGuiTreeNodeFlags_Selected : 0;
+			CreateFolderView(d, fl, fontSize);
+		}
 
 		ImGui::EndChild();
 	}
@@ -480,7 +498,7 @@ namespace Editor {
 					ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 			}
 
-			ImGui::Image((ImTextureID)m_textures[d.is_empty ? "folderIcon" : "folderEmpty"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)m_textures["folderEmpty"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text(d.name.c_str());
 
@@ -502,7 +520,7 @@ namespace Editor {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 			}
 			
-			ImGui::Image((ImTextureID)m_textures[d.is_empty ? "folderIcon" : "folderEmpty"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)m_textures["folderIcon" ]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text(d.name.c_str());
 			AcceptDirPayload(d);

@@ -16,7 +16,10 @@ namespace GEngine {
 		inline void SetTag(const std::string& tag) { go_tag = tag; }
 
 		inline static GameObject* GetObjectFromHash(const uint64_t& hash) {
-			return s_map[hash];
+
+			std::unordered_map<uint64_t, GameObject*>::iterator it = s_map.find(hash);
+			if (it == s_map.end()) return nullptr;
+			return it->second;
 		}
 
 	protected:

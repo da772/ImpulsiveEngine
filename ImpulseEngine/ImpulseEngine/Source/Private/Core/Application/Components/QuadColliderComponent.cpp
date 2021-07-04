@@ -35,41 +35,41 @@ namespace GEngine {
 	void QuadColliderComponent::OnBegin()
 	{
 		Entity* e = m_entity;
-		m_worldPosition = Vector2f(m_position.x + e->GetPosition().x, m_position.y + e->GetPosition().y);
-		m_worldScale = Vector2f(m_scale.x * e->GetScale().x, m_scale.y * e->GetScale().y);
-		m_worldRotation = m_rotation + e->GetRotation().z;
+		m_worldPosition = Vector2f(m_position.x + e->GetTransform()->GetWorldPosition().x, m_position.y + e->GetTransform()->GetWorldPosition().y);
+		m_worldScale = Vector2f(m_scale.x * e->GetTransform()->GetWorldScale().x, m_scale.y * e->GetTransform()->GetWorldScale().y);
+		m_worldRotation = m_rotation + e->GetTransform()->GetWorldRotation().z;
 
 		PhysicsInfo info;
 		info.type = m_dynamic ? PhysicsInfoType::PHYSICS_Dynamic : PhysicsInfoType::PHYSICS_Kinematic;
-		info.position = Vector2f(e->GetPosition().x, e->GetPosition().y);
-		info.rotation = glm::radians(e->GetRotation().z);
+		info.position = Vector2f(e->GetTransform()->GetWorldPosition().x, e->GetTransform()->GetWorldPosition().y);
+		info.rotation = glm::radians(e->GetTransform()->GetWorldRotation().z);
 		info.fixedRotation = m_fixedRotation;
 		m_body = Physics::CreateBody(info);
 		m_body->SetComponent(this);
 
-		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
 			if (IsInitialized()) {
 				Vector3f pos = Vector3f(m_position.x, m_position.y, 1);
-				pos = pos + transform->GetPosition();
+				pos = pos + transform->GetWorldPosition();
 				m_worldPosition = pos;
 				if (!m_physics) {
-					m_body->SetPosition(transform->GetPosition());
+					m_body->SetPosition(transform->GetWorldPosition());
 					m_body->SetAwake(true);
 				}
 				else if (!m_movedSelf) {
-					m_body->SetPosition(transform->GetPosition());
+					m_body->SetPosition(transform->GetWorldPosition());
 					m_body->SetAwake(true);
 				}
 
 				Vector3f scale = Vector3f(m_scale.x, m_scale.y, 1);
-				scale = scale * transform->GetScale();
+				scale = scale * transform->GetWorldScale();
 				m_worldScale = Vector2f(scale.x, scale.y);
 				m_body->SetScale(m_worldScale);
 
 
 
 				Vector3f rotation = Vector3f(0, 0, m_rotation);
-				rotation = rotation + transData.rotation;
+				rotation = rotation + transData.GetWorldRotation();
 				rotation.x = 0;
 				rotation.y = 0;
 				m_worldRotation = rotation.z;
@@ -114,7 +114,7 @@ namespace GEngine {
 
 	void QuadColliderComponent::OnEnd()
 	{
-		m_entity->RemoveTransformCallback(this);
+		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
 		m_body = nullptr;
 	}
 
@@ -124,20 +124,20 @@ namespace GEngine {
 			const Vector2f& pos = m_body->GetPosition();
 			const float rot = m_body->GetRotation();
 			m_movedSelf = true;
-			m_entity->SetPosition(Vector3f(pos.x, pos.y, 1.f));
-			m_entity->SetRotation(Vector3f(0.f, 0.f, glm::degrees(rot)));
+			m_entity->GetTransform()->SetLocalPosition(Vector3f(pos.x, pos.y, 1.f));
+			m_entity->GetTransform()->SetLocalRotation(Vector3f(0.f, 0.f, glm::degrees(rot)));
 			m_movedSelf = false;
 		}
 	}
 
 	void QuadColliderComponent::SetPosition(const float x, const float y)
 	{
-		m_position = Vector2f(x + m_entity->GetPosition().x, y + m_entity->GetPosition().y);
+		m_position = Vector2f(x + m_entity->GetTransform()->GetLocalPosition().x, y + m_entity->GetTransform()->GetLocalPosition().y);
 	}
 
 	void QuadColliderComponent::SetScale(const float x, const float y)
 	{
-		m_scale = Vector2f(x * m_entity->GetScale().x, y * m_entity->GetScale().y);
+		m_scale = Vector2f( x,y ) * m_entity->GetTransform()->GetLocalScale().xy();
 		
 		//m_collider->SetScale(Vector3f(m_scale.x, m_scale.y,1));
 	}
@@ -146,7 +146,7 @@ namespace GEngine {
 
 	void QuadColliderComponent::SetRotation(const float rot)
 	{
-		m_rotation = rot + m_entity->GetRotation().z;
+		m_rotation = rot + m_entity->GetTransform()->GetLocalRotation().z;
 	}
 
 	const Vector2f QuadColliderComponent::GetPosition()
@@ -161,17 +161,17 @@ namespace GEngine {
 
 	const GEngine::Vector2f QuadColliderComponent::GetLocalPosition()
 	{
-		return m_worldPosition - m_entity->GetPosition().xy();
+		return m_worldPosition - m_entity->GetTransform()->GetWorldPosition().xy();
 	}
 
 	const GEngine::Vector2f QuadColliderComponent::GetLocalScale()
 	{
-		return m_worldScale / m_entity->GetScale().xy();
+		return m_worldScale / m_entity->GetTransform()->GetWorldScale().xy();
 	}
 
 	const float QuadColliderComponent::GetLocalRotation()
 	{
-		return m_worldRotation - m_entity->GetRotation().z;
+		return m_worldRotation - m_entity->GetTransform()->GetWorldRotation().z;
 	}
 
 	void QuadColliderComponent::SetGravityScale(const float f)

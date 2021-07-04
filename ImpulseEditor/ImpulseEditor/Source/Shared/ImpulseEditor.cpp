@@ -4,8 +4,10 @@
 #include "Editor/Project/ProjectSelectLayer.h"
 #endif
 
+#include "Shared/Scene/EditorScene.h"
 
 #include "Reflection.map.generated.h"
+
 
 
 
@@ -13,7 +15,6 @@ ExampleLayer::ExampleLayer()
 
 : Layer("ExampleLayer"), app(GEngine::Application::GetApp())
 {
-
 
 
 }
@@ -58,6 +59,9 @@ void ExampleLayer::OnAttach()
 	//GEngine::SceneManager::AddScene<MenuScene>("menuScene");
 	//GEngine::SceneManager::SetCurrentScene("menuScene");
 	//*/
+
+	GEngine::SceneManager::AddScene<Editor::EditorScene>("EditorScene");
+	GEngine::SceneManager::SetCurrentScene("EditorScene", true);
 }
 
 void ExampleLayer::OnDetach()
@@ -118,6 +122,8 @@ ImpulseEditor::ImpulseEditor()
 
 #ifdef GE_EDITOR
 	GEngine::FileSystem::LoadPak("Data/EditorContent.pak");
+#else
+	GEngine::FileSystem::LoadPak("Data/" + std::string(this->title) + "Content.pak");
 #endif
 	//GEngine::FileSystem::LoadPak("Data/EditorContent.pak");
 	GEngine::FileSystem::LoadPak("Data/EngineContent.pak");
@@ -130,7 +136,7 @@ ImpulseEditor::ImpulseEditor()
 
 	SetGraphicsApi(GetDefaultGraphicsApi());
 	SetWindowApi(GetDefaultWindowApi());
-	GetWindow()->SetVSync(true);
+	GetWindow()->SetVSync(false);
 
 #if defined(GE_EDITOR)
 	EnableImGui(s_debugTools);
@@ -171,8 +177,8 @@ ImpulseEditor::ImpulseEditor()
 #endif
 #ifdef GE_EDITOR
 	if (s_debugTools) {
-		m_ExampleLayer = new ExampleLayer();
-		PushLayer(m_ExampleLayer);
+		//m_ExampleLayer = new ExampleLayer();
+		//PushLayer(m_ExampleLayer);
 		m_ProjectSelectLayer = new Project::ProjectSelectLayer("ProjectSelect");
 		PushLayer(m_ProjectSelectLayer);
 	}
@@ -182,12 +188,33 @@ ImpulseEditor::ImpulseEditor()
 #endif
 }
 
+ImpulseEditor::~ImpulseEditor()
+{
+#ifdef GE_EDITOR
+	fd = nullptr;
+#endif
+}
+
 void ImpulseEditor::OnCleanDirtyApi()
 {
 	m_ExampleLayer->OnDetach();
 	m_ProjectSelectLayer->OnDetach();
 	m_ExampleLayer->OnAttach();
 	m_ProjectSelectLayer->OnAttach();
+}
+
+void ImpulseEditor::OnImGuiSetup()
+{
+#ifdef GE_EDITOR
+	auto io = ImGui::GetIO();
+	fd = GEngine::FileSystem::FileDataFromPath("EngineContent/Fonts/roboto.ttf");
+	ImFontConfig cfg = {  };
+	cfg.FontDataOwnedByAtlas = false;
+	mainFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), fd->GetDataSize(), 20, &cfg);
+	smallFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), fd->GetDataSize(), 17, &cfg);
+	largeFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), fd->GetDataSize(), 23, &cfg);
+	io.Fonts->Build();
+#endif
 }
 
 void ImpulseEditor::OnUpdate(GEngine::Timestep timeStep)

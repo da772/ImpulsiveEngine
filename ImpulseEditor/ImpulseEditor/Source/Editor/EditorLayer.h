@@ -8,8 +8,6 @@
 
 namespace Editor {
 
-	
-
 	class EditorLayer : public GEngine::Layer {
 
 	public:
@@ -47,6 +45,7 @@ namespace Editor {
 		Project::ProjectData m_projectData;
 		EditorLayer(const std::string& name, Project::ProjectData* data);
 		static EditorLayer* s_singleton;
+		uint64_t selectedGameObject = 0;
 
 
 	};

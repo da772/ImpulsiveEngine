@@ -32,17 +32,23 @@ class ImpulseEditor : public GEngine::Application
 
 public:
 	ImpulseEditor();
+	
+	virtual ~ImpulseEditor();
 
 	ExampleLayer* m_ExampleLayer;
 	GEngine::Layer* m_ProjectSelectLayer;
 
 	virtual void OnCleanDirtyApi() override;
+	virtual void OnImGuiSetup() override;
 
 	virtual void OnUpdate(GEngine::Timestep timeStep) override;
 
-	inline ~ImpulseEditor() {};
-
-
+#ifdef GE_EDITOR
+	ImFont* smallFont;
+	ImFont* largeFont;
+	ImFont* mainFont;
+	GEngine::Ref<GEngine::FileData> fd = nullptr;
+#endif
 };
 
 

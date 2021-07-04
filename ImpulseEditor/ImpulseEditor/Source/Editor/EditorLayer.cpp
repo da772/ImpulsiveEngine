@@ -9,7 +9,9 @@
 #include "Modules/HierarchyModule.h"
 #include "Modules/InspectorModule.h"
 
-#include "Scene/EditorScene.h"
+#include "Shared/ImpulseEditor.h"
+
+#include "Shared/Scene/EditorScene.h"
 
 namespace Editor {
 
@@ -19,7 +21,6 @@ namespace Editor {
 	EditorLayer* EditorLayer::Create(Project::ProjectData* data)
 	{
 		if (s_singleton) return nullptr;
-
 		return new EditorLayer("EditorLayer", data);
 	}
 
@@ -38,12 +39,12 @@ namespace Editor {
 
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.name, m_projectData.path);
 
-		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name);
+		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name, &m_projectData);
 		AddModule<ConsoleModule>("Console Log", true, 0, true);
 		AddModule<ProfilerModule>("Profiler", true, 0, true);
-		AddModule<InspectorModule>("Inspector", true, 0, true);
+		AddModule<InspectorModule>("Inspector", true, 0, true, &selectedGameObject);
         AddModule<ViewportModule>("Viewport", true, 0, false, "viewport");
-        AddModule<HierarchyModule>("Hierarchy", true, 0, true);
+        AddModule<HierarchyModule>("Hierarchy", true, 0, true, &selectedGameObject);
 		AddModule<DockModule>("Dock", true, 0, false, std::vector < std::pair < std::string, std::string>>());
 		AddModule<MainMenuModule>("MainMenu", true, 0, false, &modules);
 		
@@ -66,13 +67,14 @@ namespace Editor {
 
 	}
 
+
 	void EditorLayer::OnAttach()
 	{
 		GEngine::Application::GetWindow()->MaximizeWindow();
-		GEngine::Application::GetWindow()->SetTitle(m_projectData.name + " | Impulse Editor");
+		GEngine::Application::GetWindow()->SetTitle(m_projectData.name + " - Impulse Editor [EXPERIMENTAL VERSION]");
 		GEngine::SceneManager::AddScene<EditorScene>("EditorScene");
 		GEngine::SceneManager::SetCurrentScene("EditorScene", false);
-		
+
 	}
 
 	void EditorLayer::OnDetach()
@@ -90,14 +92,19 @@ namespace Editor {
 
 	}
 
+	
+
 	void EditorLayer::OnImGuiRender()
 	{
+		
+		ImGui::PushFont(((ImpulseEditor*)GEngine::Application::GetApp() )->smallFont);
 		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 5.f);
 		for (auto & d : modules) {
 			if (!d.second.isOpen) continue;
 			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
 		}
 		ImGui::PopStyleVar();
+		ImGui::PopFont();
 
 		//GEngine::Log::GetImGuiLog()->Draw("Console Log", 0);
 	}

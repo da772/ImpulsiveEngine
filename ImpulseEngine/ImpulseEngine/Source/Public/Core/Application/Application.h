@@ -61,6 +61,8 @@ namespace GEngine {
 		inline Camera* GetTargetCamera() { return m_Camera; }
 		inline CameraController* GetTargetCameraController() { return m_CameraContoller; }
 
+		inline virtual void OnImGuiSetup() {};
+
 		static void UnloadGraphics();
 		static void ReloadGraphics();
 		static void Stop();

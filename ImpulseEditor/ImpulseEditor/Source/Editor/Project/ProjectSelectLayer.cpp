@@ -2,6 +2,8 @@
 #include "GenerateProject.h"
 #include "Editor/EditorLayer.h"
 
+#include "Shared/ImpulseEditor.h"
+
 #ifdef GE_EDITOR
 #include "imgui/imgui_internal.h"
 #endif
@@ -67,6 +69,7 @@ namespace Project {
 	void ProjectSelectLayer::OnImGuiRender()
 	{
 #ifdef GE_EDITOR
+		
 		//ImGui::ShowDemoWindow();
 		ImGui::SetNextWindowSize({ (float)GEngine::Application::GetWindowWidth(), (float)GEngine::Application::GetWindowHeight() });
 		ImGui::SetNextWindowPos({ 0.f, 0.f });
@@ -184,6 +187,7 @@ namespace Project {
 		if (ImGui::Button("Open", { (float)GEngine::Application::GetWindowWidth() * .125f * .75f,0 })) {
             if (OpenProject(selectedProject)) {
                 ImGui::EndChild();
+
                 ImGui::End();
                 return;
             }
@@ -230,8 +234,6 @@ namespace Project {
 		}
 
 		ImGui::EndChild();
-
-
 
 		ImGui::End();
 

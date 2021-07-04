@@ -99,19 +99,19 @@ namespace GEngine {
 	const ShapeID UIComponent::CreateQuad(const Vector3f& _pos, const float rot /*= 0*/, const Vector3f& scale /*= { 1,1,1 }*/, const Vector4f& _color /*= { 1,1,1,1.f }*/, Ref<Texture2D> texture /*= nullptr*/, bool aspectRatio, const Vector2f& textureScale /*= 1*/, const float alphaChannel)
 	{
 
-		Vector3f _scale = scale * m_entity->GetScale();
+		Vector3f _scale = scale * m_entity->GetTransform()->GetWorldScale();
 
 		float tWidth = texture ? texture->GetWidth() : 1.f;
 		float tHeight = texture ? texture->GetHeight() : 1.f;
 		if (aspectRatio)
 			_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
 		else {
-			_scale = scale * m_entity->GetScale();
+			_scale = scale * m_entity->GetTransform()->GetWorldScale();
 		}
 
 		_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
 
-		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetPosition(), rot, _scale.xy(), _color, texture, textureScale, alphaChannel);
+		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetTransform()->GetWorldPosition(), rot, _scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -119,7 +119,7 @@ namespace GEngine {
 
 	const ShapeID UIComponent::CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale /*= 1.f*/, const float alphaChannel)
 	{
-		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetPosition(), rot, scale.xy(), _color, texture, textureScale, alphaChannel);
+		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetTransform()->GetWorldPosition(), rot, scale.xy(), _color, texture, textureScale, alphaChannel);
 		m_ids.push_back(id);
 		return id;
 	}
@@ -142,7 +142,7 @@ namespace GEngine {
 		std::vector<ShapeID> ids;
 
 		for (CharacterData& d : data->charData) {
-			ShapeID id = CreateSubTexturedQuad(m_entity->GetPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ShapeID id = CreateSubTexturedQuad(m_entity->GetTransform()->GetWorldPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
 		m_text[hash] = { data,std::move(ids), font };
@@ -166,7 +166,7 @@ namespace GEngine {
 		std::vector<ShapeID> ids;
 
 		for (CharacterData& d : data->charData) {
-			ShapeID id = CreateSubTexturedQuad(m_entity->GetPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ShapeID id = CreateSubTexturedQuad(m_entity->GetTransform()->GetWorldPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.push_back(id);
 		}
 		m_text[hash] = { data,std::move(ids), font };
@@ -185,7 +185,7 @@ namespace GEngine {
 		int newSize = ids.info->charData.size();
 		for (int i = lastSize; i < newSize; i++) {
 			const CharacterData& d = ids.info->charData[i];
-			ShapeID id = CreateSubTexturedQuad(m_entity->GetPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
+			ShapeID id = CreateSubTexturedQuad(m_entity->GetTransform()->GetWorldPosition() + Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, d.texture, { 1,1 }, 1);
 			ids.shapes.push_back(id);
 		}
 
@@ -245,7 +245,7 @@ namespace GEngine {
 	void UIComponent::SetZOrder(ShapeID id, float zOrder)
 	{
 		if (id > 0) {
-			s_ShapeFactory->SetZOrder(id, zOrder + m_entity->GetPosition().z);
+			s_ShapeFactory->SetZOrder(id, zOrder + m_entity->GetTransform()->GetWorldPosition().z);
 		}
 	}
 
@@ -297,21 +297,21 @@ namespace GEngine {
 
 	void UIComponent::OnBegin()
 	{
-		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
 			if (IsInitialized()) {
 				//	GE_CORE_DEBUG("{0}, {1}, {2}", transData.position.x, transData.position.y, transData.position.z);
 				for (ShapeID id : m_ids) {
 					Vector3f pos = s_ShapeFactory->GetShapePosition(id);
-					Vector3f nPos = pos - transData.position + transform->GetPosition();
+					Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
 					if (pos != nPos)
 						s_ShapeFactory->SetPosition(id, nPos);
 					float rot = s_ShapeFactory->GetShapeRotation(id);
-					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
+					float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
 					if (rot != nRot)
 						s_ShapeFactory->SetRotation(id, nRot);
 					Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
 					Vector3f scale(_scale.x, _scale.y, 1.f);
-					Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
+					Vector3f nScale = scale - transData.GetWorldScale().z + transform->GetWorldScale().z;
 					if (scale != nScale)
 						s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
 				}
@@ -321,7 +321,7 @@ namespace GEngine {
 
 	void UIComponent::OnEnd()
 	{
-		m_entity->RemoveTransformCallback(this);
+		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
 		ClearQuads();
 	}
 

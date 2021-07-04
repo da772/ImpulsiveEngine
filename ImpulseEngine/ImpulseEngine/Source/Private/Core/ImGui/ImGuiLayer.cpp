@@ -38,6 +38,7 @@ namespace GEngine {
 	}
 	#ifdef GE_CONSOLE_APP
 	ImFont* font2;
+	Ref<FileData> fd = nullptr;
 	#endif
 	void ImGuiLayer::OnAttach()
 	{
@@ -53,13 +54,16 @@ namespace GEngine {
 
 		ImGui::StyleColorsCustom();
 
+		
+		/*
 		ImFont* font1 = io.Fonts->AddFontDefault();
-		Ref<FileData> fd = FileSystem::FileDataFromPath("EngineContent/Fonts/roboto.ttf");
+		fd = FileSystem::FileDataFromPath("EngineContent/Fonts/roboto.ttf");
+		font2 = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), fd->GetDataSize(), 20);
+		io.Fonts->Build();
+		*/
 
-		void* fnt = malloc(fd->GetDataSize());
-		memcpy( fnt, fd->GetData(), fd->GetDataSize());
-		font2 = io.Fonts->AddFontFromMemoryTTF(fnt, fd->GetDataSize(), 20);
-		//ImGui::PushFont(font2);
+		Application::GetApp()->OnImGuiSetup();
+		
 		ImGuiStyle& style = ImGui::GetStyle();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);

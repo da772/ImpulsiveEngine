@@ -25,7 +25,7 @@ namespace GEngine {
 		template<class C, typename ... Args>
 		inline C* AddComponent(Args&& ... args) {
 			C* c = new C(this, std::forward<Args>(args)...);
-			components.insert(c);
+			components[c->GetHash()] = c;
 			if (bInit) {
 				c->Begin();
 			}
@@ -37,7 +37,7 @@ namespace GEngine {
 		inline C* AddComponentHash(const uint64_t& hash, Args&& ... args) {
 			AddHash(hash);
 			C* c = new C(this, std::forward<Args>(args)...);
-			components.insert(c);
+			components[hash] = c;
 			if (bInit) {
 				c->Begin();
 			}
@@ -48,10 +48,10 @@ namespace GEngine {
 		template<class C>
 		inline C* RemoveComponent(C* component)
 		{
-			if (components.find(component) != components.end()) {
+			if (components.find(component->GetHash()) != components.end()) {
 				if (bInit)
 					component->End();
-				components.erase(component);
+				components.erase(component->GetHash());
 				delete component;
 			}
 			return nullptr;
@@ -59,6 +59,13 @@ namespace GEngine {
 
 		void UnloadGraphics();
 		void ReloadGraphics();
+
+		inline Transform* GetTransform() const { return transform; }
+		void AddChild(Entity* e);
+		void RemoveChild(Entity* e);
+		void SetParent(Entity* e);
+		inline const std::unordered_map<uint64_t, Entity*>& GetChildren() const { return m_Children; }
+		inline Entity* GetParent() const { return m_parent; }
         
         virtual void OnUnloadGraphics() {};
         virtual void OnReloadGraphics() {};
@@ -79,32 +86,24 @@ namespace GEngine {
 			return bInit;
 		}
 
-
-        const Vector3f GetPosition();
-        const Vector3f GetRotation();
-        const Vector3f GetScale();
-		void SetPosition(const Vector3f& position);
-		void SetScale(const Vector3f& scale);
-		void SetRotation(const Vector3f& rot);
-
-		void AddTransformCallback(Component*, std::function<void(Transform*, TransformData)> func);
-		void RemoveTransformCallback(Component* c);
+		
 		void Destroy();
 
-		uint64_t GetHash();
+		uint64_t GetNextHash();
 		void RemoveHash(const uint64_t& h);
 		void AddHash(const uint64_t& h);
 
-		inline const std::set<Component*>& GetComponents() const { return components; }
+		inline const std::unordered_map<uint64_t, Component*>& GetComponents() const { return components; }
 
 	private:
 		void Clean();
-		std::unordered_map<Component*, std::function<void(Transform*, TransformData)>> m_TransformCallback;
-
+		bool isParent(Entity* e);
+		std::unordered_map<uint64_t, Entity*> m_Children;
+		Entity* m_parent = nullptr;
 
 
 	protected:
-		std::set<Component*> components;
+		std::unordered_map<uint64_t, Component*> components;
 		Transform* transform;
 		inline virtual void OnBegin() {};
 		inline virtual void OnEnd() {}

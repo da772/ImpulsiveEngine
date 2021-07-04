@@ -93,23 +93,23 @@ namespace GEngine {
 	{
 		GE_CORE_ASSERT(m_audioSource == nullptr, "AUDIO SOURCE ALREADY INSTANTIATED");
 		m_audioSource = AudioManager::Load_OGG(m_fileName, m_fromPak, m_relative);
-		m_audioSource->SetPosition(m_entity->GetPosition());
+		m_audioSource->SetPosition(m_entity->GetTransform()->GetWorldPosition());
 		m_audioSource->SetPitch(m_pitch);
 		m_audioSource->SetVolume(m_volume);
 		m_audioSource->SetStatic(m_static);
 		m_audioSource->MaxDistance(50.f);
 		SetPlaying(m_playing);
 		SetLooping(m_looping);
-		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
+		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
 			if (IsInitialized()) {
-				m_audioSource->SetPosition(transform->GetPosition());
+				m_audioSource->SetPosition(transform->GetWorldPosition());
 			}
 			});
 	}
 
 	void AudioComponent::OnEnd()
 	{
-		m_entity->RemoveTransformCallback(this);
+		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
 		m_audioSource->Destroy();
 		m_audioSource = nullptr;
 	}

@@ -33,13 +33,55 @@ namespace GEngine {
 
 		for (int i = 0; i < m_debug; i++) {
 			if (i == 0)
-				m_ids[i] = s_ShapeFactory->AddShape(m_imagePosition + m_entity->GetPosition(), m_imageRotation, m_imageScale, m_color, m_texture, m_textureScale);
+				m_ids[i] = s_ShapeFactory->AddShape(m_imagePosition + m_entity->GetTransform()->GetWorldPosition(), m_imageRotation, m_imageScale, m_color, m_texture, m_textureScale);
 			if (i == 1) {
 				Vector3f m_p = m_colliderPosition;
 				m_p.z += .1f;
-				m_ids[i] = s_ShapeFactory->AddShape(m_p + m_entity->GetPosition(), m_colliderRotation, m_colliderScale, Vector4f(1, 0, 0, .25f));
+				m_ids[i] = s_ShapeFactory->AddShape(m_p + m_entity->GetTransform()->GetWorldPosition(), m_colliderRotation, m_colliderScale, Vector4f(1, 0, 0, .25f));
 			}
 		}
+
+		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
+
+			for (int i = 0; i < m_debug; i++) {
+				ShapeID id = m_ids[i];
+				Vector3f pos = s_ShapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
+				if (pos != nPos)
+					s_ShapeFactory->SetPosition(id, nPos);
+				float rot = s_ShapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
+				if (rot != nRot)
+					s_ShapeFactory->SetRotation(id, nRot);
+				Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, 1);
+				Vector3f nScale = scale - transData.GetWorldScale().z + transform->GetWorldScale().z;
+				if (scale != nScale)
+					s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
+			}
+			Vector3f pos = Vector3f(m_colliderPosition.x, m_colliderPosition.y, 1);
+			pos = pos + transform->GetWorldPosition();
+			m_worldPosition = pos;
+
+
+			Vector3f scale = Vector3f(m_colliderScale.x, m_colliderScale.y, 1);
+			scale = scale * transform->GetWorldScale();
+			m_worldScale = Vector2f(scale.x, scale.y);
+
+
+
+			Vector3f rotation = Vector3f(0, 0, m_colliderRotation);
+			rotation = rotation + transData.GetWorldRotation();
+			rotation.x = 0;
+			rotation.y = 0;
+			m_worldRotation = rotation.z;
+
+			if (IsInitialized()) {
+				m_collider->SetScale(scale);
+				m_collider->SetPosition(pos);
+			}
+
+			});
 
 	}
 
@@ -127,9 +169,9 @@ namespace GEngine {
 
 	void ButtonComponent::OnBegin()
 	{
-		m_worldPosition = Vector2f(m_colliderPosition.x + m_entity->GetPosition().x, m_colliderPosition.y + m_entity->GetPosition().y);
-		m_worldScale = Vector2f(m_colliderScale.x * m_entity->GetScale().x, m_colliderScale.y * m_entity->GetScale().y);
-		m_worldRotation = m_colliderRotation + m_entity->GetRotation().z;
+		m_worldPosition = Vector2f(m_colliderPosition.x + m_entity->GetTransform()->GetWorldPosition().x, m_colliderPosition.y + m_entity->GetTransform()->GetWorldPosition().y);
+		m_worldScale = Vector2f(m_colliderScale.x * m_entity->GetTransform()->GetWorldScale().x, m_colliderScale.y * m_entity->GetTransform()->GetWorldScale().y);
+		m_worldRotation = m_colliderRotation + m_entity->GetTransform()->GetWorldRotation().z;
 		m_collider = new Collider2D(m_worldPosition,
 			m_worldScale, m_worldRotation);
 		m_collider->SetColliderShape(EColliderShape::Quad);
@@ -152,48 +194,11 @@ namespace GEngine {
 			});
 
 		CollisionDetection::AddCollider(m_collider);
-
-
-		m_entity->AddTransformCallback(this, [this](Transform* transform, TransformData transData) {
-			if (IsInitialized()) {
-				for (int i = 0; i < m_debug; i++) {
-					ShapeID id = m_ids[i];
-					Vector3f pos = s_ShapeFactory->GetShapePosition(id);
-					Vector3f nPos = pos - transData.position + transform->GetPosition();
-					if (pos != nPos)
-						s_ShapeFactory->SetPosition(id, nPos);
-					float rot = s_ShapeFactory->GetShapeRotation(id);
-					float nRot = rot - transData.rotation.z + transform->GetRotation().z;
-					if (rot != nRot)
-						s_ShapeFactory->SetRotation(id, nRot);
-					Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, 1);
-					Vector3f nScale = scale - transData.scale.z + transform->GetScale().z;
-					if (scale != nScale)
-						s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
-				}
-				Vector3f pos = Vector3f(m_colliderPosition.x, m_colliderPosition.y, 1);
-				pos = pos + transform->GetPosition();
-				m_worldPosition = pos;
-				m_collider->SetPosition(pos);
-
-				Vector3f scale = Vector3f(m_colliderScale.x, m_colliderScale.y, 1);
-				scale = scale * transform->GetScale();
-				m_worldScale = Vector2f(scale.x, scale.y);
-				m_collider->SetScale(scale);
-
-				Vector3f rotation = Vector3f(0, 0, m_colliderRotation);
-				rotation = rotation + transData.rotation;
-				rotation.x = 0;
-				rotation.y = 0;
-				m_worldRotation = rotation.z;
-			}
-			});
 	}
 
 	void ButtonComponent::OnEnd()
 	{
-		m_entity->RemoveTransformCallback(this);
+		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
 		CollisionDetection::RemoveCollider(m_collider);
 		delete m_collider;
 		for (int i = 0; i < m_debug; i++) {

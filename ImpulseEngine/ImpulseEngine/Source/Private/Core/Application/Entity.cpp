@@ -31,32 +31,81 @@ namespace GEngine {
 
 	void Entity::UnloadGraphics() {
         OnUnloadGraphics();
-		for (Component* c : components) {
-			c->UnloadGraphics();
+		for (const auto& c: components) {
+			c.second->UnloadGraphics();
 		}
 	}
 
 	void Entity::ReloadGraphics() {
         OnReloadGraphics();
-		for (Component* c : components) {
-			c->ReloadGraphics();
+		for (const auto& c : components) {
+			c.second->ReloadGraphics();
 		}
 	}
+
+	void Entity::AddChild(Entity* e)
+	{
+		if (e == this) return;
+		if (isParent(e)) return;
+		
+		if (e) {
+			if (e->GetParent()) {
+				e->GetParent()->RemoveChild(e);	
+			}
+
+			m_Children[e->GetHash()] = e;
+			e->m_parent = this;
+			GetTransform()->AddTransformCallback(e->GetHash(), [e](Transform* trans, TransformData data) {
+				e->GetTransform()->SetRelativePosition(trans->GetWorldPosition());
+				e->GetTransform()->SetRelativeRotation(trans->GetWorldRotation());
+				e->GetTransform()->SetRelativeScale(trans->GetWorldScale());
+			});
+			e->GetTransform()->SetRelativePosition(GetTransform()->GetWorldPosition());
+			e->GetTransform()->SetRelativeRotation(GetTransform()->GetWorldRotation());
+			e->GetTransform()->SetRelativeScale(GetTransform()->GetWorldScale());
+		}
+	}
+
+	void Entity::SetParent(Entity* e)
+	{
+		if (e == this) return;
+		if (e == GetParent()) return;
+		if (e && e->GetParent() == this) return;
+		if (GetParent() && !e) {
+			GetParent()->RemoveChild(this);
+			return;
+		}
+		e->AddChild(this);
+	
+	}
+
+	void Entity::RemoveChild(Entity* e)
+	{
+		if (e == this) return;
+		if (e->GetParent() == this) {
+			GetTransform()->RemoveTransformCallback(e->GetHash());
+			m_Children.erase(e->GetHash());
+			e->m_parent = nullptr;
+			e->GetTransform()->ResetRelativeTransform();
+		}
+	}
+
+
 
 	void Entity::Begin() {
         bInit = true;
 		OnBegin();
-		for (Component* c : components) {
-			c->Begin();
+		for (const auto& c : components) {
+			c.second->Begin();
 		}
 	}
 
 	void Entity::End() {
 		if (bInit) {
 			OnEnd();
-			for (Component* c : components) {
+			for (const auto& c : components) {
                 //c.second->DeAttached(nullptr);
-				c->End();
+				c.second->End();
 			}
 		}
 		bInit = false;
@@ -66,9 +115,9 @@ namespace GEngine {
 	void Entity::Update(Timestep timestep)
 	{
 		OnUpdate(timestep);
-		for (Component* c : components) {
-			if (c->GetShouldUpdate()) {
-				c->Update(timestep);
+		for (const auto& c : components) {
+			if (c.second->GetShouldUpdate()) {
+				c.second->Update(timestep);
 			}
 		}
 		/*
@@ -86,7 +135,7 @@ namespace GEngine {
 		
 	}
 
-	uint64_t Entity::GetHash()
+	uint64_t Entity::GetNextHash()
 	{
 		if (comp_hashes.size() > 0) {
 			uint64_t h = comp_hashes.front();
@@ -110,60 +159,23 @@ namespace GEngine {
 	{
 		//entt::registry& r = SceneManager::GetCurrentScene()->GetRegistry();
 		//r.remove_all((entt::entity)go_hash);
-		for (Component* c : components) {
-			delete c;
+		for (const auto& c : components) {
+			delete c.second;
 		}
 		components.clear();
 	}
 
-	const Vector3f Entity::GetPosition() {
-		return transform->GetPosition();
-	}
-
-	const Vector3f Entity::GetRotation() {
-		return transform->GetRotation();
-	}
-
-	const Vector3f Entity::GetScale() {
-		return transform->GetScale();
-	}
-
-	void Entity::SetPosition(const Vector3f& position)
+	bool Entity::isParent(Entity* e)
 	{
-		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
-		transform->SetPosition(position);
-		for (std::pair<Component*, std::function<void(Transform*, TransformData)>> pair : m_TransformCallback) {
-			pair.second(transform, transData);
+		Entity* p = GetParent();
+
+		while (p) {
+			if (p == e) return true;
+			p = p->GetParent();
 		}
-	}
 
-	void Entity::SetScale(const Vector3f& scale)
-	{
-		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
-		transform->SetScale(scale);
-		for (std::pair<Component*, std::function<void(Transform*, TransformData)>> pair : m_TransformCallback) {
-			pair.second(transform, transData);
-		}
-	}
+		return false;
 
-	void Entity::SetRotation(const Vector3f& rot)
-	{
-		TransformData transData = { transform->GetPosition(), transform->GetRotation(), transform->GetScale() };
-		transform->SetRotation(rot);
-		for (std::pair<Component*, std::function<void(Transform*, TransformData)>> pair : m_TransformCallback) {
-			pair.second(transform, transData);
-		}
-	}
-
-
-	void Entity::AddTransformCallback(Component* component, std::function<void(Transform*, TransformData)> func)
-	{
-		m_TransformCallback[component] = func;
-	}
-
-	void Entity::RemoveTransformCallback(Component* component)
-	{
-		m_TransformCallback.erase(component);
 	}
 
 }
