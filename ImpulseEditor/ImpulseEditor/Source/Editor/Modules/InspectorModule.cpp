@@ -217,7 +217,7 @@ namespace Editor {
 						GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::GameObject*>(p.second.name);
 
 						if (ptr) {
-							memcpy(buff, ptr->GetTag().c_str(), ptr->GetTag().size());
+							memcpy(buff, (ptr->GetTag()+ " (" + ptr->GetHash().ToString()+")").c_str() , ptr->GetTag().size()+3+ptr->GetHash().ToString().size());
 							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
 						}
 						else {
