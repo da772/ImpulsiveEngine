@@ -324,8 +324,9 @@ namespace Editor {
 			if (isMouseOver)
 				isFileHovered = isMouseOver; 
 			if (m_selectedEntry == p.path || isMouseOver) {
-				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x, pos.y }, { pos.x + availWidth, pos.y + imageSize + textSize.y + lineHeight / 2 }, IM_COL32(125, 125, 125, 100));
-				if (isMouseOver && ImGui::IsMouseClicked(0)) {
+				ImVec4 col = m_selectedEntry == p.path && !isMouseOver ? ImGui::GetStyleColorVec4(ImGuiCol_Header) : ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x, pos.y }, { pos.x + availWidth, pos.y + imageSize + textSize.y + lineHeight / 2 }, ImGui::GetColorU32(col));
+				if (isMouseOver && ImGui::IsMouseReleased(0)) {
 					if (m_selectedEntry != p.path) {
 						m_selectedEntry = p.path;
 						rename = false;
@@ -389,7 +390,7 @@ namespace Editor {
 					rename = false;
 					GEngine::FileSystem::MoveFile(p.path, newPath);
 				}
-				if (!ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))
+				if (!ImGui::IsAnyItemActive() && !ImGui::IsMouseReleased(0))
 					ImGui::SetKeyboardFocusHere(0);
 			}
 			else {
@@ -415,9 +416,10 @@ namespace Editor {
 			//ImGui::TextWrapped(p.name.c_str());	
 			ImGui::EndChild();
 			if (p.is_directory) {
-				AcceptDirPayload(p);
+				ImRect r = { { pos.x, pos.y }, { pos.x + availWidth, pos.y + +imageSize + textSize.y + lineHeight / 2 } };
+				AcceptDirPayloadFolder(p, &r);
 			}
-			if (isMouseOver && ImGui::IsMouseClicked(1)) {
+			if (isMouseOver && ImGui::IsMouseReleased(1)) {
 				ShowSetingsModal(*_p);
 			}
 
@@ -497,7 +499,7 @@ namespace Editor {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
 				if (!d.is_empty)
 					RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize * 1.75f) / 2.f - (fontSize * 0.40f * .75f), pos.y + (fontSize * 0.40f * .75f) / 2.f }, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Down, .75f);
-				if (ImGui::IsMouseClicked(0) && !isDragAndDrop && !isDragging && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) SelectView(d);
+				if (ImGui::IsMouseReleased(0) && !isDragAndDrop && !isDragging && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) SelectView(d);
 			}
 			else if (d.is_empty) {
 					ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
@@ -507,7 +509,7 @@ namespace Editor {
 			ImGui::SameLine();
 			ImGui::Text(d.name.c_str());
 
-			AcceptDirPayload(d);
+			AcceptDirPayload(d, { &pos.x });
 			if (!d.is_empty)
 				GetChildren(std::filesystem::directory_entry(d.path));
 			ImGui::TreePop();
@@ -519,7 +521,7 @@ namespace Editor {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
 				if (!d.is_empty)
 					RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize*1.75f)/2.f- (fontSize * 0.40f * .85f), pos.y+ (fontSize * 0.40f * .85f)/2.f}, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Right, .75f);
-				if (!fl && ImGui::IsMouseClicked(0) && !isDragAndDrop && !isDragging && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) SelectView(d);
+				if (!fl && ImGui::IsMouseReleased(0) && !isDragAndDrop && !isDragging && (ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) SelectView(d);
 			}
 			else if (d.is_empty) {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
@@ -528,7 +530,7 @@ namespace Editor {
 			ImGui::Image((ImTextureID)m_textures["folderIcon" ]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text(d.name.c_str());
-			AcceptDirPayload(d);
+			AcceptDirPayload(d, {&pos.x});
 		}
 	}
 
@@ -597,9 +599,46 @@ namespace Editor {
 
 	}
 
-	void DirectoryModule::AcceptDirPayload(const DirectoryPath& p)
+	void DirectoryModule::AcceptDirPayload(const DirectoryPath& p, const GEngine::Vector2f& pos)
 	{
+		
 		if (ImGui::BeginDragDropTarget()) {
+
+			const ImGuiPayload* _p = ImGui::GetDragDropPayload();
+			if (_p && strcmp(_p->DataType, "DirectoryPath") == 0) {
+				float availWidth = ImGui::GetContentRegionAvailWidth();
+				float fontSize = ImGui::GetFontSize();
+				ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+				col.w = .25f;
+				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
+			}
+
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DirectoryPath");
+			if (payload) {
+				GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);
+				DirectoryPayload payloadPath = *(DirectoryPayload*)payload->Data;
+				if (payloadPath.name != p.name) {
+					GEngine::ThreadPool::AddMainThreadFunction([payloadPath, p]() {
+						GEngine::FileSystem::MoveFile(payloadPath.path, p.path + "/" + payloadPath.name);
+						});
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+	}
+
+	void DirectoryModule::AcceptDirPayloadFolder(const DirectoryPath& p, ImRect* rect)
+	{
+
+		if (ImGui::BeginDragDropTarget()) {
+			const ImGuiPayload* _p = ImGui::GetDragDropPayload();
+			if (_p && strcmp(_p->DataType, "DirectoryPath") == 0) {
+				float availWidth = ImGui::GetContentRegionAvailWidth();
+				float fontSize = ImGui::GetFontSize();
+				ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+				col.w = .25f;
+				ImGui::GetWindowDrawList()->AddRectFilled(rect->Min, rect->Max, ImGui::GetColorU32(col));
+			}
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DirectoryPath");
 			if (payload) {
 				GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);

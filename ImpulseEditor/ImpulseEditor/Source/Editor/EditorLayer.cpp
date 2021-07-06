@@ -38,8 +38,10 @@ namespace Editor {
 		if (!s_singleton)
 			s_singleton = this;
 
+
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.data.name, m_projectData.data.path);
 		reloadModule = new ReloadModule(&m_projectData);
+		reloadModule->Reload();
 		AddModule<MainMenuModule>("MainMenu", true, 0, false, &modules, &m_projectData, reloadModule);
 		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.data.path + "/" + m_projectData.data.name + "/"+m_projectData.data.name+"/"+m_projectData.data.name, &m_projectData.data);
 		AddModule<ConsoleModule>("Console Log", true, 0, true);

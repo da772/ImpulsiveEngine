@@ -212,6 +212,53 @@ namespace Editor {
 					else if ((uint32_t)p.second.type == (uint32_t)refl::store::uproperty_type::_float) {
 						ImGui::InputFloat(p.first.c_str(), &script->GetNativeObject()->GetMember<float>(p.second.name));
 					}
+					else if (p.second.type_name == "GEngine::Entity*") {
+						char buff[255] = { 0 };
+						GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::GameObject*>(p.second.name);
+
+						if (ptr) {
+							memcpy(buff, ptr->GetTag().c_str(), ptr->GetTag().size());
+							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+						}
+						else {
+							memcpy(buff, "nullptr", sizeof("nullptr"));
+							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+						}
+
+						if (ImGui::BeginDragDropTarget()) {
+							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityGameObjectID");
+							if (payload) {
+								GameObjectPayload payloadObj = *(GameObjectPayload*)payload->Data;
+								GEngine::Entity* child = payloadObj.entity;
+
+								script->GetNativeObject()->SetMember<GEngine::Entity*>(p.second.name, child);
+
+							}
+							ImGui::EndDragDropTarget();
+						}
+					}
+					else if (p.second.type_name == "std::string") {
+
+						char buff[2048] = { 0 };
+						std::string s = script->GetNativeObject()->GetMember<std::string&>(p.second.name);
+						memcpy(buff, s.c_str(), s.size());
+						ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+
+						if (ImGui::BeginDragDropTarget()) {
+							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DirectoryPath");
+							if (payload) {
+								DirectoryPayload payloadObj = *(DirectoryPayload*)payload->Data;
+								GE_CORE_DEBUG("IS DIR {0} EXT: {1}", payloadObj.is_directory, payloadObj.ext);
+								if (!payloadObj.is_directory && strcmp(payloadObj.ext ,".png") == 0) {
+									std::string str = payloadObj.path;
+									script->GetNativeObject()->SetMember<std::string>(p.second.name, str);
+
+								}
+								
+							}
+							ImGui::EndDragDropTarget();
+						}
+					}
 					else {
 						ImGui::Text((p.first + " : " + p.second.type_name).c_str());
 					}

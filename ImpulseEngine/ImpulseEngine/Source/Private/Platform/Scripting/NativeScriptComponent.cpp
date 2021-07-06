@@ -69,31 +69,51 @@ namespace GEngine {
 
 	void NativeScriptComponent::ReloadGraphics()
 	{
-        if (m_isValid)
-            m_component->ReloadGraphics();
+		try {
+			if (m_isValid)
+				m_component->ReloadGraphics();
+		}
+		catch (const std::exception& e) {
+			GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
+		}
+        
 	}
 
 
 	void NativeScriptComponent::OnBegin()
 	{
-		if (m_isValid) {
-			m_component->Begin();
+		try {
+			if (m_isValid)
+				m_component->Begin();
+		}
+		catch (const std::exception& e) {
+			GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
 		}
 		m_hasBegun = true;
 	}
 
 	void NativeScriptComponent::OnEnd()
 	{
-        if (m_isValid) {
-            m_component->End();
-        }
+		try {
+			if (m_isValid)
+				m_component->End();
+		}
+		catch (const std::exception& e) {
+			GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
+		}
+            
 		m_hasBegun = false;
 	}
 
 	void NativeScriptComponent::OnUpdate(Timestep timestep)
 	{
-        if (m_isValid)
-            m_component->Update(timestep);
+		try {
+			if (m_isValid)
+				m_component->Update(timestep);
+		}
+		catch (const std::exception& e) {
+			GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
+		}
 	}
 
 }
