@@ -11,7 +11,7 @@
 namespace GEngine {
 
 
-	Entity::Entity(const uint64_t& id, const std::string& s) : GameObject(id)
+	Entity::Entity(const ObjectHash& id, const std::string& s) : GameObject(id)
 	{
 		if (s.size() > 0) go_tag = s;
 		transform = AddComponent<Transform>();
@@ -135,22 +135,22 @@ namespace GEngine {
 		
 	}
 
-	uint64_t Entity::GetNextHash()
+	ObjectHash Entity::GetNextHash()
 	{
 		if (comp_hashes.size() > 0) {
-			uint64_t h = comp_hashes.front();
+			ObjectHash h = comp_hashes.front();
 			comp_hashes.pop_front();
 			return h;
 		}
 		return Factory::NextHash();
 	}
 
-	void Entity::RemoveHash(const uint64_t& h)
+	void Entity::RemoveHash(const ObjectHash& h)
 	{
 		Factory::RemoveHash(h);
 	}
 
-	void Entity::AddHash(const uint64_t& h)
+	void Entity::AddHash(const ObjectHash& h)
 	{
 		comp_hashes.push_front(h);
 	}
@@ -160,8 +160,12 @@ namespace GEngine {
 		//entt::registry& r = SceneManager::GetCurrentScene()->GetRegistry();
 		//r.remove_all((entt::entity)go_hash);
 		for (const auto& c : components) {
+			if (c.second == transform) continue;
 			delete c.second;
 		}
+
+		delete transform;
+		transform = nullptr;
 		components.clear();
 	}
 

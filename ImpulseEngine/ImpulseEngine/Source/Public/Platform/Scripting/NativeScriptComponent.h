@@ -13,6 +13,12 @@ namespace GEngine {
 		void UnloadGraphics() override;
 		void ReloadGraphics() override;
 
+		void LoadClass(const std::string& clazz);
+
+
+
+		std::string GetClass();
+
 		inline constexpr NativeObject* GetNativeObject() { return &m_object; }
 
 	protected:
@@ -24,6 +30,7 @@ namespace GEngine {
 		NativeObject m_object;
 		Component* m_component;
         bool m_isValid = false;
+		bool m_hasBegun = false;
 		std::string m_clazz;
 
 	};

@@ -46,8 +46,8 @@ namespace GEngine {
             void SetLocalScale(const Vector3f& scale);
 
 
-			void AddTransformCallback(uint64_t, std::function<void(Transform*, TransformData)> func);
-			void RemoveTransformCallback(uint64_t c);
+			void AddTransformCallback(ObjectHash, std::function<void(Transform*, TransformData)> func);
+			void RemoveTransformCallback(ObjectHash c);
 
 			void ResetRelativeTransform();
 
@@ -66,7 +66,7 @@ namespace GEngine {
 
             TransformData lastData = {localposition, localrotation, localscale, relativeposition, relativerotation, relativescale};
 
-            std::unordered_map<uint64_t, std::function<void(Transform*, TransformData)>> m_TransformCallback;
+            std::unordered_map<ObjectHash, std::function<void(Transform*, TransformData)>> m_TransformCallback;
 
 
 

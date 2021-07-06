@@ -4,22 +4,6 @@
 
 namespace Project {
 
-	class LocalProject {
-    public:
-        inline LocalProject() {};
-        inline LocalProject(const ProjectData& data, uint32_t platformFlags, uint64_t generateFlags, uint32_t buildFlags) : data(data), platformFlags(platformFlags), generateFlags(generateFlags), buildFlags(buildFlags) {};
-        inline ~LocalProject() {};
-		ProjectData data;
-		uint32_t platformFlags;
-		uint64_t generateFlags;
-		uint32_t buildFlags;
-
-
-		inline bool operator==(const ProjectData& other) {
-			return other.path == this->data.path && other.name == this->data.name;
-		}
-
-	};
 
 	class ProjectSelectLayer : public GEngine::Layer
 	{

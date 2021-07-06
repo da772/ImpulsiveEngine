@@ -13,6 +13,8 @@ namespace GEngine {
 	std::string ScriptApi::dllDir_Native = "";
 	std::function<bool()> ScriptApi::cmdMake_Native = nullptr;
 
+	std::unordered_set<NativeScriptComponent*> ScriptApi::nativeScripts;
+
 	static dllptr lib;
 
     void ScriptApi::_NativeLog(uint8_t i, const std::string& s) {
@@ -166,6 +168,21 @@ namespace GEngine {
 	void ScriptApi::SetRelativePath_Native(const std::string& includeDir)
 	{
 		s_nativeReflector->SetRelativeInclude(includeDir.c_str());
+	}
+
+	void ScriptApi::AddNativeScript(NativeScriptComponent* c)
+	{
+		nativeScripts.insert(c);
+	}
+
+	void ScriptApi::RemoveNativeScript(NativeScriptComponent* c)
+	{
+		nativeScripts.erase(c);
+	}
+
+	const std::unordered_set<NativeScriptComponent*>& ScriptApi::GetNativeScripts()
+	{
+		return nativeScripts;
 	}
 
 }

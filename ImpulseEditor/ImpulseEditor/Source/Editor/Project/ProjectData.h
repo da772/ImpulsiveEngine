@@ -89,4 +89,29 @@ namespace Project {
 
 	};
 
+	class LocalProject {
+	public:
+		inline LocalProject() {};
+		inline LocalProject(const ProjectData& data, uint32_t platformFlags, uint64_t generateFlags, uint32_t buildFlags, std::string s) : data(data), platformFlags(platformFlags), generateFlags(generateFlags), buildFlags(buildFlags) {
+			memcpy(compilerDir, s.data(), std::min(512, (int)s.size()));
+		};
+		inline ~LocalProject() {};
+		ProjectData data;
+		uint32_t platformFlags;
+		uint64_t generateFlags;
+		uint32_t buildFlags;
+		char compilerDir[2048] = { 0 };
+
+
+		inline bool operator==(const ProjectData& other) {
+			return other.path == this->data.path && other.name == this->data.name;
+		}
+
+		inline bool operator==(const LocalProject& other) {
+			return other.data.path == this->data.path && other.data.name == this->data.name;
+		}
+
+	};
+
+
 }

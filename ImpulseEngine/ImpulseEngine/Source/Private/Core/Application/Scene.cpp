@@ -44,7 +44,7 @@ namespace GEngine {
 			Load();
 		b_init = true;
 		OnBegin();
-		for (std::pair<u32, Entity*> e : entities) {
+		for (std::pair<ObjectHash, Entity*> e : entities) {
 			if (!e.second->IsInitialized())
 				e.second->Begin();
 		}
@@ -54,7 +54,7 @@ namespace GEngine {
 	{
 		if (b_init) {
 			OnUpdate(timestep);
-			for (std::pair<u32, Entity*> e : entities) {
+			for (std::pair<ObjectHash, Entity*> e : entities) {
                 if (!e.second) {
                     GE_CORE_ASSERT(false, "ENTITY INVALID");
                     continue;
@@ -68,22 +68,22 @@ namespace GEngine {
 	}
 
 	void Scene::UnloadGraphics() {
-		for (std::pair<u32, Entity*> e : entities) {
+		for (std::pair<ObjectHash, Entity*> e : entities) {
 			e.second->UnloadGraphics();
 		}
 	}
 
 	void Scene::ReloadGraphics() {
-		for (std::pair<u32, Entity*> e : entities) {
+		for (std::pair<ObjectHash, Entity*> e : entities) {
 			e.second->ReloadGraphics();
 		}
 	}
 
 	void Scene::RemoveAllEntities() {
-		for (std::pair<u32, Entity*> e : entities) {
+		for (std::pair<ObjectHash, Entity*> e : entities) {
 			e.second->End();
 		}
-		for (std::pair<u32, Entity*> e : entities) {
+		for (std::pair<ObjectHash, Entity*> e : entities) {
 			delete e.second;
 		}
 	}

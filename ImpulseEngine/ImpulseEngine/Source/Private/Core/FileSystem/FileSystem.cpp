@@ -642,7 +642,6 @@ namespace GEngine {
 	{
 #ifdef GE_CONSOLE_APP
 		NFD_Init();
-
 		nfdchar_t* outPath;
 		nfdresult_t result;
 		nfdchar_t* startPath = NULL;

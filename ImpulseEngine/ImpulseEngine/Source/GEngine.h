@@ -29,6 +29,7 @@
 #include "Public/Platform/Window/Mobile/Mobile_Window.h"
 //#include "Public/Platform/Window/Mobile/Mobile_Interface.h"
 #include "reflection/macros.h"
+#include "reflection/reflection.hpp"
 #include "Public/Core/Util/Random.h"
 
 #include "Public/Core/Application/Components/UI/UIComponent.h"

@@ -10,8 +10,6 @@ namespace GEngine {
 	class Entity;
 
 	class GE_API Component : public GameObject {
-
-
 	public:
 		Component(Entity* e);
 		virtual ~Component();

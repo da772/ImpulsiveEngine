@@ -24,7 +24,7 @@ namespace GEngine {
 		Camera* GetCamera() const;
 		void SetCamera(Camera* _camera);
 		template<typename E = Entity>
-		inline E* CreateEntity(uint64_t entity = 0) {
+		inline E* CreateEntity(ObjectHash entity = ObjectHash()) {
 			if (entity == 0) entity = Factory::NextHash();
 			E* e = new E(entity);
 			entities[entity] = e;
@@ -58,7 +58,7 @@ namespace GEngine {
 		inline virtual bool GetLoaded() { return b_loaded; }
 		inline virtual void SetLoaded(bool bLoaded) {  }
 
-		inline const std::unordered_map<uint64_t, Entity*>& GetEntities() const { return entities; }
+		inline const std::unordered_map<ObjectHash, Entity*>& GetEntities() const { return entities; }
 
 		
 	protected:
@@ -66,7 +66,7 @@ namespace GEngine {
 		Camera* camera;
 		bool b_loaded = false;
 		bool b_init = false;
-		std::unordered_map<uint64_t, Entity*> entities;
+		std::unordered_map<ObjectHash, Entity*> entities;
 		bool b_paused = false;
 
 	private:

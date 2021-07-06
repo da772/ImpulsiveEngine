@@ -12,7 +12,7 @@ namespace GEngine {
 	using NativeStorage = refl::store::storage*;
 	using NativeReflector = refl::reflector*;
 
-    
+    class NativeScriptComponent;
 
 	class GE_API ScriptApi {
     private:
@@ -65,6 +65,10 @@ namespace GEngine {
             ScriptApi::_NativeLog(i, s);
         
         };
+
+        static void AddNativeScript(NativeScriptComponent*);
+        static void RemoveNativeScript(NativeScriptComponent*);
+        static const std::unordered_set<NativeScriptComponent*>& GetNativeScripts() ;
             
 
 	private:
@@ -76,6 +80,7 @@ namespace GEngine {
 		static std::string dirBuild_Native;
 		static std::string nameBuild_Native;
         static void _NativeLog(uint8_t i, const std::string& s);
+        static std::unordered_set<NativeScriptComponent*> nativeScripts;
 
 
 	};

@@ -40,6 +40,7 @@
 
 #if defined(__APPLE__)
 #if defined(GE_CONSOLE_APP)
+#define UNIX_BUILD "make"
 #include <sys/types.h>
 #include <unistd.h>
 #include <libproc.h>
@@ -48,6 +49,7 @@
 #endif
 
 #if defined(__linux__) 
+#define UNIX_BUILD "make"
 #include <unistd.h>
 #include <dlfcn.h>
 #endif
@@ -183,6 +185,7 @@ namespace GEngine {
 		return 0;
 	}
 
+
 	std::string GEngine::Utility::sys::build_proj(const std::string& dir, const std::string& file)
 	{
 		std::string cmd = "";
@@ -204,15 +207,32 @@ namespace GEngine {
 		return Utility::sys::exec_command(cmd);
 	}
 
+	GE_API void Utility::sys::set_ms_build_location(const std::string& dir)
+	{
+		msBuildLocation = dir;
+	}
+
+	std::string Utility::sys::default_msbuild()
+	{
+#ifdef _WIN32
+		return MS_xstr(MS_BUILD_BIN);
+#endif
+#if defined (__linux__) || defined (__APPLE__)
+		return UNIX_BUILD;
+#endif
+	}
+
 	std::string GEngine::Utility::sys::compile_proj(const std::string& dir, const std::string& file) {
 		::std::string cmd = "";
 #ifdef _WIN32
-		std::string _msBin = MS_xstr(MS_BUILD_BIN);
-		_msBin.erase(_msBin.size() - 1);
+		std::string _msBin = msBuildLocation.size() <= 0 ? MS_xstr(MS_BUILD_BIN) : msBuildLocation;
+		if (_msBin[_msBin.size()-1] == '/' || _msBin[_msBin.size()-1] == '\\' || _msBin[_msBin.size()-1] == '"')
+			_msBin.erase(_msBin.size() - 1);
 		cmd += _msBin + "\\MSBuild.exe\" \"" + dir + file + ".vcxproj\" /verbosity:quiet /nologo ";
 #endif
 #if defined (__linux__) || defined (__APPLE__)
-		cmd += "cd " + dir + " && make -s ";
+		std::string _msBin = msBuildLocation.size() <= 0 ? UNIX_BUILD : msBuildLocation;
+		cmd += "cd " + dir + " && "+_msBin+" -s "
 #endif
 #ifdef GE_RELEASE
 #if defined (__linux__) || defined (__APPLE__)
@@ -227,7 +247,7 @@ namespace GEngine {
 		cmd += "config=debug";
 #endif
 #ifdef _WIN32
-		cmd += "/p:Configuration=Dist ";
+		cmd += "/p:Configuration=Debug ";
 #endif
 #elif defined (GE_DIST) 
 

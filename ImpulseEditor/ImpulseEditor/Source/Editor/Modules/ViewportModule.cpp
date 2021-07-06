@@ -2,17 +2,19 @@
 #include "Editor/EditorLayer.h"
 #include "Editor/Events/EditorApplicationEvents.h"
 #include "imgui/imgui_internal.h"
+#include "Editor/Modules/ReloadModule.h"
 
 using namespace GEngine;
 
 namespace Editor {
-	ViewportModule::ViewportModule(const std::string& pipeline) : m_pipeline(pipeline)
+	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule) : m_pipeline(pipeline), m_reloadModule(reloadModule)
 	{
 		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
 		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
 		m_textures["stopButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/stop172x172.png");
 		m_textures["resumeButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/resume172x172.png");
 		m_textures["fastForwardButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/fastForward172x172.png");
+		m_textures["loadingButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/loadingIcon172x172.png");
 	}
 
 	ViewportModule::~ViewportModule()
@@ -100,9 +102,14 @@ namespace Editor {
 		}
 		else {
 			ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f , ImGui::GetCursorPosY() });
-			if (ControlButtons("playButton")) {
-				GEngine::SceneManager::Begin();
-				EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPlayEvent>();
+			if (m_reloadModule->IsReloading()) {
+				ControlButtons("loadingButton");
+			}
+			else {
+				if (ControlButtons("playButton")) {
+					GEngine::SceneManager::Begin();
+					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPlayEvent>();
+				}
 			}
 			
 		}

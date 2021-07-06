@@ -8,9 +8,10 @@
 #include "Modules/MainMenuModule.h"
 #include "Modules/HierarchyModule.h"
 #include "Modules/InspectorModule.h"
+#include "Modules/ReloadModule.h"
+
 
 #include "Shared/ImpulseEditor.h"
-
 #include "Shared/Scene/EditorScene.h"
 
 namespace Editor {
@@ -18,7 +19,7 @@ namespace Editor {
 	EditorLayer* EditorLayer::s_singleton = nullptr;
 	EditorDispatcher EditorLayer::s_dispatcher = EditorDispatcher();
 
-	EditorLayer* EditorLayer::Create(Project::ProjectData* data)
+	EditorLayer* EditorLayer::Create(Project::LocalProject* data)
 	{
 		if (s_singleton) return nullptr;
 		return new EditorLayer("EditorLayer", data);
@@ -32,21 +33,22 @@ namespace Editor {
 		}
 	}
 
-	EditorLayer::EditorLayer(const std::string& name, Project::ProjectData* data) : Layer(name), m_projectData(data)
+	EditorLayer::EditorLayer(const std::string& name, Project::LocalProject* data) : Layer(name), m_projectData(*data)
 	{
 		if (!s_singleton)
 			s_singleton = this;
 
-		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.name, m_projectData.path);
-
-		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.path + "/" + m_projectData.name + "/"+m_projectData.name+"/"+m_projectData.name, &m_projectData);
+		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.data.name, m_projectData.data.path);
+		reloadModule = new ReloadModule(&m_projectData);
+		AddModule<MainMenuModule>("MainMenu", true, 0, false, &modules, &m_projectData, reloadModule);
+		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.data.path + "/" + m_projectData.data.name + "/"+m_projectData.data.name+"/"+m_projectData.data.name, &m_projectData.data);
 		AddModule<ConsoleModule>("Console Log", true, 0, true);
 		AddModule<ProfilerModule>("Profiler", true, 0, true);
-		AddModule<InspectorModule>("Inspector", true, 0, true, &selectedGameObject);
-        AddModule<ViewportModule>("Viewport", true, 0, false, "viewport");
+		AddModule<InspectorModule>("Inspector", true, 0, true, &selectedGameObject, reloadModule);
+        AddModule<ViewportModule>("Viewport", true, 0, false, "viewport", reloadModule);
         AddModule<HierarchyModule>("Hierarchy", true, 0, true, &selectedGameObject);
 		AddModule<DockModule>("Dock", true, 0, false, std::vector < std::pair < std::string, std::string>>());
-		AddModule<MainMenuModule>("MainMenu", true, 0, false, &modules);
+		
 		
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}
@@ -55,7 +57,7 @@ namespace Editor {
 	{
 		if (s_singleton == this)
 			s_singleton = nullptr;
-
+		delete reloadModule;
 		GE_CORE_DEBUG("EDITOR LAYER DESTROYED");
 	}
 
@@ -71,7 +73,7 @@ namespace Editor {
 	void EditorLayer::OnAttach()
 	{
 		GEngine::Application::GetWindow()->MaximizeWindow();
-		GEngine::Application::GetWindow()->SetTitle(m_projectData.name + " - Impulse Editor [EXPERIMENTAL VERSION]");
+		GEngine::Application::GetWindow()->SetTitle(m_projectData.data.name + " - Impulse Editor [EXPERIMENTAL VERSION]");
 		GEngine::SceneManager::AddScene<EditorScene>("EditorScene");
 		GEngine::SceneManager::SetCurrentScene("EditorScene", false);
 
@@ -103,6 +105,7 @@ namespace Editor {
 			if (!d.second.isOpen) continue;
 			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
 		}
+
 		ImGui::PopStyleVar();
 		ImGui::PopFont();
 
@@ -111,6 +114,7 @@ namespace Editor {
 
 	void EditorLayer::OnDraw()
 	{
+
 
 	}
 
@@ -123,6 +127,5 @@ namespace Editor {
 	{
 		return s_singleton;
 	}
-
 
 }

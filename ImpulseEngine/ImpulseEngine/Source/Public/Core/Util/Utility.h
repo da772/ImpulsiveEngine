@@ -32,7 +32,9 @@ namespace GEngine {
 		GE_API std::string GenerateHash(const int len);
 		GE_API void GenerateHash(char* str, const int len);
 		namespace sys {
-
+			static std::string msBuildLocation = "";
+			GE_API void set_ms_build_location(const std::string& dir);
+			GE_API std::string default_msbuild();
 			GE_API std::string exec_command(const std::string& cmd);
 			GE_API std::string build_proj(const std::string& dir, const std::string& file);
 			GE_API std::string compile_proj(const std::string& dir, const std::string& file);

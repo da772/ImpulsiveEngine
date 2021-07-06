@@ -3,6 +3,27 @@
 
 namespace Generation {
 
+#ifdef GE_PLATFORM_WINDOWS
+#define GE_PLATFORM_OS "windows"
+#define GE_PLATFORM_MAKE "vs2019"
+#define GE_CMD_EXTENSION "bat"
+#elif GE_PLATFORM_LINUX
+#define GE_PLATFORM_OS "linux"
+#define GE_PLATFORM_MAKE "gmake2"
+#define GE_CMD_EXTENSION "sh"
+#else
+#define GE_PLATFORM_OS "macosx"
+#define GE_PLATFORM_MAKE "xcode4"
+#define GE_CMD_EXTENSION "command"
+#endif
+
+#if defined(GE_DEBUG)
+#define GE_CONFIG "Debug"
+#elif defined(GE_RELEASE)
+#define GE_CONFIG "Release"
+#endif
+
+
 	enum class GenerationFlags : uint64_t {
 
 		SERVER = 0x01,

@@ -19,7 +19,7 @@ namespace GEngine {
 	class GE_API Entity : public GameObject {
 
 	public:
-		Entity(const uint64_t&, const std::string& s = "");
+		Entity(const ObjectHash&, const std::string& s = "");
 		virtual ~Entity();
 
 		template<class C, typename ... Args>
@@ -34,7 +34,7 @@ namespace GEngine {
 
 
 		template<class C, typename ... Args>
-		inline C* AddComponentHash(const uint64_t& hash, Args&& ... args) {
+		inline C* AddComponentHash(const ObjectHash& hash, Args&& ... args) {
 			AddHash(hash);
 			C* c = new C(this, std::forward<Args>(args)...);
 			components[hash] = c;
@@ -64,7 +64,7 @@ namespace GEngine {
 		void AddChild(Entity* e);
 		void RemoveChild(Entity* e);
 		void SetParent(Entity* e);
-		inline const std::unordered_map<uint64_t, Entity*>& GetChildren() const { return m_Children; }
+		inline const std::unordered_map<ObjectHash, Entity*>& GetChildren() const { return m_Children; }
 		inline Entity* GetParent() const { return m_parent; }
         
         virtual void OnUnloadGraphics() {};
@@ -89,28 +89,30 @@ namespace GEngine {
 		
 		void Destroy();
 
-		uint64_t GetNextHash();
-		void RemoveHash(const uint64_t& h);
-		void AddHash(const uint64_t& h);
+		ObjectHash GetNextHash();
+		void RemoveHash(const ObjectHash& h);
+		void AddHash(const ObjectHash& h);
 
-		inline const std::unordered_map<uint64_t, Component*>& GetComponents() const { return components; }
+		inline const std::unordered_map<ObjectHash, Component*>& GetComponents() const { return components; }
 
 	private:
 		void Clean();
 		bool isParent(Entity* e);
-		std::unordered_map<uint64_t, Entity*> m_Children;
-		Entity* m_parent = nullptr;
+		
+		
 
 
 	protected:
-		std::unordered_map<uint64_t, Component*> components;
+		std::unordered_map<ObjectHash, Component*> components;
+		std::unordered_map<ObjectHash, Entity*> m_Children;
+		Entity* m_parent = nullptr;
 		Transform* transform;
 		inline virtual void OnBegin() {};
 		inline virtual void OnEnd() {}
 		virtual void OnUpdate(Timestep timestep) {};
 		bool bUpdates = true;
 		bool bInit = false;
-		std::list<uint64_t> comp_hashes;
+		std::list<ObjectHash> comp_hashes;
 
 
 

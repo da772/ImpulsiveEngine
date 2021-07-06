@@ -6,7 +6,7 @@ namespace Editor {
 
 	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
 
-	HierarchyModule::HierarchyModule(uint64_t* selectedGameObject) : m_selectedObject(selectedGameObject)
+	HierarchyModule::HierarchyModule(GEngine::ObjectHash* selectedGameObject) : m_selectedObject(selectedGameObject)
 	{
 		m_textures["scene"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeStacked172x172.png");
 		m_textures["gameObjectChildren"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeStacked172x172.png");
@@ -21,7 +21,7 @@ namespace Editor {
 	void HierarchyModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
 
-		std::unordered_map<uint64_t, GEngine::Entity*> entities;
+		std::unordered_map<GEngine::ObjectHash, GEngine::Entity*> entities;
 		ImGui::Begin(name.c_str(), is_open, flags | ImGuiWindowFlags_HorizontalScrollbar);
 
 		GEngine::Scene* scene = GEngine::SceneManager::GetCurrentScene();
@@ -43,7 +43,7 @@ namespace Editor {
 		if (ImGui::TreeNodeEx("##Scene", ImGuiTreeNodeFlags_OpenOnArrow | fl | ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize });
+			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootWindow);
 			ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, isHovering ? ImGui::GetColorU32(col) : ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 
 			if (hasChildren) {
@@ -65,7 +65,7 @@ namespace Editor {
 		else {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize });
+			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootWindow);
 			ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, isHovering ? ImGui::GetColorU32(col) : ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 
 			if (hasChildren)
@@ -83,7 +83,7 @@ namespace Editor {
 		ImGui::End();
 	}
 
-	void HierarchyModule::AddEntity(const std::pair<uint64_t, GEngine::Entity*>& e, std::unordered_map<uint64_t, GEngine::Entity*>& entities)
+	void HierarchyModule::AddEntity(const std::pair<GEngine::ObjectHash, GEngine::Entity*>& e, std::unordered_map<GEngine::ObjectHash, GEngine::Entity*>& entities)
 	{
 		float fontSize = ImGui::GetFontSize();
 		float availWidth = ImGui::GetContentRegionAvailWidth();
@@ -92,10 +92,10 @@ namespace Editor {
 		float offset = !hasChildren ? 0 : ImGui::GetTreeNodeToLabelSpacing();
 
 		ImGuiTreeNodeFlags fl = *m_selectedObject == e.first ? ImGuiTreeNodeFlags_Selected : 0;
-		if (ImGui::TreeNodeEx(("##" + std::to_string(e.first)).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
+		if (ImGui::TreeNodeEx(("##" + e.first.ToString()).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize });
+			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootWindow);
 			ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, isHovering ? ImGui::GetColorU32(col) : ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 
 			if (hasChildren) {
@@ -110,15 +110,24 @@ namespace Editor {
 			ImGui::SameLine();
 			ImGui::Text(e.second->GetTag().c_str());
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-
-				GameObjectPayload payload = { e.second};
+				GameObjectPayload payload = { e.second };
 				ImGui::SetDragDropPayload("GameObjectID", (void*)&payload, sizeof(GameObjectPayload));
 				ImGui::Image((ImTextureID)(ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 				ImGui::SameLine();
 				ImGui::Text(e.second->GetTag().c_str());
+				ImGui::SameLine();
+				ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+				ImGui::Text(("(" + e.first.ToString() + ")").c_str());
+				ImGui::PopStyleColor();
 				ImGui::EndDragDropSource();
 			}
 			AcceptPayload(e);
+
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+			ImGui::Text(("(" + e.first.ToString() + ")").c_str());
+			ImGui::PopStyleColor();
+			
 			if (hasChildren) {
 				for (const auto& p : e.second->GetChildren()) {
 					AddEntity(p, entities);
@@ -130,7 +139,7 @@ namespace Editor {
 		else {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize });
+			bool isHovering = ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootWindow);
 			ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, isHovering ? ImGui::GetColorU32(col) : ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 			
 			if (hasChildren)
@@ -149,17 +158,25 @@ namespace Editor {
 				ImGui::Image((ImTextureID)(ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 				ImGui::SameLine();
 				ImGui::Text(e.second->GetTag().c_str());
+				ImGui::SameLine();
+				ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+				ImGui::Text(("(" + e.first.ToString() + ")").c_str());
+				ImGui::PopStyleColor();
 				ImGui::EndDragDropSource();
 			}
+
 			AcceptPayload(e);
+
+			ImGui::SameLine();
+			ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+			ImGui::Text(("(" + e.first.ToString() + ")").c_str());
+			ImGui::PopStyleColor();
+
 		}
-
-		
-
 
 	}
 
-	void HierarchyModule::AcceptPayload(const std::pair<uint64_t, GEngine::Entity*>& e)
+	void HierarchyModule::AcceptPayload(const std::pair<GEngine::ObjectHash, GEngine::Entity*>& e)
 	{
 		if (ImGui::BeginDragDropTarget()) {
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GameObjectID");

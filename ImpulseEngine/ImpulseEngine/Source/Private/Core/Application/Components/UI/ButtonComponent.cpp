@@ -87,7 +87,10 @@ namespace GEngine {
 
 	ButtonComponent::~ButtonComponent()
 	{
-
+		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
+		for (int i = 0; i < m_debug; i++) {
+			s_ShapeFactory->RemoveShape(m_ids[i]);
+		}
 	}
 
 	void ButtonComponent::SetImageSubTexture(Ref<SubTexture2D> texture)
@@ -198,12 +201,8 @@ namespace GEngine {
 
 	void ButtonComponent::OnEnd()
 	{
-		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
 		CollisionDetection::RemoveCollider(m_collider);
 		delete m_collider;
-		for (int i = 0; i < m_debug; i++) {
-			s_ShapeFactory->RemoveShape(m_ids[i]);
-		}
 	}
 
 	void ButtonComponent::OnUpdate(Timestep timestep)

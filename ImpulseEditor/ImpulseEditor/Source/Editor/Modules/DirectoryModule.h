@@ -94,6 +94,7 @@ namespace Editor {
 
 		DirectoryPath m_rightClicked;
 
+		float dirWindowWidth = 1;
 		
 		int depth = 0;
 		int lastDepth = 0;

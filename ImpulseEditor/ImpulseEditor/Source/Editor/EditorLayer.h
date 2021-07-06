@@ -5,13 +5,15 @@
 #include "Modules/EditorModule.h"
 #include "Events/EditorEvents.h"
 
-
 namespace Editor {
+
+
+	class ReloadModule;
 
 	class EditorLayer : public GEngine::Layer {
 
 	public:
-		static EditorLayer* Create(Project::ProjectData* data);
+		static EditorLayer* Create(Project::LocalProject* data);
 		static void Destroy();
 		virtual ~EditorLayer();
 
@@ -37,16 +39,17 @@ namespace Editor {
 
 		static inline EditorDispatcher* GetDispatcher() { return &s_dispatcher; }
 		static EditorLayer* GetEditor();
+
 	private:
 		static EditorDispatcher s_dispatcher;
 		std::unordered_map<std::string, EditorModuleData> modules;
 
 	private:
-		Project::ProjectData m_projectData;
-		EditorLayer(const std::string& name, Project::ProjectData* data);
+		Project::LocalProject m_projectData;
+		EditorLayer(const std::string& name, Project::LocalProject* data);
 		static EditorLayer* s_singleton;
-		uint64_t selectedGameObject = 0;
-
+		GEngine::ObjectHash selectedGameObject;
+		ReloadModule* reloadModule;
 
 	};
 

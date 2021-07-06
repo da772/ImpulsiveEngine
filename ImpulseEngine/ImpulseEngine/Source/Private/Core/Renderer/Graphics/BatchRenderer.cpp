@@ -650,7 +650,7 @@ namespace GEngine {
 		 Ref<Batch> batch = m_Batches[batchCount];
 		 for (int i = 0; i < m_SortedObjects.size(); i++) {
 
-			 std::vector<int>::iterator it = std::find(textures.begin(), textures.end(), m_SortedObjects[i].second.texture->GetRendererID());
+			 std::vector<int>::iterator it = std::find(textures.begin(), textures.end(), !m_SortedObjects[i].second.texture ? m_BlankTexture->GetRendererID()  : m_SortedObjects[i].second.texture->GetRendererID());
 			 if  (objectCount +1 < m_MaxShapes && (textures.size() < m_MaxTextures || it != textures.end())) {
 				 std::pair<uint64_t, BatchObjectData>& data = m_SortedObjects[i];
 				 if (objectCount == 0) {

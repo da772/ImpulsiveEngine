@@ -104,12 +104,12 @@ namespace GEngine {
 		BroadcastTransform();
 	}
 
-	void Transform::AddTransformCallback(uint64_t id, std::function<void(Transform*, TransformData)> func)
+	void Transform::AddTransformCallback(ObjectHash id, std::function<void(Transform*, TransformData)> func)
 	{
 		m_TransformCallback[id] = func;
 	}
 
-	void Transform::RemoveTransformCallback(uint64_t c)
+	void Transform::RemoveTransformCallback(ObjectHash c)
 	{
 		m_TransformCallback.erase(c);
 	}

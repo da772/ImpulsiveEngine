@@ -8,19 +8,6 @@
 #include "imgui/imgui_internal.h"
 #endif
 
-#ifdef GE_PLATFORM_WINDOWS
-#define GE_PLATFORM_OS "windows"
-#define GE_PLATFORM_MAKE "vs2019"
-#define GE_CMD_EXTENSION "bat"
-#elif GE_PLATFORM_LINUX
-#define GE_PLATFORM_OS "linux"
-#define GE_PLATFORM_MAKE "gmake2"
-#define GE_CMD_EXTENSION "sh"
-#else
-#define GE_PLATFORM_OS "macosx"
-#define GE_PLATFORM_MAKE "xcode4"
-#define GE_CMD_EXTENSION "command"
-#endif
 
 
 namespace Project {
@@ -315,6 +302,7 @@ namespace Project {
 				stream.write((const char*)&proj.generateFlags, sizeof(proj.generateFlags));
 				stream.write((const char*)&proj.buildFlags, sizeof(proj.buildFlags));
 				stream.write((const char*)&proj.platformFlags, sizeof(proj.platformFlags));
+				stream.write((const char*)proj.compilerDir, sizeof(proj.compilerDir));
 				memset(path, 0, 1008 * sizeof(char));
 			}
 			stream.close();
@@ -340,6 +328,7 @@ namespace Project {
 				stream.read((char*)&proj.generateFlags, sizeof(proj.generateFlags));
 				stream.read((char*)&proj.buildFlags, sizeof(proj.buildFlags));
 				stream.read((char*)&proj.platformFlags, sizeof(proj.platformFlags));
+				stream.read((char*)proj.compilerDir, sizeof(proj.compilerDir));
 				std::ifstream in(path, std::ios::in | std::ios::binary);
 				in >> proj.data;
 				in.close();
@@ -428,7 +417,7 @@ namespace Project {
 					m_generateFlags = Generation::GenerateProject::GetDefaultGenerationFlags(static_cast<Generation::PlatformFlags>(m_generatePlatform));
 					m_generateBuild = (uint32_t)Generation::GenerateProject::GetDefaultProjectType(static_cast<Generation::PlatformFlags>(m_generatePlatform));
                     
-					m_projectData.push_back({ ProjectData(m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, (uint32_t)m_newProjectLanguage), m_generatePlatform,m_generateFlags,m_generateBuild });
+					m_projectData.push_back({ ProjectData(m_newProjectName, nullptr, m_newProjectLocation, time, (uint64_t)_t, (uint32_t)m_newProjectLanguage), m_generatePlatform,m_generateFlags,m_generateBuild,  GEngine::Utility::sys::default_msbuild() });
 					Sort(m_sortType);
 					Search();
 					selectedProject = m_newProjectLocation + "/" + m_newProjectName;
@@ -611,7 +600,7 @@ namespace Project {
 		}
 #endif
 
-		Editor::EditorLayer* layer = Editor::EditorLayer::Create(&proj->data);
+		Editor::EditorLayer* layer = Editor::EditorLayer::Create(proj);
 		if (layer) {
 			GEngine::Application::GetApp()->PushLayer(layer);
 			GEngine::Application::GetApp()->PopLayer(this);
@@ -633,7 +622,7 @@ namespace Project {
 			if (test) {
 				test.close();
 				if (std::find(m_projectData.begin(), m_projectData.end(), pData) == m_projectData.end()) {
-					m_projectData.push_back(LocalProject( pData, 1,0,0 ));
+					m_projectData.push_back(LocalProject( pData, 1,0,0, GEngine::Utility::sys::default_msbuild() ));
 					Search();
 					Sort(0);
 				}

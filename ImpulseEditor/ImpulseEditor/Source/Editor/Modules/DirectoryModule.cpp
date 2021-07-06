@@ -31,6 +31,9 @@ namespace Editor {
 		// Dock flags
 		if (ImGui::GetWindowDockNode())
 			ImGui::GetWindowDockNode()->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
+
+		dirWindowWidth = ImGui::GetWindowWidth();
+
 		ImGui::End();
 
 
@@ -41,7 +44,7 @@ namespace Editor {
         float height = ImGui::GetContentRegionAvail().y;
         ImGui::BeginChild("Resizeable", {5, 0}, 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::GetWindowDrawList()->AddRectFilled({pos.x, pos.y}, {pos.x+5, pos.y+height}, IM_COL32(125,125,125,125));
-        if (ImGui::IsMouseHoveringRect({pos.x, pos.y}, {pos.x+5, pos.y+height})) {
+        if (ImGui::IsMouseHoveringRect({pos.x, pos.y}, {pos.x+5, pos.y+height}) && ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows)) {
             ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
             if (ImGui::IsMouseDown(0)) {
                 isDragging = true;
@@ -57,7 +60,7 @@ namespace Editor {
             float xDist = xPos - lastX;
             if (xDist != 0) {
                 
-                xDist /= (float)GEngine::Application::GetWindowWidth();
+				xDist /= dirWindowWidth;
                 
                 dropDownPanelWidth += xDist;
                 
@@ -317,7 +320,7 @@ namespace Editor {
 			ImGui::BeginChild(p.path.c_str(), { ImGui::GetContentRegionAvailWidth(), imageSize + textSize.y + lineHeight } , false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 			float availWidth = ImGui::GetContentRegionAvailWidth();
 			
-			bool isMouseOver = ImGui::IsMouseHoveringRect({ pos.x, pos.y }, { pos.x + availWidth, pos.y + +imageSize + textSize.y + lineHeight / 2 });
+			bool isMouseOver = ImGui::IsMouseHoveringRect({ pos.x, pos.y }, { pos.x + availWidth, pos.y + +imageSize + textSize.y + lineHeight / 2 }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows);
 			if (isMouseOver)
 				isFileHovered = isMouseOver; 
 			if (m_selectedEntry == p.path || isMouseOver) {
@@ -386,6 +389,8 @@ namespace Editor {
 					rename = false;
 					GEngine::FileSystem::MoveFile(p.path, newPath);
 				}
+				if (!ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))
+					ImGui::SetKeyboardFocusHere(0);
 			}
 			else {
 				for (int i = 0; i < p.name.size(); i++) {
@@ -488,7 +493,7 @@ namespace Editor {
 		if (ImGui::TreeNodeEx(("##" + d.name).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			if (ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize })) {
+			if (ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows)) {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
 				if (!d.is_empty)
 					RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize * 1.75f) / 2.f - (fontSize * 0.40f * .75f), pos.y + (fontSize * 0.40f * .75f) / 2.f }, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Down, .75f);
@@ -510,7 +515,7 @@ namespace Editor {
 		else {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
-			if (ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize })) {
+			if (ImGui::IsMouseHoveringRect({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }) && ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows)) {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
 				if (!d.is_empty)
 					RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize*1.75f)/2.f- (fontSize * 0.40f * .85f), pos.y+ (fontSize * 0.40f * .85f)/2.f}, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Right, .75f);

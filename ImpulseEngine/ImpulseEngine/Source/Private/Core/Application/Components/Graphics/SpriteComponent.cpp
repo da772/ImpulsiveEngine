@@ -39,6 +39,26 @@ namespace GEngine {
 			
 		}
 		m_shapeFactory = s_ShapeFactory;
+		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
+			if (IsInitialized()) {
+				for (ShapeID id : m_ids) {
+					Vector3f pos = m_shapeFactory->GetShapePosition(id);
+					Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
+					if (pos != nPos)
+						m_shapeFactory->SetPosition(id, nPos.xy());
+					float rot = m_shapeFactory->GetShapeRotation(id);
+					float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
+					if (rot != nRot)
+						m_shapeFactory->SetRotation(id, nRot);
+					Vector2f _scale = m_shapeFactory->GetShapeScale(id);
+					Vector3f scale(_scale.x, _scale.y, transform->GetWorldScale().z);
+					Vector3f nScale = scale / transData.GetWorldScale();
+					if (scale != nScale * transform->GetWorldScale().xy()) {
+						m_shapeFactory->SetScale(id, transform->GetWorldScale().xy() * nScale.xy());
+					}
+				}
+			}
+			});
 	}
 
 	void SpriteComponent::ReloadGraphics() {
@@ -55,8 +75,8 @@ namespace GEngine {
 
 	SpriteComponent::~SpriteComponent()
 	{
-
-		
+		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
+		ClearQuads();
 	}
 
 	const ShapeID SpriteComponent::CreateQuad(const Vector3f& _pos, const float rotation, const Vector3f& scale, const Vector4f& _color,
@@ -140,33 +160,13 @@ namespace GEngine {
 
 	void SpriteComponent::OnBegin()
 	{
-		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
-			if (IsInitialized()) {
-				for (ShapeID id : m_ids) {
-					Vector3f pos = m_shapeFactory->GetShapePosition(id);
-					Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
-					if (pos != nPos)
-						m_shapeFactory->SetPosition(id, nPos.xy());
-					float rot = m_shapeFactory->GetShapeRotation(id);
-					float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
-					if (rot != nRot)
-						m_shapeFactory->SetRotation(id, nRot);
-					Vector2f _scale = m_shapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, transform->GetWorldScale().z);
-					Vector3f nScale = scale / transData.GetWorldScale();
-					if (scale != nScale * transform->GetWorldScale().xy()) {
-						m_shapeFactory->SetScale(id, transform->GetWorldScale().xy() * nScale.xy());
-					}
-				}
-			}
-			});
+	
 		
 	}
 
 	void SpriteComponent::OnEnd()
 	{
-		m_entity->GetTransform()->RemoveTransformCallback(GetHash());
-		ClearQuads();
+	
 	}
 
 
