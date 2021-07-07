@@ -22,7 +22,6 @@ namespace Editor {
 		ImGui::Begin(name.c_str(), is_open, flags);
         // TODO: optimize direcroties
 		
-		//Filterbar();
 		DropDownViewPanel();
 		ImGui::SameLine();
         ResizePanel();
@@ -136,10 +135,9 @@ namespace Editor {
 				}
 				if (ImGui::Button("Show", { ImGui::GetContentRegionAvailWidth(), 0 })) {
 #ifdef GE_PLATFORM_WINDOWS
-					std::string cmd = "explorer /select,\"" + m_currentEntry.path().generic_string();
-					std::replace(cmd.begin() + 15, cmd.end(), '/', '\\');
+					std::string cmd = "explorer \"" + m_currentEntry.path().generic_string()+"\"";
+					std::replace(cmd.begin(), cmd.end(), '/', '\\');
 					GEngine::Utility::sys::exec_command(cmd);
-
 #endif
 #ifdef GE_PLATFORM_LINUX
 					GEngine::Utility::sys::exec_command("xdg-open " + m_currentEntry.path().generic_string());
@@ -184,7 +182,7 @@ namespace Editor {
 		ImGui::InputText("##FilterInput", filterBuffer, 255);
 		ImGui::PopItemWidth();
 		ImGui::PopStyleVar();
-		ImGui::SameLine();
+		ImGui::SameLine(0,0);
 		ImGui::SetCursorPos({ ImGui::GetCursorPosX()-30.f, ImGui::GetCursorPosY() + 5.f });
 		ImGui::Image((ImTextureID)m_textures["searchIcon"]->GetRendererID(), { ImGui::GetTextLineHeight() * .85f, ImGui::GetTextLineHeight() * .85f }, { 0,1 }, { 1,0 });
 		ImGui::EndChild();
@@ -235,8 +233,11 @@ namespace Editor {
 				ImGui::PopStyleColor();
 			}
 		}
-
 		ImGui::GetWindowDrawList()->AddLine({ startPos.x, ImGui::GetCursorScreenPos().y }, { startPos.x + width, ImGui::GetCursorScreenPos().y }, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Border)));
+		if (width > 610) {
+			ImGui::SameLine();
+			Filterbar();
+		}
 		}
 		ImGui::EndChild();
 
