@@ -188,6 +188,7 @@ namespace Editor {
 			if (ImGui::BeginCombo("##scriptSelect", str.c_str())) {
 
 				for (const auto& p : map) {
+					if (std::find(p.second.parent_list.begin(), p.second.parent_list.end(), "GEngine::Component") == p.second.parent_list.end()) continue;
 					if (ImGui::Selectable(p.first.c_str())) {
 						nativeScriptComponentClass = p.first;
 					}
@@ -203,6 +204,7 @@ namespace Editor {
 				}
 			}
 			else {
+				
 				const auto& params = map.at(clazz).property_map;
 				for (const auto& p : params) {
 					
@@ -263,6 +265,12 @@ namespace Editor {
 						ImGui::Text((p.first + " : " + p.second.type_name).c_str());
 					}
 
+				}
+
+				const auto& parents = map.at(clazz).parent_list;
+				ImGui::Text("Parents");
+				for (const std::string& p : parents) {
+					ImGui::Text(p.c_str());
 				}
 			}
 			

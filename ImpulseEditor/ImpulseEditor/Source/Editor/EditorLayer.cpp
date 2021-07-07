@@ -38,7 +38,6 @@ namespace Editor {
 		if (!s_singleton)
 			s_singleton = this;
 
-
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.data.name, m_projectData.data.path);
 		reloadModule = new ReloadModule(&m_projectData);
 		reloadModule->Reload();
@@ -50,7 +49,6 @@ namespace Editor {
         AddModule<ViewportModule>("Viewport", true, 0, false, "viewport", reloadModule);
         AddModule<HierarchyModule>("Hierarchy", true, 0, true, &selectedGameObject);
 		AddModule<DockModule>("Dock", true, 0, false, std::vector < std::pair < std::string, std::string>>());
-		
 		
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}

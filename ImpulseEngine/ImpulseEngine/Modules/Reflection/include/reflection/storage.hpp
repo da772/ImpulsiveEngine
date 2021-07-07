@@ -16,8 +16,8 @@ namespace refl {
         }
             
         enum class uproperty_type : uint32_t {
-            NONE = 0, uclass, uclass_ptr, _ptr, _void, _bool, _char, _uchar, _int, _int8_t, _int16_t, _int32_t, _int64_t, _uint, _uint8_t,
-            _uint16_t, _uint32_t, _uint64_t, constructor, uclass_ref, _float, _double
+            NONE = 0, uclass, uclass_ptr, _void, _bool, _char, _uchar, _ptr,_int, _int8_t, _int16_t, _int32_t, _int64_t,  _uint, _uint8_t,
+            _uint16_t, _uint32_t, _uint64_t, _float, _double, constructor, uclass_ref
         };
 
         namespace impl {
@@ -26,7 +26,8 @@ namespace refl {
             {"void*", uproperty_type::_ptr}, {"int8_t", uproperty_type::_int8_t}, 
             {"int16_t", uproperty_type::_int16_t},{"int32_t", uproperty_type::_int32_t}, {"int64_t", uproperty_type::_int64_t},
             {"uint8_t", uproperty_type::_uint8_t}, {"uint16_t", uproperty_type::_uint16_t},{"uint32_t", uproperty_type::_uint32_t},
-            {"uint64_t", uproperty_type::_uint64_t}, {"bool", uproperty_type::_bool}, {"float", uproperty_type::_float}, {"void",uproperty_type::_void }, {"constructor", uproperty_type::constructor} };
+            {"uint64_t", uproperty_type::_uint64_t}, {"bool", uproperty_type::_bool}, {"void",uproperty_type::_void }, {"constructor", uproperty_type::constructor},
+            {"float", uproperty_type::_float}, {"double", uproperty_type::_double}};
         }
 
         inline uint32_t GetTypeInt(const std::string& s) {
@@ -59,6 +60,7 @@ namespace refl {
             std::string name;
             std::unordered_map<std::string, uproperty_struct> property_map;
             std::unordered_map<std::string, ufunction_struct> function_map;
+            std::vector<std::string> parent_list;
         };
 
         class storage {

@@ -367,7 +367,10 @@ namespace GEngine {
 			&siStartInfo,  // STARTUPINFO pointer 
 			&piProcInfo);  // receives PROCESS_INFORMATION
 
-		DWORD d = WaitForSingleObject(piProcInfo.hProcess, INFINITE);
+		for (int i = 0; i < 5; i++) {
+			DWORD d = WaitForSingleObject(piProcInfo.hProcess, 5000);
+			if (d != WAIT_TIMEOUT) break;
+		}
 
 		CloseHandle(_ERR_WR);
 		CloseHandle(_OUT_WR);
@@ -385,11 +388,11 @@ namespace GEngine {
 #ifdef _WIN32
 	std::string GEngine::Utility::sys::ReadFromPipe(HANDLE err_RD, HANDLE out_RD) {
 		DWORD dwRead;
-		CHAR* chBuf = (CHAR*)calloc(2048, sizeof(CHAR));
+		CHAR* chBuf = (CHAR*)calloc(20000, sizeof(CHAR));
 		bool bSuccess = FALSE;
 		std::string out = "", err = "";
 		for (;;) {
-			bSuccess = ReadFile(out_RD, chBuf, 2048, &dwRead, NULL);
+			bSuccess = ReadFile(out_RD, chBuf, 20000, &dwRead, NULL);
 			if (!bSuccess || dwRead == 0) break;
 
 			std::string s(chBuf, dwRead);
@@ -397,7 +400,7 @@ namespace GEngine {
 		}
 		dwRead = 0;
 		for (;;) {
-			bSuccess = ReadFile(err_RD, chBuf, 2048, &dwRead, NULL);
+			bSuccess = ReadFile(err_RD, chBuf, 20000, &dwRead, NULL);
 			if (!bSuccess || dwRead == 0) break;
 
 			std::string s(chBuf, dwRead);
@@ -486,6 +489,6 @@ namespace GEngine {
 		std::stringstream buffer;
 		buffer << t.rdbuf();
 		GE_CORE_INFO("Native Generate: {0}", in);
-		r.Generate(in.c_str());
+		r.LoadClasses(in.c_str());
 	}
 }

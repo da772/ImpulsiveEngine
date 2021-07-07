@@ -42,7 +42,7 @@ namespace GEngine {
 
 	void ScriptApi::Generate_Native(const std::string& file)
 	{
-		s_nativeReflector->Generate(file.c_str());
+		s_nativeReflector->LoadClasses(file.c_str());
 	}
 
 	bool ScriptApi::Load(const std::string& path, const std::string& extension)
@@ -71,6 +71,7 @@ namespace GEngine {
 				Utility::__GenerateLib(path, p.path().stem().string() + ".h", *s_nativeReflector);
 			}
 		}
+		s_nativeReflector->GenerateClasses();
 #endif
 #if 1
 		uint64_t ms = Time::GetEpochTimeMS();

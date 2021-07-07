@@ -1,7 +1,6 @@
 #pragma once
 #include "error.hpp"
 #include "storage.hpp"
-#include "generation.hpp"
 #include "generate.hpp"
 
 #if defined(_MSC_VER)
@@ -13,7 +12,6 @@
     #define __REFLECTION__EXPORT__ extern "C" __attribute__((visibility("default")))
     #define __REFLECTION__IMPORT__ extern "C"
 #else
-    //  do nothing and hope for the best?
     #define __REFLECTION__EXPORT__
     #define __REFLECTION__IMPORT__
 #endif
@@ -54,9 +52,16 @@ namespace refl {
 				return __GetMember<T>(name);
 			}
 
-			template<typename T>
+			template <typename T, typename std::enable_if<!std::is_same<T, uClass>::value>::type* = nullptr>
 			inline typename std::conditional<std::is_pointer<T>::value, T, typename std::remove_reference<T>::type&>::type GetMember(const std::string& name) {
 				return _GetMember<T>(name);
+			}
+
+			template <typename T, typename std::enable_if<std::is_same<T, uClass>::value>::type* = nullptr>
+			inline uClass GetMember(const std::string& name) {
+				const std::unordered_map<std::string, refl::store::uobject_struct>& map = store->get_map();
+				uintptr_t o = map.at(clazz).property_map.at(name).offset;
+				return uClass((void*)((uint8_t*)ptr + o), map.at(clazz).property_map.at(name).type_name, this->ref);
 			}
 
 			template<typename T>
@@ -143,7 +148,10 @@ namespace refl {
 				}
 				return;
 			}
-			inline void* data() const {return ptr;}
+			inline void* data() const { return ptr; }
+			template<typename T>
+			inline T data_as() const { return *(T*)ptr; }
+
 			inline uClass& operator=(uClass&& other) {
 				this->clazz = other.clazz;
 				this->destroy = other.destroy;
@@ -167,7 +175,8 @@ namespace refl {
 		public:
 			inline reflector() : err(), gen(&err), st(&err) {}
 			inline ~reflector() { }
-			inline void Generate(const char* in){ gen.generate(in);}
+			inline void LoadClasses(const char* in){ gen.load_classes(in);}
+			inline void GenerateClasses() { gen.generate_files(); }
 			inline void Clear(){ gen.clear();}
 			inline void SetErrorCallback(void(*f)(const char*)) { err.setErrorCallback(f); }			
 			inline bool HasError() const { return err.HasError(); }
