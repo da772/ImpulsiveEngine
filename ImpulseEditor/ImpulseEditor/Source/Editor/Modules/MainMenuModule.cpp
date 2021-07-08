@@ -45,6 +45,15 @@ namespace Editor {
 		}
 
 		if (ImGui::BeginMenu("Edit")) {
+			if (ImGui::MenuItem("Copy", "CTRL-C", nullptr)) {
+			
+			}
+			if (ImGui::MenuItem("Cut", "CTRL-X", nullptr)) {
+
+			}
+			if (ImGui::MenuItem("Paste", "CTRL-V", nullptr)) {
+
+			}
 			ImGui::EndMenu();
 		}
 
@@ -53,6 +62,12 @@ namespace Editor {
 			
 			if (ImGui::MenuItem("Reload Native Scripts", 0, nullptr, m_reloadModule->CanReload())) {
 				m_reloadModule->Reload();
+			}
+
+			if (m_reloadModule->IsReloading()) {
+				if (ImGui::MenuItem("Cancel Build", 0, nullptr)) {
+					GEngine::Utility::sys::SetForceKillChild(true);
+				}
 			}
 
 			if (ImGui::MenuItem("Build Settings", 0, nullptr, true)) {

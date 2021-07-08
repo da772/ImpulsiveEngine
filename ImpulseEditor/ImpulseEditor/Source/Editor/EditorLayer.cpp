@@ -41,14 +41,14 @@ namespace Editor {
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.data.name, m_projectData.data.path);
 		reloadModule = new ReloadModule(&m_projectData);
 		reloadModule->Reload();
-		AddModule<MainMenuModule>("MainMenu", true, 0, false, &modules, &m_projectData, reloadModule);
-		AddModule<DirectoryModule>("Content Browser", true, 0, true, m_projectData.data.path + "/" + m_projectData.data.name + "/"+m_projectData.data.name+"/"+m_projectData.data.name, &m_projectData.data);
-		AddModule<ConsoleModule>("Console Log", true, 0, true);
-		AddModule<ProfilerModule>("Profiler", true, 0, true);
-		AddModule<InspectorModule>("Inspector", true, 0, true, &selectedGameObject, reloadModule);
-        AddModule<ViewportModule>("Viewport", true, 0, false, "viewport", reloadModule);
-        AddModule<HierarchyModule>("Hierarchy", true, 0, true, &selectedGameObject);
-		AddModule<DockModule>("Dock", true, 0, false, std::vector < std::pair < std::string, std::string>>());
+		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule);
+		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/"+m_projectData.data.name+"/"+m_projectData.data.name, &m_projectData.data);
+		AddModule<ConsoleModule>("Console Log", true, ImGuiWindowFlags_AlwaysAutoResize, true);
+		AddModule<ProfilerModule>("Profiler", true, ImGuiWindowFlags_AlwaysAutoResize, true);
+		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
+        AddModule<ViewportModule>("Viewport", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule);
+        AddModule<HierarchyModule>("Hierarchy", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject);
+		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
 		
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}
@@ -63,7 +63,6 @@ namespace Editor {
 
 	void EditorLayer::Begin()
 	{
-		
 	
 
 

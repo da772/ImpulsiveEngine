@@ -4,8 +4,12 @@
 
 namespace Editor {
 
-	struct GameObjectPayload {
+	struct EntityPayload {
 		GEngine::Entity* entity = nullptr;
+	};
+
+	struct ComponentPayload {
+		GEngine::Component* component = nullptr;
 	};
 
 	struct DirectoryPath {
@@ -26,6 +30,10 @@ namespace Editor {
 			return other.path != path;
 		}
 
+	};
+
+	struct IterativeDirectoryPath : public DirectoryPath {
+		std::vector<IterativeDirectoryPath> children = {};
 	};
 
 	struct DirectoryPayload {

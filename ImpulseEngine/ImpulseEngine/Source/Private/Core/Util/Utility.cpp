@@ -61,6 +61,7 @@ static bool _renameDLL = false;
 
 
 
+
 namespace GEngine {
 
 	std::string Utility::IPV4ToString(uint32_t ip)
@@ -207,6 +208,11 @@ namespace GEngine {
 		return Utility::sys::exec_command(cmd);
 	}
 
+	GE_API void Utility::sys::SetForceKillChild(bool b)
+	{
+		forceKillChild = b;
+	}
+
 	GE_API void Utility::sys::set_ms_build_location(const std::string& dir)
 	{
 		msBuildLocation = dir;
@@ -232,7 +238,7 @@ namespace GEngine {
 #endif
 #if defined (__linux__) || defined (__APPLE__)
 		std::string _msBin = msBuildLocation.size() <= 0 ? UNIX_BUILD : msBuildLocation;
-		cmd += "cd " + dir + " && "+_msBin+" -s "
+		cmd += "cd " + dir + " && " + _msBin + " -s ";
 #endif
 #ifdef GE_RELEASE
 #if defined (__linux__) || defined (__APPLE__)
@@ -330,6 +336,10 @@ namespace GEngine {
 		}
 
 		PROCESS_INFORMATION info = Utility::sys::CreateChildProcess(cmd, err_WR, out_WR);
+		if (forceKillChild) {
+			forceKillChild = false;
+			return "error: Process force killed";
+		}
 		output = Utility::sys::ReadFromPipe(err_RD, out_RD);
 		return output;
 #endif
@@ -367,8 +377,12 @@ namespace GEngine {
 			&siStartInfo,  // STARTUPINFO pointer 
 			&piProcInfo);  // receives PROCESS_INFORMATION
 
-		for (int i = 0; i < 5; i++) {
-			DWORD d = WaitForSingleObject(piProcInfo.hProcess, 5000);
+		for (int i = 0; i < 60; i++) {
+			DWORD d = WaitForSingleObject(piProcInfo.hProcess, 500);
+			if (forceKillChild) {
+				GE_CORE_DEBUG("FORCE KILL OBJECT");
+				break;
+			}
 			if (d != WAIT_TIMEOUT) break;
 		}
 

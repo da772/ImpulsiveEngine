@@ -9,14 +9,19 @@ namespace Editor {
 		~HierarchyModule();
 
 		void Create(const std::string& name, bool* is_open, uint32_t flags) override;
-
+	private:
+		void AddEntity(const std::pair<GEngine::ObjectHash, GEngine::Entity*>& e, std::unordered_map<GEngine::ObjectHash, GEngine::Entity*>& entities, bool* hoveringObject);
+		void AcceptPayload(const std::pair<GEngine::ObjectHash, GEngine::Entity*>& e, const GEngine::Vector2f& pos);
+		void RightClickPopup(GEngine::Entity* e);
 
 	private:
-		void AddEntity(const std::pair<GEngine::ObjectHash, GEngine::Entity*>& e, std::unordered_map<GEngine::ObjectHash, GEngine::Entity*>& entities);
-		void AcceptPayload(const std::pair<GEngine::ObjectHash, GEngine::Entity*>& e, const GEngine::Vector2f& pos);
+		bool openPopup = false;
+
 	private:
 		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
 		GEngine::ObjectHash* m_selectedObject;
+		GEngine::ObjectHash m_rightSelectedObject;
+
 	};
 
 }

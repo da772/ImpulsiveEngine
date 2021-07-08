@@ -94,8 +94,8 @@ namespace GEngine {
 		static inline std::shared_ptr<E> CreateGameObject(Args&& ... args) {
 			std::shared_ptr<E> e = std::make_shared<E>(std::forward<Args>(args)...);
 			e->self = e;
-			::GEngine::ObjectHash h[GE_SIZE_OF_HASH];
-			Utility::GenerateHash(h, GE_SIZE_OF_HASH);
+			GEngine::ObjectHash h;
+			Utility::GenerateHash(h.hash, GE_SIZE_OF_HASH);
 
 			while (Factory::hashes.find(h) != Factory::hashes.end()) {
 				Utility::GenerateHash(h.hash, GE_SIZE_OF_HASH);
@@ -109,9 +109,6 @@ namespace GEngine {
 		static inline std::shared_ptr<E> CreateGameObject_ID(::GEngine::ObjectHash hash, Args&& ... args) {
 			std::shared_ptr<E> e = std::make_shared<E>(std::forward<Args>(args)...);
 			e->self = e;
-			if (hash == 0) {
-				hash = Time::GetEpochTimeNS();
-			}
 			e->hash = hash;
 			return e;
 		};

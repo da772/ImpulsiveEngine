@@ -111,7 +111,8 @@ namespace GEngine {
 		{"FrameTime", 0.f},
 		{"Run", 0.f},
 		{"Physics", 0.f},
-		{"ImGui", 0.f}
+		{"ImGui", 0.f},
+		{"Draw", 0.f}
 
 		};
 

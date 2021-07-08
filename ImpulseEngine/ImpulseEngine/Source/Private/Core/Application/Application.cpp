@@ -468,23 +468,29 @@ namespace GEngine {
     
     void Application::Draw() {
         if (!m_loaded) return;
-        Renderer::BeginScene(m_Camera);
-        Renderer::Render();
-        if (b_EnableImGui) m_ImGuiLayer->Begin();
-        size_t size = m_LayerStack.GetSize();
-        for (int i = 0; i < size; i ++) {
-            if (i >= m_LayerStack.GetSize())
-                break;
-            Layer* layer = *(m_LayerStack.begin()+i);
-            layer->OnDraw();
+        {
+            GE_PROFILE_TIMER("Application:Draw", &profile["Draw"]);
+            Renderer::BeginScene(m_Camera);
             {
-                GE_PROFILE_TIMER("Application:ImGui", &profile["ImGui"]);
-                if (b_EnableImGui) layer->OnImGuiRender();
+                GE_PROFILE_TIMER("Application:Render", &profile["Render"]);
+                Renderer::Render();
             }
-		}
-        if (SceneManager::GetCurrentScene() && b_EnableImGui) SceneManager::ImGuiRender();
-        if (b_EnableImGui) m_ImGuiLayer->End();
-        Renderer::EndScene();
+            if (b_EnableImGui) m_ImGuiLayer->Begin();
+            size_t size = m_LayerStack.GetSize();
+            {
+                GE_PROFILE_TIMER("Application:LayerDraw", &profile["LayerDraw"]);
+                for (int i = 0; i < size; i++) {
+                    if (i >= m_LayerStack.GetSize())
+                        break;
+                    Layer* layer = *(m_LayerStack.begin() + i);
+                    layer->OnDraw();
+                    if (b_EnableImGui) layer->OnImGuiRender();
+                }
+            }
+            if (SceneManager::GetCurrentScene() && b_EnableImGui) SceneManager::ImGuiRender();
+            if (b_EnableImGui) m_ImGuiLayer->End();
+            Renderer::EndScene();
+        }
     }
     
     void Application::Run()

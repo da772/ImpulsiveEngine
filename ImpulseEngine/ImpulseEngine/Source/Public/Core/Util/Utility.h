@@ -33,6 +33,8 @@ namespace GEngine {
 		GE_API void GenerateHash(char* str, const int len);
 		namespace sys {
 			static std::string msBuildLocation = "";
+			static bool forceKillChild = false;
+			GE_API void SetForceKillChild(bool b);
 			GE_API void set_ms_build_location(const std::string& dir);
 			GE_API std::string default_msbuild();
 			GE_API std::string exec_command(const std::string& cmd);
@@ -42,6 +44,7 @@ namespace GEngine {
 			GE_API PROCESS_INFORMATION CreateChildProcess(const std::string& cmd, HANDLE _ERR_WR, HANDLE _OUT_WR);
 			GE_API std::string ReadFromPipe(HANDLE err_RD, HANDLE out_RD);
 #endif
+			
 
 		}
 		namespace dll {

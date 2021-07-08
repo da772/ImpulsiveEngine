@@ -22,6 +22,7 @@ namespace Editor {
 		buttonsEntity->AddChild(eChild);
 		buttonsEntity->AddChild(CreateEntity<Entity>());
 		eChild->AddChild(CreateEntity<Entity>());
+		buttonsEntity->AddComponent<NativeScriptComponent>("");
 		background->CreateQuad({ 0,0,0 }, 0, { 10,10,10 }, { 0, 0,1,1 });
 
 		float size = std::max((float)Application::GetWidth() / (float)Application::GetUIResolutionWidth(), (float)Application::GetHeight() / (float)Application::GetUIResolutionHeight());

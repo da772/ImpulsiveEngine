@@ -629,13 +629,17 @@ namespace GEngine {
 
 	bool FileSystem::MoveFile(const std::string& file, const std::string& dst)
 	{
+#ifdef GE_CONSOLE_APP
 		std::filesystem::rename(file, dst);
+#endif
 		return true;
 	}
 
 	bool FileSystem::DeleteFile(const std::string& file)
 	{
+#ifdef GE_CONSOLE_APP
 		return std::filesystem::remove(file);
+#endif
 	}
 
 	void FileSystem::OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& _startPath, bool isFolder)

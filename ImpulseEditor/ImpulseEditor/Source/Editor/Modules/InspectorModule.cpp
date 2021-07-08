@@ -230,10 +230,35 @@ namespace Editor {
 						if (ImGui::BeginDragDropTarget()) {
 							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityGameObjectID");
 							if (payload) {
-								GameObjectPayload payloadObj = *(GameObjectPayload*)payload->Data;
+								EntityPayload payloadObj = *(EntityPayload*)payload->Data;
 								GEngine::Entity* child = payloadObj.entity;
 
 								script->GetNativeObject()->SetMember<GEngine::Entity*>(p.second.name, child);
+
+							}
+							ImGui::EndDragDropTarget();
+						}
+					}
+					else if (p.second.type_name == "GEngine::Component*") {
+						char buff[255] = { 0 };
+						GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::Component*>(p.second.name);
+
+						if (ptr) {
+							memcpy(buff, (ptr->GetTag() + " (" + ptr->GetHash().ToString() + ")").c_str(), ptr->GetTag().size() + 3 + ptr->GetHash().ToString().size());
+							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+						}
+						else {
+							memcpy(buff, "nullptr", sizeof("nullptr"));
+							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+						}
+
+						if (ImGui::BeginDragDropTarget()) {
+							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ComponentGameObjectID");
+							if (payload) {
+								ComponentPayload payloadObj = *(ComponentPayload*)payload->Data;
+								GEngine::Component* child = payloadObj.component;
+
+								script->GetNativeObject()->SetMember<GEngine::Component*>(p.second.name, child);
 
 							}
 							ImGui::EndDragDropTarget();
