@@ -10,12 +10,17 @@ namespace GEngine {
 	{
 	public:
 		static bool IsKeyPressed(int keycode);
+		static bool IsKeyReleased(int keycode);
+		static bool IsKeyDown(int keycode);
+		static bool IsMouseButtonDown(int button);
 		static bool IsMouseButtonPressed(int button);
+		static bool IsMouseButtonReleased(int button);
 		static float GetMouseX();
 		static float GetMouseY();
 		static std::pair<float, float>  GetMousePosition();
 		static void ProcessEvents(const Event& e);
 		static Input* Create();
+		static void Flush();
 
 	protected:
 		virtual bool IsKeyPressedImpl(int keycode) = 0;
@@ -25,6 +30,8 @@ namespace GEngine {
 		virtual std::pair<float,float> GetMousePositionImpl(uint64_t id = 0) = 0;
 		virtual void ProcessEvent(const Event& e) = 0;
 		Weak<Collider> m_lastCollider;
+		static std::unordered_map<int, bool> m_keyEvent;
+		static std::unordered_map<int, bool> m_mouseEvent;
 	private:
 		static Input* s_Instance;
 
@@ -34,3 +41,4 @@ namespace GEngine {
 
 
 }
+

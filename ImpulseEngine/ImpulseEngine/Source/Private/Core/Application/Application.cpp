@@ -64,11 +64,6 @@ namespace GEngine {
         
 	}
 
-
-
-
-
-    
     void Application::LayerSetup() {
         if (!m_ImGuiLayer && b_EnableImGui)
             m_ImGuiLayer = new ImGuiLayer();
@@ -86,6 +81,7 @@ namespace GEngine {
     
     void Application::CleanDirtyApi()
     {
+        Input::Flush();
         bool bCleaned = false;
         if (b_NewWindowApi) {
             SetWindowApi(tempWindowApi);
@@ -102,6 +98,7 @@ namespace GEngine {
         if (bCleaned) {
             OnCleanDirtyApi();
         }
+        
     }
 
     void Application::UnloadGraphics() {
@@ -450,7 +447,7 @@ namespace GEngine {
         }
             {
                 if (!m_pause)
-                 AudioManager::Update();
+                    AudioManager::Update();
             }
 
 			{
