@@ -188,7 +188,7 @@ namespace Editor {
 			if (ImGui::BeginCombo("##scriptSelect", str.c_str())) {
 
 				for (const auto& p : map) {
-					if (std::find(p.second.parent_list.begin(), p.second.parent_list.end(), "GEngine::Component") == p.second.parent_list.end()) continue;
+					if (std::find(p.second.parent_list.begin(), p.second.parent_list.end(), "NativeScript") == p.second.parent_list.end()) continue;
 					if (ImGui::Selectable(p.first.c_str())) {
 						nativeScriptComponentClass = p.first;
 					}
@@ -204,99 +204,103 @@ namespace Editor {
 				}
 			}
 			else {
-				
-				const auto& params = map.at(clazz).property_map;
-				for (const auto& p : params) {
-					
-					if ((uint32_t)p.second.type >= (uint32_t)refl::store::uproperty_type::_int && (uint32_t)p.second.type <= (uint32_t)refl::store::uproperty_type::_uint64_t) {
-						ImGui::InputInt(p.first.c_str(), &script->GetNativeObject()->GetMember<int>(p.second.name), 1, 100);
-					}
-					else if ((uint32_t)p.second.type == (uint32_t)refl::store::uproperty_type::_float) {
-						ImGui::InputFloat(p.first.c_str(), &script->GetNativeObject()->GetMember<float>(p.second.name));
-					}
-					else if (p.second.type_name == "GEngine::Entity*") {
-						char buff[255] = { 0 };
-						GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::GameObject*>(p.second.name);
+				const auto& it = map.find(clazz);
+				if (it != map.end()) {
+					const auto& params = it->second.property_map;
+					for (const auto& p : params) {
 
-						if (ptr) {
-							memcpy(buff, (ptr->GetTag()+ " (" + ptr->GetHash().ToString()+")").c_str() , ptr->GetTag().size()+3+ptr->GetHash().ToString().size());
-							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+						if ((uint32_t)p.second.type >= (uint32_t)refl::store::uproperty_type::_int && (uint32_t)p.second.type <= (uint32_t)refl::store::uproperty_type::_uint64_t) {
+							ImGui::InputInt(p.first.c_str(), &script->GetNativeObject()->GetMember<int>(p.second.name), 1, 100);
 						}
-						else {
-							memcpy(buff, "nullptr", sizeof("nullptr"));
-							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+						else if ((uint32_t)p.second.type == (uint32_t)refl::store::uproperty_type::_float) {
+							ImGui::InputFloat(p.first.c_str(), &script->GetNativeObject()->GetMember<float>(p.second.name));
 						}
+						else if (p.second.type_name == "GEngine::Entity*") {
+							char buff[255] = { 0 };
+							GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::GameObject*>(p.second.name);
 
-						if (ImGui::BeginDragDropTarget()) {
-							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityGameObjectID");
-							if (payload) {
-								EntityPayload payloadObj = *(EntityPayload*)payload->Data;
-								GEngine::Entity* child = payloadObj.entity;
-
-								script->GetNativeObject()->SetMember<GEngine::Entity*>(p.second.name, child);
-
+							if (ptr) {
+								memcpy(buff, (ptr->GetTag() + " (" + ptr->GetHash().ToString() + ")").c_str(), ptr->GetTag().size() + 3 + ptr->GetHash().ToString().size());
+								ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
 							}
-							ImGui::EndDragDropTarget();
-						}
-					}
-					else if (p.second.type_name == "GEngine::Component*") {
-						char buff[255] = { 0 };
-						GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::Component*>(p.second.name);
-
-						if (ptr) {
-							memcpy(buff, (ptr->GetTag() + " (" + ptr->GetHash().ToString() + ")").c_str(), ptr->GetTag().size() + 3 + ptr->GetHash().ToString().size());
-							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
-						}
-						else {
-							memcpy(buff, "nullptr", sizeof("nullptr"));
-							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
-						}
-
-						if (ImGui::BeginDragDropTarget()) {
-							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ComponentGameObjectID");
-							if (payload) {
-								ComponentPayload payloadObj = *(ComponentPayload*)payload->Data;
-								GEngine::Component* child = payloadObj.component;
-
-								script->GetNativeObject()->SetMember<GEngine::Component*>(p.second.name, child);
-
+							else {
+								memcpy(buff, "nullptr", sizeof("nullptr"));
+								ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
 							}
-							ImGui::EndDragDropTarget();
-						}
-					}
-					else if (p.second.type_name == "std::string") {
 
-						char buff[2048] = { 0 };
-						std::string s = script->GetNativeObject()->GetMember<std::string&>(p.second.name);
-						memcpy(buff, s.c_str(), s.size());
-						ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+							if (ImGui::BeginDragDropTarget()) {
+								const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityGameObjectID");
+								if (payload) {
+									EntityPayload payloadObj = *(EntityPayload*)payload->Data;
+									GEngine::Entity* child = payloadObj.entity;
 
-						if (ImGui::BeginDragDropTarget()) {
-							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DirectoryPath");
-							if (payload) {
-								DirectoryPayload payloadObj = *(DirectoryPayload*)payload->Data;
-								GE_CORE_DEBUG("IS DIR {0} EXT: {1}", payloadObj.is_directory, payloadObj.ext);
-								if (!payloadObj.is_directory && strcmp(payloadObj.ext ,".png") == 0) {
-									std::string str = payloadObj.path;
-									script->GetNativeObject()->SetMember<std::string>(p.second.name, str);
+									script->GetNativeObject()->SetMember<GEngine::Entity*>(p.second.name, child);
 
 								}
-								
+								ImGui::EndDragDropTarget();
 							}
-							ImGui::EndDragDropTarget();
 						}
-					}
-					else {
-						ImGui::Text((p.first + " : " + p.second.type_name).c_str());
+						else if (p.second.type_name == "GEngine::Component*") {
+							char buff[255] = { 0 };
+							GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::Component*>(p.second.name);
+
+							if (ptr) {
+								memcpy(buff, (ptr->GetTag() + " (" + ptr->GetHash().ToString() + ")").c_str(), ptr->GetTag().size() + 3 + ptr->GetHash().ToString().size());
+								ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+							}
+							else {
+								memcpy(buff, "nullptr", sizeof("nullptr"));
+								ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+							}
+
+							if (ImGui::BeginDragDropTarget()) {
+								const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ComponentGameObjectID");
+								if (payload) {
+									ComponentPayload payloadObj = *(ComponentPayload*)payload->Data;
+									GEngine::Component* child = payloadObj.component;
+
+									script->GetNativeObject()->SetMember<GEngine::Component*>(p.second.name, child);
+
+								}
+								ImGui::EndDragDropTarget();
+							}
+						}
+						else if (p.second.type_name == "std::string") {
+
+							char buff[2048] = { 0 };
+							std::string s = script->GetNativeObject()->GetMember<std::string&>(p.second.name);
+							memcpy(buff, s.c_str(), s.size());
+							ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
+
+							if (ImGui::BeginDragDropTarget()) {
+								const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DirectoryPath");
+								if (payload) {
+									DirectoryPayload payloadObj = *(DirectoryPayload*)payload->Data;
+									GE_CORE_DEBUG("IS DIR {0} EXT: {1}", payloadObj.is_directory, payloadObj.ext);
+									if (!payloadObj.is_directory && strcmp(payloadObj.ext, ".png") == 0) {
+										std::string str = payloadObj.path;
+										script->GetNativeObject()->SetMember<std::string>(p.second.name, str);
+
+									}
+
+								}
+								ImGui::EndDragDropTarget();
+							}
+						}
+						else {
+							ImGui::Text((p.first + " : " + p.second.type_name).c_str());
+						}
+
 					}
 
+					const auto& parents = it->second.parent_list;
+					ImGui::Text("Parents");
+					for (const std::string& p : parents) {
+						ImGui::Text(p.c_str());
+					}
 				}
-
-				const auto& parents = map.at(clazz).parent_list;
-				ImGui::Text("Parents");
-				for (const std::string& p : parents) {
-					ImGui::Text(p.c_str());
-				}
+				
+				
 			}
 			
 

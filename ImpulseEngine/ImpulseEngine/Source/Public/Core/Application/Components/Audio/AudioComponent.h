@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Public/Core/Application/Component.h"
+#include "Public/Core/Application/Components/Scripts/NativeScript.h"
 
 namespace GEngine {
 
 	class AudioSource;
 
-	class GE_API AudioComponent : public Component {
+	class GE_API AudioComponent : public NativeScript {
 	public:
 
 		AudioComponent(Entity* e, const std::string& fileName, bool playing = false, bool looping = false, bool bStatic = false, float volume = 1.f, float pitch = 1.f, bool fromPak = true, bool relative = true);

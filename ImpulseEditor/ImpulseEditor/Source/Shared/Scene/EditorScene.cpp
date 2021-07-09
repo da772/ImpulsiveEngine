@@ -42,7 +42,7 @@ namespace Editor {
 		if (e.GetEventType() == EventType::MouseMoved) {
 			if (Application::InputEnabled()) {
 				MouseMovedEvent& mouse = static_cast<MouseMovedEvent&>(e);
-				GE_CORE_DEBUG("MOUSE MOVED: {0}, {1}", mouse.GetX() - Application::GetViewPortOffsetX(), mouse.GetY() - Application::GetViewPortOffsetY());
+				//GE_CORE_DEBUG("MOUSE MOVED: {0}, {1}", mouse.GetX() - Application::GetViewPortOffsetX(), mouse.GetY() - Application::GetViewPortOffsetY());
 			}
 		}
 	}

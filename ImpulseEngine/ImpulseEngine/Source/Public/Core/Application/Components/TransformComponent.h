@@ -1,6 +1,6 @@
 #ifndef COMPONENT_TRANSFORM
 #define COMPONENT_TRANSFORM
-#include "Public/Core/Application/Component.h"
+#include "Public/Core/Application/Components/Scripts/NativeScript.h"
 
 
 namespace GEngine {
@@ -19,7 +19,7 @@ namespace GEngine {
 
     };
 
-    class GE_API Transform : public Component {
+    class GE_API Transform : public NativeScript {
         public:
             Transform(Entity* e);
             ~Transform();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Public/Core/Application/Component.h"
+#include "Public/Core/Application/Components/Scripts/NativeScript.h"
 
 
 namespace GEngine {
@@ -13,7 +13,7 @@ namespace GEngine {
 	struct ScriptVector3;
 	struct ScriptVector4;
 
-	class GE_API SpriteComponent : public Component {
+	class GE_API SpriteComponent : public NativeScript {
 
 	public:
 		SpriteComponent(Entity* e, Ref<Shader> shader = nullptr, const std::function<void()>& func = nullptr, const std::string& pipeline = "");

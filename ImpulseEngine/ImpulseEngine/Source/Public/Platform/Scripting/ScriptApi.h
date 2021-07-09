@@ -69,6 +69,7 @@ namespace GEngine {
         static void AddNativeScript(NativeScriptComponent*);
         static void RemoveNativeScript(NativeScriptComponent*);
         static const std::unordered_set<NativeScriptComponent*>& GetNativeScripts() ;
+
             
 
 	private:

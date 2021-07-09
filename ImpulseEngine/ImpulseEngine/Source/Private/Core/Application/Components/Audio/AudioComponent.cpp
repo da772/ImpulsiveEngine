@@ -8,7 +8,7 @@
 
 namespace GEngine {
 
-	AudioComponent::AudioComponent(Entity* e, const std::string& fileName, bool playing, bool looping, bool bStatic, float volume, float pitch, bool fromPak /*= true*/, bool relative /*= true*/) : Component(e)
+	AudioComponent::AudioComponent(Entity* e, const std::string& fileName, bool playing, bool looping, bool bStatic, float volume, float pitch, bool fromPak /*= true*/, bool relative /*= true*/) : NativeScript(e)
 	{
 		go_tag = "Audio Component";
 		m_fileName = fileName;

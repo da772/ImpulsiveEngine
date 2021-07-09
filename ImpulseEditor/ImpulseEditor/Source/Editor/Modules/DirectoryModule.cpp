@@ -646,8 +646,9 @@ namespace Editor {
 				GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);
 				DirectoryPayload payloadPath = *(DirectoryPayload*)payload->Data;
 				if (payloadPath.name != p.name) {
-					GEngine::ThreadPool::AddMainThreadFunction([payloadPath, p]() {
+					GEngine::ThreadPool::AddMainThreadFunction([payloadPath, p, this]() {
 						GEngine::FileSystem::MoveFile(payloadPath.path, p.path + "/" + payloadPath.name);
+						forceFolderViewRefresh = true;
 						});
 				}
 			}
@@ -672,8 +673,9 @@ namespace Editor {
 				GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);
 				DirectoryPayload payloadPath = *(DirectoryPayload*)payload->Data;
 				if (payloadPath.name != p.name) {
-					GEngine::ThreadPool::AddMainThreadFunction([payloadPath, p]() {
+					GEngine::ThreadPool::AddMainThreadFunction([payloadPath, p, this]() {
 						GEngine::FileSystem::MoveFile(payloadPath.path, p.path + "/" + payloadPath.name);
+						forceFolderViewRefresh = true;
 						});
 				}
 			}

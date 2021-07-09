@@ -17,7 +17,7 @@
 
 namespace GEngine {
 
-	QuadColliderComponent::QuadColliderComponent(Entity* e, bool dynamic, bool physics, const Vector2f& position, bool fixedRotation, float bounce) : Component(e),
+	QuadColliderComponent::QuadColliderComponent(Entity* e, bool dynamic, bool physics, const Vector2f& position, bool fixedRotation, float bounce) : NativeScript(e),
 		m_position(position),
 		m_dynamic(dynamic), m_physics(physics), m_bounce(bounce), m_fixedRotation(fixedRotation)
 	{

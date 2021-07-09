@@ -1,11 +1,11 @@
 #pragma once
 #pragma once
 
-#include "Public/Core/Application/Component.h"
+#include "Public/Core/Application/Components/Scripts/NativeScript.h"
 
 namespace GEngine {
 
-	class GE_API AudioListenerComponent : public Component {
+	class GE_API AudioListenerComponent : public NativeScript {
 	public:
 		AudioListenerComponent(Entity* e);
 		virtual ~AudioListenerComponent();
