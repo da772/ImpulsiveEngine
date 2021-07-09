@@ -68,7 +68,7 @@ namespace GEngine {
 		for (auto& p : std::filesystem::recursive_directory_iterator(path))
 		{
 			if (p.path().extension() == extension) {
-				Utility::__GenerateLib(path, p.path().stem().string() + ".h", *s_nativeReflector);
+				Utility::__GenerateLib(p.path().generic_string(), p.path().filename().generic_string(), *s_nativeReflector);
 			}
 		}
 		s_nativeReflector->GenerateClasses();

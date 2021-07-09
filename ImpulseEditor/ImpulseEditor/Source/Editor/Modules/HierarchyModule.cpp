@@ -245,8 +245,7 @@ namespace Editor {
 			
 			ImGui::Button("Duplicate");
 			float yPos = ImGui::GetCursorScreenPos().y;
-			ImGui::Button("Components ->");
-			if (ImGui::IsItemHovered()) {
+			if (ImGui::Button("Components >")) {
 				ImGui::OpenPopup("HierarchyComponentPopup");
 				ImVec2 pos = ImGui::GetWindowPos();
 				ImGui::SetNextWindowPos({ pos.x + ImGui::GetWindowWidth(), yPos });

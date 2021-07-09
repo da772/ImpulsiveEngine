@@ -498,11 +498,12 @@ namespace GEngine {
 
 	void Utility::__GenerateLib(const std::string& path, const std::string& name, refl::reflector& r)
 	{
+		// idk
 		std::string in = path + name;
 		std::ifstream t(in);
 		std::stringstream buffer;
 		buffer << t.rdbuf();
 		GE_CORE_INFO("Native Generate: {0}", in);
-		r.LoadClasses(in.c_str());
+		r.LoadClasses(path.c_str());
 	}
 }

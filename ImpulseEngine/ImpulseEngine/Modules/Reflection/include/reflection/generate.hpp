@@ -40,6 +40,7 @@ namespace refl {
 				std::vector<umember> members;
 				std::vector<std::string> parents;
 				std::string fileName;
+				std::string filePath;
 				ufunction constructor;
 			};
 
@@ -64,7 +65,7 @@ namespace refl {
 					std::stringstream buffer;
 					buffer << t.rdbuf();
 					t.close();
-					get_uclass_data(buffer.str().c_str(), fileN.c_str(), data);
+					get_uclass_data(buffer.str().c_str(), fileN.c_str(), data, in);
 				}
 
 				inline void generate_files() {
@@ -78,7 +79,7 @@ namespace refl {
 					impl::reload_generation_map(outputDir, clss);
 				}
 
-				inline void get_uclass_data(const char* _in, const char* fileN, std::unordered_map<std::string, impl::uclass>& data) {
+				inline void get_uclass_data(const char* _in, const char* fileN, std::unordered_map<std::string, impl::uclass>& data, const char* filePath) {
 					std::string m_in(_in);
 					size_t pos = 0;
 
@@ -120,7 +121,7 @@ namespace refl {
 							impl::ufunction f = impl::get_next_method(in, cls, &pos, err, false, false);
 							func.push_back(f);
 						}
-						data[cls] = { cls, func, mems, clsPair.second, fileN, cons};
+						data[cls] = { cls, func, mems, clsPair.second, fileN, filePath, cons };
 					}
 				}
 
@@ -128,10 +129,10 @@ namespace refl {
 					std::vector<std::pair<std::string, std::string>> ret;
 
 					for (const std::pair<std::string, impl::uclass>& _class : data) {
-						std::string s = "#pragma once\n#include \"reflection/reflection.hpp\"\n#include \"" + relativeInclude;
+						std::string s = "#pragma once\n#include \"reflection/reflection.hpp\"\n#include \"";// + relativeInclude;
 						std::string cls = _class.first;
 						
-						s += _class.second.fileName + "\"\nclass " + cls + "_Generated : public refl::class_generation {\n ";
+						s += _class.second.filePath + "\"\nclass " + cls + "_Generated : public refl::class_generation {\n ";
 						s += "\tpublic:\n\tinline static void Load(::refl::store::storage* storage) {\n";
 						s += "\t\tstorage->store(\"" + cls + "\",{\"" + cls + "\",{\n";
 
