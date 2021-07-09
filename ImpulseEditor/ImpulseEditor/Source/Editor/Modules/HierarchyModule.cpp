@@ -261,12 +261,28 @@ namespace Editor {
 					}
 					ImGui::Text((c.second->GetTag() + " (" + c.first.ToString() + ")").c_str());
 					
-					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+					if (c.second->GetTag() == "Native Script Component") {
+						GEngine::NativeScriptComponent* comp = dynamic_cast<GEngine::NativeScriptComponent*>(c.second);
+
+						if (comp) {
+							if (comp->IsValid()) {
+								GEngine::Component* sc = comp->GetComponent();
+								if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+									ComponentPayload payload = { sc};
+									ImGui::SetDragDropPayload("ComponentGameObjectID", (void*)&payload, sizeof(EntityPayload));
+									ImGui::Text((c.second->GetTag() + " (" + c.first.ToString() + ")").c_str());
+									ImGui::EndDragDropSource();
+								}
+							}
+						}
+					}
+					else if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 						ComponentPayload payload = { c.second };
 						ImGui::SetDragDropPayload("ComponentGameObjectID", (void*)&payload, sizeof(EntityPayload));
 						ImGui::Text((c.second->GetTag() + " (" + c.first.ToString() + ")").c_str());
 						ImGui::EndDragDropSource();
 					}
+					
 				}
 
 				ImGui::EndPopup();

@@ -14,8 +14,9 @@ namespace GEngine {
 		void ReloadGraphics() override;
 
 		void LoadClass(const std::string& clazz);
-
-
+		inline bool IsValid() const { return m_isValid; };
+		const ObjectHash& GetClassHash();
+		Component* GetComponent() const;
 
 		std::string GetClass();
 

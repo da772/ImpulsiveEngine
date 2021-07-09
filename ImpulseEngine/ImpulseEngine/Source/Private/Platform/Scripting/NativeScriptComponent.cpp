@@ -50,6 +50,22 @@ namespace GEngine {
 	}
 
 
+	const GEngine::ObjectHash& NativeScriptComponent::GetClassHash()
+	{
+		if (m_isValid) {
+			return m_component->GetHash();
+		}
+
+		return {};
+	}
+
+	GEngine::Component* NativeScriptComponent::GetComponent() const
+	{
+		if (m_isValid)
+			return m_component;
+		return nullptr;
+	}
+
 	std::string NativeScriptComponent::GetClass()
 	{
 		return m_clazz;

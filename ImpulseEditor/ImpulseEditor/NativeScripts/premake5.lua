@@ -33,6 +33,7 @@ project "NativeScripts"
 		"%{IncludeDir.vector}",
         "%{IncludeDir.reflection}",
         "%{IncludeDir.ImGui}",
+        "Scripts"
     }
     if _OPTIONS["hot-reload"] then
     links 
