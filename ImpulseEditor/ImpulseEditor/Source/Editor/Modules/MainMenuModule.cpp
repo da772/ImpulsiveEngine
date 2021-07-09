@@ -117,7 +117,7 @@ namespace Editor {
 #ifndef GE_PLATFORM_WINDOWS
 		if (retry) {
 			if (re.find("Permission denied") != std::string::npos) {
-				std::string chmod = "chmod +x \"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
+				std::string chmod = "chmod +x \"" + d->name + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
 				GE_CORE_DEBUG("CMD {0}", chmod);
 				GEngine::Utility::sys::exec_command(chmod);
 				return GenerateProject(false);

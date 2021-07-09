@@ -81,6 +81,11 @@ namespace Generation {
 		static inline std::string PlatformFlagToStr(PlatformFlags f) {
 			return platformFlagsStr[f].first;
 		}
+        
+        
+        static inline std::string PlatformFlagToDebugStr(PlatformFlags f) {
+            return platformFlagsStr[f].second;
+        }
 
 		static inline std::string PlatformFlagToFlag(PlatformFlags f) {
 			return platformFlagsStr[f].second;

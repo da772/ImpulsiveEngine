@@ -84,7 +84,7 @@ namespace GEngine {
 		else {
 			std::string buildOut = Utility::sys::build_proj(dirMake_Native, nameMake_Native);
 			if (buildOut.size() > 0) {
-				if (buildOut.find("Error:") != std::string::npos) {
+				if (buildOut.find("Done") == std::string::npos) {
 					GE_CORE_ERROR("Native Build: Error: {0}", buildOut);
 				}
 			}

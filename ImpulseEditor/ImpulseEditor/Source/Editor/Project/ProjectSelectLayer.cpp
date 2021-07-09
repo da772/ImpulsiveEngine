@@ -592,7 +592,7 @@ namespace Project {
 			GEngine::ScriptApi::SetMake_Native("", "", [this]() {
 				return GenerateProject();
 				});
-			GEngine::ScriptApi::SetDLLDir_Native(path + "/" + d->name + "/Bin/Release-" + Generation::GenerateProject::PlatformFlagToStr(static_cast<Generation::PlatformFlags>(m_generatePlatform)) + "-x86_64/"+d->name+"/");
+			GEngine::ScriptApi::SetDLLDir_Native(path + "/" + d->name + "/Bin/Release-" + Generation::GenerateProject::PlatformFlagToDebugStr(static_cast<Generation::PlatformFlags>(m_generatePlatform)) + "-x86_64/"+d->name+"/");
 			GEngine::ScriptApi::OutputDir_Native(path + "/" + d->name + "/" + d->name + "/NativeScripts/Generated/");
 			GEngine::ScriptApi::SetRelativePath_Native("../Scripts/");
 			GEngine::ScriptApi::Load(path + "/" + d->name + "/" + d->name + "/NativeScripts/Scripts/", ".h");
@@ -688,6 +688,7 @@ namespace Project {
 			GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false, false);
 		}
 
+        
 		std::string filePath = d->path + "/" + d->name + "/" + d->name + ".proj";
 		std::ofstream out(filePath, std::ios::out | std::ios::binary | std::ios::trunc);
 		out << *d;

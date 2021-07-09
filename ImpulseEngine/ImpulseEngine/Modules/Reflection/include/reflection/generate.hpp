@@ -492,13 +492,13 @@ namespace refl {
 
 					size_t clssStart = classPos+6;
 					char cC = in[clssStart]; 
-					while (cC == ' ' || cC == '\n' || cC == '\t') {
+					while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '\r') {
 						cC = in[++clssStart];
 					}
 
 					cC = in[clssStart]; 
 					size_t nextSpace = clssStart;
-					while (cC != ' ' && cC != '\n' && cC != ':' && cC != '\t' && cC != '{') {
+					while (cC != ' ' && cC != '\n' && cC != ':' && cC != '\t' && cC != '{' && cC != '\r') {
 						cC = in[++nextSpace];
 					}
 					*pos = nextSpace;
@@ -522,9 +522,9 @@ namespace refl {
 					std::vector<std::string> parents = {};
 					while (hasParents && cC != '{' && cC != ';') {
 						cC = in[++nextSpace];
-						if (cC != ' ' && cC != ',' && cC != '\n' && cC != '\t' && cC != '{' && cC != ';' && cC != ':')
+						if (cC != ' ' && cC != ',' && cC != '\n' && cC != '\t' && cC != '{' && cC != ';' && cC != ':' && cC != '\r')
 							lastInherit = nextSpace;
-						while (cC != ' ' && cC != ',' && cC != '\n' && cC != '\t' && cC != '{' && cC != ';') {
+						while (cC != ' ' && cC != ',' && cC != '\n' && cC != '\t' && cC != '{' && cC != ';' && cC != '\r') {
 							cC = in[++nextSpace];
 						}
 						
@@ -549,11 +549,11 @@ namespace refl {
 			static std::pair<std::string, std::string> get_next_member(const std::string& in, size_t* pos) {
 				size_t uProp = (*pos)+11;
 				char cC = in[uProp];
-				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=') {
+				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '\r') {
 					cC = in[++uProp];
 				}
 				size_t nextSpace = uProp;
-				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{') {
+				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{' && cC != '\r') {
 					cC = in[++nextSpace];
 				}
 				size_t newL = in.find(";", uProp);
@@ -561,24 +561,24 @@ namespace refl {
 				if (typeName == "unsigned") {
 					size_t _uProp = nextSpace;
 					cC = in[uProp];
-					while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=') {
+					while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '\r') {
 						cC = in[++_uProp];
 					}
 					nextSpace = _uProp;
-					while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{') {
+					while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{' && cC != '\r') {
 						cC = in[++nextSpace];
 					}
 					typeName = in.substr(uProp, nextSpace-uProp);
 				}
 				uProp = nextSpace;
-				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '*') {
+				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '*' || cC == '\r') {
 					if (cC == '*') {
 						typeName += "*";
 					}
 					cC = in[++uProp];
 				}
 				nextSpace = uProp;
-				while (cC != ' ' && cC != '\n' && cC != ':' && cC != '\t' && cC != '{' && cC != ';') {
+				while (cC != ' ' && cC != '\n' && cC != ':' && cC != '\t' && cC != '{' && cC != ';' && cC != '\r') {
 					cC = in[++nextSpace];
 				}
 				std::string memName = in.substr(uProp, nextSpace-uProp);
@@ -593,12 +593,12 @@ namespace refl {
 					return {0};
 				}
 				char cC = in[uProp];
-				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=') {
+				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '\r') {
 					cC = in[++uProp];
 				}
 				size_t nextSpace = uProp;
 				std::string typeName = "";
-				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{') {
+				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{' && cC != '\r') {
 					typeName = "";
 					if (cC == '(') {
 						std::string name = in.substr(uProp, nextSpace-uProp);
@@ -619,7 +619,7 @@ namespace refl {
 					return get_constructor(in, clss, pos, err, _static);
 				}
 				uProp = nextSpace;
-				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '*' || cC == '&') {
+				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '*' || cC == '&' || cC == '\r') {
 					if (cC == '*') {
 						typeName += "*";
 					}
@@ -629,7 +629,7 @@ namespace refl {
 					cC = in[++uProp];
 				}
 				nextSpace = uProp;
-				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{' && cC != ';' && cC != '(') {
+				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{' && cC != ';' && cC != '(' && cC != '\r') {
 					cC = in[++nextSpace];
 				}
 				std::string memName = in.substr(uProp, nextSpace-uProp);
@@ -644,11 +644,11 @@ namespace refl {
 						return {};
 					}
 					*/
-					if (cC != ' ' && cC != '\t' && cC != '\n' && spacePos != 0) {
+					if (cC != ' ' && cC != '\t' && cC != '\n' && spacePos != 0 && cC != '\r') {
 						spacePos = 0;
 						uProp = nextSpace;
 					}
-					if ( (cC == ' ' || cC == '\t' || cC == '\n') && spacePos == 0) {
+					if ( (cC == ' ' || cC == '\t' || cC == '\n' || cC == '\r') && spacePos == 0) {
 						std::string varName = in.substr(uProp, nextSpace-uProp);
 						if (varName == "const") {
 							spacePos = 0;
@@ -675,11 +675,11 @@ namespace refl {
 			static ufunction get_next_method(const std::string& in, const std::string& clss, size_t* pos, ::refl::err::err_hndl* err, bool _static, bool _virtual) {
 			    size_t uProp = (*pos)+11;
 				char cC = in[uProp];
-				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=') {
+				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '\r') {
 					cC = in[++uProp];
 				}
 				size_t nextSpace = uProp;
-				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{') {
+				while (cC != ' ' && cC != '\n' && cC != '\t' && cC != '{' && cC != '\r') {
 					cC = in[++nextSpace];
 				}
 				size_t newL = in.find(";", uProp);
@@ -691,7 +691,7 @@ namespace refl {
 					return get_next_method(in, clss, pos, err, _static, _virtual);
 				}
 				uProp = nextSpace;
-				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '*' || cC == '&' ) {
+				while (cC == ' ' || cC == '\n' || cC == '\t' || cC == '=' || cC == '*' || cC == '&' || cC == '\r') {
 					if (cC == '*') {
 						typeName += "*";
 					}
@@ -716,11 +716,11 @@ namespace refl {
 						return {};
 					}
 					*/
-					if (cC != ' ' && cC != '\t' && cC != '\n' && spacePos != 0) {
+					if (cC != ' ' && cC != '\t' && cC != '\n' && cC != '\r' && spacePos != 0) {
 						spacePos = 0;
 						uProp = nextSpace;
 					}
-					if ( (cC == ' ' || cC == '\t' || cC == '\n') && spacePos == 0) {
+					if ( (cC == ' ' || cC == '\t' || cC == '\n' || cC == '\r') && spacePos == 0) {
 						std::string varName = in.substr(uProp, nextSpace-uProp);
 						if (varName == "const") {
 							spacePos = 0;

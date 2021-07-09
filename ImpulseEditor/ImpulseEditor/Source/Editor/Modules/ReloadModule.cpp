@@ -38,6 +38,7 @@ namespace Editor {
 	void ReloadModule::Reload()
 	{
 
+        
 		if (!CanReload()) return;
 
 		GEngine::ThreadPool::AddJob([this]() {
@@ -54,7 +55,7 @@ namespace Editor {
 				GEngine::ScriptApi::SetMake_Native("", "", [this]() {
 					return GenerateProject();
 					});
-				GEngine::ScriptApi::SetDLLDir_Native(path + "/" + d->name + "/Bin/" + GE_CONFIG + "-" + Generation::GenerateProject::PlatformFlagToStr(static_cast<Generation::PlatformFlags>(m_project->platformFlags)) + "-x86_64/" + d->name + "/");
+				GEngine::ScriptApi::SetDLLDir_Native(path + "/" + d->name + "/Bin/" + GE_CONFIG + "-" + Generation::GenerateProject::PlatformFlagToDebugStr(static_cast<Generation::PlatformFlags>(m_project->platformFlags)) + "-x86_64/" + d->name + "/");
 				GEngine::ScriptApi::OutputDir_Native(path + "/" + d->name + "/" + d->name + "/NativeScripts/Generated/");
 				GEngine::ScriptApi::SetRelativePath_Native("../Scripts/");
 				GEngine::ScriptApi::Load(path + "/" + d->name + "/" + d->name + "/NativeScripts/Scripts/", ".h");
@@ -83,7 +84,7 @@ namespace Editor {
 #ifndef GE_PLATFORM_WINDOWS
 		if (retry) {
 			if (re.find("Permission denied") != std::string::npos) {
-				std::string chmod = "chmod +x \"" + selectedProject + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
+				std::string chmod = "chmod +x \"" + d->path + "/" + d->name + "/Generate/GenerateProject." + GE_CMD_EXTENSION + "\"";
 				GE_CORE_DEBUG("CMD {0}", chmod);
 				GEngine::Utility::sys::exec_command(chmod);
 				return GenerateProject(false);
