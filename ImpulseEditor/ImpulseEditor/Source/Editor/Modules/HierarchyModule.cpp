@@ -15,6 +15,9 @@ namespace Editor {
 		m_textures["scene"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeStacked172x172.png");
 		m_textures["gameObjectChildren"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeStacked172x172.png");
 		m_textures["gameObject"] = GEngine::Texture2D::Create("Content/Textures/Icons/cube172x172.png");
+		m_textures["gameObjectAdd"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeAdd172x172.png");
+
+		
 	}
 
 	HierarchyModule::~HierarchyModule()
@@ -42,7 +45,7 @@ namespace Editor {
 		bool hasChildren = entities.size();
 		float offset = !hasChildren ? 0 : ImGui::GetTreeNodeToLabelSpacing();
 		ImGuiTreeNodeFlags fl = 0;
-		if (ImGui::Button("+")) {
+		if (ImGui::ImageButton((ImTextureID)(intptr_t)m_textures["gameObjectAdd"]->GetRendererID(), { ImGui::GetFontSize(), ImGui::GetFontSize() }, { 0,1 }, { 1,0 })) {
 			GEngine::Scene* sc = GEngine::SceneManager::GetCurrentScene();
 			if (sc) {
 				GEngine::Entity* e = sc->CreateEntity<GEngine::Entity>();

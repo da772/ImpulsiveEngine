@@ -105,7 +105,7 @@ namespace Editor {
 				{"Scale", &scale}
 			};
 
-			ImGui::PushFont(dynamic_cast<ImpulseEditor*>(GEngine::Application::GetApp())->mainFont);
+			//ImGui::PushFont(dynamic_cast<ImpulseEditor*>(GEngine::Application::GetApp())->mainFont);
 			float fontSize = ImGui::GetFontSize();
 			ImGui::BeginChild("TransformName", { ImGui::GetContentRegionAvailWidth() * (leftWidth_transform),0.f }, false);
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + fontSize / 8.f);
@@ -114,7 +114,7 @@ namespace Editor {
 			ImGui::Text("Rotation");
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + fontSize / 8.f);
 			ImGui::Text("Scale");
-			ImGui::PopFont();
+			//ImGui::PopFont();
 			ImGui::EndChild();
 
 			ImGui::SameLine();
