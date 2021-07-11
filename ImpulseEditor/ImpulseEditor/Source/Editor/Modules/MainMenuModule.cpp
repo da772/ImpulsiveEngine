@@ -45,13 +45,17 @@ namespace Editor {
 		}
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Copy", "CTRL-C", nullptr)) {
+			if (ImGui::MenuItem("Undo", "CTRL+Z", nullptr)) {
+			}
+			if (ImGui::MenuItem("Redo", "CTRL+Y", nullptr)) {
+			}
+			if (ImGui::MenuItem("Copy", "CTRL+C", nullptr)) {
 			
 			}
-			if (ImGui::MenuItem("Cut", "CTRL-X", nullptr)) {
+			if (ImGui::MenuItem("Cut", "CTRL+X", nullptr)) {
 
 			}
-			if (ImGui::MenuItem("Paste", "CTRL-V", nullptr)) {
+			if (ImGui::MenuItem("Paste", "CTRL+V", nullptr)) {
 
 			}
 			ImGui::EndMenu();

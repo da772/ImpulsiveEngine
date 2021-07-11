@@ -132,7 +132,29 @@ namespace GEngine {
 		ImGui::End();
 	}
 
+	std::string ImGuiAppLog::GetLastLog()
+	{
+		bool skip = true;
+		for (int new_size = Buf.size(); new_size >= 0; new_size--)
+		{
+			if (Buf[new_size] == '\n') {
+				if (skip) {
+					skip = false;
+					continue;
+				}
+				return std::string( Buf.begin()+new_size+ 1);
+			}
 
+		}
+
+		return "";
+	}
+
+	int ImGuiAppLog::GetLastLevel() {
+		if (LevelOffsets.size() > 0)
+			return LevelOffsets[LevelOffsets.size() - 1];
+		return 0;
+	}
 
 }
 

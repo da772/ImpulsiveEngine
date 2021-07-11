@@ -9,7 +9,9 @@ namespace GEngine {
 	class GE_API GameObject {
 	public:
 		inline GameObject(ObjectHash hash) : go_hash(hash) { s_map[go_hash] = this; };
-		virtual ~GameObject() { s_map.erase(go_hash); };
+		virtual ~GameObject() {
+			s_map.erase(go_hash);
+		};
 		inline const ObjectHash GetHash() const { return go_hash; }
 		inline const std::string GetTag() const { return go_tag; }
 		inline void SetTag(const std::string& tag) { go_tag = tag; }

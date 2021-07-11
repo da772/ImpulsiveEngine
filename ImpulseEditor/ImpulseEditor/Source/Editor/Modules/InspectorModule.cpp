@@ -2,6 +2,8 @@
 #include "Shared/ImpulseEditor.h"
 #include "Editor/Modules/ReloadModule.h"
 #include "imgui/imgui_internal.h"
+#include "Editor/EditorLayer.h"
+#include "Editor/Events/EditorSceneEvents.h"
 
 
 namespace Editor {
@@ -36,6 +38,7 @@ namespace Editor {
 			if (ImGui::InputText("##tag: ", buff, 255, ImGuiInputTextFlags_EnterReturnsTrue)) {
 				gameObject->SetTag(buff);
 			}
+
 			
 			GEngine::Entity* entity = dynamic_cast<GEngine::Entity*>(gameObject);
 			if (entity) {
@@ -58,7 +61,10 @@ namespace Editor {
 						}
 
 						if (ImGui::Button("Remove Component")) {
+							
+							EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneDestroyComponent>(p.first);
 							entity->RemoveComponent(p.second);
+							EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::REMOVE_COMPONENT);
 							ImGui::TreePop();
 							break;
 						}
@@ -153,12 +159,15 @@ namespace Editor {
 
 			if (pos != transform->GetLocalPosition()) {
 				transform->SetLocalPosition(pos);
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(transform->GetHash(), GameObjectModifications::EDIT_MEMBER);
 			}
 			if (scale != transform->GetLocalScale()) {
 				transform->SetLocalScale(scale);
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(transform->GetHash(), GameObjectModifications::EDIT_MEMBER);
 			}
 			if (rot != transform->GetLocalRotation()) {
 				transform->SetLocalRotation(rot);
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(transform->GetHash(), GameObjectModifications::EDIT_MEMBER);
 			}
 			ImGui::EndChild();
 		}
@@ -201,6 +210,7 @@ namespace Editor {
 			if (nativeScriptComponentClass != clazz) {
 				if (ImGui::Button("Load Script")) {
 					script->LoadClass(nativeScriptComponentClass);
+					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
 				}
 			}
 			else {
@@ -210,10 +220,14 @@ namespace Editor {
 					for (const auto& p : params) {
 
 						if ((uint32_t)p.second.type >= (uint32_t)refl::store::uproperty_type::_int && (uint32_t)p.second.type <= (uint32_t)refl::store::uproperty_type::_uint64_t) {
-							ImGui::InputInt(p.first.c_str(), &script->GetNativeObject()->GetMember<int>(p.second.name), 1, 100);
+							if (ImGui::InputInt(p.first.c_str(), &script->GetNativeObject()->GetMember<int>(p.second.name), 1, 100)) {
+								EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
+							}
 						}
 						else if ((uint32_t)p.second.type == (uint32_t)refl::store::uproperty_type::_float) {
-							ImGui::InputFloat(p.first.c_str(), &script->GetNativeObject()->GetMember<float>(p.second.name));
+							if (ImGui::InputFloat(p.first.c_str(), &script->GetNativeObject()->GetMember<float>(p.second.name))) {
+								EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
+							}
 						}
 						else if (p.second.type_name == "GEngine::Entity*") {
 							char buff[255] = { 0 };
@@ -235,7 +249,7 @@ namespace Editor {
 									GEngine::Entity* child = payloadObj.entity;
 
 									script->GetNativeObject()->SetMember<GEngine::Entity*>(p.second.name, child);
-
+									EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
 								}
 								ImGui::EndDragDropTarget();
 							}
@@ -260,7 +274,7 @@ namespace Editor {
 									GEngine::Component* child = payloadObj.component;
 
 									script->GetNativeObject()->SetMember<GEngine::Component*>(p.second.name, child);
-
+									EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
 								}
 								ImGui::EndDragDropTarget();
 							}
@@ -280,7 +294,7 @@ namespace Editor {
 									if (!payloadObj.is_directory && strcmp(payloadObj.ext, ".png") == 0) {
 										std::string str = payloadObj.path;
 										script->GetNativeObject()->SetMember<std::string>(p.second.name, str);
-
+										EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
 									}
 
 								}
@@ -307,6 +321,7 @@ namespace Editor {
 									GEngine::Component* child = payloadObj.component;
 
 									script->GetNativeObject()->SetMember<GEngine::Component*>(p.second.name, child);
+									EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
 
 								}
 								ImGui::EndDragDropTarget();
@@ -319,7 +334,7 @@ namespace Editor {
 					}
 
 					const auto& parents = it->second.parent_list;
-					ImGui::Text("Parents");
+					ImGui::Text("Inheritance");
 					for (const std::string& p : parents) {
 						ImGui::Text(p.c_str());
 					}
@@ -385,7 +400,11 @@ namespace Editor {
 
 				if (ImGui::Button("Native Script", { ImGui::GetContentRegionAvailWidth() ,0 })) {
 
-					entity->AddComponent<GEngine::NativeScriptComponent>("");
+					GEngine::NativeScriptComponent* s = entity->AddComponent<GEngine::NativeScriptComponent>("");
+
+					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddComponent>(s->GetHash());
+					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::ADD_COMPONENT);
+
 					ImGui::CloseCurrentPopup();
 				}
 			}

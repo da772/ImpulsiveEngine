@@ -30,6 +30,7 @@ namespace Editor {
 		inline GEngine::Ref<T> AddModule(const std::string & id, bool isOpen, int flags, bool togglable, Args&& ... args) {
 			std::shared_ptr<T> e = std::make_shared<T>(std::forward<Args>(args)...);
 			modules[id] = {e, isOpen, flags, togglable};
+			modules_order.push_back(id);
 			return e;
 		}
 
@@ -43,6 +44,7 @@ namespace Editor {
 	private:
 		static EditorDispatcher s_dispatcher;
 		std::unordered_map<std::string, EditorModuleData> modules;
+		std::vector<std::string> modules_order;
 
 	private:
 		Project::LocalProject m_projectData;

@@ -1,6 +1,10 @@
 #include "HierarchyModule.h"
 #include "imgui/imgui_internal.h"
 
+
+#include "Editor/EditorLayer.h"
+#include "Editor/Events/EditorSceneEvents.h"
+
 namespace Editor {
 
 
@@ -38,7 +42,21 @@ namespace Editor {
 		bool hasChildren = entities.size();
 		float offset = !hasChildren ? 0 : ImGui::GetTreeNodeToLabelSpacing();
 		ImGuiTreeNodeFlags fl = 0;
-
+		if (ImGui::Button("+")) {
+			GEngine::Scene* sc = GEngine::SceneManager::GetCurrentScene();
+			if (sc) {
+				GEngine::Entity* e = sc->CreateEntity<GEngine::Entity>();
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddEntity>(e->GetHash());
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddComponent>(e->GetTransform()->GetHash());
+			}
+		}
+		ImGui::SameLine();
+		ImGui::Text("Filter:");
+		ImGui::SameLine(0, 0);
+		char ch[255] = { 0 };
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvailWidth() * .85f);
+		ImGui::InputText("##filerHierachy", ch, 255);
+		ImGui::Separator();
 		if (ImGui::TreeNodeEx("##Scene", ImGuiTreeNodeFlags_OpenOnArrow | fl | ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
@@ -49,7 +67,7 @@ namespace Editor {
 				RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize * 1.75f) / 2.f - (fontSize * 0.40f * .75f), pos.y + (fontSize * 0.40f * .75f) / 2.f }, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Down, .75f);
 			}
 
-			ImGui::Image((ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text("Scene");
 			AcceptPayload({ 0, nullptr }, {pos.x, pos.y});
@@ -70,7 +88,7 @@ namespace Editor {
 			if (hasChildren)
 				RenderArrow(ImGui::GetWindowDrawList(), fontSize, { pos.x - (fontSize * 1.75f) / 2.f - (fontSize * 0.40f * .85f), pos.y + (fontSize * 0.40f * .85f) / 2.f }, ImGui::GetColorU32(ImGui::GetStyleColorVec4(ImGuiCol_Text)), ImGuiDir_Right, .75f);
 
-			ImGui::Image((ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text("Scene");
 			
@@ -123,13 +141,13 @@ namespace Editor {
 				*hoveringObject = true;
 			}
 
-			ImGui::Image((ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text(e.second->GetTag().c_str());
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				EntityPayload payload = { e.second };
 				ImGui::SetDragDropPayload("EntityGameObjectID", (void*)&payload, sizeof(EntityPayload));
-				ImGui::Image((ImTextureID)(ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+				ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 				ImGui::SameLine();
 				ImGui::Text(e.second->GetTag().c_str());
 				ImGui::SameLine();
@@ -173,13 +191,13 @@ namespace Editor {
 				*hoveringObject = true;
 			}
 			
-			ImGui::Image((ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text(e.second->GetTag().c_str());
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				EntityPayload payload = { e.second };
 				ImGui::SetDragDropPayload("EntityGameObjectID", (void*)&payload, sizeof(EntityPayload));
-				ImGui::Image((ImTextureID)(ImTextureID)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+				ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 				ImGui::SameLine();
 				ImGui::Text(e.second->GetTag().c_str());
 				ImGui::SameLine();
@@ -225,6 +243,8 @@ namespace Editor {
 						else {
 							child->SetParent(e.second);
 						}
+						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(e.second->GetHash(), GameObjectModifications::ADD_CHILD);
+						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(payloadObj.entity->GetHash(), GameObjectModifications::SET_PARENT);
 						
 					}
 				}
@@ -288,7 +308,14 @@ namespace Editor {
 				ImGui::EndPopup();
 			}
 
-			ImGui::Button("Delete");
+			if (ImGui::Button("Delete")) {
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneDestroyEntity>(e->GetHash());
+				GEngine::ThreadPool::AddMainThreadFunction([e]() {
+					if (e)
+						e->Destroy();
+				});
+				ImGui::CloseCurrentPopup();
+			}
 			
 			ImGui::PopStyleColor();
 

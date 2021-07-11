@@ -109,7 +109,7 @@ namespace Project {
 		ImGui::SameLine(0, 0);
 		pos = ImGui::GetCursorPos();
 		ImGui::SetCursorPos({ pos.x - 20.f, pos.y + 5.f });
-		ImGui::Image((ImTextureID)searchIcon->GetRendererID(), { 16,16 }, { 0,1 }, { 1,0 });
+		ImGui::Image((ImTextureID)(uintptr_t)searchIcon->GetRendererID(), { 16,16 }, { 0,1 }, { 1,0 });
 		ImGui::EndChild();
 
 		ImGui::BeginChild("Projects", { (float)GEngine::Application::GetWindowWidth() * .85f,(float)GEngine::Application::GetWindowHeight() * .85f }, true);
@@ -134,7 +134,7 @@ namespace Project {
 			if (tex == nullptr) {
 				tex = projectSelectionIcon;
 			}
-			ImGui::Image((ImTextureID)tex->GetRendererID(), { 50.f,50.f }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)(uintptr_t)tex->GetRendererID(), { 50.f,50.f }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			pos = ImGui::GetCursorPos();
 			ImGui::SetCursorPos({ pos.x, pos.y - 2.5f });
@@ -379,7 +379,7 @@ namespace Project {
 			ImGui::SameLine();
 			float xPos = ImGui::GetCursorPosX();
 			ImGui::SetCursorPosX(xPos - 7.f);
-			if (ImGui::ImageButton((ImTextureID)folderIcon->GetRendererID(), { 20.f,20.f }, { .0f,1.f }, { 1.f, 0.f })) {
+			if (ImGui::ImageButton((ImTextureID)(uintptr_t)folderIcon->GetRendererID(), { 20.f,20.f }, { .0f,1.f }, { 1.f, 0.f })) {
 				std::string fileLoc;
 				GEngine::FileSystem::OpenFileDialog({}, fileLoc, m_newProjectLocation, true);
 				if (fileLoc.size() > 0) {

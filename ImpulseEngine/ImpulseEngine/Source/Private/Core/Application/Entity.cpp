@@ -22,7 +22,7 @@ namespace GEngine {
 	{
 		Factory::RemoveHash(go_hash);
 		if (comp_hashes.size() > 0) {
-			for (auto h : comp_hashes) {
+			for (const auto& h : comp_hashes) {
 				Factory::RemoveHash(h);
 			}
 		}
@@ -130,6 +130,9 @@ namespace GEngine {
 	}
 
 	void Entity::Destroy() {
+		for (const auto& p : m_Children) {
+			p.second->Destroy();
+		}
 		End();
 		SceneManager::GetCurrentScene()->DestroyEntity(this);
 		

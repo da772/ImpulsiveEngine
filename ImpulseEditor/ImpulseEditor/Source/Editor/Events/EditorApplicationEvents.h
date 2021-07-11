@@ -6,61 +6,38 @@ namespace Editor {
 
 	class ApplicationEvent : public EditorEvent  {
 	public:
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-	protected:
-		std::string m_name = "ApplicationEvent";
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryApplication);
+
 
 	};
 
-	class ApplicationPlayEvent : public EditorEvent {
+	class ApplicationPlayEvent : public ApplicationEvent {
 	public:
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-	protected:
-		std::string m_name = "ApplicationPlayEvent";
+		EDITOR_EVENT_CLASS_TYPE(ApplicationPlayEvent);
+	
+	};
+
+	class ApplicationPauseEvent : public ApplicationEvent {
+	public:
+		EDITOR_EVENT_CLASS_TYPE(ApplicationPauseEvent);
 
 	};
 
-	class ApplicationPauseEvent : public EditorEvent {
+	class ApplicationStopEvent : public ApplicationEvent {
 	public:
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-	protected:
-		std::string m_name = "ApplicationPauseEvent";
+		EDITOR_EVENT_CLASS_TYPE(ApplicationStopEvent);
 
 	};
 
-	class ApplicationStopEvent : public EditorEvent {
+	class ApplicationResumeEvent : public ApplicationEvent {
 	public:
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-	protected:
-		std::string m_name = "ApplicationStopEvent";
+		EDITOR_EVENT_CLASS_TYPE(ApplicationResumeEvent);
 
 	};
 
-	class ApplicationResumeEvent : public EditorEvent {
+	class ApplicationSkipFrameEvent : public ApplicationEvent {
 	public:
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-	protected:
-		std::string m_name = "ApplicationResumeEvent";
-
-	};
-
-	class ApplicationSkipFrameEvent : public EditorEvent {
-	public:
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-	protected:
-		std::string m_name = "ApplicationSkipFrameEvent";
+		EDITOR_EVENT_CLASS_TYPE(ApplicationSkipFrameEvent);
 
 	};
 	

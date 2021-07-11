@@ -33,8 +33,8 @@ namespace GEngine {
 	}
 
 	Entity* Scene::DestroyEntity(Entity* actor) {
-		delete entities[actor->GetHash()];
 		entities.erase(actor->GetHash());
+		delete actor;
 		return nullptr;
 	}
 

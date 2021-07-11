@@ -4,36 +4,28 @@
 namespace Editor {
 
 	class EditorUIEvent : public EditorEvent {
-	protected:
-		std::string m_name = "EditorUIEvent";
+	public:
+		EditorUIEvent(const std::string& view) : m_view(view) {};
+		inline const std::string& GetView() { return m_view; }
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryUI);
+		
+	private:
+		std::string m_view;
+	};
+
+	class EditorHideViewEvent : public EditorUIEvent {
+	public:
+		inline EditorHideViewEvent(const std::string& view) : EditorUIEvent(view) {};
+		EDITOR_EVENT_CLASS_TYPE(EditorHideViewEvent);
 
 	};
 
-	class EditorHideViewEvent : public EditorEvent {
+
+	class EditorShowViewEvent : public EditorUIEvent {
 	public:
-		inline EditorHideViewEvent(const std::string& view) : view(view) {};
-		std::string view;
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-
-	protected:
-		std::string m_name = "EditorHideViewEvent";
-
-	};
-
-
-	class EditorShowViewEvent : public EditorEvent {
-	public:
-		inline EditorShowViewEvent(const std::string& view) : view(view) {};
-		std::string view;
-		inline virtual const std::string GetName() const override {
-			return m_name;
-		};
-
-	protected:
-		std::string m_name = "EditorShowViewEvent";
-
+		inline EditorShowViewEvent(const std::string& view) : EditorUIEvent(view) {};
+		EDITOR_EVENT_CLASS_TYPE(EditorShowViewEvent);
+	
 	};
 
 }

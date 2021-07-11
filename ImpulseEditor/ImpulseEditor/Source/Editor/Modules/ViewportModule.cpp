@@ -61,7 +61,7 @@ namespace Editor {
 		}
 
 		ImGui::EndChild();
-
+#if 0 // Game Controls (Moved to Toolbar Module)
 		ImGui::SameLine();
 
 		if (GEngine::SceneManager::HasBegun()) {
@@ -113,6 +113,7 @@ namespace Editor {
 			}
 			
 		}
+#endif
 		ImGui::EndChild();
 
 		ImGui::BeginChild("ViewPortImpl");
@@ -124,7 +125,7 @@ namespace Editor {
 		Vector2<uint32_t> csz = { pipeline->GetFrameBuffer()->GetTexture()->GetWidth(), pipeline->GetFrameBuffer()->GetTexture()->GetHeight() };
 		if (lastFrameSize != sz || handleResize) {
 
-			finalSize = scaleRatio(sz.x, sz.y, originalSize.x, originalSize.y);
+			finalSize = scaleRatio((int)sz.x, (int)sz.y, (int)originalSize.x, (int)originalSize.y);
 			GEngine::Application::GetApp()->m_viewPortWidth = finalSize.x;
 			GEngine::Application::GetApp()->m_viewPortHeight = finalSize.y;
 			//pipeline->GetFrameBuffer()->UpdateSize(1080, 1920);
@@ -154,14 +155,14 @@ namespace Editor {
 		float bestRatio = std::min(widthRatio, heightRatio);
 
 		// output
-		int newWidth = (float)imgWidth * bestRatio,
-			newHeight = (float)imgHeight * bestRatio;
+		int newWidth = (int)((float)imgWidth * bestRatio),
+			newHeight = (int)((float)imgHeight * bestRatio);
 		return { (uint32_t)newWidth, (uint32_t)newHeight };
 	}
 
 	bool ViewportModule::ControlButtons(const std::string& s)
 	{
-		ImGui::Image((ImTextureID)m_textures[s]->GetRendererID(), { imageButtonSize, imageButtonSize }, { 0,1 }, { 1,0 });
+		ImGui::Image((ImTextureID)(uintptr_t)m_textures[s]->GetRendererID(), { imageButtonSize, imageButtonSize }, { 0,1 }, { 1,0 });
 		if (ImGui::IsItemHovered()) {
 			return ImGui::IsMouseClicked(0);
 		}

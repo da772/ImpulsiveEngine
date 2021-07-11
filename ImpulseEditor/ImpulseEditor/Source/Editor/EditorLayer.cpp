@@ -9,6 +9,8 @@
 #include "Modules/HierarchyModule.h"
 #include "Modules/InspectorModule.h"
 #include "Modules/ReloadModule.h"
+#include "Modules/ToolbarModule.h"
+#include "Modules/InfoPanelModule.h"
 
 
 #include "Shared/ImpulseEditor.h"
@@ -42,13 +44,17 @@ namespace Editor {
 		reloadModule = new ReloadModule(&m_projectData);
 		reloadModule->Reload();
 		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule);
+		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule);
+		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
 		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/"+m_projectData.data.name+"/"+m_projectData.data.name, &m_projectData.data);
 		AddModule<ConsoleModule>("Console Log", true, ImGuiWindowFlags_AlwaysAutoResize, true);
 		AddModule<ProfilerModule>("Profiler", true, ImGuiWindowFlags_AlwaysAutoResize, true);
 		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
         AddModule<ViewportModule>("Viewport", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule);
         AddModule<HierarchyModule>("Hierarchy", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject);
-		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
+		AddModule<InfoPanelModule>("InfoPanel", true, ImGuiWindowFlags_AlwaysAutoResize, false);
+
+
 		
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}
@@ -63,7 +69,6 @@ namespace Editor {
 
 	void EditorLayer::Begin()
 	{
-	
 
 
 	}
@@ -100,7 +105,8 @@ namespace Editor {
 		
 		ImGui::PushFont(((ImpulseEditor*)GEngine::Application::GetApp() )->smallFont);
 		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 5.f);
-		for (auto & d : modules) {
+		for (const auto & id : modules_order) {
+			std::pair<std::string, EditorModuleData&> d = { id, modules[id] };
 			if (!d.second.isOpen) continue;
 			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
 		}

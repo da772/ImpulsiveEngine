@@ -28,6 +28,9 @@ namespace GEngine{
 		void AddLog(std::string fmt, int level);
 
 		void Draw(const char* title, bool* p_open = NULL);
+
+		std::string GetLastLog();
+		int GetLastLevel();
 	};
 
 

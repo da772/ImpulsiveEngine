@@ -26,14 +26,4 @@ namespace Editor {
 
 
 
-	EditorEvent::EditorEvent()
-	{
-
-	}
-
-	EditorEvent::~EditorEvent()
-	{
-
-	}
-
 }

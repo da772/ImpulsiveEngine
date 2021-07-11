@@ -7,17 +7,50 @@ namespace Editor {
 	struct EventFunction;
 	class EditorDispatcher;
 
+	enum class EditorEventType
+	{
+		None = 0,
+		ApplicationPlayEvent, ApplicationPauseEvent, ApplicationStopEvent, ApplicationResumeEvent, ApplicationSkipFrameEvent,
+		EditorHideViewEvent, EditorShowViewEvent,
+		SceneCreateEntity, SceneDestroyEntity, SceneModifyEntity, SceneAddComponent, SceneDestroyComponent, SceneModifyComponent
+	};
+
+	enum EditorEventCategory
+	{
+		None = 0,
+		EventCategoryApplication = BIT(0),
+		EventCategoryUI = BIT(1),
+		EventCategoryScene = BIT(2),
+		EventCategoryGameObject = BIT(3),
+		EventCategoryEntity = BIT(4),
+		EventCategoryComponent = BIT(5),
+		EventCategoryModification = BIT(5),
+		
+	};
+
+#if defined(GE_PLATFORM_WINDOWS) && !defined(__clang__) && !defined(__GNUC__)
+#define EDITOR_EVENT_CLASS_TYPE(type) static EditorEventType GetStaticType() { return EditorEventType::##type; }\
+								virtual EditorEventType GetEventType() const override { return GetStaticType(); }\
+								virtual const char* GetName() const override { return #type; }
+#else
+#define EDITOR_EVENT_CLASS_TYPE(type) static EditorEventType GetStaticType() { return EditorEventType::type; }\
+								virtual EditorEventType GetEventType() const override { return GetStaticType(); }\
+								virtual const char*  GetName() const override { return #type; }
+#endif
+
+#define EDITOR_EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
+
 	class EditorEvent {
 
 	public:
-		EditorEvent();
-		virtual ~EditorEvent();
+		virtual EditorEventType GetEventType() const = 0;
+		virtual const char* GetName() const = 0;
+		virtual int GetCategoryFlags() const = 0;
 
-		virtual const std::string GetName() const = 0;
+		inline bool IsCategory(int i) { return GetCategoryFlags() & i; }
 
 	protected:
 		friend EditorDispatcher;
-		std::string m_name = "Event";
 
 	};
 
