@@ -107,7 +107,7 @@ namespace GEngine {
 			// When using the filter (in the block of code above) we don't have random access into the data to display anymore, which is why we don't use the clipper.
 			// Storing or skimming through the search result would make it possible (and would be recommended if you want to search through tens of thousands of entries)
 			ImGuiListClipper clipper;
-			clipper.Begin(LineOffsets.Size);
+			clipper.Begin(LineOffsets.Size-1);
 			while (clipper.Step())
 			{
 
@@ -115,10 +115,10 @@ namespace GEngine {
 				{
 					const char* line_start = buf + LineOffsets[line_no];
 					const char* line_end = (line_no + 1 < LineOffsets.Size) ? (buf + LineOffsets[line_no + 1] - 1) : buf_end;
-
 					ImGui::PushStyleColor(ImGuiCol_Text, Levels[LevelOffsets[(line_no + 1 < LineOffsets.Size) ? line_no + 1 : LevelOffsets.Size - 1]]);
 					ImGui::TextUnformatted(line_start, line_end);
 					ImGui::PopStyleColor();
+
 				}
 			}
 			clipper.End();
