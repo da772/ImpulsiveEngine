@@ -40,6 +40,8 @@ namespace Editor {
 		if (!s_singleton)
 			s_singleton = this;
 
+
+
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.data.name, m_projectData.data.path);
 		reloadModule = new ReloadModule(&m_projectData);
 		reloadModule->Reload();
@@ -55,7 +57,6 @@ namespace Editor {
 		AddModule<InfoPanelModule>("InfoPanel", true, ImGuiWindowFlags_AlwaysAutoResize, false);
 
 
-		
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}
 

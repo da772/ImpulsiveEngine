@@ -161,6 +161,8 @@ namespace refl {
 				other.destroy = false;
 				return *this;
 			}
+
+			inline std::string GetName() const { return clazz; }
 		private:
 			std::string clazz = "NULL";
 			void* ptr = nullptr;

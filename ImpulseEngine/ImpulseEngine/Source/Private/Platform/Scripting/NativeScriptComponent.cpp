@@ -8,45 +8,13 @@ namespace GEngine {
 	{
 		go_tag = "Native Script Component";
 		ScriptApi::AddNativeScript(this);
-		if (clazz.size() > 0) {
-			try {
-				m_object = ScriptApi::GetReflector_Native()->CreateUClass(clazz, m_entity);
-			}
-			catch (const std::exception& e) {
-				GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
-			}
-			m_component = (Component*)m_object.data();
-			if (m_component) {
-				m_isValid = true;
-				bUpdates = m_component->GetDoesUpdate();
-			}
-			else {
-				GE_CORE_ERROR("Native Script Component: Failed to Load Class<{0}>", clazz);
-			}
-		}
+		CreateScript();
 	}
 
 	void NativeScriptComponent::LoadClass(const std::string& clazz)
 	{
 		m_clazz = clazz;
-		if (clazz.size() >= 0) {
-			try {
-				m_object = ScriptApi::GetReflector_Native()->CreateUClass(clazz, m_entity);
-			}
-			catch (const std::exception& e) {
-				GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
-			}
-			m_component = (Component*)m_object.data();
-			if (m_component) {
-				m_isValid = true;
-				bUpdates = m_component->GetDoesUpdate();
-				if (m_hasBegun)
-					m_component->Begin();
-			}
-			else {
-				GE_CORE_ERROR("Native Script Component: Failed to Load {0}", clazz);
-			}
-		}
+		CreateScript();
 	}
 
 
@@ -129,6 +97,29 @@ namespace GEngine {
 		}
 		catch (const std::exception& e) {
 			GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
+		}
+	}
+
+	void NativeScriptComponent::CreateScript()
+	{
+		if (m_clazz.size() > 0) {
+			try {
+				m_object = ScriptApi::GetReflector_Native()->CreateUClass(m_clazz, m_entity);
+				m_component = (Component*)m_object.data();
+				if (m_component) {
+					m_isValid = true;
+					bUpdates = m_component->GetDoesUpdate();
+
+					ScriptApi::SetNativeScriptPtrs((void*)m_component, (void*)&m_object);
+
+				}
+				else {
+					GE_CORE_ERROR("Native Script Component: Failed to Load Class<{0}>", m_clazz);
+				}
+			}
+			catch (const std::exception& e) {
+				GE_CORE_ERROR("Native Script {0}: {1}", m_clazz, e.what());
+			}
 		}
 	}
 

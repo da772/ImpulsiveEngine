@@ -74,7 +74,7 @@ namespace GEngine {
 		 #ifndef GE_GRAPHICS_API_NONE
 		 if (m_IndexCount > 0) {
 			 m_Shader->Bind();
-			 if (m_camera) m_Shader->UploadUniformMat4("u_ViewProjection", m_camera->GetViewProjectionMatrix());
+			 if (pipeline && pipeline->GetCamera()) m_Shader->UploadUniformMat4("u_ViewProjection", pipeline->GetCamera()->GetViewProjectionMatrix());
 			 if (m_shaderFunction) m_shaderFunction();
 			 for (int i = 0; i < m_TextureIds.size(); i++) {
 				 if (m_TextureIds[i] != -1)

@@ -28,6 +28,9 @@ namespace GEngine {
 		void OnUpdate(Timestep timestep) override;
 
 	private:
+		void CreateScript();
+
+	private:
 		NativeObject m_object;
 		Component* m_component;
         bool m_isValid = false;

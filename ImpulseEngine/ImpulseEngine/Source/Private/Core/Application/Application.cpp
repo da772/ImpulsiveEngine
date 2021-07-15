@@ -220,7 +220,13 @@ namespace GEngine {
         b_NewGraphicsApi = true;
     }
     
-    void Application::SetWindowApi(const FWindowApi& windowApi) {
+	void Application::SetTargetCamera(Camera* camera)
+	{
+        m_Camera = camera;
+        Renderer::SetMainCamera(m_Camera);
+	}
+
+	void Application::SetWindowApi(const FWindowApi& windowApi) {
         Application::s_windowApi = windowApi;
         LayerReset();
         

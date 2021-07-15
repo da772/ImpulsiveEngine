@@ -13,7 +13,9 @@ namespace GEngine {
 	std::string ScriptApi::dllDir_Native = "";
 	std::function<bool()> ScriptApi::cmdMake_Native = nullptr;
 
+	std::unordered_map<ObjectHash, std::vector<NativePtr>> ScriptApi::nativeScriptReferences;
 	std::unordered_set<NativeScriptComponent*> ScriptApi::nativeScripts;
+	std::unordered_map<std::string, std::vector<std::string>> ScriptApi::nativeScriptPtrs;
 
 	static dllptr lib;
 
@@ -55,9 +57,45 @@ namespace GEngine {
 		Unload_Native();
 	}
 
+
+	void ScriptApi::SetNativeScriptPtrs(void* hash, void* data)
+	{
+		refl::uClass* cl = (refl::uClass*)data;
+		GameObject* m_go = (GameObject*)hash;
+		std::unordered_map<std::string, std::vector<std::string>>::iterator it = nativeScriptPtrs.find(cl->GetName());
+
+		if (it != nativeScriptPtrs.end()) {
+			for (const auto& ptr : it->second) {
+				GameObject* go = cl->GetMember<GameObject*>(ptr);
+				if (go) {
+					void** pp = (void**)((uint8_t*)hash + s_nativeReflector->GetStorage()->get_map().at(cl->GetName()).property_map.at(ptr).offset);
+					nativeScriptReferences[go->GetHash()].push_back({ m_go->GetHash(), (void**)pp });
+				}
+			}
+		}
+
+	}
+
+	void ScriptApi::RemoveGameObject(ObjectHash hash)
+	{
+		std::unordered_map<ObjectHash, std::vector<NativePtr>>::iterator it = nativeScriptReferences.find(hash);
+
+		if (it != nativeScriptReferences.end()) {
+			for (const auto& i : it->second) {	
+				if (GameObject::GetObjectFromHash(i.go)) {
+					*i.ptr = nullptr;
+				}
+			}
+			nativeScriptReferences.erase(it);
+		}
+	
+	}
+
 	bool ScriptApi::Load_Native(const std::string& path, const std::string& extension)
 	{
 #if GE_HOT_RELOAD
+		nativeScriptPtrs.clear();
+		nativeScriptReferences.clear();
 		bool compileFail = false;
 		if (lib) {
             s_nativeReflector->Clear();
@@ -108,6 +146,15 @@ namespace GEngine {
 		GE_CORE_TRACE("Native Compile: Complete... ({0}ms)", ms);
 		ms = Time::GetEpochTimeMS();
 		if (Utility::__LoadLib(dllDir_Native,"NativeScripts", &lib, s_nativeReflector->GetStorage())) {
+			
+
+			for (const auto& objs : s_nativeReflector->GetStorage()->get_map()) {
+				for (const auto& prop : objs.second.property_map) {
+					if (prop.second.type == refl::store::uproperty_type::uclass_ptr) {
+						nativeScriptPtrs[objs.first].push_back(prop.first);
+					}
+				}
+			}
 			ms = Time::GetEpochTimeMS() - ms;
 			GE_CORE_TRACE("Native Link: Complete... ({0}ms)", ms);
 		}
@@ -170,6 +217,8 @@ namespace GEngine {
 	{
 		s_nativeReflector->SetRelativeInclude(includeDir.c_str());
 	}
+
+
 
 	void ScriptApi::AddNativeScript(NativeScriptComponent* c)
 	{

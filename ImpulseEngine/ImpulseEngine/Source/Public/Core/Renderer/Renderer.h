@@ -84,6 +84,8 @@ namespace GEngine {
 
 		static void SetDepth(bool b);
 
+		static void SetMainCamera(Camera* cam);
+
 		static void Unload();
 		static void Reload();
 		

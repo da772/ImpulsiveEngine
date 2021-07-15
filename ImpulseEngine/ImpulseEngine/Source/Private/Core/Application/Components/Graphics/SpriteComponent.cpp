@@ -22,41 +22,32 @@ namespace GEngine {
 	SpriteComponent::SpriteComponent(Entity* e, Ref<Shader> shader, const std::function<void()>& shaderFunc, const std::string& pipelineId) : NativeScript(e)
 	{
 		go_tag = "Sprite Component";
-		if (shader != nullptr || pipelineId.size() > 0) {
-			if (shader == nullptr) {
-				std::string path = std::string("EngineContent/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
-				shader = Ref<Shader>(Shader::Create(path));
-			}
-			m_Shader = shader;
-			m_shapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
-				1000, m_Shader, pipelineId.size() > 0 ? pipelineId.c_str() : nullptr, shaderFunc));
-			return;
-		} else if (s_ShapeFactory == nullptr) {
+
+		if (s_ShapeFactory == nullptr) {
 			std::string path = std::string("EngineContent/shaders/TextureShader_" + std::to_string(RenderCommand::GetMaxTextureSlots())) + "Batch.glsl";
-			m_Shader = Ref<Shader>(Shader::Create(path));
-			SpriteComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()),
-				1000, m_Shader, nullptr, shaderFunc));
-			
+			m_Shader = shader != nullptr ? shader : Ref<Shader>(Shader::Create(path));
+			SpriteComponent::s_ShapeFactory = Ref<BatchRenderer>(new BatchRenderer(ERenderType::GAME, Ref<Quad>(new Quad()), 5000, m_Shader, pipelineId.size() > 0 ? pipelineId.c_str() : nullptr));
+			s_ShapeFactory->SetRenderType(ERenderType::GAME);
 		}
+
 		m_shapeFactory = s_ShapeFactory;
 		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
-			if (IsInitialized()) {
-				for (ShapeID id : m_ids) {
-					Vector3f pos = m_shapeFactory->GetShapePosition(id);
-					Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
-					if (pos != nPos)
-						m_shapeFactory->SetPosition(id, nPos.xy());
-					float rot = m_shapeFactory->GetShapeRotation(id);
-					float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
-					if (rot != nRot)
-						m_shapeFactory->SetRotation(id, nRot);
-					Vector2f _scale = m_shapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, transform->GetWorldScale().z);
-					Vector3f nScale = scale / transData.GetWorldScale();
-					if (scale != nScale * transform->GetWorldScale().xy()) {
-						m_shapeFactory->SetScale(id, transform->GetWorldScale().xy() * nScale.xy());
-					}
+			for (ShapeID id : m_ids) {
+				Vector3f pos = m_shapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
+				if (pos != nPos)
+					m_shapeFactory->SetPosition(id, nPos.xy());
+				float rot = m_shapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
+				if (rot != nRot)
+					m_shapeFactory->SetRotation(id, nRot);
+				Vector2f _scale = m_shapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, transform->GetWorldScale().z);
+				Vector3f nScale = scale / transData.GetWorldScale();
+				if (scale != nScale * transform->GetWorldScale().xy()) {
+					m_shapeFactory->SetScale(id, transform->GetWorldScale().xy() * nScale.xy());
 				}
+
 			}
 			});
 	}
@@ -84,7 +75,7 @@ namespace GEngine {
 	{
 		Vector3f _scale = scale * m_entity->GetTransform()->GetWorldScale();
 
-		ShapeID id = m_shapeFactory->AddShape(_pos + m_entity->GetTransform()->GetWorldPosition(), rotation + m_entity->GetTransform()->GetWorldRotation().z, _scale.xy(), _color, texture, textureScale);
+		ShapeID id = m_shapeFactory->AddShape(_pos, rotation , scale.xy(), _color, texture, textureScale);
 		m_ids.push_back(id);
 		return id;
 	}

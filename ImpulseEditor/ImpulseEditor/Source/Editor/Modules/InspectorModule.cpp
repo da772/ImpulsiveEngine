@@ -323,6 +323,7 @@ namespace Editor {
 									GEngine::Component* child = payloadObj.component;
 
 									script->GetNativeObject()->SetMember<GEngine::Component*>(p.second.name, child);
+									GEngine::ScriptApi::SetNativeScriptPtrs(script->GetComponent(), script->GetNativeObject());
 									EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
 
 								}

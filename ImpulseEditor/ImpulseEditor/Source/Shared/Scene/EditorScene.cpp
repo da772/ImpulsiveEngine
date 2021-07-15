@@ -12,6 +12,13 @@ namespace Editor {
 
 		camera = m_CameraController->GetCamera().get();
 		GEngine::Application::GetApp()->SetTargetCamera(camera);
+		GEngine::Application::GetApp()->SetTargetCameraController(m_CameraController.get());
+
+
+	//	Entity* e = CreateEntity<Entity>();
+		//SpriteComponent* s = e->AddComponent<SpriteComponent>();
+		//s->CreateQuad({ 20,0,0 }, 0, { 20,20,1 }, { 1,0,1,1 });
+
 
 	}
 
@@ -22,7 +29,7 @@ namespace Editor {
 
 	void EditorScene::OnUpdate(GEngine::Timestep timestep)
 	{
-		
+		m_CameraController->OnUpdate(timestep);
 
 		//GE_LOG_DEBUG("UPDATING: {0}", timestep);
 	}

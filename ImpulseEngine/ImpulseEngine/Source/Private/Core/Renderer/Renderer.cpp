@@ -70,8 +70,6 @@ namespace GEngine {
 		Renderer::s_SceneData->ViewMatrix = camera->GetViewMatrix();
 		Renderer::s_SceneData->position = camera->GetPosition();
 		Renderer2D::BeginScene(camera);
-		Renderer::GetPipeline("Debug2D")->SetCamera(camera);
-		Renderer::GetPipeline("2d")->SetCamera(camera);
 	}
 
 	void Renderer::Init()
@@ -414,6 +412,12 @@ namespace GEngine {
 	void Renderer::SetDepth(bool b)
 	{
 		RenderCommand::SetDepth(b);
+	}
+
+	void Renderer::SetMainCamera(Camera* cam)
+	{
+		Renderer::GetPipeline("Debug2D")->SetCamera(cam);
+		Renderer::GetPipeline("2d")->SetCamera(cam);
 	}
 
 }

@@ -2,11 +2,16 @@
 
 #include <reflection/reflection.hpp>
 #include "Public/Core/Util/Utility.h"
-
+#include "Public/Core/Application/GameObject.h"
 
 
 namespace GEngine {
 
+
+    struct NativePtr {
+        ObjectHash go;
+        void** ptr;
+    };
 
 	using NativeObject = refl::uClass;
 	using NativeStorage = refl::store::storage*;
@@ -44,6 +49,8 @@ namespace GEngine {
         static void SetDLLDir_Native(const std::string& dir);
         static void SetRelativePath_Native(const std::string& includeDir);
 		static inline NativeReflector GetReflector_Native() { return s_nativeReflector; }
+        static void SetNativeScriptPtrs(void* hash, void* data);
+        static void RemoveGameObject(ObjectHash hash);
 
         template<typename ... Args>
         static inline void NativeLog(uint8_t i, const std::string& __s, Args const &... args) {
@@ -69,7 +76,6 @@ namespace GEngine {
         static void AddNativeScript(NativeScriptComponent*);
         static void RemoveNativeScript(NativeScriptComponent*);
         static const std::unordered_set<NativeScriptComponent*>& GetNativeScripts() ;
-
             
 
 	private:
@@ -82,7 +88,8 @@ namespace GEngine {
 		static std::string nameBuild_Native;
         static void _NativeLog(uint8_t i, const std::string& s);
         static std::unordered_set<NativeScriptComponent*> nativeScripts;
-
+        static std::unordered_map<ObjectHash, std::vector<NativePtr>> nativeScriptReferences;
+        static std::unordered_map<std::string, std::vector<std::string>> nativeScriptPtrs;
 
 	};
 

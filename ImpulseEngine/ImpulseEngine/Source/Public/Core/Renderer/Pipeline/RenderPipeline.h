@@ -34,7 +34,7 @@ namespace GEngine {
 		inline void SetShaderEndFunction(std::function<void()> shaderFunc) { m_shaderEndFunc = shaderFunc; }
 		inline const std::function<void()>& GetShaderStartFunction() { return m_shaderStartFunc; }
 		inline const std::function<void()>& GetShaderEndFunction() { return m_shaderEndFunc; }
-
+		inline Camera* GetCamera() const { return m_camera; }
 		inline const uint32_t GetWidth() const { return m_width; }
 		inline const uint32_t GetHeight () const { return m_height; }
 

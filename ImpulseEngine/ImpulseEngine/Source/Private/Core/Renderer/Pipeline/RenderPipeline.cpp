@@ -49,7 +49,7 @@ namespace GEngine {
 		std::vector<Ref<Renderable>>::iterator it = std::find(renderables.begin(), renderables.end(), r);
 		GE_CORE_ASSERT(it == renderables.end(), "RENDERABLE ALREADY ADDED");
 #endif
-		r->SetCamera(m_camera);
+		r->SetPipeline(this);
 		renderables.push_back(r);
 		Sort();
 	}
