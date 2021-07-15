@@ -20,7 +20,7 @@ namespace GEngine {
 		m_shader = Shader::Create("EngineContent/shaders/ViewportShader.glsl");
 	}
 
-	RenderPipeline::RenderPipeline(const char* name, const float renderScale, uint32_t textureFlags)
+	RenderPipeline::RenderPipeline(const char* name, Camera* camera, const float renderScale, uint32_t textureFlags) : m_camera(camera)
 	{
 		m_name = name;
 		m_renderScale = renderScale;
@@ -49,6 +49,7 @@ namespace GEngine {
 		std::vector<Ref<Renderable>>::iterator it = std::find(renderables.begin(), renderables.end(), r);
 		GE_CORE_ASSERT(it == renderables.end(), "RENDERABLE ALREADY ADDED");
 #endif
+		r->SetCamera(m_camera);
 		renderables.push_back(r);
 		Sort();
 	}

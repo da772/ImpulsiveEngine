@@ -402,7 +402,7 @@ namespace Editor {
 
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 - imageSize + imageSize / 2);
 			if (texture)
-				ImGui::Image((ImTextureID)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
+				ImGui::Image((ImTextureID)(uintptr_t)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
 
 			//if (textSize.y <= lineHeight) {
 

@@ -11,7 +11,7 @@
 
 namespace GEngine {
 
-	RenderPipeline_ui::RenderPipeline_ui() : RenderPipeline("RenderPipeline_ui")
+	RenderPipeline_ui::RenderPipeline_ui() : RenderPipeline("RenderPipeline_ui", nullptr)
 	{
 		
 	}

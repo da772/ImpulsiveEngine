@@ -226,7 +226,7 @@ namespace Editor {
 				}
 
 
-				if (ImGui::ImageButton((ImTextureID)folderIcon->GetRendererID(), { 17.f,17.f }, { .0f,1.f }, { 1.f, 0.f })) {
+				if (ImGui::ImageButton((ImTextureID)(uintptr_t)folderIcon->GetRendererID(), { 17.f,17.f }, { .0f,1.f }, { 1.f, 0.f })) {
 					std::string fileLoc;
 					std::replace(m_msBuildLocation.begin(), m_msBuildLocation.end(), '\\', '/');
 					GEngine::FileSystem::OpenFileDialog({}, fileLoc, m_msBuildLocation, true);

@@ -61,10 +61,12 @@ namespace Editor {
 						}
 
 						if (ImGui::Button("Remove Component")) {
+							GEngine::ThreadPool::AddMainThreadFunction([entity, p]() {
+								EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneDestroyComponent>(p.first);
+								entity->RemoveComponent(p.second);
+								EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::REMOVE_COMPONENT);
+								});
 							
-							EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneDestroyComponent>(p.first);
-							entity->RemoveComponent(p.second);
-							EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::REMOVE_COMPONENT);
 							ImGui::TreePop();
 							break;
 						}

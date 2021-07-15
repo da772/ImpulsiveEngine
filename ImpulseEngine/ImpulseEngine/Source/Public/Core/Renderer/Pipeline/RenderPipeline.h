@@ -6,19 +6,21 @@ namespace GEngine {
 	class Renderable;
 	class FrameBuffer;
 	class Shader;
+	class Camera;
 
 	class GE_API RenderPipeline {
 
 	public:
 
 		RenderPipeline();
-		RenderPipeline(const char* name, const float renderScale = 1.f, uint32_t textureFlags = 1161);
+		RenderPipeline(const char* name, Camera* camera, const float renderScale = 1.f, uint32_t textureFlags = 1161);
 		virtual ~RenderPipeline() {};
 
 		virtual void Render();
 		void Add(Ref<Renderable> r);
 		void Remove(Ref<Renderable> r);
 		void Sort();
+		inline void SetCamera(Camera* camera) { m_camera = camera; };
 		void Clear();
 		virtual void SetSize(const int width, const int height);
 		inline Ref<FrameBuffer> GetFrameBuffer() { return m_frameBuffer; };
@@ -45,6 +47,7 @@ namespace GEngine {
 		Ref<Shader> m_shader;
 		std::string m_name = "";
 		float m_renderScale = 1.f;
+		Camera* m_camera = nullptr;
 		uint32_t m_width = 0, m_height = 0;
 		uint32_t m_textureFlags = 1161;//TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear;
 
