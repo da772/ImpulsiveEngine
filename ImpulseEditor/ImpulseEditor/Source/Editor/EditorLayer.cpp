@@ -40,7 +40,16 @@ namespace Editor {
 		if (!s_singleton)
 			s_singleton = this;
 
+	
 
+		m_cameraController = new GEngine::Orthographic_CameraController(
+			(float)GEngine::Application::GetApp()->GetWindow()->GetWidth() / (float)GEngine::Application::GetApp()->GetWindow()->GetHeight());
+
+		GEngine::Renderer::AddPipeline("2d_Copy", std::make_shared<GEngine::RenderPipeline_Copy>(GEngine::Renderer::GetPipeline("2d"), m_cameraController->GetCamera().get()), 500);
+
+
+		GEngine::Ref<GEngine::RenderPipeline> pipe = GEngine::Renderer::GetPipeline("2d_Copy");
+		pipe->SetSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
 
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.data.name, m_projectData.data.path);
 		reloadModule = new ReloadModule(&m_projectData);
@@ -48,11 +57,12 @@ namespace Editor {
 		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule);
 		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule);
 		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
-		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/"+m_projectData.data.name+"/"+m_projectData.data.name, &m_projectData.data);
 		AddModule<ConsoleModule>("Console Log", true, ImGuiWindowFlags_AlwaysAutoResize, true);
+		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/" + m_projectData.data.name + "/" + m_projectData.data.name, &m_projectData.data);
 		AddModule<ProfilerModule>("Profiler", true, ImGuiWindowFlags_AlwaysAutoResize, true);
 		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
-        AddModule<ViewportModule>("Viewport", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule);
+		AddModule<ViewportModule>("Game", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule, true);
+		AddModule<ViewportModule>("Scene", true, ImGuiWindowFlags_AlwaysAutoResize, false, "2d_Copy", reloadModule);
         AddModule<HierarchyModule>("Hierarchy", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject);
 		AddModule<InfoPanelModule>("InfoPanel", true, ImGuiWindowFlags_AlwaysAutoResize, false);
 
@@ -65,6 +75,7 @@ namespace Editor {
 		if (s_singleton == this)
 			s_singleton = nullptr;
 		delete reloadModule;
+		delete m_cameraController;
 		GE_CORE_DEBUG("EDITOR LAYER DESTROYED");
 	}
 
@@ -91,12 +102,25 @@ namespace Editor {
 
 	void EditorLayer::OnUpdate(GEngine::Timestep timeStep)
 	{
-
+		m_cameraController->OnUpdate(timeStep);
 	}
+
+	static float v = 1;
 
 	void EditorLayer::OnEvent(GEngine::Event& event)
 	{
 
+		if (event.GetEventType() == GEngine::EventType::KeyReleased) {
+			const GEngine::KeyEvent& key = (const GEngine::KeyEvent&)event;
+			if (key.GetKeyCode() == GE_KEY_UP) {
+				v += 1.0;
+				m_cameraController->SetCameraZoom(v);
+			}
+			else if (key.GetKeyCode() == GE_KEY_DOWN) {
+				v -= 1.0;
+				m_cameraController->SetCameraZoom(v);
+			}
+		}
 	}
 
 	

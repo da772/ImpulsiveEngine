@@ -9,7 +9,7 @@ namespace Editor {
 	class ViewportModule : public EditorModule {
 
 		public:
-			ViewportModule(const std::string& pipeline, ReloadModule* reloadModule);
+			ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView = false);
 			~ViewportModule();
 
 			virtual void Create(const std::string& name, bool* is_open, uint32_t flags) override;
@@ -22,6 +22,7 @@ namespace Editor {
 	private:
 		bool handleResize = false;
 		float imageButtonSize = 35.f;
+		bool gameView;
 		ReloadModule* m_reloadModule;
 		std::string m_pipeline;
 		GEngine::Vector2<int> originalSize = { 0,0 };

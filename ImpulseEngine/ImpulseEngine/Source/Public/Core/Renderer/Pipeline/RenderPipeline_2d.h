@@ -11,7 +11,7 @@ namespace GEngine {
 
 		virtual void RenderStart() override;
 		virtual void RenderEnd() override;
-
+		virtual void SetCamera(Camera* cam) override;
 
 
 		void SetSize(const int width, const int height) override;

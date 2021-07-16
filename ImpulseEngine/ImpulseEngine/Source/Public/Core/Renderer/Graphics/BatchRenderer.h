@@ -34,7 +34,7 @@ namespace GEngine {
 		inline std::vector<float>& GetVertices() { return m_Vertices; };
 		inline std::vector<int>& GetTextures() { return m_TextureIds; };
 
-		virtual void Render() override;
+		virtual void Render(Camera* cam) override;
 
 
 		static inline const int GetBatchCount() { return s_BatchCount; }

@@ -43,7 +43,7 @@ namespace GEngine {
 		Renderer::Prepare();
         RenderStart();
 		for (const FPipeline& p : pipelines) {
-			if (p.p.get() == this) {
+			if (p.p.get() == this || p.p->IgnoreViewPort()) {
 				continue;
 			}
 			

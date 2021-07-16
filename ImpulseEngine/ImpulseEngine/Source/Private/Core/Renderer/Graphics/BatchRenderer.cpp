@@ -69,12 +69,12 @@ namespace GEngine {
 	 }
 
 
-	 void Batch::Render()
+	 void Batch::Render(Camera* cam)
 	 {
 		 #ifndef GE_GRAPHICS_API_NONE
 		 if (m_IndexCount > 0) {
 			 m_Shader->Bind();
-			 if (pipeline && pipeline->GetCamera()) m_Shader->UploadUniformMat4("u_ViewProjection", pipeline->GetCamera()->GetViewProjectionMatrix());
+			 if (cam) m_Shader->UploadUniformMat4("u_ViewProjection", cam->GetViewProjectionMatrix());
 			 if (m_shaderFunction) m_shaderFunction();
 			 for (int i = 0; i < m_TextureIds.size(); i++) {
 				 if (m_TextureIds[i] != -1)
@@ -83,6 +83,8 @@ namespace GEngine {
 
 			 m_VertexArray->Bind();
 			 RenderCommand::DrawIndexed(m_VertexArray, m_IndexCount);
+			 m_VertexArray->UnBind();
+			 m_Shader->UnBind();
 		 }
 		#endif
 	 }

@@ -7,7 +7,7 @@
 using namespace GEngine;
 
 namespace Editor {
-	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule) : m_pipeline(pipeline), m_reloadModule(reloadModule)
+	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView) : m_pipeline(pipeline), m_reloadModule(reloadModule), gameView(gameView)
 	{
 		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
 		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
@@ -61,59 +61,6 @@ namespace Editor {
 		}
 
 		ImGui::EndChild();
-#if 0 // Game Controls (Moved to Toolbar Module)
-		ImGui::SameLine();
-
-		if (GEngine::SceneManager::HasBegun()) {
-			
-			if (GEngine::Application::IsGamePaused()) {
-				ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f - imageButtonSize * 2 , ImGui::GetCursorPosY()});
-				if (ControlButtons("resumeButton")) {
-					GEngine::Application::ResumeGame();
-					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationResumeEvent>();
-				}
-				ImGui::SameLine();
-				if (ControlButtons("fastForwardButton")) {
-					GEngine::Application::ResumeGame();
-					GEngine::ThreadPool::AddEndFrameFunction([]() {GEngine::Application::PauseGame();
-					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPauseEvent>(); });
-				}
-				ImGui::SameLine();
-			}
-			else {
-				ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f - imageButtonSize, ImGui::GetCursorPosY() });
-				if (ControlButtons("pauseButton")) {
-					GEngine::Application::PauseGame();
-					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPauseEvent>();
-				}
-				ImGui::SameLine();
-			}
-			
-			if (ControlButtons("stopButton")) {
-				ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f , ImGui::GetCursorPosY() });
-				const std ::string name =  GEngine::SceneManager::GetCurrentScene()->GetId();
-				if (GEngine::Application::IsGamePaused()) {
-					GEngine::Application::ResumeGame();
-				}
-				GEngine::SceneManager::SetCurrentScene(name.c_str(), false);
-				EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationStopEvent>();
-			}
-			
-		}
-		else {
-			ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f , ImGui::GetCursorPosY() });
-			if (m_reloadModule->IsReloading()) {
-				ControlButtons("loadingButton");
-			}
-			else {
-				if (ControlButtons("playButton")) {
-					GEngine::SceneManager::Begin();
-					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPlayEvent>();
-				}
-			}
-			
-		}
-#endif
 		ImGui::EndChild();
 
 		ImGui::BeginChild("ViewPortImpl");

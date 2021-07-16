@@ -27,7 +27,10 @@ namespace GEngine {
 		Renderer::SetDepth(true);
 	}
 
-
+	void RenderPipeline_2d::SetCamera(Camera* cam)
+	{
+		m_camera = cam;
+	}
 
 	void RenderPipeline_2d::SetSize(const int width, const int height)
 	{

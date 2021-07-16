@@ -37,7 +37,7 @@ namespace GEngine {
 	public:
 		DebugRenderable(std::function<void()> f = nullptr) : m_function(f) {};
 
-		void Render() override
+		void Render(Camera* cam) override
 		{
 			if (m_function)
 				m_function();

@@ -20,8 +20,9 @@ namespace Editor {
 	private:
 		ReloadModule* m_reloadModule;
 		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
-		float imageButtonSize = 25.f;
-		float yOffset = 1.f;
+		float imageButtonSize = 18.5f;
+		float imageBorderSize = 21.0f;
+		float yOffset = 2.f;
 
 	};
 

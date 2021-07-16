@@ -20,7 +20,7 @@ namespace GEngine {
 		void Add(Ref<Renderable> r);
 		void Remove(Ref<Renderable> r);
 		void Sort();
-		inline void SetCamera(Camera* camera) { m_camera = camera; };
+		virtual void SetCamera(Camera* camera);
 		void Clear();
 		virtual void SetSize(const int width, const int height);
 		inline Ref<FrameBuffer> GetFrameBuffer() { return m_frameBuffer; };
@@ -37,6 +37,9 @@ namespace GEngine {
 		inline Camera* GetCamera() const { return m_camera; }
 		inline const uint32_t GetWidth() const { return m_width; }
 		inline const uint32_t GetHeight () const { return m_height; }
+		inline const std::vector<Ref<Renderable>> GetRenderables() const { return renderables; }
+
+		virtual inline const bool IgnoreViewPort() const { return false; }
 
 	protected:
 		std::vector<Ref<Renderable>> renderables;
@@ -50,6 +53,7 @@ namespace GEngine {
 		Camera* m_camera = nullptr;
 		uint32_t m_width = 0, m_height = 0;
 		uint32_t m_textureFlags = 1161;//TEXTUREFLAGS_Wrap_ClampToEdge | TEXTUREFLAGS_DisableMipMap | TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear;
+
 
 	};
 

@@ -256,31 +256,6 @@ namespace Editor {
 								ImGui::EndDragDropTarget();
 							}
 						}
-						else if (p.second.type_name == "Component*") {
-							char buff[255] = { 0 };
-							GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::Component*>(p.second.name);
-
-							if (ptr) {
-								memcpy(buff, (ptr->GetTag() + " (" + ptr->GetHash().ToString() + ")").c_str(), ptr->GetTag().size() + 3 + ptr->GetHash().ToString().size());
-								ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
-							}
-							else {
-								memcpy(buff, "nullptr", sizeof("nullptr"));
-								ImGui::InputText(p.first.c_str(), buff, ImGuiInputTextFlags_ReadOnly);
-							}
-
-							if (ImGui::BeginDragDropTarget()) {
-								const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ComponentGameObjectID");
-								if (payload) {
-									ComponentPayload payloadObj = *(ComponentPayload*)payload->Data;
-									GEngine::Component* child = payloadObj.component;
-
-									script->GetNativeObject()->SetMember<GEngine::Component*>(p.second.name, child);
-									EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
-								}
-								ImGui::EndDragDropTarget();
-							}
-						}
 						else if (p.second.type_name == "std::string") {
 
 							char buff[2048] = { 0 };
@@ -396,12 +371,12 @@ namespace Editor {
 
 	void InspectorModule::AddComponentModal()
 	{
-		if (ImGui::BeginPopup("AddComponentModal", ImGuiWindowFlags_AlwaysUseWindowPadding)) {
+		if (ImGui::BeginPopup("AddComponentModal", ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoMove)) {
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			GEngine::Entity* entity = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(*m_selectedGameObject));
 			if (entity) {
 
-				if (ImGui::Button("Native Script", { ImGui::GetContentRegionAvailWidth() ,0 })) {
+				if (ImGui::Button("Native Script Component", { ImGui::GetContentRegionAvailWidth() ,0 })) {
 
 					GEngine::NativeScriptComponent* s = entity->AddComponent<GEngine::NativeScriptComponent>("");
 

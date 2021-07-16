@@ -49,6 +49,7 @@
 #include "Public/Core/Renderer/Graphics/Buffer.h"
 
 #include "Public/Core/Renderer/Pipeline/RenderPipeline_2d.h"
+#include "Public/Core/Renderer/Pipeline/RenderPipeline_Copy.h"
 #include "Public/Core/Renderer/Pipeline/RenderPipeline_ui.h"
 
 

@@ -45,7 +45,7 @@ namespace GEngine {
 		RuntimeMeshRenderable(Ref<VertexArray> vertexArray, Ref<Material> material);
 		virtual ~RuntimeMeshRenderable();
 
-		virtual void Render() override;
+		virtual void Render(Camera* cam) override;
 	private:
 		Ref<VertexArray> m_VertexArray;
 		Ref<Material> m_Material;

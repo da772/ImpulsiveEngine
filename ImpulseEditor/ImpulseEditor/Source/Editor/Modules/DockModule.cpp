@@ -62,15 +62,20 @@ namespace Editor {
 				ImGuiID dock_down_id = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, .25f, nullptr, &dock_main_id);
 				ImGuiID dock_right_id = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.25f, nullptr, &dock_main_id);
 				ImGuiID dock_left_id = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.25f, nullptr, &dock_main_id);
+				ImGuiID dock_center_right_id = ImGui::DockBuilderAddNode(ImGui::DockBuilderGetCentralNode(dock_up_id)->ID);
 				ImGuiID dock_down_right_id = ImGui::DockBuilderAddNode(dock_down_id);
+				
 
-				ImGui::DockBuilderDockWindow("Viewport", ImGui::DockBuilderGetCentralNode(dock_up_id)->ID);
+				
+				ImGui::DockBuilderDockWindow("Game", ImGui::DockBuilderGetCentralNode(dock_up_id)->ID);
+				ImGui::DockBuilderDockWindow("Scene", dock_center_right_id);
 				//ImGui::DockBuilderDockWindow("Actions", dock_up_id);
 				ImGui::DockBuilderDockWindow("Hierarchy", dock_left_id);
 				ImGui::DockBuilderDockWindow("Inspector", dock_right_id);
 				//ImGui::DockBuilderDockWindow("Graphics Debugger", dock_left_id);
 				ImGui::DockBuilderDockWindow("Content Browser", dock_down_id);
 				ImGui::DockBuilderDockWindow("Console Log", dock_down_right_id);
+				
 
 				ImGuiDockNode* node = ImGui::DockBuilderGetNode(ImGui::DockBuilderGetCentralNode(dockspace_id)->ID);
 				node->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
@@ -82,7 +87,7 @@ namespace Editor {
 				node->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
 				node = ImGui::DockBuilderGetNode(dock_down_right_id);
 				node->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
-
+				
 				ImGui::DockBuilderFinish(dock_main_id);
 
 			}

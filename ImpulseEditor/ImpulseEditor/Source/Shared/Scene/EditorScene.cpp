@@ -30,7 +30,7 @@ namespace Editor {
 	void EditorScene::OnUpdate(GEngine::Timestep timestep)
 	{
 		m_CameraController->OnUpdate(timestep);
-
+		
 		//GE_LOG_DEBUG("UPDATING: {0}", timestep);
 	}
 

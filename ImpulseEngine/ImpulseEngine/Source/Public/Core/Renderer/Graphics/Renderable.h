@@ -13,7 +13,7 @@ namespace GEngine {
 		Renderable() {};
 		virtual ~Renderable() {};
 
-		virtual void Render() = 0;
+		virtual void Render(Camera* cam) = 0;
 		
 		inline int GetPriority() { return m_Priority; }
 		inline void SetPipeline(RenderPipeline* p) { pipeline = p; }

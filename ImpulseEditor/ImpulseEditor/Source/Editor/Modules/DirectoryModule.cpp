@@ -555,7 +555,7 @@ namespace Editor {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 			}
 			
-			ImGui::Image((ImTextureID)m_textures["folderIcon" ]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)(uintptr_t)m_textures["folderIcon" ]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text(d.name.c_str());
 			AcceptDirPayload(d, {&pos.x});

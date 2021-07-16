@@ -41,6 +41,19 @@ namespace Editor {
 
 		ImGui::BeginMainMenuBar();
 		if (ImGui::BeginMenu("File")) {
+
+			if (ImGui::MenuItem("New Scene", "CTRL+N", nullptr)) {
+
+			}
+
+			if (ImGui::MenuItem("Open Scene", "CTRL+O", nullptr)) {
+
+			}
+
+			if (ImGui::MenuItem("Save Scene", "CTRL+S", nullptr)) {
+
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -49,6 +62,9 @@ namespace Editor {
 			}
 			if (ImGui::MenuItem("Redo", "CTRL+Y", nullptr)) {
 			}
+
+			ImGui::Separator();
+
 			if (ImGui::MenuItem("Copy", "CTRL+C", nullptr)) {
 			
 			}

@@ -102,10 +102,10 @@ namespace GEngine {
 		m_Material = nullptr;
 	}
 
-	void RuntimeMeshRenderable::Render()
+	void RuntimeMeshRenderable::Render(Camera* cam)
 	{
 		m_Material->GetShader()->Bind();
-		m_Material->GetShader()->UploadUniformMat4("u_ViewProjection", SceneManager::GetCurrentScene()->GetCamera()->GetViewProjectionMatrix());
+		m_Material->GetShader()->UploadUniformMat4("u_ViewProjection", cam->GetViewProjectionMatrix());
 
 		m_Material->GetShader()->UploadUniformFloat4("u_Color", { 1.f,1.f,1.f,1.f });
 		m_Material->GetShader()->UploadUniformFloat2("u_UV", { 1.f,1.f });

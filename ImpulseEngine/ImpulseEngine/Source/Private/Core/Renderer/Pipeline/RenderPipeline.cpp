@@ -36,7 +36,7 @@ namespace GEngine {
 		Renderer::Prepare();
 		RenderStart();
 		for (int i = 0; i < renderables.size(); i++) {
-			renderables[i]->Render();
+			renderables[i]->Render(m_camera);
 		}
 		RenderEnd();
 		m_frameBuffer->UnBind();
@@ -69,6 +69,11 @@ namespace GEngine {
 		std::sort(renderables.begin(), renderables.end(), [](const Ref<Renderable>& r1, const Ref<Renderable>& r2) {
 			return r1->GetPriority() == r2->GetPriority() ? r1->GetTime() < r2->GetTime() :  r1->GetPriority() < r2->GetPriority();
 			});
+	}
+
+	void RenderPipeline::SetCamera(Camera* camera)
+	{
+		m_camera = camera;
 	}
 
 	void RenderPipeline::Clear() {
