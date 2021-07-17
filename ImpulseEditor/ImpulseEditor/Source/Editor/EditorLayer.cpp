@@ -43,7 +43,7 @@ namespace Editor {
 	
 
 		m_cameraController = new GEngine::Orthographic_CameraController(
-			(float)GEngine::Application::GetApp()->GetWindow()->GetWidth() / (float)GEngine::Application::GetApp()->GetWindow()->GetHeight());
+			(float)GEngine::Application::GetApp()->GetWidth() / (float)GEngine::Application::GetApp()->GetHeight());
 
 		GEngine::Renderer::AddPipeline("2d_Copy", std::make_shared<GEngine::RenderPipeline_Copy>(GEngine::Renderer::GetPipeline("2d"), m_cameraController->GetCamera().get()), 500);
 
