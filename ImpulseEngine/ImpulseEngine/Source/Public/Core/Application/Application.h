@@ -56,7 +56,7 @@ namespace GEngine {
 		virtual inline void MaximizeWindow() {};
 		virtual inline void RestoreWindow() {};
 
-		inline void SetTargetCamera(Camera* camera);
+		void SetTargetCamera(Camera* camera);
 		inline void SetTargetCameraController(CameraController* camera) { m_CameraContoller = camera; }
 		inline Camera* GetTargetCamera() { return m_Camera; }
 		inline CameraController* GetTargetCameraController() { return m_CameraContoller; }

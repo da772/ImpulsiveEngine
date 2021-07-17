@@ -147,7 +147,9 @@ namespace GEngine {
 			return s_Instance->m_viewPortWidth;
 		if (!s_Instance->GetWindow())
 			return s_Instance->m_width;
-        return  s_Instance->GetWindow()->GetWindowData().Width;
+        int w,h;
+        s_Instance->GetWindow()->GetFrameBufferSize(&w, &h);
+        return w;
 	}
 
 	int Application::GetHeight()
@@ -156,7 +158,9 @@ namespace GEngine {
 			return s_Instance->m_viewPortHeight;
         if (!s_Instance->GetWindow())
             return s_Instance->m_height;
-        return  s_Instance->GetWindow()->GetWindowData().Height;
+        int w,h;
+        s_Instance->GetWindow()->GetFrameBufferSize(&w, &h);
+        return h;
 	}
 
 	int Application::GetWindowWidth()
