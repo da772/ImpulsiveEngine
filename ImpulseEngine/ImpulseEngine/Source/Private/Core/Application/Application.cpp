@@ -469,8 +469,6 @@ namespace GEngine {
 					}
 				}
 			}
-	
-		CleanDirtyApi();
     }
     
     void Application::Draw() {
@@ -498,6 +496,7 @@ namespace GEngine {
             if (b_EnableImGui) m_ImGuiLayer->End();
             Renderer::EndScene();
         }
+        CleanDirtyApi();
     }
     
     void Application::Run()

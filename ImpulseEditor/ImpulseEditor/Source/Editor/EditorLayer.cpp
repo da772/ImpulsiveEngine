@@ -12,7 +12,6 @@
 #include "Modules/ToolbarModule.h"
 #include "Modules/InfoPanelModule.h"
 
-
 #include "Shared/ImpulseEditor.h"
 #include "Shared/Scene/EditorScene.h"
 
@@ -23,6 +22,7 @@ namespace Editor {
 
 	EditorLayer* EditorLayer::Create(Project::LocalProject* data)
 	{
+
 		if (s_singleton) return nullptr;
 		return new EditorLayer("EditorLayer", data);
 	}
@@ -40,13 +40,10 @@ namespace Editor {
 		if (!s_singleton)
 			s_singleton = this;
 
-	
-
 		m_cameraController = new GEngine::Orthographic_CameraController(
 			(float)GEngine::Application::GetApp()->GetWidth() / (float)GEngine::Application::GetApp()->GetHeight());
 
 		GEngine::Renderer::AddPipeline("2d_Copy", std::make_shared<GEngine::RenderPipeline_Copy>(GEngine::Renderer::GetPipeline("2d"), m_cameraController->GetCamera().get()), 500);
-
 
 		GEngine::Ref<GEngine::RenderPipeline> pipe = GEngine::Renderer::GetPipeline("2d_Copy");
 		pipe->SetSize(GEngine::Application::GetWidth(), GEngine::Application::GetHeight());
@@ -55,17 +52,16 @@ namespace Editor {
 		reloadModule = new ReloadModule(&m_projectData);
 		reloadModule->Reload();
 		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule);
-		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule);
+		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule, &editorTool);
 		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
 		AddModule<ConsoleModule>("Console Log", true, ImGuiWindowFlags_AlwaysAutoResize, true);
 		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/" + m_projectData.data.name + "/" + m_projectData.data.name, &m_projectData.data);
 		AddModule<ProfilerModule>("Profiler", true, ImGuiWindowFlags_AlwaysAutoResize, true);
 		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
 		AddModule<ViewportModule>("Game", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule, true);
-		AddModule<ViewportModule>("Scene", true, ImGuiWindowFlags_AlwaysAutoResize, false, "2d_Copy", reloadModule);
+		AddModule<ViewportModule>("Scene", true, ImGuiWindowFlags_AlwaysAutoResize, false, "2d_Copy", reloadModule, false, m_cameraController, &editorTool);
         AddModule<HierarchyModule>("Hierarchy", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject);
 		AddModule<InfoPanelModule>("InfoPanel", true, ImGuiWindowFlags_AlwaysAutoResize, false);
-
 
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");
 	}
@@ -102,7 +98,12 @@ namespace Editor {
 
 	void EditorLayer::OnUpdate(GEngine::Timestep timeStep)
 	{
-		m_cameraController->OnUpdate(timeStep);
+		for (const auto& id : modules_order) {
+			std::pair<std::string, EditorModuleData&> d = { id, modules[id] };
+			if (!d.second.data->DoesUpdate()) continue;
+			d.second.data->Update(timeStep);
+		}
+		m_cameraController->OnUpdate(timeStep); 
 	}
 
 	static float v = 1;
@@ -135,7 +136,6 @@ namespace Editor {
 			if (!d.second.isOpen) continue;
 			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
 		}
-
 		ImGui::PopStyleVar();
 		ImGui::PopFont();
 

@@ -135,6 +135,7 @@ namespace GEngine {
 	std::string ImGuiAppLog::GetLastLog()
 	{
 		bool skip = true;
+		if (Buf.size() <= 0) return "";
 		for (int new_size = Buf.size(); new_size >= 0; new_size--)
 		{
 			if (Buf[new_size] == '\n') {

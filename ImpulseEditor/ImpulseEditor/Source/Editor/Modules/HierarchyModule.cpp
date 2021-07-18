@@ -23,6 +23,7 @@ namespace Editor {
 	HierarchyModule::~HierarchyModule()
 	{
 
+
 	}
 
 	void HierarchyModule::Create(const std::string& name, bool* is_open, uint32_t flags)

@@ -10,6 +10,10 @@ namespace Editor {
 
 	class ReloadModule;
 
+	enum class EditorTools : uint8_t {
+		NONE = 0, DRAG, MOVE, ROTATE, SCALE
+	};
+
 	class EditorLayer : public GEngine::Layer {
 
 	public:
@@ -45,6 +49,7 @@ namespace Editor {
 		static EditorDispatcher s_dispatcher;
 		std::unordered_map<std::string, EditorModuleData> modules;
 		std::vector<std::string> modules_order;
+		EditorTools editorTool = EditorTools::NONE;
 
 	private:
 		Project::LocalProject m_projectData;

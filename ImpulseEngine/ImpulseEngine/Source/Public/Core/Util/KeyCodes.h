@@ -126,6 +126,10 @@
 #define GE_KEY_RIGHT_ALT          346
 #define GE_KEY_RIGHT_SUPER        347
 #define GE_KEY_MENU               348
+#define GE_SCROLL_UP			  999
+#define GE_SCROLL_DOWN			  998
+#define GE_SCROLL_LEFT			  997
+#define GE_SCROLL_RIGHT			  996
 #endif
 
 #ifdef GE_PLATFORM_ANDROID
@@ -253,4 +257,9 @@
 #define GE_KEY_RIGHT_ALT          346
 #define GE_KEY_RIGHT_SUPER        347
 #define GE_KEY_MENU               348
+
+#define GE_SCROLL_UP			  999
+#define GE_SCROLL_DOWN			  998
+#define GE_SCROLL_LEFT			  997
+#define GE_SCROLL_RIGHT			  996
 #endif

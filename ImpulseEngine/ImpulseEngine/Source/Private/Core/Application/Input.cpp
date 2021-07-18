@@ -2,6 +2,7 @@
 
 #include "Public/Core/Application/Input.h"
 #include "Public/Core/Application/Window.h"
+#include "Public/Core/Util/KeyCodes.h"
 #include "Public/Core/Events/KeyEvent.h"
 #include "Public/Core/Events/MouseEvent.h"
 
@@ -107,7 +108,7 @@ namespace GEngine {
 	{
 		//m_mouseEvent.clear();
 		//m_keyEvent.clear();
-		if (!Application::InputEnabled()) return;
+		//if (!Application::InputEnabled()) return;
 		if (s_Instance != nullptr)
 			s_Instance->ProcessEvent(e);
 		if (e.GetEventType() == EventType::KeyPressed) {
@@ -125,6 +126,13 @@ namespace GEngine {
 		else if (e.GetEventType() == EventType::MouseButtonReleased) {
 			const MouseButtonReleasedEvent& k = (const MouseButtonReleasedEvent&)e;
 			m_mouseEvent[k.GetMouseButton()] = false;
+		}
+		else if (e.GetEventType() == EventType::MouseScrolled) {
+			const MouseScrolledEvent& k = (const MouseScrolledEvent&)e;
+			float xOffSet = k.GetXOffset();
+			float yOffset = k.GetYOffset();
+			int button = yOffset > 0.f ? GE_SCROLL_UP : yOffset < 0.f ? GE_SCROLL_DOWN : xOffSet > 0.f ? GE_SCROLL_RIGHT : xOffSet < 0.f ? GE_SCROLL_RIGHT : 0;
+			m_mouseEvent[button] = true;
 		}
 
 	}

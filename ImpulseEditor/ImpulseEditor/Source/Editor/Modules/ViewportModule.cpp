@@ -7,8 +7,10 @@
 using namespace GEngine;
 
 namespace Editor {
-	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView) : m_pipeline(pipeline), m_reloadModule(reloadModule), gameView(gameView)
+	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView, GEngine::CameraController* cam, EditorTools* tools) : m_pipeline(pipeline), m_reloadModule(reloadModule), gameView(gameView),
+		m_cameraController(cam), editorTools(tools)
 	{
+		updates = !gameView;
 		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
 		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
 		m_textures["stopButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/stop172x172.png");
@@ -24,6 +26,7 @@ namespace Editor {
 
 	void ViewportModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
+
 		if (originalSize.x == 0) {
 			originalSize = { GEngine::Application::GetApp()->m_viewPortWidth,GEngine::Application::GetApp()->m_viewPortHeight };
 		}
@@ -64,8 +67,10 @@ namespace Editor {
 		ImGui::EndChild();
 
 		ImGui::BeginChild("ViewPortImpl");
-
-		GEngine::Application::SetInputEnabled(ImGui::IsWindowFocused());
+		isFocused = ImGui::IsWindowFocused();
+		if ((gameView && GEngine::SceneManager::HasBegun())) {
+			GEngine::Application::SetInputEnabled(isFocused);
+		}
 		ImVec2 viewPortSize = ImGui::GetContentRegionAvail();
 		Vector2<float> sz = { viewPortSize.x, viewPortSize.y };
 		GEngine::Ref<GEngine::RenderPipeline> pipeline = GEngine::Renderer::GetPipeline(m_pipeline.c_str());
@@ -94,6 +99,18 @@ namespace Editor {
 		ImGui::PopStyleVar();
 	}
 
+	void ViewportModule::Update(GEngine::Timestep timestep)
+	{
+		bool enabled = Application::InputEnabled();
+		if (isFocused) {
+			if (!enabled) Application::SetInputEnabled(true);
+
+			if (Application::InputEnabled()) CameraControls(timestep);
+
+			if (!enabled) Application::SetInputEnabled(enabled);
+		}
+	}
+
 	GEngine::Vector2<uint32_t> ViewportModule::scaleRatio(int maxWidth, int maxHeight, int imgWidth, int imgHeight)
 	{
 		// calc
@@ -114,6 +131,58 @@ namespace Editor {
 			return ImGui::IsMouseClicked(0);
 		}
 		return false;
+
+	}
+
+	void ViewportModule::CameraControls(GEngine::Timestep timestep)
+	{
+		Vector3f pos = m_cameraController->GetPosition();
+		Vector3f npos = pos;
+
+		float zoomPos = m_cameraController->GetFOV();
+		float nzooomPos = zoomPos;
+
+		if (Input::IsMouseButtonPressed(GE_SCROLL_DOWN)) {
+			zoomPos += cameraSpeed * (float)timestep;
+		}
+
+		if (Input::IsMouseButtonPressed(GE_SCROLL_UP)) {
+			zoomPos -= cameraSpeed * (float)timestep;
+		}
+
+		if (Input::IsKeyDown(GE_KEY_D)) {
+			pos.x += cameraSpeed * (float)timestep;
+		}
+		if (Input::IsKeyDown(GE_KEY_A)) {
+			pos.x -= cameraSpeed * (float)timestep;
+		}
+
+		if (Input::IsKeyDown(GE_KEY_W)) {
+			pos.y += cameraSpeed * (float)timestep;
+		}
+
+		if (Input::IsKeyDown(GE_KEY_S)) {
+			pos.y -= cameraSpeed * (float)timestep;
+		}
+
+		if (Input::IsKeyDown(GE_KEY_F)) {
+			pos = Vector3f(0.f);
+		}
+	
+
+
+		if (m_cameraController) {
+			if (npos != pos) {
+				m_cameraController->SetPosition(pos);
+				*editorTools = EditorTools::DRAG;
+			}
+			if (nzooomPos != zoomPos) {
+				m_cameraController->SetCameraZoom(zoomPos);
+				*editorTools = EditorTools::DRAG;
+			}			
+		}
+
+
 
 	}
 

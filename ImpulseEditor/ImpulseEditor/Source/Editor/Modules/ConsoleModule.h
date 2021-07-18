@@ -8,6 +8,7 @@ namespace Editor {
 		virtual void Create(const std::string& name, bool* is_open, uint32_t flags) override;
 		ConsoleModule();
 		~ConsoleModule();
+		
 
 	};
 

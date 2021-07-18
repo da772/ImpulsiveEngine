@@ -1,6 +1,7 @@
 #include "gepch.h"
 #include "Public/Core/ImGui/ImGuiLayer.h"
 #include "imgui.h"
+#include "implot.h"
 #include "Public/Core/Application/Application.h"
 
 #ifdef GE_WINDOW_API_GLFW
@@ -45,6 +46,7 @@ namespace GEngine {
 		#ifdef GE_CONSOLE_APP
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		ImPlot::CreateContext();
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -87,6 +89,7 @@ namespace GEngine {
 	{
 		#ifdef GE_CONSOLE_APP
 		Api_OnDetach();
+		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 		#endif
 	}
@@ -96,6 +99,7 @@ namespace GEngine {
 	{
 		//static bool show = true;
 		//ImGui::ShowDemoWindow(&show);
+		//ImPlot::ShowDemoWindow();
 	}
 
 	void ImGuiLayer::Begin()
@@ -104,7 +108,6 @@ namespace GEngine {
 		Api_Begin();
 		ImGui::NewFrame();
 		ImGui::PushFont(font2);
-		
 		#endif
 	}
 

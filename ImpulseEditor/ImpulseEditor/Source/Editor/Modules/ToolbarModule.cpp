@@ -1,12 +1,12 @@
 #include "ToolbarModule.h"
 #include "ReloadModule.h"
 
-#include "Editor/EditorLayer.h"
+
 #include "Editor/Events/EditorApplicationEvents.h"
 
 namespace Editor {
 
-	ToolbarModule::ToolbarModule(ReloadModule* reloadModule)  : m_reloadModule(reloadModule)
+	ToolbarModule::ToolbarModule(ReloadModule* reloadModule, EditorTools* editorTool)  : m_reloadModule(reloadModule), m_editorTool(editorTool)
 	{
 		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
 		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
@@ -50,22 +50,22 @@ namespace Editor {
 		ImGui::Begin(name.c_str(), 0, window_flags | flags | ImGuiWindowFlags_NoScrollbar);
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 15.f);
 		ImGui::SetCursorPosY( ImGui::GetCursorPosY() + imageBorderSize - imageButtonSize + yOffset );
-		if (ControlButtons("handButton")) {
+		if (ControlButtons("handButton", EditorTools::DRAG)) {
 
 
 		}
 		ImGui::SameLine(0.f, 15.f);
 		
-		if (ControlButtons("moveButton")) {
+		if (ControlButtons("moveButton", EditorTools::MOVE)) {
 
 		}
 		ImGui::SameLine(0.f, 15.f);
 		
-		if (ControlButtons("rotateButton")) {
+		if (ControlButtons("rotateButton", EditorTools::ROTATE)) {
 
 		}
 		ImGui::SameLine(0.f, 15.f);
-		if (ControlButtons("scaleButton")) {
+		if (ControlButtons("scaleButton", EditorTools::SCALE)) {
 
 		}
 		ImGui::SameLine(0.f, 15.5f);
@@ -73,7 +73,7 @@ namespace Editor {
 
 			if (GEngine::Application::IsGamePaused()) {
 
-				ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f - imageButtonSize * 2 , ImGui::GetCursorPosY() + yOffset });
+				ImGui::SetCursorPosX( (ImGui::GetWindowSize().x) * .5f - imageBorderSize * 2);
 				if (ControlButtons("resumeButton")) {
 					GEngine::Application::ResumeGame();
 					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationResumeEvent>();
@@ -87,7 +87,7 @@ namespace Editor {
 				ImGui::SameLine(0.f, 15.f);
 			}
 			else {
-				ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f - imageButtonSize, ImGui::GetCursorPosY() + yOffset });
+				ImGui::SetCursorPosX((ImGui::GetWindowSize().x) * .5f - imageBorderSize * 2);
 				if (ControlButtons("pauseButton")) {
 					GEngine::Application::PauseGame();
 					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPauseEvent>();
@@ -96,7 +96,7 @@ namespace Editor {
 			}
 
 			if (ControlButtons("stopButton")) {
-				ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f , ImGui::GetCursorPosY()+yOffset });
+				ImGui::SetCursorPosX((ImGui::GetWindowSize().x) * .5f - imageBorderSize * 2);
 				const std::string name = GEngine::SceneManager::GetCurrentScene()->GetId();
 				if (GEngine::Application::IsGamePaused()) {
 					GEngine::Application::ResumeGame();
@@ -107,7 +107,7 @@ namespace Editor {
 
 		}
 		else {
-			ImGui::SetCursorPos({ (ImGui::GetWindowSize().x) * .5f , ImGui::GetCursorPosY() + yOffset });
+			ImGui::SetCursorPosX((ImGui::GetWindowSize().x) * .5f - imageBorderSize * 2);
 			if (m_reloadModule->IsReloading()) {
 				ControlButtons("loadingButton");
 			}
@@ -127,15 +127,20 @@ namespace Editor {
 
 	}
 
-	bool ToolbarModule::ControlButtons(const std::string& s)
+	bool ToolbarModule::ControlButtons(const std::string& s, EditorTools tool)
 	{
 		ImVec2 pos = ImGui::GetCursorScreenPos();
+		bool selected = tool != EditorTools::NONE && tool == *m_editorTool;
 		bool isHovered = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect({ pos.x-imageBorderSize*.25f, pos.y - (imageBorderSize-imageButtonSize)/2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize });
-		ImGui::GetWindowDrawList()->AddRectFilled({ pos.x-imageBorderSize * .25f, pos.y - (imageBorderSize - imageButtonSize) / 2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize}, ImGui::GetColorU32(ImGui::GetStyleColorVec4(!isHovered ? ImGuiCol_Button : ImGuiCol_ButtonHovered)), 0.f);
+		ImGui::GetWindowDrawList()->AddRectFilled({ pos.x-imageBorderSize * .25f, pos.y - (imageBorderSize - imageButtonSize) / 2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize}, ImGui::GetColorU32(ImGui::GetStyleColorVec4(selected ? ImGuiCol_ButtonActive : !isHovered ? ImGuiCol_Button : ImGuiCol_ButtonHovered)), 0.f);
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (imageBorderSize - imageButtonSize) / 2.f);
 		ImGui::Image((ImTextureID)(uintptr_t)m_textures[s]->GetRendererID(), { imageButtonSize, imageButtonSize}, { 0,1 }, { 1,0 });
 		if (isHovered) {
-			return ImGui::IsMouseClicked(0);
+			bool clicked = ImGui::IsMouseClicked(0);
+			if (tool != EditorTools::NONE && clicked) {
+				*m_editorTool = tool;
+			}
+			return clicked;
 		}
 		return false;
 	}

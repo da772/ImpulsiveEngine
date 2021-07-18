@@ -68,12 +68,14 @@ namespace Editor {
 
 	public:
 		virtual void Create(const std::string& name, bool* is_open, uint32_t flags) = 0;
+		inline virtual void Update(GEngine::Timestep timestep) {};
 		inline const std::string& GetName() const { return moduleName; }
-
+		inline const bool& DoesUpdate() const { return updates; }
 
 	protected:
 		std::string moduleName;
 		bool isOpen = true;
+		bool updates = false;
 
 	};
 

@@ -22,7 +22,12 @@ project "ImGui"
         "imstb_rectpack.h",
         "imstb_textedit.h",
         "imstb_truetype.h",
-        "imgui_demo.cpp"
+        "imgui_demo.cpp",
+        "implot_items.cpp",
+        "implot_internal.h",
+        "implot.h",
+        "implot.cpp",
+        "implot_demo.cpp"
     }
     
     filter "system:macosx"
@@ -35,7 +40,8 @@ project "ImGui"
         if _OPTIONS['hot-reload'] then
             defines
             {
-                "IMGUI_API=__attribute__((visibility(\"default\")))"
+                "IMGUI_API=__attribute__((visibility(\"default\")))",
+                "IMPLOT_API=__attribute__((visibility(\"default\")))"
             }
         end
         filter "configurations:Debug"
@@ -89,7 +95,8 @@ project "ImGui"
         if _OPTIONS['hot-reload'] then
             defines
             {
-                "IMGUI_API=__declspec(dllexport)"
+                "IMGUI_API=__declspec(dllexport)",
+                "IMPLOT_API=__declspec(dllexport)"
             }
         end
         filter "configurations:Debug"
@@ -104,7 +111,8 @@ project "ImGui"
         if _OPTIONS['hot-reload'] then
             defines
             {
-                "IMGUI_API=__attribute__((visibility(\"default\")))"
+                "IMGUI_API=__attribute__((visibility(\"default\")))",
+                "IMPLOT_API=__attribute__((visibility(\"default\")))"
             }
             pic "On"
         end

@@ -302,6 +302,7 @@ namespace GEngine {
 
 		// read till end of process:
 		while (!feof(pipe)) {
+			if (forceKillChild) { result = "error: Process force killed"; break; };
 			// use buffer to read and add to result
 			if (fgets(buffer, 128, pipe) != NULL) {
 				result += buffer;
