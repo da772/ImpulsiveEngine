@@ -506,7 +506,7 @@ namespace GEngine {
             GE_PROFILE_FUNCTION();
             {
                 {
-                    GE_PROFILE_TIMER("Application:OnUpdate", &profile["FrameTime"]);
+                    GE_PROFILE_TIMER("Application:OnUpdate", &profile["TotalFrame"]);
                     Update();
                     Draw();
                 }

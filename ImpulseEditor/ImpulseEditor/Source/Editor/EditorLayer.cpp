@@ -56,7 +56,7 @@ namespace Editor {
 		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
 		AddModule<ConsoleModule>("Console Log", true, ImGuiWindowFlags_AlwaysAutoResize, true);
 		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/" + m_projectData.data.name + "/" + m_projectData.data.name, &m_projectData.data);
-		AddModule<ProfilerModule>("Profiler", true, ImGuiWindowFlags_AlwaysAutoResize, true);
+		AddModule<ProfilerModule>("Profiler", true, 0, true);
 		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
 		AddModule<ViewportModule>("Game", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule, true);
 		AddModule<ViewportModule>("Scene", true, ImGuiWindowFlags_AlwaysAutoResize, false, "2d_Copy", reloadModule, false, m_cameraController, &editorTool);
