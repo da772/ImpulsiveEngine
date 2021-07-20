@@ -311,6 +311,7 @@ namespace GEngine {
     
     void Application::OnEvent(Event& e)
     {
+        if (!Application::GetApp()->m_loaded) return;
         EventDispatcher dispatcher(e);
         
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application, OnWindowClose));
