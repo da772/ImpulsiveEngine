@@ -145,7 +145,7 @@ namespace GEngine {
 
 	dllptr Utility::dll::dlopen(const char* filename, int flags)
 	{
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__) && !defined(GE_MOBILE_APP)
 		return ::dlopen(filename, RTLD_NOW);
 #endif
 #ifdef _WIN32
@@ -155,7 +155,7 @@ namespace GEngine {
 	}
 
     ret_err Utility::dll::dlerror() {
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__) && !defined(GE_MOBILE_APP)
         return ::dlerror();
 #endif
 #if defined(_WIN32)
@@ -166,7 +166,7 @@ namespace GEngine {
 
 	int Utility::dll::dlclose(dllptr p)
 	{
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__) && !defined(GE_MOBILE_APP)
 		return ::dlclose(p);
 #endif
 #ifdef _WIN32
@@ -177,7 +177,7 @@ namespace GEngine {
 
 	addrptr Utility::dll::dlsym(dllptr p, const char* name)
 	{
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__) && !defined(GE_MOBILE_APP)
 		return ::dlsym(p, name);
 #endif
 #ifdef _WIN32 
@@ -223,9 +223,10 @@ namespace GEngine {
 #ifdef _WIN32
 		return MS_xstr(MS_BUILD_BIN);
 #endif
-#if defined (__linux__) || defined (__APPLE__)
+#if defined (__linux__) || defined (__APPLE__) && !defined(GE_MOBILE_APP)
 		return UNIX_BUILD;
 #endif
+        return "";
 	}
 
 	std::string GEngine::Utility::sys::compile_proj(const std::string& dir, const std::string& file) {
@@ -236,7 +237,7 @@ namespace GEngine {
 			_msBin.erase(_msBin.size() - 1);
 		cmd += _msBin + "\\MSBuild.exe\" \"" + dir + file + ".vcxproj\" /verbosity:quiet /nologo ";
 #endif
-#if defined (__linux__) || defined (__APPLE__)
+#if defined (__linux__) || defined (__APPLE__) && !defined(GE_MOBILE_APP)
 		std::string _msBin = msBuildLocation.size() <= 0 ? UNIX_BUILD : msBuildLocation;
 		cmd += "cd " + dir + " && " + _msBin + " -s ";
 #endif

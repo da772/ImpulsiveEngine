@@ -138,12 +138,12 @@ project (targetName)
 
 	removefiles
 	{
-		"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.cpp",
-		"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.c",
-		"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.h",
-		"%{prj.location}/"..targetName.."/Source/Engine/Android/**.cpp",
-		"%{prj.location}/"..targetName.."/Source/Engine/Android/**.c",
-		"%{prj.location}/"..targetName.."/Source/Engine/Android/**.h"
+		"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.cpp",
+		"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.c",
+		"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.h",
+		"%{prj.location}/"..targetName.."/Source/Shared/Engine/Android/**.cpp",
+		"%{prj.location}/"..targetName.."/Source/Shared/Engine/Android/**.c",
+		"%{prj.location}/"..targetName.."/Source/Shared/Engine/Android/**.h"
 	}
 
 	includedirs 
@@ -226,7 +226,7 @@ project (targetName)
 
 		excludes 
 		{ 
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**" 
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**" 
 		}
 
 		defines
@@ -328,7 +328,7 @@ project (targetName)
 
 			excludes 
 			{ 
-				"%{prj.location}/"..targetName.."/Source/Engine/iOS/**" 
+				"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**" 
 			}
 	
 			defines
@@ -385,7 +385,7 @@ project (targetName)
 	filter "system:ios"
 		architecture "ARM"
 		kind "WindowedApp"
-		linkoptions ("-F ../%{IncludeDir.firebase}/lib/ios" .. " -ObjC")
+		linkoptions ("-F %{IncludeDir.firebase}/lib/ios" .. " -ObjC")
 		if _OPTIONS["hot-reload"] then
 			linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
 		else
@@ -408,20 +408,20 @@ project (targetName)
 
 		files 
 		{
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.m",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.mm",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.c",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.h",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.storyboard",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**.plist",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/*.json",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/iOSImages.xcassets",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.m",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.mm",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.c",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.h",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.storyboard",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**.plist",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/*.json",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/iOSImages.xcassets",
 		}
 			
 		includedirs 
 		{
 			"%{prj.location}/"..targetName.."/Source",
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS",
 	
 			"%{IncludeDir.firebase}/include"
 		}
@@ -442,7 +442,8 @@ project (targetName)
 		postbuildcommands
 		{
 			"cp -rf ${PROJECT_DIR}/"..targetName.."/Data ${TARGET_BUILD_DIR}/%{prj.name}.app/",
-			"cp -rf ${PROJECT_DIR}/"..targetName.."/Source/iOS/GoogleService-Info.plist ${TARGET_BUILD_DIR}/%{prj.name}.app/"
+			"xattr -rc ."
+			--"cp -rf ${PROJECT_DIR}/"..targetName.."/Source/iOS/GoogleService-Info.plist ${TARGET_BUILD_DIR}/%{prj.name}.app/"
 
 		}
 
@@ -508,9 +509,9 @@ project (targetName)
 
 		files 
 		{
-			"%{prj.location}/"..targetName.."/Source/Engine/Android/**.h",
-			"%{prj.location}/"..targetName.."/Source/Engine/Android/**.c",
-			"%{prj.location}/"..targetName.."/Source/Engine/Android/**.cpp",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/Android/**.h",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/Android/**.c",
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/Android/**.cpp",
 		}
 
 		includedirs 
@@ -613,7 +614,7 @@ project (targetName)
 
 		excludes 
 		{ 
-			"%{prj.location}/"..targetName.."/Source/Engine/iOS/**" 
+			"%{prj.location}/"..targetName.."/Source/Shared/Engine/iOS/**" 
 		}
 
 		includedirs
