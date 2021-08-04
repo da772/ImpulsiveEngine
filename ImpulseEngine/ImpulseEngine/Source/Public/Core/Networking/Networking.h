@@ -18,7 +18,7 @@ namespace GEngine {
 		static void Reset();
 
 		static void CreateServer(uint16_t port = 27015, uint16_t listenRate = 1000, unsigned char maxClient = 32, unsigned char channels = 2, uint32_t incomingBandwith = 0, uint32_t outgoingBandwidth = 0);
-		static void CreateClient();
+		
 
 		static void ConnectToServer(std::string ip = "127.0.0.1", uint16_t port = 27015, uint16_t listenRate = 1000, uint16_t timeout = 5000, std::function<void(bool)> callback = nullptr);
 
@@ -27,6 +27,7 @@ namespace GEngine {
 		static void DisconnectFromServer(uint16_t timeout = 3000, std::function<void()> callback = nullptr);
 
 	private:
+		static void CreateClient();
 		static void ServerListen(uint16_t eventDelay = 1000);
 		static bool b_IsServer;
 		static _ENetHost* m_netProxy;

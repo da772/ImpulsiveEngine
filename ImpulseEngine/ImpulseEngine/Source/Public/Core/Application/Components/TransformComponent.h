@@ -51,6 +51,8 @@ namespace GEngine {
 
 			void ResetRelativeTransform();
 
+			virtual std::string Serialize(int indent) override;
+
         private:
             void BroadcastTransform();
 

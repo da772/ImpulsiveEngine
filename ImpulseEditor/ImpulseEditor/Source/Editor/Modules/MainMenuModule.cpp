@@ -3,10 +3,12 @@
 #include "Editor/Events/EditorUIEvents.h"
 
 #include "Editor/Modules/ReloadModule.h"
+#include "Editor/Modules/SerializerModule.h"
 
 namespace Editor {
 
-	MainMenuModule::MainMenuModule(std::unordered_map<std::string, EditorModuleData>* modules, Project::LocalProject* proj, ReloadModule* reloadModule) : m_modules(modules), m_project(proj), m_reloadModule(reloadModule)
+	MainMenuModule::MainMenuModule(std::unordered_map<std::string, EditorModuleData>* modules, Project::LocalProject* proj, ReloadModule* reloadModule, SerializerModule* serializer) : m_modules(modules), m_project(proj), m_reloadModule(reloadModule),
+		m_serialzierModule(serializer)
 	{
 		folderIcon = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
 		m_msBuildLocation = m_project->compilerDir;
@@ -46,11 +48,21 @@ namespace Editor {
 
 			}
 
-			if (ImGui::MenuItem("Open Scene", "CTRL+O", nullptr)) {
+			if (ImGui::MenuItem("Save Scene", "CTRL+S", nullptr)) {
+				if (m_serialzierModule->Save()) {
 
+				}
 			}
 
-			if (ImGui::MenuItem("Save Scene", "CTRL+S", nullptr)) {
+			if (ImGui::MenuItem("Open Scene", "CTRL+O", nullptr)) {
+				std::string path = "";
+				GEngine::FileSystem::OpenFileDialog({ {"Scene", "scene"} }, path);
+
+				if (path.size() > 0) {
+					std::filesystem::directory_entry e(path);
+					std::string name = e.path().filename().generic_string();
+					m_serialzierModule->Load(name, path);
+				}
 
 			}
 

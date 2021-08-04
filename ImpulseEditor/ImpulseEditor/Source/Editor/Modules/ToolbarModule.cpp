@@ -1,7 +1,6 @@
 #include "ToolbarModule.h"
 #include "ReloadModule.h"
 
-
 #include "Editor/Events/EditorApplicationEvents.h"
 
 namespace Editor {
@@ -18,6 +17,8 @@ namespace Editor {
 		m_textures["scaleButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/scale172x172.png");
 		m_textures["rotateButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/rotate172x172.png");
 		m_textures["moveButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/drag172x172.png");
+		m_textures["undoButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/undo160x160.png");
+		m_textures["redoButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/redo160x160.png");
 	}
 
 	ToolbarModule::~ToolbarModule()
@@ -68,6 +69,18 @@ namespace Editor {
 		if (ControlButtons("scaleButton", EditorTools::SCALE)) {
 
 		}
+
+		ImGui::SameLine(0.f, 45.f);
+		if (ControlButtons("undoButton")) {
+
+		}
+
+		ImGui::SameLine(0.f, 15.5f);
+		if (ControlButtons("redoButton")) {
+
+		}
+
+		
 		ImGui::SameLine(0.f, 15.5f);
 		if (GEngine::SceneManager::HasBegun()) {
 
@@ -101,8 +114,8 @@ namespace Editor {
 				if (GEngine::Application::IsGamePaused()) {
 					GEngine::Application::ResumeGame();
 				}
-				GEngine::SceneManager::SetCurrentScene(name.c_str(), false);
-				EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationStopEvent>();
+				GEngine::SceneManager::SetCurrentScene(name.c_str(), false, []() {EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationStopEvent>(); });
+				
 			}
 
 		}
@@ -113,8 +126,8 @@ namespace Editor {
 			}
 			else {
 				if (ControlButtons("playButton")) {
-					GEngine::SceneManager::Begin();
 					EditorLayer::GetDispatcher()->BroadcastEvent<ApplicationPlayEvent>();
+					GEngine::SceneManager::Begin();
 				}
 			}
 

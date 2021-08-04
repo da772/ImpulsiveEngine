@@ -11,6 +11,7 @@
 #include "Modules/ReloadModule.h"
 #include "Modules/ToolbarModule.h"
 #include "Modules/InfoPanelModule.h"
+#include "Modules/SerializerModule.h"
 
 #include "Shared/ImpulseEditor.h"
 #include "Shared/Scene/EditorScene.h"
@@ -33,6 +34,9 @@ namespace Editor {
 			delete s_singleton;
 			s_singleton = nullptr;
 		}
+
+
+
 	}
 
 	EditorLayer::EditorLayer(const std::string& name, Project::LocalProject* data) : Layer(name), m_projectData(*data)
@@ -51,11 +55,15 @@ namespace Editor {
 		GE_CORE_INFO("PROJECT DATA: {0}, {1}", m_projectData.data.name, m_projectData.data.path);
 		reloadModule = new ReloadModule(&m_projectData);
 		reloadModule->Reload();
-		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule);
+		serializerModule = new SerializerModule();
+
+
+
+		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule, serializerModule);
 		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule, &editorTool);
 		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
 		AddModule<ConsoleModule>("Console Log", true, ImGuiWindowFlags_AlwaysAutoResize, true);
-		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/" + m_projectData.data.name + "/" + m_projectData.data.name, &m_projectData.data);
+		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/" + m_projectData.data.name + "/" + m_projectData.data.name, &m_projectData.data, serializerModule);
 		AddModule<ProfilerModule>("Profiler", true, 0, true);
 		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
 		AddModule<ViewportModule>("Game", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule, true);

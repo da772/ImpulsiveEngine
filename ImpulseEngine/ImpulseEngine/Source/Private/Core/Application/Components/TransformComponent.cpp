@@ -124,6 +124,20 @@ namespace GEngine {
 		BroadcastTransform();
 	}
 
+	std::string Transform::Serialize(int indent)
+	{
+		return SerializeIndent(indent)+"<float>" + std::to_string(localposition.x) + "</float>\n"
+			+ SerializeIndent(indent)+"<float>" + std::to_string(localposition.y) + "</float>\n"
+			+ SerializeIndent(indent)+ "<float>" + std::to_string(localposition.z) + "</float>\n" +
+			SerializeIndent(indent)+"<float>" + std::to_string(localrotation.x) + "</float>\n"
+			+ SerializeIndent(indent)+"<float>" + std::to_string(localrotation.y) + "</float>\n" +
+			SerializeIndent(indent)+"<float>" + std::to_string(localrotation.z) + "</float>\n" +
+			SerializeIndent(indent)+"<float>" + std::to_string(localscale.x) + "</float>\n" +
+			SerializeIndent(indent)+"<float>" + std::to_string(localscale.y) + "</float>\n" +
+			SerializeIndent(indent)+"<float>" + std::to_string(localscale.z) + "</float>";
+
+	}
+
 	void Transform::BroadcastTransform()
 	{
 		for (const auto& p : m_TransformCallback) {

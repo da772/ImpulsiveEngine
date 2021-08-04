@@ -68,7 +68,7 @@ namespace Editor {
 
 		uint64_t SubscribeEvent(const std::string& e, const std::function<void(const Editor::EditorEvent&)> f);
 
-		void UnsubscribeEvent(const Editor::EditorEvent& e, const uint64_t& hash);
+		void UnsubscribeEvent(const std::string& e, const uint64_t& hash);
 
 		template<class E, typename ... Args>
 		inline void BroadcastEvent(Args&& ... args) {

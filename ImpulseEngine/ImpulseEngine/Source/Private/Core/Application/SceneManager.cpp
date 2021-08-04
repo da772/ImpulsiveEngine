@@ -25,13 +25,13 @@ namespace GEngine {
 		return SceneManager::scene;
 	}
 
-	void SceneManager::SetCurrentScene(const std::string& name, bool start)
+	void SceneManager::SetCurrentScene(const std::string& name, bool start, std::function<void()> f)
 	{
 
 		if (!b_changingScene) {
 			b_changingScene = true;
 			CollisionDetection::Reset();
-			ThreadPool::AddEndFrameFunction([name, start]() {
+			ThreadPool::AddEndFrameFunction([name, start, f]() {
 				b_changingScene = false;
 				CollisionDetection::Reset();
 				if (SceneManager::scene != nullptr) {
@@ -46,6 +46,8 @@ namespace GEngine {
 					if (start)
 						Begin();
 				}
+
+				if (f != nullptr) f();
 				
 				});
 		}

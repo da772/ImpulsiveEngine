@@ -28,37 +28,37 @@ namespace refl {
 		~uClass();
 
 			template <typename T, typename std::enable_if<!std::is_reference<T>::value>::type* = nullptr>
-			inline typename std::remove_reference<T>::type& __GetMember(const std::string& name) {
+			inline typename std::remove_reference<T>::type& __GetMember(const std::string& name) const {
 				const std::unordered_map<std::string, refl::store::uobject_struct>& map = store->get_map();
 				uintptr_t o = map.at(clazz).property_map.at(name).offset;
 				return (T&)(*(T*)((uint8_t*)ptr + o));
 			}
 
 			template <typename T, typename std::enable_if<std::is_reference<T>::value>::type* = nullptr>
-			inline typename std::remove_reference<T>::type& __GetMember(const std::string& name) {
+			inline typename std::remove_reference<T>::type& __GetMember(const std::string& name) const {
 				const std::unordered_map<std::string, refl::store::uobject_struct>& map = store->get_map();
 				uintptr_t o = map.at(clazz).property_map.at(name).offset;
 				return (T&)(*(typename std::remove_reference<T>::type*)((uint8_t*)ptr + o));
 			}
 
 			template <typename T, typename std::enable_if<std::is_pointer<T>::value>::type* = nullptr>
-			inline T _GetMember(const std::string& name) {
+			inline T _GetMember(const std::string& name) const {
 				const std::unordered_map<std::string, refl::store::uobject_struct>& map = store->get_map();
 				uintptr_t o = map.at(clazz).property_map.at(name).offset;
 				return *(T*)((uint8_t*)ptr + o);
 			}
 			template <typename T, typename std::enable_if<!std::is_pointer<T>::value>::type* = nullptr>
-			inline typename std::remove_reference<T>::type& _GetMember(const std::string& name) {
+			inline typename std::remove_reference<T>::type& _GetMember(const std::string& name) const {
 				return __GetMember<T>(name);
 			}
 
 			template <typename T, typename std::enable_if<!std::is_same<T, uClass>::value>::type* = nullptr>
-			inline typename std::conditional<std::is_pointer<T>::value, T, typename std::remove_reference<T>::type&>::type GetMember(const std::string& name) {
+			inline typename std::conditional<std::is_pointer<T>::value, T, typename std::remove_reference<T>::type&>::type GetMember(const std::string& name) const {
 				return _GetMember<T>(name);
 			}
 
 			template <typename T, typename std::enable_if<std::is_same<T, uClass>::value>::type* = nullptr>
-			inline uClass GetMember(const std::string& name) {
+			inline uClass GetMember(const std::string& name) const {
 				const std::unordered_map<std::string, refl::store::uobject_struct>& map = store->get_map();
 				uintptr_t o = map.at(clazz).property_map.at(name).offset;
 				return uClass((void*)((uint8_t*)ptr + o), map.at(clazz).property_map.at(name).type_name, this->ref);
@@ -163,9 +163,10 @@ namespace refl {
 			}
 
 			inline std::string GetName() const { return clazz; }
+			void* ptr = nullptr;
 		private:
 			std::string clazz = "NULL";
-			void* ptr = nullptr;
+			
 			::refl::reflector* ref;
 			::refl::store::storage* store;
 			bool destroy = false;

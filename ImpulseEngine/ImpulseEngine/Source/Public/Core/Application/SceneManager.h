@@ -18,7 +18,7 @@ namespace GEngine {
 			};
 		};
 		static Scene* GetCurrentScene();
-		static void SetCurrentScene(const std::string& name, bool start = true);
+		static void SetCurrentScene(const std::string& name, bool start = true, std::function<void()> f = {});
 		static void Update(Timestep ts);
 		static void Begin();
 		static void End();

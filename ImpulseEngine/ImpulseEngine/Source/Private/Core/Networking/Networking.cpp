@@ -58,12 +58,15 @@ namespace GEngine {
 			
 			ThreadPool::AddJob([listenRate, port, maxClient, channels, incomingBandwith, outgoingBandwidth]() {
 				{
-					std::lock_guard<std::mutex> guard(Networking::m_ConnectingMutex);
+					
 					ENetAddress address;
 					address.host = ENET_HOST_ANY;
 					address.port = port;
-					if (Networking::m_Portfwd == nullptr) {
-						m_Portfwd = std::make_unique<Portfwd>();
+					{
+						std::lock_guard<std::mutex> guard(Networking::m_ConnectingMutex);
+						if (Networking::m_Portfwd == nullptr) {
+							m_Portfwd = std::make_unique<Portfwd>();
+						}
 					}
 
 					if (Networking::m_Portfwd->init(2000)) {
@@ -76,20 +79,24 @@ namespace GEngine {
 						GE_CORE_ERROR("Cannot initialize UPNP");
 						return;
 					}
-
-					Networking::m_netProxy = enet_host_create(&address, maxClient, channels, incomingBandwith, outgoingBandwidth);
-					Networking::m_extIPAddress = Networking::m_Portfwd->external_ip();
-					Networking::m_intIPAddress = Networking::m_Portfwd->lan_ip();
-					GE_CORE_INFO("External IP: {0} Internal IP: {1} Port: {2}", Networking::m_extIPAddress, Networking::m_intIPAddress, 
-					Networking::m_port);
+					{
+						std::lock_guard<std::mutex> guard(Networking::m_ConnectingMutex);
+						Networking::m_netProxy = enet_host_create(&address, maxClient, channels, incomingBandwith, outgoingBandwidth);
+						Networking::m_extIPAddress = Networking::m_Portfwd->external_ip();
+						Networking::m_intIPAddress = Networking::m_Portfwd->lan_ip();
+						GE_CORE_INFO("External IP: {0} Internal IP: {1} Port: {2}", Networking::m_extIPAddress, Networking::m_intIPAddress,
+							Networking::m_port);
+					}
 					
-
-					if (Networking::m_netProxy == NULL) {
-						GE_CORE_ASSERT(false, "FAILED TO CREATE NETWORK");
+					{
+						std::lock_guard<std::mutex> guard(Networking::m_ConnectingMutex);
+						if (Networking::m_netProxy == NULL) {
+							GE_CORE_ASSERT(false, "FAILED TO CREATE NETWORK");
+						}
+						Networking::b_IsServer = true;
+						Networking::b_IsCreated = true;
 					}
 
-					Networking::b_IsServer = true;
-					Networking::b_IsCreated = true;
 				}
 
 				httplib::Client cli("api.ipify.org");

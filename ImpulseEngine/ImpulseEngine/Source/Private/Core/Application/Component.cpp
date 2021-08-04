@@ -9,16 +9,26 @@ namespace GEngine {
 	Component::Component(Entity* e) : GameObject(e->GetNextHash()), m_entity(e)
 	{
 		go_tag = "Component";
+		is_component = true;
 		GE_CORE_DEBUG("COMPONENT HASH: {0}", Factory::HashToString(go_hash));
 	}
 
 	Component::~Component()
 	{
-		m_entity->RemoveHash(go_hash);
+		
 	}
 
 	Entity* Component::GetEntity() const {
 		return m_entity;
+	}
+
+	std::string Component::SerializeIndent(int _i) const
+	{
+		std::string indent = "";
+		for (int i = 0; i < _i; i++) {
+			indent += "\t";
+		}
+		return indent;
 	}
 
 	void Component::Destroy()

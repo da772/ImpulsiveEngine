@@ -19,9 +19,9 @@ namespace Editor {
 		return (uint64_t)&f;
 	}
 
-	void EditorDispatcher::UnsubscribeEvent(const Editor::EditorEvent& e, const uint64_t& hash)
+	void EditorDispatcher::UnsubscribeEvent(const std::string& id, const uint64_t& hash)
 	{
-		notify[e.GetName()].erase(hash);
+		notify[id].erase(hash);
 	}
 
 

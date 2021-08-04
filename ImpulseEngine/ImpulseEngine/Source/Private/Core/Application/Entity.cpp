@@ -11,10 +11,14 @@
 namespace GEngine {
 
 
-	Entity::Entity(const ObjectHash& id, const std::string& s) : GameObject(id)
+	Entity::Entity(const ObjectHash& id, const std::string& s, const ObjectHash& trans) : GameObject(id)
 	{
+		is_component = false;
 		if (s.size() > 0) go_tag = s;
-		transform = AddComponent<Transform>();
+		if (trans.isValid())
+			transform = AddComponentHash<Transform>(trans);
+		else 
+			transform = AddComponent<Transform>();
 		GE_CORE_DEBUG("ENTITY HASH: {0}", Factory::HashToString(go_hash));
 	}
 
@@ -156,6 +160,17 @@ namespace GEngine {
 	void Entity::AddHash(const ObjectHash& h)
 	{
 		comp_hashes.push_front(h);
+	}
+
+	GEngine::ObjectHash Entity::PopHash()
+	{
+		if (comp_hashes.size() > 0) {
+			ObjectHash h = comp_hashes.front();
+			comp_hashes.pop_front();
+			return h;
+		}
+
+		return ObjectHash();
 	}
 
 	void Entity::Clean()

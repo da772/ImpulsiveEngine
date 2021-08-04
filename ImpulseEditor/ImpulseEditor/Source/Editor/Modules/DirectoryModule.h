@@ -7,10 +7,12 @@ class ImRect;
 
 namespace Editor {
 
+	class SerializerModule;
+
 	class DirectoryModule : public EditorModule {
 
 	public:
-		DirectoryModule(const std::string& directoryBase, Project::ProjectData* projectData);
+		DirectoryModule(const std::string& directoryBase, Project::ProjectData* projectData, SerializerModule* serializer);
 		virtual void Create(const std::string& name, bool* is_open, uint32_t flags) override;
 
 	private:
@@ -62,7 +64,7 @@ namespace Editor {
 		std::string m_selectedViewEntry;
 
 		Project::ProjectData* m_projectData = nullptr;
-
+		SerializerModule* m_serializerModule = nullptr;
 
 		DirectoryPath m_rightClicked;
 

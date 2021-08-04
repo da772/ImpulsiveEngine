@@ -24,9 +24,9 @@ namespace GEngine {
 		Camera* GetCamera() const;
 		void SetCamera(Camera* _camera);
 		template<typename E = Entity>
-		inline E* CreateEntity(ObjectHash entity = ObjectHash()) {
+		inline E* CreateEntity(ObjectHash entity = ObjectHash(), const std::string& s = "", ObjectHash transHash = ObjectHash()) {
 			if (entity == 0) entity = Factory::NextHash();
-			E* e = new E(entity);
+			E* e = new E(entity, s, transHash);
 			entities[entity] = e;
 			if (b_init) {
 				e->Begin();

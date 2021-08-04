@@ -176,6 +176,7 @@ namespace Editor {
 				m_cameraController->SetPosition(pos);
 				*editorTools = EditorTools::DRAG;
 			}
+
 			if (nzooomPos != zoomPos) {
 				m_cameraController->SetCameraZoom(zoomPos);
 				*editorTools = EditorTools::DRAG;

@@ -8,7 +8,7 @@
 namespace GEngine {
 	class GE_API GameObject {
 	public:
-		inline GameObject(ObjectHash hash) : go_hash(hash) { s_map[go_hash] = this; };
+		GameObject(ObjectHash hash);
 		virtual ~GameObject();
 		inline const ObjectHash GetHash() const { return go_hash; }
 		inline const std::string GetTag() const { return go_tag; }
@@ -20,6 +20,11 @@ namespace GEngine {
 			return it->second;
 		}
 
+		virtual bool IsComponent() const;
+
+		bool DoesSerialize() const { return should_serialize; }
+		void SetSerialize(bool b) { should_serialize = b; }
+
 	protected:
 		ObjectHash go_hash = ObjectHash();
 		std::string go_tag = "GameObject";
@@ -27,6 +32,7 @@ namespace GEngine {
 			return typeid(this).name();
 		}
 		bool is_component = false;
+		bool should_serialize = false;
 
 		static std::unordered_map<ObjectHash, GameObject*> s_map;
 

@@ -8,10 +8,12 @@ namespace Editor {
 
 	class ReloadModule;
 
+	class SerializerModule;
+
 	class MainMenuModule : public EditorModule {
 	public:
 
-		MainMenuModule(std::unordered_map<std::string, EditorModuleData>* modules, Project::LocalProject* proj, ReloadModule* reloadModule);
+		MainMenuModule(std::unordered_map<std::string, EditorModuleData>* modules, Project::LocalProject* proj, ReloadModule* reloadModule, SerializerModule* serialzier);
 		~MainMenuModule();
 		void Create(const std::string& name, bool* is_open, uint32_t flags) override;
 
@@ -35,6 +37,7 @@ namespace Editor {
 		std::string m_lastProjectDir = "";
 		std::vector<Project::LocalProject> m_projectData;
 		ReloadModule* m_reloadModule;
+		SerializerModule* m_serialzierModule;
 
 
 	};

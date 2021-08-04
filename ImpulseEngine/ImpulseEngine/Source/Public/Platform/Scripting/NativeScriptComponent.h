@@ -10,17 +10,20 @@ namespace GEngine {
 		NativeScriptComponent(Entity* e, const std::string& clazz);
 		~NativeScriptComponent();
 		
+
+
+
 		void UnloadGraphics() override;
 		void ReloadGraphics() override;
 
-		void LoadClass(const std::string& clazz);
+		void LoadClass(const std::string& clazz, const ObjectHash& hash = {});
 		inline bool IsValid() const { return m_isValid; };
-		const ObjectHash& GetClassHash();
+		const ObjectHash GetClassHash();
 		Component* GetComponent() const;
-
+		virtual std::string Serialize(int indent = 0) override;
 		std::string GetClass();
 
-		inline constexpr NativeObject* GetNativeObject() { return &m_object; }
+		inline NativeObject* GetNativeObject() { return &m_object; }
 
 	protected:
 		void OnBegin() override;
@@ -28,7 +31,7 @@ namespace GEngine {
 		void OnUpdate(Timestep timestep) override;
 
 	private:
-		void CreateScript();
+		bool CreateScript();
 
 	private:
 		NativeObject m_object;

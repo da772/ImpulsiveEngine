@@ -19,7 +19,7 @@ namespace GEngine {
 	class GE_API Entity : public GameObject {
 
 	public:
-		Entity(const ObjectHash&, const std::string& s = "");
+		Entity(const ObjectHash&, const std::string& s = "", const ObjectHash& trans = {});
 		virtual ~Entity();
 
 		template<class C, typename ... Args>
@@ -92,6 +92,7 @@ namespace GEngine {
 		ObjectHash GetNextHash();
 		void RemoveHash(const ObjectHash& h);
 		void AddHash(const ObjectHash& h);
+		ObjectHash PopHash();
 
 		inline const std::unordered_map<ObjectHash, Component*>& GetComponents() const { return components; }
 

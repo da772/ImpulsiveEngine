@@ -50,6 +50,8 @@ namespace Editor {
 			GEngine::Scene* sc = GEngine::SceneManager::GetCurrentScene();
 			if (sc) {
 				GEngine::Entity* e = sc->CreateEntity<GEngine::Entity>();
+				e->SetSerialize(true);
+				e->GetTransform()->SetSerialize(true);
 				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddEntity>(e->GetHash());
 				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddComponent>(e->GetTransform()->GetHash());
 			}

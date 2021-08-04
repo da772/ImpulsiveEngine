@@ -1,13 +1,15 @@
 #include "DirectoryModule.h"
 
+#include "SerializerModule.h"
+
 #include "imgui/imgui_internal.h"
 
 namespace Editor {
 
 	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
 
-	DirectoryModule::DirectoryModule(const std::string& directoryBase, Project::ProjectData* projectData) : m_directoryBase(directoryBase+"/"), m_contentDirectoryBase(directoryBase + "/Content/"), m_scriptDirectoryBase(directoryBase +"/NativeScripts/Scripts/"), m_currentEntry(m_contentDirectoryBase)
-		, m_projectData(projectData)
+	DirectoryModule::DirectoryModule(const std::string& directoryBase, Project::ProjectData* projectData, SerializerModule* serialzier) : m_directoryBase(directoryBase+"/"), m_contentDirectoryBase(directoryBase + "/Content/"), m_scriptDirectoryBase(directoryBase +"/NativeScripts/Scripts/"), m_currentEntry(m_contentDirectoryBase)
+		, m_projectData(projectData), m_serializerModule(serialzier)
 	{
 		m_textures["folderIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
 		m_textures["folderEmpty"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderEmpty160x160.png");

@@ -33,9 +33,9 @@ namespace Editor {
 		bool isDragging = false;
 
 		bool isDragging_transform = false;
-		float leftWidth_transform = .15f;
+		float leftWidth_transform = .35f;
 		float leftWidthMax_transform = .8f;
-		float leftWidthMin_transform = .115f;
+		float leftWidthMin_transform = .1f;
 
 		ReloadModule* reloadModule;
 

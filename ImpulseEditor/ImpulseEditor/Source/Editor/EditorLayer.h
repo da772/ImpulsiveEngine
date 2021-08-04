@@ -9,9 +9,10 @@ namespace Editor {
 
 
 	class ReloadModule;
+	class SerializerModule;
 
 	enum class EditorTools : uint8_t {
-		NONE = 0, DRAG, MOVE, ROTATE, SCALE
+		NONE = 0, DRAG, MOVE, ROTATE, SCALE, UNDO, REDO
 	};
 
 	class EditorLayer : public GEngine::Layer {
@@ -58,6 +59,7 @@ namespace Editor {
 		GEngine::ObjectHash selectedGameObject;
 		GEngine::Orthographic_CameraController* m_cameraController = nullptr;
 		ReloadModule* reloadModule;
+		SerializerModule* serializerModule;
 
 	};
 

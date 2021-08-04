@@ -26,6 +26,14 @@ namespace GEngine {
 			return std::strcmp(rhs.hash, hash) == 0;
 		}
 
+		const bool operator<(const ObjectHash& rhs) const noexcept {
+			return std::strcmp(rhs.hash, hash) > 0;
+		}
+
+		const bool operator>(const ObjectHash& rhs) const noexcept {
+			return std::strcmp(rhs.hash, hash) < 0;
+		}
+
 		ObjectHash& operator=(const ObjectHash& rhs) {
 			if (this == &rhs)
 				return *this;
@@ -38,7 +46,7 @@ namespace GEngine {
 			return other == std::strlen(hash);
 		}
 
-		ObjectHash& operator=(ObjectHash&& other) {
+		ObjectHash& operator=(ObjectHash&& other) noexcept {
 			if (&other == this) {
 				return *this;
 			}
@@ -47,9 +55,11 @@ namespace GEngine {
 			return *this;
 		}
 
-		std::string ToString() const {
+		inline std::string ToString() const {
 			return std::string(hash);
 		}
+
+		inline bool isValid() const { return hash[0] != 0; }
 
 		size_t operator()(const ObjectHash& obj) const noexcept {
 			return std::hash<std::string_view>{}(std::string_view(obj.hash, GE_SIZE_OF_HASH));
@@ -88,7 +98,20 @@ namespace GEngine {
 			memcpy(ch, h.hash, sizeof(h.hash));
 			return std::string(ch);
 		}
-		static inline GE_API void RemoveHash(ObjectHash hash) { if (hashes.size() > 0 && hashes.find(hash) != hashes.end()) hashes.erase(hash); };
+		static inline GE_API void RemoveHash(const ObjectHash& hash) { if (hashes.size() > 0 && hashes.find(hash) != hashes.end()) hashes.erase(hash); };
+		static inline GE_API void AddHash(const ObjectHash& hash) {
+			if (hashes.size() > 0) {
+				if (hashes.find(hash) == hashes.end()) {
+					hashes.insert(hash);
+				}
+				else {
+ 					GE_CORE_ASSERT(false, "Hash ALREADY CREATED");
+				}
+			}
+			else
+				hashes.insert(hash);
+			
+		};
 
 		template<class E, typename ... Args>
 		static inline std::shared_ptr<E> CreateGameObject(Args&& ... args) {

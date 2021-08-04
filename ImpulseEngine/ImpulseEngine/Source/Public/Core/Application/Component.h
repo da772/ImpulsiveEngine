@@ -35,18 +35,26 @@ namespace GEngine {
 		inline bool GetDoesUpdate() const {
 			return bUpdates;
 		}
+		virtual std::string Serialize(int indent = 0) { return SerializeIndent(indent)+"<NULL></NULL>"; };
 		void Destroy();
 		Entity* GetEntity() const;
+
+		inline ObjectHash IsAttatched() const { return bAttatched; };
+		inline void SetAttatched(ObjectHash b) { bAttatched = b; }
 
 	public:
 		virtual void OnBegin() {};
 		virtual void OnEnd() {};
-		virtual void OnUpdate(Timestep timestep) {};
+		virtual void OnUpdate(Timestep timestep) {}
+
+	protected:
+		std::string SerializeIndent(int i) const;
 	protected:
 		Entity* m_entity;
 		bool bInit = false;
 		bool bUpdates = false;
-		bool is_component = true;
+		
+		ObjectHash bAttatched;
 
 	};
 }

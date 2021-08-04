@@ -379,6 +379,7 @@ namespace Editor {
 				if (ImGui::Button("Native Script Component", { ImGui::GetContentRegionAvailWidth() ,0 })) {
 
 					GEngine::NativeScriptComponent* s = entity->AddComponent<GEngine::NativeScriptComponent>("");
+					s->SetSerialize(true);
 
 					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddComponent>(s->GetHash());
 					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::ADD_COMPONENT);

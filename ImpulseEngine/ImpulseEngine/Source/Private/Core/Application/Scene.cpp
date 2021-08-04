@@ -86,6 +86,8 @@ namespace GEngine {
 		for (std::pair<ObjectHash, Entity*> e : entities) {
 			delete e.second;
 		}
+
+		entities.clear();
 	}
 
 	void Scene::End()
