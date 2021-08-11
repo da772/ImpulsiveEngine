@@ -23,6 +23,10 @@ namespace GEngine {
 		virtual std::string Serialize(int indent = 0) override;
 		std::string GetClass();
 
+		void SetNativePointerData();
+
+		inline void SetAutoNative(bool b) { m_autoNativize = false; }
+
 		inline NativeObject* GetNativeObject() { return &m_object; }
 
 	protected:
@@ -38,6 +42,7 @@ namespace GEngine {
 		Component* m_component;
         bool m_isValid = false;
 		bool m_hasBegun = false;
+		bool m_autoNativize = true;
 		std::string m_clazz;
 
 	};

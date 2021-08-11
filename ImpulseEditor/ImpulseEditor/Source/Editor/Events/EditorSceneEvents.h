@@ -19,7 +19,7 @@ namespace Editor {
 	class EditorSceneGameObjectEvent : public EditorSceneEvent {
 	public:
 		EditorSceneGameObjectEvent(const GEngine::ObjectHash& hash) : hash(hash) {}
-		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryGameObject);
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryGameObject | EventCategoryModification);
 		const GEngine::ObjectHash& GetObjectHash() { return hash; }
 
 	protected:
@@ -40,7 +40,7 @@ namespace Editor {
 	class EditorSceneEntityEvent : public EditorSceneGameObjectEvent {
 	public:
 		EditorSceneEntityEvent(const GEngine::ObjectHash& hash) : EditorSceneGameObjectEvent(hash) {}
-		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryEntity | EventCategoryGameObject);
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryEntity | EventCategoryGameObject | EventCategoryModification);
 		const GEngine::ObjectHash& GetObjectHash() { return hash; }
 	
 	};
@@ -48,7 +48,7 @@ namespace Editor {
 	class EditorSceneComponentEvent : public EditorSceneGameObjectEvent {
 	public:
 		EditorSceneComponentEvent(const GEngine::ObjectHash& hash) : EditorSceneGameObjectEvent(hash) {}
-		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryComponent | EventCategoryGameObject);
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryComponent | EventCategoryGameObject | EventCategoryModification);
 		const GEngine::ObjectHash& GetObjectHash() { return hash; }
 
 	};

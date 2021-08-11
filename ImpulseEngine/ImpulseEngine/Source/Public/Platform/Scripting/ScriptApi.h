@@ -50,7 +50,7 @@ namespace GEngine {
         static void SetRelativePath_Native(const std::string& includeDir);
 		static inline NativeReflector GetReflector_Native() { return s_nativeReflector; }
         static void SetNativeScriptPtrs(void* hash, void* data);
-        static void RemoveGameObject(ObjectHash hash);
+        static void RemoveGameObject(ObjectHash hash, void* ptr);
 
         template<typename ... Args>
         static inline void NativeLog(uint8_t i, const std::string& __s, Args const &... args) {

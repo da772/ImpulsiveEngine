@@ -57,7 +57,9 @@ namespace GEngine {
 		Unload_Native();
 	}
 
-
+	/**
+		@TODO Technically need to call this every frame or atleast an optimized version xD
+	**/
 	void ScriptApi::SetNativeScriptPtrs(void* hash, void* data)
 	{
 		refl::uClass* cl = (refl::uClass*)data;
@@ -76,14 +78,15 @@ namespace GEngine {
 
 	}
 
-	void ScriptApi::RemoveGameObject(ObjectHash hash)
+	void ScriptApi::RemoveGameObject(ObjectHash hash, void* ptr)
 	{
 		std::unordered_map<ObjectHash, std::vector<NativePtr>>::iterator it = nativeScriptReferences.find(hash);
 
 		if (it != nativeScriptReferences.end()) {
 			for (const auto& i : it->second) {	
 				if (GameObject::GetObjectFromHash(i.go)) {
-					*i.ptr = nullptr;
+					if (*i.ptr == ptr)
+						*i.ptr = nullptr;
 				}
 			}
 			nativeScriptReferences.erase(it);

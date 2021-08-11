@@ -163,6 +163,12 @@ namespace GEngine {
 		return m_clazz;
 	}
 
+	void NativeScriptComponent::SetNativePointerData()
+	{
+		if (m_component && &m_object)
+			ScriptApi::SetNativeScriptPtrs((void*)m_component, (void*)&m_object);
+	}
+
 	NativeScriptComponent::~NativeScriptComponent()
 	{
 		ScriptApi::RemoveNativeScript(this);
@@ -233,8 +239,8 @@ namespace GEngine {
 				if (m_component) {
 					m_isValid = true;
 					bUpdates = m_component->GetDoesUpdate();
-
-					ScriptApi::SetNativeScriptPtrs((void*)m_component, (void*)&m_object);
+					if (m_autoNativize)
+						ScriptApi::SetNativeScriptPtrs((void*)m_component, (void*)&m_object);
 					return true;
 				}
 				else {

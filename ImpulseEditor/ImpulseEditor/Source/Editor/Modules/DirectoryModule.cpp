@@ -246,7 +246,7 @@ namespace Editor {
 				if (ImGui::Button((dirs[i].filename().generic_string()).c_str())) {
 					DirectoryPath d = { dirs[i].generic_string(), dirs[i].filename().generic_string(), dirs[i].extension().generic_string(), false, false };
 					SelectView(d);
-					depth = dirs.size()-1 - i;
+					depth = (uint32_t)dirs.size()-1 - i;
 				}
 				ImGui::PopStyleColor();
 			}
@@ -380,7 +380,7 @@ namespace Editor {
 				ImGui::SetDragDropPayload("DirectoryPath", (void*)payload, sizeof(DirectoryPayload));
 				delete payload;
 				ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 - imageSize + imageSize / 2);
-				ImGui::Image((ImTextureID)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
+				ImGui::Image((ImTextureID)(uintptr_t)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
 				int startIndex = 0;
 				for (int i = 0; i < p.name.size(); i++) {
 					ImVec2 size = ImGui::CalcTextSize(&p.name[startIndex], &p.name[i], true);
@@ -533,7 +533,7 @@ namespace Editor {
 					ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(ImGui::GetStyleColorVec4((fl & ImGuiTreeNodeFlags_Selected) ? ImGuiCol_Header : ImGuiCol_WindowBg)));
 			}
 
-			ImGui::Image((ImTextureID)m_textures["folderEmpty"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
+			ImGui::Image((ImTextureID)(uintptr_t)m_textures["folderEmpty"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
 			ImGui::Text(d.name.c_str());
 

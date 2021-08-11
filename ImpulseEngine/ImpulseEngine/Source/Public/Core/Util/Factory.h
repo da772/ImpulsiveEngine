@@ -6,7 +6,7 @@
 #include "Public/Core/Util/Utility.h"
 #if 1
 
-#define GE_SIZE_OF_HASH 16
+#define GE_SIZE_OF_HASH 12
 
 namespace GEngine {
 	struct GE_API ObjectHash {

@@ -37,13 +37,13 @@ namespace Editor {
 
 
 	enum class NativeTypes : uint8_t {
-		NONE = 0, CLASS, INT, INT8, INT16, INT32, INT64, UINT, UINT8, UINT16, UINT32, UINT64, DOUBLE, FLOAT, GAMEOBJECT, STRING, TEXTURE2D,
+		NONE = 0, CLASS, INT, INT8, INT16, INT32, INT64, UINT, UINT8, UINT16, UINT32, UINT64, DOUBLE, FLOAT, GAMEOBJECT, STRING, TEXTURE2D, BOOL
 	};
 	
 	const std::unordered_map<std::string, NativeTypes> NativeTypeMap = { {"class", NativeTypes::CLASS}, {"int", NativeTypes::INT}, {"int8", NativeTypes::INT8},
 	{"int16", NativeTypes::INT16}, {"int32", NativeTypes::INT32}, {"int64", NativeTypes::INT64}, {"uint", NativeTypes::UINT}, {"uint8", NativeTypes::UINT8},
 	{"uint16", NativeTypes::UINT16}, {"uint32", NativeTypes::UINT32}, {"uint64", NativeTypes::UINT64}, {"string", NativeTypes::STRING},  {"GameObject", NativeTypes::GAMEOBJECT},
-	{"Texture2D", NativeTypes::TEXTURE2D},{"float", NativeTypes::FLOAT}, {"double", NativeTypes::DOUBLE} };
+	{"Texture2D", NativeTypes::TEXTURE2D},{"float", NativeTypes::FLOAT}, {"double", NativeTypes::DOUBLE}, {"bool",NativeTypes::BOOL} };
 
 	const std::unordered_map<std::string, ComponentTypes> ComponentTypeMap = { {"None", ComponentTypes::NONE }, {"Transform Component", ComponentTypes::TransformComponent},
 		{"Sprite Component", ComponentTypes::SpriteComponent },
@@ -73,6 +73,8 @@ namespace Editor {
 		void Load(const std::string& scene, const std::string& path);
 		bool Save();
 		void SaveAs(const std::string& name, const std::string& path);
+
+		GEngine::Ref<GEngine::FileData> SerializeCurrentScene();
 
 		const std::string& GetName() const;
 		const std::string& GetPath() const;

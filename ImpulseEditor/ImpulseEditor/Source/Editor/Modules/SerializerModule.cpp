@@ -37,7 +37,6 @@ namespace Editor {
 		scene_location = path;
 
 
-
 		GEngine::Ref<GEngine::FileData> fd = GEngine::FileSystem::FileDataFromPath(path, false);
 		std::string str((char*)fd->GetData(), fd->GetDataSize());
 		size_t pos = 0;
@@ -177,7 +176,9 @@ namespace Editor {
 					
 					case NativeTypes::CLASS: {
 						ObjectHash objHash = ObjectHash(node.tags["id"].c_str());
+
 						if (objHash.isValid()) {
+							sc->SetAutoNative(false);
 							sc->LoadClass(d.data, objHash);
 						}
 						objects[c.parentEntity].components[objHash].ptr = sc->GetComponent();
@@ -250,7 +251,6 @@ namespace Editor {
 						else if (t == 0) {
 							sc->GetNativeObject()->SetMember<void*>(d.name, objects[gohash].ptr);
 						}
-
 						break;
 					}
 					case NativeTypes::STRING:
@@ -263,7 +263,9 @@ namespace Editor {
 						break;
 
 					}
-
+					if (sc) {
+						sc->SetNativePointerData();
+					}
 					node = cxml.GetNext(c.data.c_str(), node.endPos);
 				}
 
@@ -292,51 +294,10 @@ namespace Editor {
 	{
 		if (scene_name.size() > 0) {
 
-			using namespace GEngine;
-
-			Scene* scene = SceneManager::GetCurrentScene();
-
-			const auto& entities = scene->GetEntities();
-
-			std::string serial = "";
-
-			std::priority_queue <Entity*, std::vector<Entity*>, EntityComp> sorted_ent;
-
-			for (const auto& e : entities) {
-				if (e.second->DoesSerialize())
-					sorted_ent.push(e.second);
-			}
-
-			while (!sorted_ent.empty()) {
-
-				Entity* e = sorted_ent.top();
-				sorted_ent.pop();
-				serial += "<Entity id=\"" + e->GetHash().ToString() + "\" tId=\""+e->GetTransform()->GetHash().ToString()+"\" tag=\""+e->GetTag()+"\" parent=\""+(e->GetParent() ? e->GetParent()->GetHash().ToString() : "")+"\">";
-				
-				std::priority_queue <Component*, std::vector<Component*>, ComponentComp> sorted_comp;
-
-				for (const auto& c : e->GetComponents()) {
-					if (c.second->DoesSerialize())
-						sorted_comp.push(c.second);
-				}
-
-				while (!sorted_comp.empty()) {
-					Component* c = sorted_comp.top();
-					sorted_comp.pop();
-					serial += "\n\t<Component id=\"" + c->GetHash().ToString() + "\" tag=\"" + c->GetTag() + "\" parent=\""+c->IsAttatched().ToString()+"\">\n";
-
-					// Do something
-					serial += c->Serialize(2);
-
-					serial += "\n\t</Component>";
-
-				}
-
-				serial += "\n</Entity>\n";
-			}
-
+			GEngine::Ref<GEngine::FileData> d = SerializeCurrentScene();
+			
 			std::ofstream out(scene_location, std::ios::trunc);
-			out.write(serial.c_str(), serial.size());
+			out.write((const char*)d->GetData(), d->GetDataSize());
 			out.close();
 
 			return true;
@@ -353,6 +314,60 @@ namespace Editor {
 		scene_name = name;
 		scene_location = path;
 		Save();
+	}
+
+	GEngine::Ref<GEngine::FileData> SerializerModule::SerializeCurrentScene()
+	{
+		using namespace GEngine;
+
+		Scene* scene = SceneManager::GetCurrentScene();
+
+		const auto& entities = scene->GetEntities();
+
+		std::string serial = "";
+
+		std::priority_queue <Entity*, std::vector<Entity*>, EntityComp> sorted_ent;
+
+		for (const auto& e : entities) {
+			if (e.second->DoesSerialize())
+				sorted_ent.push(e.second);
+		}
+
+		while (!sorted_ent.empty()) {
+
+			Entity* e = sorted_ent.top();
+			sorted_ent.pop();
+			serial += "<Entity id=\"" + e->GetHash().ToString() + "\" tId=\"" + e->GetTransform()->GetHash().ToString() + "\" tag=\"" + e->GetTag() + "\" parent=\"" + (e->GetParent() ? e->GetParent()->GetHash().ToString() : "") + "\">";
+
+			std::priority_queue <Component*, std::vector<Component*>, ComponentComp> sorted_comp;
+
+			for (const auto& c : e->GetComponents()) {
+				if (c.second->DoesSerialize())
+					sorted_comp.push(c.second);
+			}
+
+			while (!sorted_comp.empty()) {
+				Component* c = sorted_comp.top();
+				sorted_comp.pop();
+				serial += "\n\t<Component id=\"" + c->GetHash().ToString() + "\" tag=\"" + c->GetTag() + "\" parent=\"" + c->IsAttatched().ToString() + "\">\n";
+
+				// Do something
+				serial += c->Serialize(2);
+
+				serial += "\n\t</Component>";
+
+			}
+
+			serial += "\n</Entity>\n";
+		}
+
+		char* data = (char*)calloc(serial.size()+1, sizeof(char));
+		memcpy(data, &serial[0], serial.size());
+
+		return std::make_shared<GEngine::FileData>(serial.size(), (unsigned char*)data);
+
+
+
 	}
 
 	const std::string& SerializerModule::GetName() const

@@ -280,7 +280,7 @@ namespace Editor {
 						}
 						else if (p.second.type == refl::store::uproperty_type::uclass_ptr) {
 							char buff[255] = { 0 };
-							GEngine::GameObject* ptr = script->GetNativeObject()->GetMember<GEngine::Component*>(p.second.name);
+							GEngine::GameObject* ptr = dynamic_cast<GEngine::Component*>(script->GetNativeObject()->GetMember<GEngine::GameObject*>(p.second.name));
 
 							if (ptr) {
 								memcpy(buff, (ptr->GetTag() + " (" + ptr->GetHash().ToString() + ")").c_str(), ptr->GetTag().size() + 3 + ptr->GetHash().ToString().size());
