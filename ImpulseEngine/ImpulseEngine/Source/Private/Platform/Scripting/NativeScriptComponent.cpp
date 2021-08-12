@@ -69,7 +69,7 @@ namespace GEngine {
 
 				for (int i = 0; i < findTypes.size(); i++) {
 					for (int j = 0; j < findTypes[i].size(); j++) {
-						auto& it = std::find(types.begin(), types.end(), findTypes[i][j]);
+						const auto& it = std::find(types.begin(), types.end(), findTypes[i][j]);
 						if (it != types.end()) {
 							ftype = *it;
 							break;
