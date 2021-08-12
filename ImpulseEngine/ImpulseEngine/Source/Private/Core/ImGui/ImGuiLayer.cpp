@@ -67,11 +67,11 @@ namespace GEngine {
 		Application::GetApp()->OnImGuiSetup();
 		
 		ImGuiStyle& style = ImGui::GetStyle();
-
+		/*
 		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 0);
-		
+		*/
 		
 		
 
@@ -97,8 +97,8 @@ namespace GEngine {
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		//static bool show = true;
-		//ImGui::ShowDemoWindow(&show);
+		bool show = true;
+		ImGui::ShowDemoWindow(&show);
 		//ImPlot::ShowDemoWindow();
 	}
 

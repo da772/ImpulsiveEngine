@@ -12,7 +12,9 @@ namespace Editor {
 		None = 0,
 		ApplicationPlayEvent, ApplicationPauseEvent, ApplicationStopEvent, ApplicationResumeEvent, ApplicationSkipFrameEvent,
 		EditorHideViewEvent, EditorShowViewEvent,
-		SceneCreateEntity, SceneDestroyEntity, SceneModifyEntity, SceneAddComponent, SceneDestroyComponent, SceneModifyComponent
+		SceneCreateEntity, SceneDestroyEntity, SceneModifyEntity, SceneAddComponent, SceneDestroyComponent, SceneModifyComponent,
+		EditorToolEvent, EditorToolEventDrag, EditorToolEventMove, EditorToolEventRotate, EditorToolEventScale, EditorToolEventUndo,
+		EditorToolEventRedo
 	};
 
 	enum EditorEventCategory
@@ -54,10 +56,6 @@ namespace Editor {
 
 	};
 
-	struct EventFunction {
-		const std::string& e;
-		const std::function<void(const Editor::EditorEvent&)>& f;
-	};
 
 
 	class EditorDispatcher {
@@ -66,29 +64,27 @@ namespace Editor {
 		EditorDispatcher();
 		~EditorDispatcher();
 
-		uint64_t SubscribeEvent(const std::string& e, const std::function<void(const Editor::EditorEvent&)> f);
+		
+		uint64_t SubscribeEvent(const EditorEventType& e, const std::function<void(const Editor::EditorEvent&)> f);
 
-		void UnsubscribeEvent(const std::string& e, const uint64_t& hash);
+
+		
+		void UnsubscribeEvent(const EditorEventType& e, const uint64_t& hash);
 
 		template<class E, typename ... Args>
 		inline void BroadcastEvent(Args&& ... args) {
 			E event = E(std::forward<Args>(args)...);
-			const std::unordered_map<uint64_t, std::function<void(const Editor::EditorEvent&)>> funcs = notify[event.GetName()];
+			const std::unordered_map<uint64_t, std::function<void(const Editor::EditorEvent&)>> funcs = notify[event.GetEventType()];
 
 			for (const auto& f : funcs) {
 				f.second(event);
 			}
 		}
 
-		EditorDispatcher& operator+=(const EventFunction& e) {
-			this->SubscribeEvent(e.e, e.f);
-			return *this;
-		}
-
 
 
 	private:
-		std::unordered_map<std::string, std::unordered_map<uint64_t, std::function<void(const Editor::EditorEvent&)>>> notify;
+		std::unordered_map<EditorEventType, std::unordered_map<uint64_t, std::function<void(const Editor::EditorEvent&)>>> notify;
 
 	};
 

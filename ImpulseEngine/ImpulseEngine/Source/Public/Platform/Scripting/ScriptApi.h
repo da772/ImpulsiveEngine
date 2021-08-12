@@ -9,7 +9,6 @@ namespace GEngine {
 
 
     struct NativePtr {
-        ObjectHash go;
         void** ptr;
     };
 

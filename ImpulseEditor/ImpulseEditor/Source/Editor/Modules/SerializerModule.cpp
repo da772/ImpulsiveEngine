@@ -9,24 +9,26 @@ namespace Editor {
 
 	SerializerModule::SerializerModule()
 	{
-		eventCallbacks.push_back(EditorLayer::GetDispatcher()->SubscribeEvent("ApplicationPlayEvent", [this](const const Editor::EditorEvent& e) {
+		eventCallbacks.push_back(EditorLayer::GetDispatcher()->SubscribeEvent(EditorEventType::ApplicationPlayEvent, [this](const Editor::EditorEvent& e) {
 			if (scene_name.size() > 0) {
 				Save();
 			}
 		}));
 
-		eventCallbacks.push_back(EditorLayer::GetDispatcher()->SubscribeEvent("ApplicationStopEvent", [this](const const Editor::EditorEvent& e) {
+
+		eventCallbacks.push_back(EditorLayer::GetDispatcher()->SubscribeEvent(EditorEventType::ApplicationStopEvent, [this](const Editor::EditorEvent& e) {
 		if (scene_name.size() > 0) {
 			GEngine::ThreadPool::AddMainThreadFunction([this]() {
 				Load(scene_name, scene_location);
 				});
 		} }));
+
 	}
 
 	SerializerModule::~SerializerModule()
 	{
-		for (const auto& id : eventCallbacks)
-			EditorLayer::GetDispatcher()->UnsubscribeEvent("ApplicationPlayEvent", id);
+		EditorLayer::GetDispatcher()->UnsubscribeEvent(EditorEventType::ApplicationPlayEvent, eventCallbacks[0]);
+		EditorLayer::GetDispatcher()->UnsubscribeEvent(EditorEventType::ApplicationStopEvent, eventCallbacks[1]);
 	}
 
 	void SerializerModule::Load(const std::string& scene, const std::string& path)
@@ -176,6 +178,7 @@ namespace Editor {
 					
 					case NativeTypes::CLASS: {
 						ObjectHash objHash = ObjectHash(node.tags["id"].c_str());
+
 
 						if (objHash.isValid()) {
 							sc->SetAutoNative(false);

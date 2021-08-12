@@ -2,10 +2,11 @@
 #include "ReloadModule.h"
 
 #include "Editor/Events/EditorApplicationEvents.h"
+#include "Editor/Events/EditorToolEvents.h"
 
 namespace Editor {
 
-	ToolbarModule::ToolbarModule(ReloadModule* reloadModule, EditorTools* editorTool)  : m_reloadModule(reloadModule), m_editorTool(editorTool)
+	ToolbarModule::ToolbarModule(ReloadModule* reloadModule, EditorEventType* editorTool)  : m_reloadModule(reloadModule), m_editorTool(editorTool)
 	{
 		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
 		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
@@ -35,7 +36,7 @@ namespace Editor {
 		{
 			ImGuiViewport* viewport = ImGui::GetMainViewport();
 			ImGui::SetNextWindowPos(viewport->Pos);
-			ImGui::SetNextWindowSize({ viewport->Size.x , 50.f });
+			ImGui::SetNextWindowSize({ viewport->Size.x , 55.f });
 			ImGui::SetNextWindowViewport(viewport->ID);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -51,32 +52,32 @@ namespace Editor {
 		ImGui::Begin(name.c_str(), 0, window_flags | flags | ImGuiWindowFlags_NoScrollbar);
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 15.f);
 		ImGui::SetCursorPosY( ImGui::GetCursorPosY() + imageBorderSize - imageButtonSize + yOffset );
-		if (ControlButtons("handButton", EditorTools::DRAG)) {
+		if (ControlButtons("handButton", EditorEventType::EditorToolEventDrag)) {
 
 
 		}
 		ImGui::SameLine(0.f, 15.f);
 		
-		if (ControlButtons("moveButton", EditorTools::MOVE)) {
+		if (ControlButtons("moveButton", EditorEventType::EditorToolEventMove)) {
 
 		}
 		ImGui::SameLine(0.f, 15.f);
 		
-		if (ControlButtons("rotateButton", EditorTools::ROTATE)) {
+		if (ControlButtons("rotateButton", EditorEventType::EditorToolEventRotate)) {
 
 		}
 		ImGui::SameLine(0.f, 15.f);
-		if (ControlButtons("scaleButton", EditorTools::SCALE)) {
+		if (ControlButtons("scaleButton", EditorEventType::EditorToolEventScale)) {
 
 		}
 
 		ImGui::SameLine(0.f, 45.f);
-		if (ControlButtons("undoButton")) {
+		if (ControlButtons("undoButton", EditorEventType::EditorToolEventUndo, false)) {
 
 		}
 
 		ImGui::SameLine(0.f, 15.5f);
-		if (ControlButtons("redoButton")) {
+		if (ControlButtons("redoButton", EditorEventType::EditorToolEventRedo, false)) {
 
 		}
 
@@ -140,18 +141,20 @@ namespace Editor {
 
 	}
 
-	bool ToolbarModule::ControlButtons(const std::string& s, EditorTools tool)
+	bool ToolbarModule::ControlButtons(const std::string& s, EditorEventType tool, bool setTool)
 	{
 		ImVec2 pos = ImGui::GetCursorScreenPos();
-		bool selected = tool != EditorTools::NONE && tool == *m_editorTool;
+		bool selected = tool != EditorEventType::None && tool == *m_editorTool;
 		bool isHovered = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect({ pos.x-imageBorderSize*.25f, pos.y - (imageBorderSize-imageButtonSize)/2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize });
 		ImGui::GetWindowDrawList()->AddRectFilled({ pos.x-imageBorderSize * .25f, pos.y - (imageBorderSize - imageButtonSize) / 2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize}, ImGui::GetColorU32(ImGui::GetStyleColorVec4(selected ? ImGuiCol_ButtonActive : !isHovered ? ImGuiCol_Button : ImGuiCol_ButtonHovered)), 0.f);
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (imageBorderSize - imageButtonSize) / 2.f);
 		ImGui::Image((ImTextureID)(uintptr_t)m_textures[s]->GetRendererID(), { imageButtonSize, imageButtonSize}, { 0,1 }, { 1,0 });
 		if (isHovered) {
 			bool clicked = ImGui::IsMouseClicked(0);
-			if (tool != EditorTools::NONE && clicked) {
-				*m_editorTool = tool;
+			if (tool != EditorEventType::None && clicked) {
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorToolEvent>(tool);
+				if (setTool)
+					*m_editorTool = tool;
 			}
 			return clicked;
 		}

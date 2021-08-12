@@ -11,10 +11,6 @@ namespace Editor {
 	class ReloadModule;
 	class SerializerModule;
 
-	enum class EditorTools : uint8_t {
-		NONE = 0, DRAG, MOVE, ROTATE, SCALE, UNDO, REDO
-	};
-
 	class EditorLayer : public GEngine::Layer {
 
 	public:
@@ -50,7 +46,7 @@ namespace Editor {
 		static EditorDispatcher s_dispatcher;
 		std::unordered_map<std::string, EditorModuleData> modules;
 		std::vector<std::string> modules_order;
-		EditorTools editorTool = EditorTools::NONE;
+		EditorEventType editorTool = EditorEventType::None;
 
 	private:
 		Project::LocalProject m_projectData;

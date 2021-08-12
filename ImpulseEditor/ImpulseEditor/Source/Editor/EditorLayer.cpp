@@ -57,8 +57,6 @@ namespace Editor {
 		reloadModule->Reload();
 		serializerModule = new SerializerModule();
 
-
-
 		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule, serializerModule);
 		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule, &editorTool);
 		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
@@ -102,6 +100,7 @@ namespace Editor {
 	void EditorLayer::OnDetach()
 	{
 
+
 	}
 
 	void EditorLayer::OnUpdate(GEngine::Timestep timeStep)
@@ -112,6 +111,9 @@ namespace Editor {
 			d.second.data->Update(timeStep);
 		}
 		m_cameraController->OnUpdate(timeStep); 
+
+
+
 	}
 
 	static float v = 1;
@@ -132,19 +134,17 @@ namespace Editor {
 		}
 	}
 
-	
-
 	void EditorLayer::OnImGuiRender()
 	{
 		
 		ImGui::PushFont(((ImpulseEditor*)GEngine::Application::GetApp() )->smallFont);
-		ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 5.f);
+		//ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 5.f);
 		for (const auto & id : modules_order) {
 			std::pair<std::string, EditorModuleData&> d = { id, modules[id] };
 			if (!d.second.isOpen) continue;
 			d.second.data->Create(d.first, &d.second.isOpen, d.second.flags);
 		}
-		ImGui::PopStyleVar();
+		//ImGui::PopStyleVar();
 		ImGui::PopFont();
 
 		//GEngine::Log::GetImGuiLog()->Draw("Console Log", 0);

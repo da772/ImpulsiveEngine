@@ -7,7 +7,7 @@
 using namespace GEngine;
 
 namespace Editor {
-	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView, GEngine::CameraController* cam, EditorTools* tools) : m_pipeline(pipeline), m_reloadModule(reloadModule), gameView(gameView),
+	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView, GEngine::CameraController* cam, EditorEventType* tools) : m_pipeline(pipeline), m_reloadModule(reloadModule), gameView(gameView),
 		m_cameraController(cam), editorTools(tools)
 	{
 		updates = !gameView;
@@ -174,12 +174,12 @@ namespace Editor {
 		if (m_cameraController) {
 			if (npos != pos) {
 				m_cameraController->SetPosition(pos);
-				*editorTools = EditorTools::DRAG;
+				*editorTools = EditorEventType::EditorToolEventDrag;
 			}
 
 			if (nzooomPos != zoomPos) {
 				m_cameraController->SetCameraZoom(zoomPos);
-				*editorTools = EditorTools::DRAG;
+				*editorTools = EditorEventType::EditorToolEventDrag;
 			}			
 		}
 

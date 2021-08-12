@@ -10,7 +10,7 @@ namespace Editor {
 	class ViewportModule : public EditorModule {
 
 	public:
-		ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView = false, GEngine::CameraController* cam = nullptr, EditorTools* tool = nullptr);
+		ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView = false, GEngine::CameraController* cam = nullptr, EditorEventType* tool = nullptr);
 		~ViewportModule();
 
 		virtual void Create(const std::string& name, bool* is_open, uint32_t flags) override;
@@ -28,7 +28,7 @@ namespace Editor {
 		bool handleResize = false;
 		float imageButtonSize = 35.f;
 		bool gameView;
-		EditorTools* editorTools;
+		EditorEventType* editorTools;
 		GEngine::CameraController* m_cameraController;
 		ReloadModule* m_reloadModule;
 		std::string m_pipeline;
