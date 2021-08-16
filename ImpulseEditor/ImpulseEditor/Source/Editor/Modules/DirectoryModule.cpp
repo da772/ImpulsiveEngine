@@ -89,6 +89,7 @@ namespace Editor {
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Rename", { ImGui::GetContentRegionAvailWidth(), 0 })) {
+					memset(renameBuffer, 0, sizeof(char)*255);
 					rename = true;
 					m_selectedEntry = m_rightClicked.path;
 					ImGui::CloseCurrentPopup();
@@ -157,6 +158,7 @@ namespace Editor {
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::Button("Rename", { ImGui::GetContentRegionAvailWidth(), 0 })) {
+					memset(renameBuffer, 0, sizeof(char) * 255);
 					rename = true;
 					m_selectedEntry = m_rightClicked.path;
 					forceFolderViewRefresh = true;
