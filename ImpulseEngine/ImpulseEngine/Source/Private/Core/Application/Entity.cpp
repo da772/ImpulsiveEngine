@@ -19,7 +19,7 @@ namespace GEngine {
 			transform = AddComponentHash<Transform>(trans);
 		else 
 			transform = AddComponent<Transform>();
-		GE_CORE_DEBUG("ENTITY HASH: {0}", Factory::HashToString(go_hash));
+
 	}
 
 	Entity::~Entity()
@@ -30,7 +30,7 @@ namespace GEngine {
 				Factory::RemoveHash(h);
 			}
 		}
-		GE_LOG_DEBUG("ENTITY DESTROYED");
+
 	}
 
 	void Entity::UnloadGraphics() {

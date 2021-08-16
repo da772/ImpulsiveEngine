@@ -9,18 +9,18 @@ namespace Editor {
 
 	ToolbarModule::ToolbarModule(ReloadModule* reloadModule, SerializerModule* serializer, EditorEventType* editorTool)  : m_reloadModule(reloadModule), m_editorTool(editorTool), m_serializer(serializer)
 	{
-		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
-		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
-		m_textures["stopButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/stop172x172.png");
-		m_textures["resumeButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/resume172x172.png");
-		m_textures["fastForwardButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/fastForward172x172.png");
-		m_textures["loadingButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/loadingIcon172x172.png");
-		m_textures["handButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/hand172x172.png");
-		m_textures["scaleButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/scale172x172.png");
-		m_textures["rotateButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/rotate172x172.png");
-		m_textures["moveButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/drag172x172.png");
-		m_textures["undoButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/undo160x160.png");
-		m_textures["redoButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/redo160x160.png");
+		m_textures["playButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/play172x172.png");
+		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/pause172x172.png");
+		m_textures["stopButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/stop172x172.png");
+		m_textures["resumeButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/resume172x172.png");
+		m_textures["fastForwardButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/fastForward172x172.png");
+		m_textures["loadingButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/loadingIcon172x172.png");
+		m_textures["handButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/hand172x172.png");
+		m_textures["scaleButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/scale172x172.png");
+		m_textures["rotateButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/rotate172x172.png");
+		m_textures["moveButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/drag172x172.png");
+		m_textures["undoButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/undo160x160.png");
+		m_textures["redoButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/redo160x160.png");
 
 		m_eventHash[0] = EditorLayer::GetDispatcher()->SubscribeEvent(EditorEventType::AllEvents, [this](const EditorEvent& e) {
 
@@ -32,6 +32,7 @@ namespace Editor {
 				m_historyIndex = m_history.size() - 1;
 				if (m_history.size() >= 15) {
 					m_history.erase(m_history.begin());
+					m_historyIndex = m_history.size() - 1;
 				}
 			}
 		});

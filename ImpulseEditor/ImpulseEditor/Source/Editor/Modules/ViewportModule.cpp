@@ -11,12 +11,12 @@ namespace Editor {
 		m_cameraController(cam), editorTools(tools)
 	{
 		updates = !gameView;
-		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
-		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
-		m_textures["stopButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/stop172x172.png");
-		m_textures["resumeButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/resume172x172.png");
-		m_textures["fastForwardButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/fastForward172x172.png");
-		m_textures["loadingButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/loadingIcon172x172.png");
+		m_textures["playButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/play172x172.png");
+		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/pause172x172.png");
+		m_textures["stopButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/stop172x172.png");
+		m_textures["resumeButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/resume172x172.png");
+		m_textures["fastForwardButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/fastForward172x172.png");
+		m_textures["loadingButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/loadingIcon172x172.png");
 	}
 
 	ViewportModule::~ViewportModule()

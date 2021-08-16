@@ -10,7 +10,6 @@ namespace GEngine {
 	{
 		go_tag = "Component";
 		is_component = true;
-		GE_CORE_DEBUG("COMPONENT HASH: {0}", Factory::HashToString(go_hash));
 	}
 
 	Component::~Component()

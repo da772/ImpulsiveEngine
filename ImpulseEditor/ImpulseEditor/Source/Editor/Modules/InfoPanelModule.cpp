@@ -4,10 +4,10 @@ namespace Editor {
 
 	InfoPanelModule::InfoPanelModule()
 	{
-		m_textures["warning"] = GEngine::Texture2D::Create("Content/Textures/Icons/warning172x172.png");
-		m_textures["error"] = GEngine::Texture2D::Create("Content/Textures/Icons/error172x172.png");
-		m_textures["info"] = GEngine::Texture2D::Create("Content/Textures/Icons/info172x172.png");
-		m_textures["bug"] = GEngine::Texture2D::Create("Content/Textures/Icons/bug172x172.png");
+		m_textures["warning"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/warning172x172.png");
+		m_textures["error"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/error172x172.png");
+		m_textures["info"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/info172x172.png");
+		m_textures["bug"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/bug172x172.png");
 	}
 
 	InfoPanelModule::~InfoPanelModule()

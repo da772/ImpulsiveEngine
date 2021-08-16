@@ -11,12 +11,12 @@ namespace Editor {
 	DirectoryModule::DirectoryModule(const std::string& directoryBase, Project::ProjectData* projectData, SerializerModule* serialzier) : m_directoryBase(directoryBase+"/"), m_contentDirectoryBase(directoryBase + "/Content/"), m_scriptDirectoryBase(directoryBase +"/NativeScripts/Scripts/"), m_currentEntry(m_contentDirectoryBase)
 		, m_projectData(projectData), m_serializerModule(serialzier)
 	{
-		m_textures["folderIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
-		m_textures["folderEmpty"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderEmpty160x160.png");
-		m_textures["folderFull"] = GEngine::Texture2D::Create("Content/Textures/Icons/folderFull160x160.png");
-		m_textures["fileIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/document160x160.png");
-		m_textures["undoIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/undo160x160.png"); 
-		m_textures["searchIcon"] = GEngine::Texture2D::Create("Content/Textures/Icons/searchIcon160x160.png", TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
+		m_textures["folderIcon"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/folderIcon172x172.png");
+		m_textures["folderEmpty"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/folderEmpty160x160.png");
+		m_textures["folderFull"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/folderFull160x160.png");
+		m_textures["fileIcon"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/document160x160.png");
+		m_textures["undoIcon"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/undo160x160.png"); 
+		m_textures["searchIcon"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/searchIcon160x160.png", TEXTUREFLAGS_Mag_Linear | TEXTUREFLAGS_Min_Linear);
 	}
 
 	void DirectoryModule::Create(const std::string& name, bool* is_open, uint32_t flags)

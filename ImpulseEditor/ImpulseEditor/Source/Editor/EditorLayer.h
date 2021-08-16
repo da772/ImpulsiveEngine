@@ -52,7 +52,7 @@ namespace Editor {
 		Project::LocalProject m_projectData;
 		EditorLayer(const std::string& name, Project::LocalProject* data);
 		static EditorLayer* s_singleton;
-		GEngine::ObjectHash selectedGameObject;
+		std::set<GEngine::ObjectHash> selectedGameObject;
 		GEngine::Orthographic_CameraController* m_cameraController = nullptr;
 		ReloadModule* reloadModule;
 		SerializerModule* serializerModule;

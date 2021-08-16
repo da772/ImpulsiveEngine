@@ -10,7 +10,7 @@ namespace Editor {
 	MainMenuModule::MainMenuModule(std::unordered_map<std::string, EditorModuleData>* modules, Project::LocalProject* proj, ReloadModule* reloadModule, SerializerModule* serializer) : m_modules(modules), m_project(proj), m_reloadModule(reloadModule),
 		m_serialzierModule(serializer)
 	{
-		folderIcon = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
+		folderIcon = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/folderIcon172x172.png");
 		m_msBuildLocation = m_project->compilerDir;
 		memcpy(buildBuffer, &m_msBuildLocation[0], std::min((int)m_msBuildLocation.size() * sizeof(char), 2048 * sizeof(char)));
 		LoadProjects();

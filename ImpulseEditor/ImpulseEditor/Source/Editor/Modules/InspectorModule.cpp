@@ -9,8 +9,7 @@
 namespace Editor {
 
 	
-	InspectorModule::InspectorModule(GEngine::ObjectHash* selectedGameObject, ReloadModule* reloadModule) : m_selectedGameObject(selectedGameObject), reloadModule(reloadModule)
-
+	InspectorModule::InspectorModule(std::set<GEngine::ObjectHash>* selectedGameObject, ReloadModule* reloadModule) : m_selectedGameObject(selectedGameObject), reloadModule(reloadModule)
 	{
 		s_ComponentMap = 
 		{
@@ -28,7 +27,22 @@ namespace Editor {
 	void InspectorModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
 		ImGui::Begin(name.c_str(), is_open, flags | ImGuiWindowFlags_HorizontalScrollbar);
-		GEngine::GameObject* gameObject = GEngine::GameObject::GetObjectFromHash(*m_selectedGameObject);
+		if (m_selectedGameObject->size() == 0) {
+			ImGui::End();
+			return;
+		}
+		if (m_selectedGameObject->size() > 1) {
+
+			if (ImGui::Button("Add Component")) {
+				ImGui::OpenPopup("AddComponentModal");
+			}
+			AddComponentModal();
+
+			ImGui::End();
+			return;
+		}
+
+		GEngine::GameObject* gameObject = GEngine::GameObject::GetObjectFromHash(*m_selectedGameObject->begin());
 
 		if (gameObject) {
 			ImGui::Text("Tag: ");
@@ -373,17 +387,20 @@ namespace Editor {
 	{
 		if (ImGui::BeginPopup("AddComponentModal", ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoMove)) {
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
-			GEngine::Entity* entity = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(*m_selectedGameObject));
+			
+			GEngine::Entity* entity = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(*m_selectedGameObject->begin()));
 			if (entity) {
 
 				if (ImGui::Button("Native Script Component", { ImGui::GetContentRegionAvailWidth() ,0 })) {
-
-					GEngine::NativeScriptComponent* s = entity->AddComponent<GEngine::NativeScriptComponent>("");
-					s->SetSerialize(true);
-
-					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddComponent>(s->GetHash());
+					for (const auto& hash : *m_selectedGameObject) {
+						GEngine::Entity* ent = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(hash));
+						if (ent) {
+							GEngine::NativeScriptComponent* s = ent->AddComponent<GEngine::NativeScriptComponent>("");
+							s->SetSerialize(true);
+						}
+					}
 					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::ADD_COMPONENT);
-
+					
 					ImGui::CloseCurrentPopup();
 				}
 			}

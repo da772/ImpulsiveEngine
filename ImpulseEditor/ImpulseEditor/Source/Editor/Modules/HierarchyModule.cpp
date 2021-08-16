@@ -10,12 +10,13 @@ namespace Editor {
 
 	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
 
-	HierarchyModule::HierarchyModule(GEngine::ObjectHash* selectedGameObject) : m_selectedObject(selectedGameObject)
+	HierarchyModule::HierarchyModule(std::set<GEngine::ObjectHash>* selectedGameObject) : m_selectedObject(selectedGameObject)
 	{
-		m_textures["scene"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeStacked172x172.png");
-		m_textures["gameObjectChildren"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeStacked172x172.png");
-		m_textures["gameObject"] = GEngine::Texture2D::Create("Content/Textures/Icons/cube172x172.png");
-		m_textures["gameObjectAdd"] = GEngine::Texture2D::Create("Content/Textures/Icons/cubeAdd172x172.png");
+		m_textures["scene"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeStacked172x172.png");
+		m_textures["gameObjectChildren"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeStacked172x172.png");
+		m_textures["gameObject"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cube172x172.png");
+		m_textures["gameObjectAdd"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeAdd172x172.png");
+		m_textures["gameObjectRemove"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeRemove172x172.png");
 
 		
 	}
@@ -56,11 +57,28 @@ namespace Editor {
 			}
 		}
 		ImGui::SameLine();
-		ImGui::Text("Filter:");
-		ImGui::SameLine(0, 0);
 		char ch[255] = { 0 };
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvailWidth() * .85f);
-		ImGui::InputText("##filerHierachy", ch, 255);
+		ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4(ImGuiCol_Text));
+		ImGui::InputTextWithHint("##filerHierachy", "Search" ,ch, 255);
+		ImGui::PopStyleColor();
+		if (m_selectedObject->size() > 0) {
+			ImGui::SameLine();
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)m_textures["gameObjectRemove"]->GetRendererID(), { ImGui::GetFontSize(), ImGui::GetFontSize() }, { 0,1 }, { 1,0 })) {
+				
+				for (const auto& p : *m_selectedObject) {
+					GEngine::Entity* go = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(p.hash));
+					GEngine::ThreadPool::AddMainThreadFunction([go]() {
+					
+					if (go) {
+						go->Destroy();
+					}
+					});
+				}
+				m_selectedObject->clear();
+				
+			}
+		}
 		ImGui::Separator();
 		if (ImGui::TreeNodeEx("##Scene", ImGuiTreeNodeFlags_OpenOnArrow | fl | ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::SameLine();
@@ -102,7 +120,7 @@ namespace Editor {
 
 		if (!hovering) {
 			if (ImGui::IsMouseReleased(0) && ImGui::IsWindowHovered()) {
-				*m_selectedObject = {};
+				m_selectedObject->clear();
 				m_rightSelectedObject = {};
 
 			}
@@ -122,7 +140,8 @@ namespace Editor {
 		ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
 		bool hasChildren = e.second->GetChildren().size() > 0;
 		float offset = !hasChildren ? 0 : ImGui::GetTreeNodeToLabelSpacing();
-		ImGuiTreeNodeFlags fl = *m_selectedObject == e.first ? ImGuiTreeNodeFlags_Selected : 0;
+		const auto& it = m_selectedObject->find(e.first);
+		ImGuiTreeNodeFlags fl = it != m_selectedObject->end() ? ImGuiTreeNodeFlags_Selected : 0;
 		if (ImGui::TreeNodeEx(("##" + e.first.ToString()).c_str(), ImGuiTreeNodeFlags_OpenOnArrow | fl)) {
 			ImGui::SameLine();
 			ImVec2 pos = ImGui::GetCursorScreenPos();
@@ -137,11 +156,36 @@ namespace Editor {
 
 				if ((ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) {
 
-					if (ImGui::IsMouseReleased(0)) *m_selectedObject = e.first;
+					if (ImGui::IsMouseReleased(0)) {
+						if (m_selectedObject->size() >= 1) {
+							if (GEngine::Input::IsKeyDown(GE_KEY_LEFT_CONTROL)) {
+								if (it == m_selectedObject->end())
+									m_selectedObject->insert(e.first);
+								else m_selectedObject->erase(it);
+							}
+							else if (GEngine::Input::IsKeyDown(GE_KEY_LEFT_SHIFT)) {
+								if (m_selectedObject->size() == 1) {
+
+								}
+								else {
+									m_selectedObject->clear();
+									m_selectedObject->insert(e.first);
+								}
+							}
+							else {
+								m_selectedObject->clear();
+								m_selectedObject->insert(e.first);
+							}
+						}
+						else {
+							m_selectedObject->insert(e.first);
+						}
+					}
 					if (ImGui::IsMouseReleased(1)) {
 						openPopup = true;
 						m_rightSelectedObject = e.first;
 					}
+
 				}
 				*hoveringObject = true;
 			}
@@ -187,7 +231,21 @@ namespace Editor {
 
 			if (isHovering) {
 				if ((ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) {
-					if (ImGui::IsMouseReleased(0)) *m_selectedObject = e.first;
+					if (ImGui::IsMouseReleased(0)) {
+						if (m_selectedObject->size() >= 1) {
+							if (GEngine::Input::IsKeyDown(GE_KEY_LEFT_CONTROL)) {
+								if (it == m_selectedObject->end()) m_selectedObject->insert(e.first);
+								else m_selectedObject->erase(it);
+							}
+							else {
+								m_selectedObject->clear();
+								m_selectedObject->insert(e.first);
+							}
+						}
+						else {
+							m_selectedObject->insert(e.first);
+						}
+					}
 					if (ImGui::IsMouseReleased(1)) {
 						openPopup = true;
 						m_rightSelectedObject = e.first;

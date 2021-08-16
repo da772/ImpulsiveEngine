@@ -8,7 +8,7 @@ namespace Editor {
 	class InspectorModule : public EditorModule {
 
 	public:
-		InspectorModule(GEngine::ObjectHash* selectedGameObject, ReloadModule* reloadModule);
+		InspectorModule(std::set<GEngine::ObjectHash>* selectedGameObject, ReloadModule* reloadModule);
 		~InspectorModule();
 
 		void Create(const std::string& name, bool* is_open, uint32_t flags) override;
@@ -23,7 +23,7 @@ namespace Editor {
 		
 
 	private:
-		GEngine::ObjectHash* m_selectedGameObject = nullptr;
+		std::set<GEngine::ObjectHash>* m_selectedGameObject = nullptr;
 		std::unordered_map < std::string, std::function<void(GEngine::Component*)>> s_ComponentMap;
 
 		float lastX = 0;

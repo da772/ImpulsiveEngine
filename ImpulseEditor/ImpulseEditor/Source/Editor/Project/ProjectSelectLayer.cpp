@@ -31,9 +31,9 @@ namespace Project {
 
 	void ProjectSelectLayer::OnAttach()
 	{
-		searchIcon = GEngine::Texture2D::Create("Content/Textures/Icons/searchIcon160x160.png", TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear);
-		folderIcon = GEngine::Texture2D::Create("Content/Textures/Icons/folderIcon172x172.png");
-		projectSelectionIcon = GEngine::Texture2D::Create("Content/Textures/Icons/package160x160.png");
+		searchIcon = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/searchIcon160x160.png", TEXTUREFLAGS_Mag_Linear| TEXTUREFLAGS_Min_Linear);
+		folderIcon = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/folderIcon172x172.png");
+		projectSelectionIcon = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/package160x160.png");
 
 
 		LoadProjects();
@@ -95,21 +95,21 @@ namespace Project {
 		ImGui::BeginChild("Searching", { (float)GEngine::Application::GetWindowWidth() * .3f,35.f }, false);
 		pos = ImGui::GetCursorPos();
 		ImGui::SetCursorPos({ pos.x, pos.y + 5.f });
-		ImGui::Text("Search:");
-		ImGui::SameLine();
 
 		pos = ImGui::GetCursorPos();
 		ImGui::SetCursorPos({ pos.x, pos.y - 2.5f });
-		if (ImGui::InputText("##ProjectSearch", m_search_char, sizeof(m_search_char))) {
+		ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4(ImGuiCol_Text));
+		if (ImGui::InputTextWithHint("##ProjectSearch", "Search", m_search_char, sizeof(m_search_char))) {
 			if (strlen(m_search_char) > 0) {
 				Search();
 			}
 		}
+		ImGui::PopStyleColor();
 
-		ImGui::SameLine(0, 0);
-		pos = ImGui::GetCursorPos();
-		ImGui::SetCursorPos({ pos.x - 20.f, pos.y + 5.f });
-		ImGui::Image((ImTextureID)(uintptr_t)searchIcon->GetRendererID(), { 16,16 }, { 0,1 }, { 1,0 });
+		//ImGui::SameLine(0, 0);
+		//pos = ImGui::GetCursorPos();
+		//ImGui::SetCursorPos({ pos.x - 20.f, pos.y + 5.f });
+		//ImGui::Image((ImTextureID)(uintptr_t)searchIcon->GetRendererID(), { 16,16 }, { 0,1 }, { 1,0 });
 		ImGui::EndChild();
 
 		ImGui::BeginChild("Projects", { (float)GEngine::Application::GetWindowWidth() * .85f,(float)GEngine::Application::GetWindowHeight() * .85f }, true);
@@ -677,14 +677,14 @@ namespace Project {
 			GEngine::FileSystem::CreateDirectories(d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/" + s);
 
 
-		GEngine::FileSystem::ExtractZip("Content/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name+"/AndroidStudio");
-		GEngine::FileSystem::ExtractZip("Content/Archives/Tools.zip", d->path + "/" + d->name + "/Tools");
+		GEngine::FileSystem::ExtractZip("Content/EditorContent/Archives/AndroidStudio.zip", d->path + "/" + d->name + "/" + d->name+"/AndroidStudio");
+		GEngine::FileSystem::ExtractZip("Content/EditorContent/Archives/Tools.zip", d->path + "/" + d->name + "/Tools");
 		if (d->isNative()) {
-			GEngine::FileSystem::ExtractZip("Content/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name + "/Generate");
-			GEngine::FileSystem::ExtractZip("Content/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
-			GEngine::FileSystem::ExtractZip("Content/Archives/vendor.zip", d->path + "/" + d->name + "/vendor");
-			GEngine::FileSystem::ExtractZip("Content/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/NativeScripts");
-			GEngine::FileSystem::ExtractZip("Content/Archives/Shared.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Source/Shared");
+			GEngine::FileSystem::ExtractZip("Content/EditorContent/Archives/Generate.zip", d->path + "/" + d->name + "/" + d->name + "/Generate");
+			GEngine::FileSystem::ExtractZip("Content/EditorContent/Archives/BuildTarget.zip", d->path + "/" + d->name + "/" + d->name);
+			GEngine::FileSystem::ExtractZip("Content/EditorContent/Archives/vendor.zip", d->path + "/" + d->name + "/vendor");
+			GEngine::FileSystem::ExtractZip("Content/EditorContent/Archives/Scripts.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/NativeScripts");
+			GEngine::FileSystem::ExtractZip("Content/EditorContent/Archives/Shared.zip", d->path + "/" + d->name + "/" + d->name + "/" + d->name + "/Source/Shared");
 			GEngine::FileSystem::Copy(d->path + "/" + d->name + "/" + d->name + "/BuildTarget.lua", d->path + "/" + d->name + "/premake5.lua", false, false);
 		}
 

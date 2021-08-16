@@ -13,7 +13,6 @@ namespace GEngine {
 
 	GameObject::~GameObject()
 	{
-		GE_CORE_DEBUG("REMOVED COMPONENT HASH: {0}", Factory::HashToString(go_hash));
 		s_map.erase(go_hash);
 		Factory::RemoveHash(go_hash);
 		ScriptApi::RemoveGameObject(go_hash, this);
