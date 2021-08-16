@@ -212,6 +212,7 @@ void ImpulseEditor::OnImGuiSetup()
 	fd = GEngine::FileSystem::FileDataFromPath("EngineContent/Fonts/roboto.ttf");
 	ImFontConfig cfg = {  };
 	cfg.FontDataOwnedByAtlas = false;
+	
 	mainFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), (int)fd->GetDataSize(), 20, &cfg);
 	smallFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), (int)fd->GetDataSize(), 17, &cfg);
 	largeFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), (int)fd->GetDataSize(), 23, &cfg);

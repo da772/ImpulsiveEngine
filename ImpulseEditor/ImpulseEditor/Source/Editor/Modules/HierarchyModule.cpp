@@ -53,7 +53,6 @@ namespace Editor {
 				e->SetSerialize(true);
 				e->GetTransform()->SetSerialize(true);
 				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddEntity>(e->GetHash());
-				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneAddComponent>(e->GetTransform()->GetHash());
 			}
 		}
 		ImGui::SameLine();
@@ -250,7 +249,6 @@ namespace Editor {
 							child->SetParent(e.second);
 						}
 						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(e.second->GetHash(), GameObjectModifications::ADD_CHILD);
-						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(payloadObj.entity->GetHash(), GameObjectModifications::SET_PARENT);
 						
 					}
 				}

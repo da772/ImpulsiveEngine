@@ -39,7 +39,7 @@ namespace GEngine {
 	std::string NativeScriptComponent::Serialize(int indent /*= 0*/)
 	{
 		std::string res = "";
-
+		if (m_clazz.size() <= 0) return  SerializeIndent(indent) + "<class id=\"\"></class>";
 		auto& p = ScriptApi::GetReflector_Native()->GetStorage()->get_map().at(m_clazz).property_map;
 		res += SerializeIndent(indent) + "<class id=\""+GetClassHash().ToString()+"\">" + m_clazz + "</class>";
 		for (auto& d : p) {
@@ -85,9 +85,6 @@ namespace GEngine {
 
 					if (go) {
 						res += "\n" + SerializeIndent(indent) + "<GameObject name=\"" + d.second.name + "\" component=\""+(go->IsComponent() ? "1" : "0")+"\">" + go->GetHash().ToString() + "</GameObject>";
-					}
-					else {
-						res += "\n" + SerializeIndent(indent) + "<GameObject name=\"" + d.second.name + "\" component=\"" + ("0") + "\">nullptr</GameObject>";
 					}
 				}
 

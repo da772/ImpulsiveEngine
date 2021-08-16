@@ -3,10 +3,11 @@
 
 #include "Editor/Events/EditorApplicationEvents.h"
 #include "Editor/Events/EditorToolEvents.h"
+#include "Editor/Modules/SerializerModule.h"
 
 namespace Editor {
 
-	ToolbarModule::ToolbarModule(ReloadModule* reloadModule, EditorEventType* editorTool)  : m_reloadModule(reloadModule), m_editorTool(editorTool)
+	ToolbarModule::ToolbarModule(ReloadModule* reloadModule, SerializerModule* serializer, EditorEventType* editorTool)  : m_reloadModule(reloadModule), m_editorTool(editorTool), m_serializer(serializer)
 	{
 		m_textures["playButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/play172x172.png");
 		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/pause172x172.png");
@@ -20,11 +21,33 @@ namespace Editor {
 		m_textures["moveButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/drag172x172.png");
 		m_textures["undoButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/undo160x160.png");
 		m_textures["redoButton"] = GEngine::Texture2D::Create("Content/Textures/Icons/redo160x160.png");
+
+		m_eventHash[0] = EditorLayer::GetDispatcher()->SubscribeEvent(EditorEventType::AllEvents, [this](const EditorEvent& e) {
+
+			if (e.GetCategoryFlags() & EditorEventCategory::EventCategoryModification) {
+				if (m_history.size() > 0 && m_historyIndex != m_history.size() - 1) {
+					m_history.erase(m_history.begin()+m_historyIndex+1, m_history.end());
+				}
+				m_history.push_back(m_serializer->SerializeCurrentScene());
+				m_historyIndex = m_history.size() - 1;
+				if (m_history.size() >= 15) {
+					m_history.erase(m_history.begin());
+				}
+			}
+		});
+
+
+	
+		char* empty = (char*)malloc(sizeof(char));
+
+		GEngine::Ref<GEngine::FileData> fd = std::make_shared<GEngine::FileData>(sizeof(char), (unsigned char*)empty);
+		m_history.push_back(fd);
+
 	}
 
 	ToolbarModule::~ToolbarModule()
 	{
-
+		EditorLayer::GetDispatcher()->UnsubscribeEvent(EditorEventType::AllEvents, m_eventHash[0]);
 	}
 
 	void ToolbarModule::Create(const std::string& name, bool* is_open, uint32_t flags)
@@ -53,32 +76,31 @@ namespace Editor {
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 15.f);
 		ImGui::SetCursorPosY( ImGui::GetCursorPosY() + imageBorderSize - imageButtonSize + yOffset );
 		if (ControlButtons("handButton", EditorEventType::EditorToolEventDrag)) {
-
-
+			Move();
 		}
 		ImGui::SameLine(0.f, 15.f);
 		
 		if (ControlButtons("moveButton", EditorEventType::EditorToolEventMove)) {
-
+			Translate();
 		}
 		ImGui::SameLine(0.f, 15.f);
 		
 		if (ControlButtons("rotateButton", EditorEventType::EditorToolEventRotate)) {
-
+			Rotate();
 		}
 		ImGui::SameLine(0.f, 15.f);
 		if (ControlButtons("scaleButton", EditorEventType::EditorToolEventScale)) {
-
+			Scale();
 		}
 
 		ImGui::SameLine(0.f, 45.f);
-		if (ControlButtons("undoButton", EditorEventType::EditorToolEventUndo, false)) {
-
+		if (ControlButtons("undoButton", EditorEventType::EditorToolEventUndo, m_history.size() > 1 && m_historyIndex > 0,false)) {
+			Undo();
 		}
 
 		ImGui::SameLine(0.f, 15.5f);
-		if (ControlButtons("redoButton", EditorEventType::EditorToolEventRedo, false)) {
-
+		if (ControlButtons("redoButton", EditorEventType::EditorToolEventRedo, m_historyIndex != m_history.size()-1 && m_history.size() > 1, false)) {
+			Redo();
 		}
 
 		
@@ -141,15 +163,51 @@ namespace Editor {
 
 	}
 
-	bool ToolbarModule::ControlButtons(const std::string& s, EditorEventType tool, bool setTool)
+	void ToolbarModule::Undo()
+	{
+		m_serializer->Load(m_history[--m_historyIndex]);
+	}
+
+	void ToolbarModule::Redo()
+	{
+		m_serializer->Load(m_history[++m_historyIndex]);
+	}
+
+	void ToolbarModule::Move()
+	{
+
+	}
+
+	void ToolbarModule::Scale()
+	{
+
+	}
+
+	void ToolbarModule::Rotate()
+	{
+
+	}
+
+	void ToolbarModule::Translate()
+	{
+
+	}
+
+	bool ToolbarModule::ControlButtons(const std::string& s, EditorEventType tool, bool enabled, bool setTool)
 	{
 		ImVec2 pos = ImGui::GetCursorScreenPos();
 		bool selected = tool != EditorEventType::None && tool == *m_editorTool;
 		bool isHovered = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect({ pos.x-imageBorderSize*.25f, pos.y - (imageBorderSize-imageButtonSize)/2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize });
-		ImGui::GetWindowDrawList()->AddRectFilled({ pos.x-imageBorderSize * .25f, pos.y - (imageBorderSize - imageButtonSize) / 2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize}, ImGui::GetColorU32(ImGui::GetStyleColorVec4(selected ? ImGuiCol_ButtonActive : !isHovered ? ImGuiCol_Button : ImGuiCol_ButtonHovered)), 0.f);
+		ImU32 col = ImGui::GetColorU32(ImGui::GetStyleColorVec4(!enabled ? ImGuiCol_TitleBg : selected ? ImGuiCol_ButtonActive : !isHovered || !enabled ? ImGuiCol_Button : ImGuiCol_ButtonHovered));
+		if (!enabled) {
+			col &= 0x00ffffff;
+			col |= 0xff000000;
+		}
+		ImVec4 v4 = ImGui::ColorConvertU32ToFloat4(col);
+		ImGui::GetWindowDrawList()->AddRectFilled({ pos.x-imageBorderSize * .25f, pos.y - (imageBorderSize - imageButtonSize) / 2.f }, { pos.x + imageBorderSize + imageBorderSize * .25f, pos.y + imageBorderSize}, col, 0.f);
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (imageBorderSize - imageButtonSize) / 2.f);
 		ImGui::Image((ImTextureID)(uintptr_t)m_textures[s]->GetRendererID(), { imageButtonSize, imageButtonSize}, { 0,1 }, { 1,0 });
-		if (isHovered) {
+		if (isHovered && enabled) {
 			bool clicked = ImGui::IsMouseClicked(0);
 			if (tool != EditorEventType::None && clicked) {
 				EditorLayer::GetDispatcher()->BroadcastEvent<EditorToolEvent>(tool);

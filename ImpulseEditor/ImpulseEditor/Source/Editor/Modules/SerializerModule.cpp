@@ -33,16 +33,23 @@ namespace Editor {
 
 	void SerializerModule::Load(const std::string& scene, const std::string& path)
 	{
-		using namespace GEngine;
 		
 		scene_name = scene;
 		scene_location = path;
 
 
 		GEngine::Ref<GEngine::FileData> fd = GEngine::FileSystem::FileDataFromPath(path, false);
+		Load(fd);
+	}
+
+	void SerializerModule::Load(GEngine::Ref<GEngine::FileData> fd)
+	{
+
+		using namespace GEngine;
+
 		std::string str((char*)fd->GetData(), fd->GetDataSize());
 		size_t pos = 0;
-		CXML cxml; 
+		CXML cxml;
 		CXML::CXML_Node node = cxml.GetNext(str.c_str(), 0);
 		std::unordered_map<ObjectHash, SerializedEntity> gameObjects;
 		std::unordered_map<ObjectHash, ObjectHash> compMap;
@@ -63,19 +70,19 @@ namespace Editor {
 					CXML::CXML_Node n = cxml.GetNext(component.info.c_str());
 					ObjectHash __childHash = ObjectHash(n.tags["id"].c_str());
 					if (__childHash.isValid()) {
-						components[__childHash] = { __childHash, hash, _hash, nullptr, n.type, component.info, true};
+						components[__childHash] = { __childHash, hash, _hash, nullptr, n.type, component.info, true };
 						compMap[__childHash] = hash;
 					}
 
 				}
-				components[_hash] = { _hash, hash, _phash, nullptr, _ctag, component.info};
+				components[_hash] = { _hash, hash, _phash, nullptr, _ctag, component.info };
 				compMap[_hash] = hash;
 				component = cxml.GetNext(node.info.c_str(), component.endPos);
 			}
 			gameObjects[hash] = { hash, parent, tId, nullptr, node.tags["tag"], components };
 			node = cxml.GetNext(str.c_str(), node);
 		}
-		
+
 		Scene* sc = SceneManager::GetCurrentScene();
 		sc->RemoveAllEntities();
 
@@ -107,8 +114,8 @@ namespace Editor {
 		}
 
 		for (auto& p : gameObjects) {
-			GE_CORE_ASSERT(p.second.ptr, "GameObject not created");
-			
+			GE_CORE_ASSERT(p.second.ptr, "GameObject not created: \n"+std::string((const char*)fd->GetData()));
+
 			if (p.second.ptr) {
 				for (auto& c : p.second.components) {
 					DeserializeComponent(gameObjects, compMap, c.second);
@@ -116,9 +123,6 @@ namespace Editor {
 			}
 
 		}
-
-
-
 	}
 
 	void SerializerModule::DeserializeComponent(std::unordered_map<GEngine::ObjectHash, SerializedEntity>& objects, std::unordered_map<GEngine::ObjectHash, GEngine::ObjectHash>& compMap, SerializedComponent& c)
@@ -183,6 +187,10 @@ namespace Editor {
 						if (objHash.isValid()) {
 							sc->SetAutoNative(false);
 							sc->LoadClass(d.data, objHash);
+						}
+						else {
+							objects[c.parentEntity].components[objHash].wasCreated = true;
+							return;
 						}
 						objects[c.parentEntity].components[objHash].ptr = sc->GetComponent();
 						objects[c.parentEntity].components[objHash].wasCreated = true;
@@ -278,7 +286,6 @@ namespace Editor {
 			}
 		}
 	}
-
 
 
 	struct EntityComp {

@@ -15,6 +15,7 @@
 
 #include "Shared/ImpulseEditor.h"
 #include "Shared/Scene/EditorScene.h"
+#include "Events/EditorApplicationEvents.h"
 
 namespace Editor {
 
@@ -58,7 +59,7 @@ namespace Editor {
 		serializerModule = new SerializerModule();
 
 		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule, serializerModule);
-		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule, &editorTool);
+		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule, serializerModule, &editorTool);
 		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
 		AddModule<ConsoleModule>("Console Log", true, ImGuiWindowFlags_AlwaysAutoResize, true);
 		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/" + m_projectData.data.name + "/" + m_projectData.data.name, &m_projectData.data, serializerModule);
@@ -83,7 +84,7 @@ namespace Editor {
 
 	void EditorLayer::Begin()
 	{
-
+		
 
 	}
 
@@ -137,6 +138,8 @@ namespace Editor {
 	void EditorLayer::OnImGuiRender()
 	{
 		
+
+
 		ImGui::PushFont(((ImpulseEditor*)GEngine::Application::GetApp() )->smallFont);
 		//ImGui::PushStyleVar(ImGuiStyleVar_TabRounding, 5.f);
 		for (const auto & id : modules_order) {

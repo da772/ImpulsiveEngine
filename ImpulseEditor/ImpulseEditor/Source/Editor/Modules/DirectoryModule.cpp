@@ -1,4 +1,4 @@
-#include "DirectoryModule.h"
+﻿#include "DirectoryModule.h"
 
 #include "SerializerModule.h"
 
@@ -183,16 +183,19 @@ namespace Editor {
 		ImGui::BeginChild("filterBarSpacer", { ImGui::GetContentRegionAvailWidth() * .75f, ImGui::GetTextLineHeight() * 1.5f }, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		ImGui::EndChild();
 		ImGui::SameLine();
-		ImGui::Text("Filter:");
-		ImGui::SameLine();
+		//ImGui::Text("Filter:");
+		//ImGui::SameLine();
 		ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.f);
 		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() * .7f);
-	
 		
-		ImGui::InputText("##FilterInput", filterBuffer, 255, ImGuiInputTextFlags_CallbackResize, [](ImGuiInputTextCallbackData* data) {
+	
+
+		ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImGui::GetStyleColorVec4(ImGuiCol_Text));
+		ImGui::InputTextWithHint("##FilterInput",  "Search", filterBuffer, 255, ImGuiInputTextFlags_CallbackResize, [](ImGuiInputTextCallbackData* data) {
 			filterChange = true;
 			return 0;
 			}) ;
+		ImGui::PopStyleColor();
 
 		if (filterChange) {
 			filterChange = false;
@@ -201,9 +204,9 @@ namespace Editor {
 
 		ImGui::PopItemWidth();
 		ImGui::PopStyleVar();
-		ImGui::SameLine(0,0);
-		ImGui::SetCursorPos({ ImGui::GetCursorPosX()-30.f, ImGui::GetCursorPosY() + 5.f });
-		ImGui::Image((ImTextureID)m_textures["searchIcon"]->GetRendererID(), { ImGui::GetTextLineHeight() * .85f, ImGui::GetTextLineHeight() * .85f }, { 0,1 }, { 1,0 });
+		//ImGui::SameLine(0,0);
+		//ImGui::SetCursorPos({ ImGui::GetCursorPosX()-30.f, ImGui::GetCursorPosY() + 5.f });
+		//ImGui::Image((ImTextureID)m_textures["searchIcon"]->GetRendererID(), { ImGui::GetTextLineHeight() * .85f, ImGui::GetTextLineHeight() * .85f }, { 0,1 }, { 1,0 });
 		ImGui::EndChild();
 	}
 

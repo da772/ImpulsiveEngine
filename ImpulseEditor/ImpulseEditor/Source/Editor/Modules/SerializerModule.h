@@ -71,6 +71,7 @@ namespace Editor {
 		~SerializerModule();
 		inline void Create(const std::string& name, bool* is_open, uint32_t flags) override {};
 		void Load(const std::string& scene, const std::string& path);
+		void Load(GEngine::Ref<GEngine::FileData> data);
 		bool Save();
 		void SaveAs(const std::string& name, const std::string& path);
 

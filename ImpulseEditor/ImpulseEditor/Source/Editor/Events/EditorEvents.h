@@ -10,6 +10,7 @@ namespace Editor {
 	enum class EditorEventType
 	{
 		None = 0,
+		AllEvents,
 		ApplicationPlayEvent, ApplicationPauseEvent, ApplicationStopEvent, ApplicationResumeEvent, ApplicationSkipFrameEvent,
 		EditorHideViewEvent, EditorShowViewEvent,
 		SceneCreateEntity, SceneDestroyEntity, SceneModifyEntity, SceneAddComponent, SceneDestroyComponent, SceneModifyComponent,
@@ -75,7 +76,9 @@ namespace Editor {
 		inline void BroadcastEvent(Args&& ... args) {
 			E event = E(std::forward<Args>(args)...);
 			const std::unordered_map<uint64_t, std::function<void(const Editor::EditorEvent&)>> funcs = notify[event.GetEventType()];
-
+			for (const auto& f : notify_all) {
+				f.second(event);
+			}
 			for (const auto& f : funcs) {
 				f.second(event);
 			}
@@ -85,6 +88,7 @@ namespace Editor {
 
 	private:
 		std::unordered_map<EditorEventType, std::unordered_map<uint64_t, std::function<void(const Editor::EditorEvent&)>>> notify;
+		std::unordered_map<uint64_t, std::function<void(const Editor::EditorEvent&)>> notify_all;
 
 	};
 
