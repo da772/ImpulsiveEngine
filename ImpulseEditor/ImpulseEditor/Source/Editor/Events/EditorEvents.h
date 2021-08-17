@@ -7,18 +7,18 @@ namespace Editor {
 	struct EventFunction;
 	class EditorDispatcher;
 
-	enum class EditorEventType
+	enum class EditorEventType : uint16_t
 	{
 		None = 0,
 		AllEvents,
 		ApplicationPlayEvent, ApplicationPauseEvent, ApplicationStopEvent, ApplicationResumeEvent, ApplicationSkipFrameEvent,
 		EditorHideViewEvent, EditorShowViewEvent,
-		SceneCreateEntity, SceneDestroyEntity, SceneModifyEntity, SceneAddComponent, SceneDestroyComponent, SceneModifyComponent,
+		SceneLoad,SceneSave,HistoryScene,UndoScene,RedoScene, HistorySceneValid,SceneCreateEntity, SceneDestroyEntity, SceneModifyEntity, SceneAddComponent, SceneDestroyComponent, SceneModifyComponent,
 		EditorToolEvent, EditorToolEventDrag, EditorToolEventMove, EditorToolEventRotate, EditorToolEventScale, EditorToolEventUndo,
 		EditorToolEventRedo
 	};
 
-	enum EditorEventCategory
+	enum EditorEventCategory : uint32_t
 	{
 		None = 0,
 		EventCategoryApplication = BIT(0),
@@ -27,7 +27,7 @@ namespace Editor {
 		EventCategoryGameObject = BIT(3),
 		EventCategoryEntity = BIT(4),
 		EventCategoryComponent = BIT(5),
-		EventCategoryModification = BIT(5),
+		EventCategoryModification = BIT(6)
 		
 	};
 

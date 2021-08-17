@@ -67,7 +67,7 @@ namespace Editor {
 		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
 		AddModule<ViewportModule>("Game", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule, true);
 		AddModule<ViewportModule>("Scene", true, ImGuiWindowFlags_AlwaysAutoResize, false, "2d_Copy", reloadModule, false, m_cameraController, &editorTool);
-        AddModule<HierarchyModule>("Hierarchy", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject);
+        AddModule<HierarchyModule>("Hierarchy", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, (std::string*)serializerModule->GetName());
 		AddModule<InfoPanelModule>("InfoPanel", true, ImGuiWindowFlags_AlwaysAutoResize, false);
 
 		GE_CORE_DEBUG("EDITOR LAYER CREATED");

@@ -134,8 +134,15 @@ namespace GEngine {
 	}
 
 	void Entity::Destroy() {
+
+		if (m_parent)
+			m_parent->RemoveChild(this);
+		std::vector<ObjectHash> hashes;
 		for (const auto& p : m_Children) {
-			p.second->Destroy();
+			hashes.push_back(p.first);
+		}
+		for (const auto& p : hashes) {
+				m_Children[p]->Destroy();
 		}
 		End();
 		SceneManager::GetCurrentScene()->DestroyEntity(this);

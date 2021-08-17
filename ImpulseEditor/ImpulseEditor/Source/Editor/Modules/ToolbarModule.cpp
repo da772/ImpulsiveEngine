@@ -2,6 +2,7 @@
 #include "ReloadModule.h"
 
 #include "Editor/Events/EditorApplicationEvents.h"
+#include "Editor/Events/EditorSceneEvents.h"
 #include "Editor/Events/EditorToolEvents.h"
 #include "Editor/Modules/SerializerModule.h"
 
@@ -25,16 +26,20 @@ namespace Editor {
 		m_eventHash[0] = EditorLayer::GetDispatcher()->SubscribeEvent(EditorEventType::AllEvents, [this](const EditorEvent& e) {
 
 			if (e.GetCategoryFlags() & EditorEventCategory::EventCategoryModification) {
-				if (m_history.size() > 0 && m_historyIndex != m_history.size() - 1) {
-					m_history.erase(m_history.begin()+m_historyIndex+1, m_history.end());
+				if (e.GetEventType() == EditorEventType::SceneLoad) {
+					m_history.clear();
+					m_historyIndex = 0;
 				}
-				m_history.push_back(m_serializer->SerializeCurrentScene());
-				m_historyIndex = m_history.size() - 1;
-				if (m_history.size() >= 15) {
-					m_history.erase(m_history.begin());
-					m_historyIndex = m_history.size() - 1;
-				}
+				AddHistory();
 			}
+			else if (e.GetEventType() == EditorEventType::UndoScene) {
+				Undo();
+			}
+			else if (e.GetEventType() == EditorEventType::RedoScene) {
+				Redo();
+			}
+
+		
 		});
 
 
@@ -167,11 +172,13 @@ namespace Editor {
 	void ToolbarModule::Undo()
 	{
 		m_serializer->Load(m_history[--m_historyIndex]);
+		EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneHistoryValidationEvent>(m_history.size() > 1 && m_historyIndex > 0, m_historyIndex != m_history.size() - 1 && m_history.size() > 1);
 	}
 
 	void ToolbarModule::Redo()
 	{
 		m_serializer->Load(m_history[++m_historyIndex]);
+		EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneHistoryValidationEvent>(m_history.size() > 1 && m_historyIndex > 0, m_historyIndex != m_history.size() - 1 && m_history.size() > 1);
 	}
 
 	void ToolbarModule::Move()
@@ -192,6 +199,27 @@ namespace Editor {
 	void ToolbarModule::Translate()
 	{
 
+	}
+
+	void ToolbarModule::ClearHistory()
+	{
+		m_history.clear();
+		m_historyIndex = 0;
+	}
+
+	void ToolbarModule::AddHistory()
+	{
+		if (m_history.size() > 0 && m_historyIndex != m_history.size() - 1) {
+			m_history.erase(m_history.begin() + m_historyIndex + 1, m_history.end());
+		}
+		m_history.push_back(m_serializer->SerializeCurrentScene());
+		m_historyIndex = m_history.size() - 1;
+		if (m_history.size() >= 15) {
+			m_history.erase(m_history.begin());
+			m_historyIndex = m_history.size() - 1;
+		}
+
+		EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneHistoryValidationEvent>(m_history.size() > 1 && m_historyIndex > 0, m_historyIndex != m_history.size() - 1 && m_history.size() > 1);
 	}
 
 	bool ToolbarModule::ControlButtons(const std::string& s, EditorEventType tool, bool enabled, bool setTool)

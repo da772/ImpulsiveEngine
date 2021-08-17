@@ -80,12 +80,9 @@ namespace Editor {
 			finalSize = scaleRatio((int)sz.x, (int)sz.y, (int)originalSize.x, (int)originalSize.y);
 			GEngine::Application::GetApp()->m_viewPortWidth = finalSize.x;
 			GEngine::Application::GetApp()->m_viewPortHeight = finalSize.y;
-			//pipeline->GetFrameBuffer()->UpdateSize(1080, 1920);
 			lastFrameSize = sz;
 
-			/*
 			handleResize = false;
-			*/
 		}
 
 		ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - finalSize.x) * .5f , ImGui::GetCursorPosY() });

@@ -16,6 +16,50 @@ namespace Editor {
 
 	};
 
+	class EditorSceneLoadEvent : public EditorSceneEvent {
+	public:
+		inline EditorSceneLoadEvent() {};
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene | EventCategoryModification);
+		EDITOR_EVENT_CLASS_TYPE(SceneLoad);
+	};
+
+	class EditorSceneHistoryEvent : public EditorSceneEvent {
+	public:
+		inline EditorSceneHistoryEvent() {};
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene);
+		EDITOR_EVENT_CLASS_TYPE(HistoryScene);
+	};
+
+	class EditorSceneUndoEvent : public EditorSceneEvent {
+	public:
+		inline EditorSceneUndoEvent() {};
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene);
+		EDITOR_EVENT_CLASS_TYPE(UndoScene);
+	};
+
+	class EditorSceneRedoEvent : public EditorSceneEvent {
+	public:
+		inline EditorSceneRedoEvent() {};
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene);
+		EDITOR_EVENT_CLASS_TYPE(RedoScene);
+	};
+
+	class EditorSceneHistoryValidationEvent : public EditorSceneEvent {
+	public:
+		inline EditorSceneHistoryValidationEvent(bool undo, bool redo) : m_undo_valid(undo), m_redo_valid(redo) {};
+		EDITOR_EVENT_CLASS_CATEGORY(EventCategoryScene);
+		EDITOR_EVENT_CLASS_TYPE(HistorySceneValid);
+		bool m_undo_valid;
+		bool m_redo_valid;
+	};
+
+
+	class EditorSceneSaveEvent : public EditorSceneEvent {
+	public:
+		inline EditorSceneSaveEvent() {};
+		EDITOR_EVENT_CLASS_TYPE(SceneSave);
+	};
+
 	class EditorSceneGameObjectEvent : public EditorSceneEvent {
 	public:
 		EditorSceneGameObjectEvent(const GEngine::ObjectHash& hash) : hash(hash) {}

@@ -46,7 +46,7 @@ namespace Editor {
 		static EditorDispatcher s_dispatcher;
 		std::unordered_map<std::string, EditorModuleData> modules;
 		std::vector<std::string> modules_order;
-		EditorEventType editorTool = EditorEventType::None;
+		EditorEventType editorTool = EditorEventType::EditorToolEventDrag;
 
 	private:
 		Project::LocalProject m_projectData;

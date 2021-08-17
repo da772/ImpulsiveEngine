@@ -1,6 +1,7 @@
 #include "MainMenuModule.h"
 #include "Editor/EditorLayer.h"
 #include "Editor/Events/EditorUIEvents.h"
+#include "Editor/Events/EditorSceneEvents.h"
 
 #include "Editor/Modules/ReloadModule.h"
 #include "Editor/Modules/SerializerModule.h"
@@ -21,13 +22,20 @@ namespace Editor {
 				break;
 			}
 		}
+
+		m_historyValidId = EditorLayer::GetDispatcher()->SubscribeEvent(EditorEventType::HistorySceneValid, [this](const Editor::EditorEvent& e) {
+			const EditorSceneHistoryValidationEvent& event = (const EditorSceneHistoryValidationEvent&)e;
+			m_canRedo = event.m_redo_valid;
+			m_canUndo = event.m_undo_valid;
+		});
 		
 	}
 
 	MainMenuModule::~MainMenuModule()
 	{
-
+		EditorLayer::GetDispatcher()->UnsubscribeEvent(EditorEventType::HistorySceneValid, m_historyValidId);
 	}
+
 
 	void MainMenuModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
@@ -45,24 +53,21 @@ namespace Editor {
 		if (ImGui::BeginMenu("File")) {
 
 			if (ImGui::MenuItem("New Scene", "CTRL+N", nullptr)) {
-
+				New();
+			}
+			
+			if (m_serialzierModule->IsSceneLoaded()) {
+				Save();
 			}
 
-			if (ImGui::MenuItem("Save Scene", "CTRL+S", nullptr)) {
-				if (m_serialzierModule->Save()) {
 
-				}
+			if (ImGui::MenuItem("Save As", "SHIFT+CTRL+S", nullptr)) {
+				SaveAs();
 			}
+
 
 			if (ImGui::MenuItem("Open Scene", "CTRL+O", nullptr)) {
-				std::string path = "";
-				GEngine::FileSystem::OpenFileDialog({ {"Scene", "scene"} }, path);
-
-				if (path.size() > 0) {
-					std::filesystem::directory_entry e(path);
-					std::string name = e.path().filename().generic_string();
-					m_serialzierModule->Load(name, path);
-				}
+				Open();
 
 			}
 
@@ -70,9 +75,11 @@ namespace Editor {
 		}
 
 		if (ImGui::BeginMenu("Edit")) {
-			if (ImGui::MenuItem("Undo", "CTRL+Z", nullptr)) {
+			if (ImGui::MenuItem("Undo", "CTRL+Z", nullptr, m_canUndo)) {
+				Undo();
 			}
-			if (ImGui::MenuItem("Redo", "CTRL+Y", nullptr)) {
+			if (ImGui::MenuItem("Redo", "CTRL+Y", nullptr, m_canRedo)) {
+				Redo();
 			}
 
 			ImGui::Separator();
@@ -91,25 +98,7 @@ namespace Editor {
 
 		if (ImGui::BeginMenu("Build")) {
 			
-			
-			if (ImGui::MenuItem("Reload Native Scripts", 0, nullptr, m_reloadModule->CanReload())) {
-				m_reloadModule->Reload();
-			}
-
-			if (m_reloadModule->IsReloading()) {
-				if (ImGui::MenuItem("Cancel Build", 0, nullptr)) {
-					GEngine::Utility::sys::SetForceKillChild(true);
-				}
-			}
-
-			if (ImGui::MenuItem("Build Settings", 0, nullptr, true)) {
-				m_generateModalStart = true;
-			}
-
-			if (ImGui::MenuItem("Package", 0, nullptr, true)) {
-
-
-			}
+			Build();
 
 			ImGui::EndMenu();
 		}
@@ -362,6 +351,95 @@ namespace Editor {
 			}
 			stream.close();
 		}
+	}
+
+
+
+	void MainMenuModule::SaveAs()
+	{
+		std::string path = "";
+		GEngine::FileSystem::SaveFileDialog({ { "Scene", "scene" } }, path, m_project->data.path);
+
+		if (path.size() > 0) {
+			std::filesystem::directory_entry e(path);
+			std::string name = e.path().filename().generic_string();
+			m_serialzierModule->SetName(name);
+			m_serialzierModule->SetPath(path);
+			std::ofstream o(path);
+			o.close();
+			m_serialzierModule->Save();
+		}
+	}
+
+	void MainMenuModule::Save()
+	{
+		if (ImGui::MenuItem("Save", "CTRL+S", nullptr)) {
+			if (m_serialzierModule->Save()) {
+
+			}
+		}
+	}
+
+	void MainMenuModule::New()
+	{
+		std::string path = "";
+		GEngine::FileSystem::SaveFileDialog({ { "Scene", "scene" } }, path, m_project->data.path);
+
+		if (path.size() > 0) {
+			std::filesystem::directory_entry e(path);
+			std::string name = e.path().filename().generic_string();
+			std::ofstream o(path);
+			o.close();
+			m_serialzierModule->Load(name, path);
+		}
+
+	}
+
+	void MainMenuModule::Open()
+	{
+		std::string path = "";
+		GEngine::FileSystem::OpenFileDialog({ {"Scene", "scene"} }, path, m_project->data.path);
+
+		if (path.size() > 0) {
+			std::filesystem::directory_entry e(path);
+			std::string name = e.path().filename().generic_string();
+			m_serialzierModule->Load(name, path);
+			EditorLayer::GetDispatcher()->BroadcastEvent<Editor::EditorSceneLoadEvent>();
+		}
+		
+	}
+
+	void MainMenuModule::Build()
+	{
+
+		if (ImGui::MenuItem("Reload Native Scripts", 0, nullptr, m_reloadModule->CanReload())) {
+			m_reloadModule->Reload();
+		}
+
+		if (m_reloadModule->IsReloading()) {
+			if (ImGui::MenuItem("Cancel Build", 0, nullptr)) {
+				GEngine::Utility::sys::SetForceKillChild(true);
+			}
+		}
+
+		if (ImGui::MenuItem("Build Settings", 0, nullptr, true)) {
+			m_generateModalStart = true;
+		}
+
+		if (ImGui::MenuItem("Package", 0, nullptr, true)) {
+
+
+		}
+	}
+
+	void MainMenuModule::Undo()
+	{
+		EditorLayer::GetDispatcher()->BroadcastEvent<Editor::EditorSceneUndoEvent>();
+	}
+
+	void MainMenuModule::Redo()
+	{
+		EditorLayer::GetDispatcher()->BroadcastEvent<Editor::EditorSceneRedoEvent>();
 	}
 
 }

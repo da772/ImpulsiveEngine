@@ -1,7 +1,6 @@
 #include "HierarchyModule.h"
 #include "imgui/imgui_internal.h"
 
-
 #include "Editor/EditorLayer.h"
 #include "Editor/Events/EditorSceneEvents.h"
 
@@ -10,7 +9,7 @@ namespace Editor {
 
 	static void RenderArrow(ImDrawList* drawList, float fontSize, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale);
 
-	HierarchyModule::HierarchyModule(std::set<GEngine::ObjectHash>* selectedGameObject) : m_selectedObject(selectedGameObject)
+	HierarchyModule::HierarchyModule(std::set<GEngine::ObjectHash>* selectedGameObject, std::string* sceneName) : m_selectedObject(selectedGameObject), m_sceneName(sceneName)
 	{
 		m_textures["scene"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeStacked172x172.png");
 		m_textures["gameObjectChildren"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeStacked172x172.png");
@@ -18,13 +17,25 @@ namespace Editor {
 		m_textures["gameObjectAdd"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeAdd172x172.png");
 		m_textures["gameObjectRemove"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/cubeRemove172x172.png");
 
+
+		m_dispatchId = EditorLayer::GetDispatcher()->SubscribeEvent(EditorEventType::AllEvents, [this](const EditorEvent& e) {
+
+			if (e.GetCategoryFlags() & EditorEventCategory::EventCategoryModification) {
+				if (e.GetEventType() == EditorEventType::SceneLoad) {
+					m_saved = true;
+					return;
+				}
+				m_saved = false;
+			} else if (e.GetEventType() == EditorEventType::SceneSave) {
+				m_saved = true;
+			}
+		});
 		
 	}
 
 	HierarchyModule::~HierarchyModule()
 	{
-
-
+		EditorLayer::GetDispatcher()->UnsubscribeEvent(EditorEventType::AllEvents, m_dispatchId);
 	}
 
 	void HierarchyModule::Create(const std::string& name, bool* is_open, uint32_t flags)
@@ -65,16 +76,33 @@ namespace Editor {
 		if (m_selectedObject->size() > 0) {
 			ImGui::SameLine();
 			if (ImGui::ImageButton((ImTextureID)(intptr_t)m_textures["gameObjectRemove"]->GetRendererID(), { ImGui::GetFontSize(), ImGui::GetFontSize() }, { 0,1 }, { 1,0 })) {
-				
+				std::vector<GEngine::Entity*> e;
 				for (const auto& p : *m_selectedObject) {
 					GEngine::Entity* go = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(p.hash));
-					GEngine::ThreadPool::AddMainThreadFunction([go]() {
-					
-					if (go) {
-						go->Destroy();
+					GEngine::Entity* parent = dynamic_cast<GEngine::Entity*>(go->GetParent());
+					bool skip = false;
+					while (parent) {
+						if (m_selectedObject->find(parent->GetHash()) != m_selectedObject->end()) {
+							skip = true;
+							break;
+						}
+						parent = parent->GetParent();
 					}
-					});
+					if (skip) continue;
+					e.push_back(go);
 				}
+				
+				
+				GEngine::ThreadPool::AddMainThreadFunction([e,this]() {
+					for (const auto& go : e) {
+						if (go) {
+							go->Destroy();
+						}
+					}
+
+					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneDestroyEntity>(GEngine::ObjectHash());
+				});
+				
 				m_selectedObject->clear();
 				
 			}
@@ -92,7 +120,16 @@ namespace Editor {
 
 			ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
-			ImGui::Text("Scene");
+			if (m_sceneName->size() > 0) {
+				if (!m_saved) {
+					std::string n = *m_sceneName + "*";
+					ImGui::Text(n.c_str());
+				}
+				else ImGui::Text(m_sceneName->c_str());
+			}
+			else {
+				ImGui::Text("Untitled Scene");
+			}
 			AcceptPayload({ 0, nullptr }, {pos.x, pos.y});
 			if (hasChildren) {
 				for (const auto& e : entities) {
@@ -113,7 +150,16 @@ namespace Editor {
 
 			ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 			ImGui::SameLine();
-			ImGui::Text("Scene");
+			if (m_sceneName->size() > 0) {
+				if (!m_saved) {
+					std::string n = *m_sceneName + "*";
+					ImGui::Text(n.c_str());
+				}
+				else ImGui::Text(m_sceneName->c_str());
+			}
+			else {
+				ImGui::Text("Untitled Scene");
+			}
 			
 			AcceptPayload({ 0, nullptr }, { pos.x, pos.y });
 		}
@@ -158,7 +204,7 @@ namespace Editor {
 
 					if (ImGui::IsMouseReleased(0)) {
 						if (m_selectedObject->size() >= 1) {
-							if (GEngine::Input::IsKeyDown(GE_KEY_LEFT_CONTROL)) {
+							if (ImGui::IsKeyDown(GE_KEY_LEFT_CONTROL)) {
 								if (it == m_selectedObject->end())
 									m_selectedObject->insert(e.first);
 								else m_selectedObject->erase(it);
@@ -204,6 +250,8 @@ namespace Editor {
 				ImGui::Text(("(" + e.first.ToString() + ")").c_str());
 				ImGui::PopStyleColor();
 				ImGui::EndDragDropSource();
+
+
 			}
 			AcceptPayload(e, { pos.x,pos.y });
 
@@ -233,7 +281,8 @@ namespace Editor {
 				if ((ImGui::GetMousePos().x - ImGui::GetItemRectMin().x) > offset) {
 					if (ImGui::IsMouseReleased(0)) {
 						if (m_selectedObject->size() >= 1) {
-							if (GEngine::Input::IsKeyDown(GE_KEY_LEFT_CONTROL)) {
+							
+							if (ImGui::IsKeyDown(GE_KEY_LEFT_CONTROL)) {
 								if (it == m_selectedObject->end()) m_selectedObject->insert(e.first);
 								else m_selectedObject->erase(it);
 							}
@@ -371,10 +420,16 @@ namespace Editor {
 			}
 
 			if (ImGui::Button("Delete")) {
-				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneDestroyEntity>(e->GetHash());
-				GEngine::ThreadPool::AddMainThreadFunction([e]() {
-					if (e)
+
+				GEngine::ThreadPool::AddMainThreadFunction([e, this]() {
+					if (e) {
+						const auto& it = m_selectedObject->find(e->GetHash());
+						if (it != m_selectedObject->end()) {
+							m_selectedObject->erase(it);
+						}
 						e->Destroy();
+						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneDestroyEntity>(e->GetHash());
+					}
 				});
 				ImGui::CloseCurrentPopup();
 			}

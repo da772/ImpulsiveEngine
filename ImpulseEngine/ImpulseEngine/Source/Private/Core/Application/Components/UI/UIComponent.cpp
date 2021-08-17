@@ -29,24 +29,23 @@ namespace GEngine {
 			s_ShapeFactory->SetRenderType(ERenderType::UI);
 		}
 		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
-			if (IsInitialized()) {
-				//	GE_CORE_DEBUG("{0}, {1}, {2}", transData.position.x, transData.position.y, transData.position.z);
-				for (ShapeID id : m_ids) {
-					Vector3f pos = s_ShapeFactory->GetShapePosition(id);
-					Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
-					if (pos != nPos)
-						s_ShapeFactory->SetPosition(id, nPos);
-					float rot = s_ShapeFactory->GetShapeRotation(id);
-					float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
-					if (rot != nRot)
-						s_ShapeFactory->SetRotation(id, nRot);
-					Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, 1.f);
-					Vector3f nScale = scale - transData.GetWorldScale().z + transform->GetWorldScale().z;
-					if (scale != nScale)
-						s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
-				}
+			
+			for (ShapeID id : m_ids) {
+				Vector3f pos = s_ShapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
+				if (pos != nPos)
+					s_ShapeFactory->SetPosition(id, nPos);
+				float rot = s_ShapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
+				if (rot != nRot)
+					s_ShapeFactory->SetRotation(id, nRot);
+				Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, 1.f);
+				Vector3f nScale = scale - transData.GetWorldScale().z + transform->GetWorldScale().z;
+				if (scale != nScale)
+					s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
 			}
+			
 			});
 	}
 
@@ -62,23 +61,22 @@ namespace GEngine {
 			s_ShapeFactory->SetRenderType(ERenderType::UI);
 		}
 		m_entity->GetTransform()->AddTransformCallback(GetHash(), [this](Transform* transform, TransformData transData) {
-			if (IsInitialized()) {
-				//	GE_CORE_DEBUG("{0}, {1}, {2}", transData.position.x, transData.position.y, transData.position.z);
-				for (ShapeID id : m_ids) {
-					Vector3f pos = s_ShapeFactory->GetShapePosition(id);
-					Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
-					if (pos != nPos)
-						s_ShapeFactory->SetPosition(id, nPos);
-					float rot = s_ShapeFactory->GetShapeRotation(id);
-					float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
-					if (rot != nRot)
-						s_ShapeFactory->SetRotation(id, nRot);
-					Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
-					Vector3f scale(_scale.x, _scale.y, 1.f);
-					Vector3f nScale = scale - transData.GetWorldScale().z + transform->GetWorldScale().z;
-					if (scale != nScale)
-						s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
-				}
+			
+			//	GE_CORE_DEBUG("{0}, {1}, {2}", transData.position.x, transData.position.y, transData.position.z);
+			for (ShapeID id : m_ids) {
+				Vector3f pos = s_ShapeFactory->GetShapePosition(id);
+				Vector3f nPos = pos - transData.GetWorldPosition() + transform->GetWorldPosition();
+				if (pos != nPos)
+					s_ShapeFactory->SetPosition(id, nPos);
+				float rot = s_ShapeFactory->GetShapeRotation(id);
+				float nRot = rot - transData.GetWorldRotation().z + transform->GetWorldRotation().z;
+				if (rot != nRot)
+					s_ShapeFactory->SetRotation(id, nRot);
+				Vector2f _scale = s_ShapeFactory->GetShapeScale(id);
+				Vector3f scale(_scale.x, _scale.y, 1.f);
+				Vector3f nScale = scale - transData.GetWorldScale().z + transform->GetWorldScale().z;
+				if (scale != nScale)
+					s_ShapeFactory->SetScale(id, { nScale.x, nScale.y });
 			}
 			});
 

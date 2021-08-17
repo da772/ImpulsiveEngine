@@ -2,6 +2,7 @@
 
 #include "Editor/EditorLayer.h"
 #include "Editor/Events/EditorEvents.h"
+#include "Editor/Events/EditorSceneEvents.h"
 
 #include "CXML/CXML.hpp"
 
@@ -36,7 +37,6 @@ namespace Editor {
 		
 		scene_name = scene;
 		scene_location = path;
-
 
 		GEngine::Ref<GEngine::FileData> fd = GEngine::FileSystem::FileDataFromPath(path, false);
 		Load(fd);
@@ -123,6 +123,7 @@ namespace Editor {
 			}
 
 		}
+		
 	}
 
 	void SerializerModule::DeserializeComponent(std::unordered_map<GEngine::ObjectHash, SerializedEntity>& objects, std::unordered_map<GEngine::ObjectHash, GEngine::ObjectHash>& compMap, SerializedComponent& c)
@@ -309,7 +310,7 @@ namespace Editor {
 			std::ofstream out(scene_location, std::ios::trunc);
 			out.write((const char*)d->GetData(), d->GetDataSize());
 			out.close();
-
+			EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneSaveEvent>();
 			return true;
 
 		}
@@ -380,14 +381,19 @@ namespace Editor {
 
 	}
 
-	const std::string& SerializerModule::GetName() const
+	bool SerializerModule::IsSceneLoaded() const
 	{
-		return scene_name;
+		return scene_name.size() > 0 && scene_location.size() > 0;
 	}
 
-	const std::string& SerializerModule::GetPath() const
+	const std::string* SerializerModule::GetName() const
 	{
-		return scene_location;
+		return &scene_name;
+	}
+
+	const std::string* SerializerModule::GetPath() const
+	{
+		return &scene_location;
 	}
 
 	void SerializerModule::SetName(const std::string& name)

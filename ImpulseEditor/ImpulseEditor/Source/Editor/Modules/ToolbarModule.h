@@ -20,6 +20,8 @@ namespace Editor {
 		void Scale();
 		void Rotate();
 		void Translate();
+		void ClearHistory();
+		void AddHistory();
 
 	private:
 		bool ControlButtons(const std::string& s, EditorEventType tool = EditorEventType::None, bool enabled = true, bool setTool = true);

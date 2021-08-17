@@ -24,6 +24,14 @@ namespace Editor {
 
 		void LoadProjects();
 		void SaveProjects();
+	private:
+		void SaveAs();
+		void Save();
+		void New();
+		void Open();
+		void Build();
+		void Undo();
+		void Redo();
 
 	private:
 		bool m_generateModal = false;
@@ -38,7 +46,9 @@ namespace Editor {
 		std::vector<Project::LocalProject> m_projectData;
 		ReloadModule* m_reloadModule;
 		SerializerModule* m_serialzierModule;
-
+		uint64_t m_historyValidId;
+		bool m_canRedo = false;
+		bool m_canUndo = false;
 
 	};
 

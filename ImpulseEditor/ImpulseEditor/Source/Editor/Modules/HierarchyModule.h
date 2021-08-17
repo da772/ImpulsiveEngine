@@ -3,9 +3,10 @@
 
 namespace Editor {
 
+
 	class HierarchyModule : public EditorModule {
 	public:
-		HierarchyModule(std::set<GEngine::ObjectHash>* selectedGameObject);
+		HierarchyModule(std::set<GEngine::ObjectHash>* selectedGameObject, std::string* sceneName);
 		~HierarchyModule();
 
 		void Create(const std::string& name, bool* is_open, uint32_t flags) override;
@@ -21,6 +22,9 @@ namespace Editor {
 		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
 		std::set<GEngine::ObjectHash>* m_selectedObject;
 		GEngine::ObjectHash m_rightSelectedObject;
+		std::string* m_sceneName;
+		bool m_saved = true;
+		uint64_t m_dispatchId = 0;
 
 	};
 

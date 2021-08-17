@@ -76,9 +76,9 @@ namespace Editor {
 		void SaveAs(const std::string& name, const std::string& path);
 
 		GEngine::Ref<GEngine::FileData> SerializeCurrentScene();
-
-		const std::string& GetName() const;
-		const std::string& GetPath() const;
+		bool IsSceneLoaded() const;
+		const std::string* GetName() const;
+		const std::string* GetPath() const;
 		void SetName(const std::string& name);
 		void SetPath(const std::string& path);
 

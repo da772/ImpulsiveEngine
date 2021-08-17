@@ -19,7 +19,6 @@ namespace GEngine {
 	Scene::~Scene()
 	{
 		Unload();
-		GE_CORE_DEBUG("SCENE DESTROYED");
 	}
 
 	GEngine::Camera* Scene::GetCamera() const

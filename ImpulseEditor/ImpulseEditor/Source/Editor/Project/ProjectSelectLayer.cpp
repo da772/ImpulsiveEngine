@@ -582,8 +582,6 @@ namespace Project {
 
 	bool ProjectSelectLayer::OpenProject(const std::string& path)
 	{
-		GE_CORE_DEBUG("@TODO OPEN PROJECT: {0}", path);
-
 		LocalProject* proj = GetProjectDataFromPath(selectedProject);
 		ProjectData* d = &proj->data;
 #if 0
@@ -604,7 +602,7 @@ namespace Project {
 		if (layer) {
 			GEngine::Application::GetApp()->PushLayer(layer);
 			GEngine::Application::GetApp()->PopLayer(this);
-			delete this;// TODO change this
+			delete this;// change this maybe idk
 		}
 		return true;
 	}

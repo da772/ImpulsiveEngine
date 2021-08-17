@@ -58,6 +58,7 @@ namespace GEngine {
 		static bool DeleteFile(const std::string& file);
 
 		static void OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& startPath = "", bool isFolder = false);
+		static void SaveFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& startPath = "", bool isFolder = false);
 
 		static Ref<FileData> FileDataFromPath(std::string path, bool fromPak = true, bool relative = false);
 		static void AddToMemoryPak(const std::string& name, Ref<FileData> data);
