@@ -80,8 +80,20 @@ namespace Editor {
 			finalSize = scaleRatio((int)sz.x, (int)sz.y, (int)originalSize.x, (int)originalSize.y);
 			GEngine::Application::GetApp()->m_viewPortWidth = finalSize.x;
 			GEngine::Application::GetApp()->m_viewPortHeight = finalSize.y;
-			lastFrameSize = sz;
+			GEngine::Camera* cam = pipeline->GetCamera();
+			if (!cam) {
+				cam = GEngine::Application::GetApp()->GetTargetCamera();
+			}
+			if (cam) {
+				const float zoomLevel = m_cameraController ? m_cameraController->GetFOV() : 1.f;
+				const float aspectRatio = (float)finalSize.x / (float)finalSize.y;
+				cam->SetProjection(-aspectRatio * zoomLevel, aspectRatio * zoomLevel, -zoomLevel, zoomLevel);
+				if (m_cameraController)
+					m_cameraController->SetAspectRatio(aspectRatio);
+			}
+			
 
+			lastFrameSize = sz;
 			handleResize = false;
 		}
 

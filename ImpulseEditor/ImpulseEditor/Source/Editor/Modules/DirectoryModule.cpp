@@ -382,7 +382,7 @@ namespace Editor {
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				DirectoryPayload* payload = new DirectoryPayload(p);
 				isDragAndDrop = true;
-				ImGui::SetDragDropPayload("DirectoryPath", (void*)payload, sizeof(DirectoryPayload));
+				ImGui::SetDragDropPayload(DirectoryPayload::GetName(), (void*)payload, sizeof(DirectoryPayload));
 				delete payload;
 				ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth / 2 - imageSize + imageSize / 2);
 				ImGui::Image((ImTextureID)(uintptr_t)texture->GetRendererID(), { imageSize,imageSize }, { 0,1 }, { 1,0 });
@@ -640,7 +640,7 @@ namespace Editor {
 		if (ImGui::BeginDragDropTarget()) {
 
 			const ImGuiPayload* _p = ImGui::GetDragDropPayload();
-			if (_p && strcmp(_p->DataType, "DirectoryPath") == 0) {
+			if (_p && strcmp(_p->DataType, DirectoryPayload::GetName()) == 0) {
 				float availWidth = ImGui::GetContentRegionAvailWidth();
 				float fontSize = ImGui::GetFontSize();
 				ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
@@ -648,7 +648,7 @@ namespace Editor {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
 			}
 
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DirectoryPath");
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DirectoryPayload::GetName());
 			if (payload) {
 				GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);
 				DirectoryPayload payloadPath = *(DirectoryPayload*)payload->Data;
@@ -668,14 +668,14 @@ namespace Editor {
 
 		if (ImGui::BeginDragDropTarget()) {
 			const ImGuiPayload* _p = ImGui::GetDragDropPayload();
-			if (_p && strcmp(_p->DataType, "DirectoryPath") == 0) {
+			if (_p && strcmp(_p->DataType, DirectoryPayload::GetName()) == 0) {
 				float availWidth = ImGui::GetContentRegionAvailWidth();
 				float fontSize = ImGui::GetFontSize();
 				ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
 				col.w = .25f;
 				ImGui::GetWindowDrawList()->AddRectFilled(rect->Min, rect->Max, ImGui::GetColorU32(col));
 			}
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DirectoryPath");
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DirectoryPayload::GetName());
 			if (payload) {
 				GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);
 				DirectoryPayload payloadPath = *(DirectoryPayload*)payload->Data;

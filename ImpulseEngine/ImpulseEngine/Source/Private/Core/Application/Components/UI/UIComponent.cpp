@@ -19,7 +19,7 @@ namespace GEngine {
 	Ref<BatchRenderer> UIComponent::s_ShapeFactory = nullptr;
 
 
-	UIComponent::UIComponent(Entity* e, Ref<Shader> shader) : NativeScript(e)
+	UIComponent::UIComponent(Entity* e, Ref<Shader> shader) : Component(e)
 	{
 		go_tag = "UI Component";
 		if (s_ShapeFactory == nullptr) {
@@ -51,7 +51,7 @@ namespace GEngine {
 
 
 
-	UIComponent::UIComponent(Entity* e) : NativeScript(e)
+	UIComponent::UIComponent(Entity* e) : Component(e)
 	{
 		go_tag = "UI Component";
 		if (s_ShapeFactory == nullptr) {

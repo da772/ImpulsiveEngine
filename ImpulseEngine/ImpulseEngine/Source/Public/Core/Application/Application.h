@@ -82,8 +82,8 @@ namespace GEngine {
 		static float GetSafeRightUI();
 		static inline bool DebugTools() { return s_debugTools; }
 
-		static const int GetViewPortOffsetX() { return s_Instance->m_viewPortOffset.x; }
-		static const int GetViewPortOffsetY() { return s_Instance->m_viewPortOffset.y; }
+		static const int GetViewPortOffsetX() { return (int)s_Instance->m_viewPortOffset.x; }
+		static const int GetViewPortOffsetY() { return (int)s_Instance->m_viewPortOffset.y; }
 
 		static const int GetUIResolutionWidth() { return s_Instance->m_uiResolutionWidth; }
 		static const int GetUIResolutionHeight() { return s_Instance->m_uiResolutionHeight; }

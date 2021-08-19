@@ -166,6 +166,7 @@ namespace GEngine {
 			ScriptApi::SetNativeScriptPtrs((void*)m_component, (void*)&m_object);
 	}
 
+
 	NativeScriptComponent::~NativeScriptComponent()
 	{
 		ScriptApi::RemoveNativeScript(this);

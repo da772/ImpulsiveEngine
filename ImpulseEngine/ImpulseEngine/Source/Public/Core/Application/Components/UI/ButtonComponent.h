@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Public/Core/Application/Components/Scripts/NativeScript.h"
+#include "Public/Core/Application/Component.h"
 
 namespace GEngine {
 
@@ -12,7 +12,7 @@ namespace GEngine {
 	class ScriptObject;
 	class Event;
 
-	class GE_API ButtonComponent : public NativeScript {
+	class GE_API ButtonComponent : public Component {
 	public:
 
 		ButtonComponent(Entity* e, const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale = { 1,1 });

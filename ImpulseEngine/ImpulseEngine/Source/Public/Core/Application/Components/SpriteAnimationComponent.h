@@ -1,14 +1,14 @@
 #pragma once
 
 
-#include "Public/Core/Application/Components/Scripts/NativeScript.h"
+#include "Public/Core/Application/Component.h"
 
 namespace GEngine {
 
 
-	class GE_API SpriteAnimationComponent : public NativeScript {
+	class GE_API SpriteAnimationComponent : public Component {
 	public:
-		inline SpriteAnimationComponent(Entity* e) : NativeScript(e) { go_tag = "Sprite Animation Component"; bUpdates = true; };
+		inline SpriteAnimationComponent(Entity* e) : Component(e) { go_tag = "Sprite Animation Component"; bUpdates = true; };
 		virtual ~SpriteAnimationComponent();
 		void SetFrameAnimation(const uint8_t fps, const uint8_t maxFrames, bool loop = true, const std::function<void(int)> animateFrameFunction = nullptr);
 		void SetFrameAnimationFPS(uint8_t fps);

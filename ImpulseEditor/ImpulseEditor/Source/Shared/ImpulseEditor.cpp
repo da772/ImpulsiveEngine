@@ -215,6 +215,7 @@ void ImpulseEditor::OnImGuiSetup()
 	
 	mainFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), (int)fd->GetDataSize(), 20, &cfg);
 	smallFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), (int)fd->GetDataSize(), 17, &cfg);
+	smallerFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), (int)fd->GetDataSize(), 15, &cfg);
 	largeFont = io.Fonts->AddFontFromMemoryTTF(fd->GetData(), (int)fd->GetDataSize(), 23, &cfg);
 	io.Fonts->Build();
 #endif

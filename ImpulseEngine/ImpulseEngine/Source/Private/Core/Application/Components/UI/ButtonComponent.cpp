@@ -18,7 +18,7 @@ namespace GEngine {
 
 	Ref<BatchRenderer> ButtonComponent::s_ShapeFactory = nullptr;
 
-	ButtonComponent::ButtonComponent(Entity* e, const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale /*= 1*/) : NativeScript(e),
+	ButtonComponent::ButtonComponent(Entity* e, const Vector3f& pos, const float rot, const Vector2f& scale, const Vector4f& color, Vector2f textureScale /*= 1*/) : Component(e),
 		m_colliderPosition(pos), m_colliderRotation(rot), m_colliderScale(scale), m_imagePosition(pos), m_imageRotation(rot), m_imageScale(scale), m_color(color), m_textureScale(textureScale)
 	{
 		go_tag = "Button Component";

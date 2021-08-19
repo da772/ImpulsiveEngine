@@ -19,7 +19,7 @@ namespace GEngine {
 	Ref < BatchRenderer >SpriteComponent::s_ShapeFactory = nullptr;
 	
 
-	SpriteComponent::SpriteComponent(Entity* e, Ref<Shader> shader, const std::function<void()>& shaderFunc, const std::string& pipelineId) : NativeScript(e)
+	SpriteComponent::SpriteComponent(Entity* e, Ref<Shader> shader, const std::function<void()>& shaderFunc, const std::string& pipelineId) : Component(e)
 	{
 		go_tag = "Sprite Component";
 

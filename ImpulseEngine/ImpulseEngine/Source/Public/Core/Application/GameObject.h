@@ -22,8 +22,8 @@ namespace GEngine {
 
 		virtual bool IsComponent() const;
 
-		bool DoesSerialize() const { return should_serialize; }
-		void SetSerialize(bool b) { should_serialize = b; }
+		inline bool DoesSerialize() const { return should_serialize; }
+		inline void SetSerialize(bool b) { should_serialize = b; }
 
 	protected:
 		ObjectHash go_hash = ObjectHash();

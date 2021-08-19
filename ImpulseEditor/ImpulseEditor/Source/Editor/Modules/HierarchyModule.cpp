@@ -241,7 +241,7 @@ namespace Editor {
 			ImGui::Text(e.second->GetTag().c_str());
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				EntityPayload payload = { e.second };
-				ImGui::SetDragDropPayload("EntityGameObjectID", (void*)&payload, sizeof(EntityPayload));
+				ImGui::SetDragDropPayload(EntityPayload::GetName(), (void*)&payload, sizeof(EntityPayload));
 				ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 				ImGui::SameLine();
 				ImGui::Text(e.second->GetTag().c_str());
@@ -308,7 +308,7 @@ namespace Editor {
 			ImGui::Text(e.second->GetTag().c_str());
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 				EntityPayload payload = { e.second };
-				ImGui::SetDragDropPayload("EntityGameObjectID", (void*)&payload, sizeof(EntityPayload));
+				ImGui::SetDragDropPayload(EntityPayload::GetName(), (void*)&payload, sizeof(EntityPayload));
 				ImGui::Image((ImTextureID)(intptr_t)m_textures[hasChildren ? "gameObjectChildren" : "gameObject"]->GetRendererID(), { fontSize,fontSize }, { 0,1 }, { 1,0 });
 				ImGui::SameLine();
 				ImGui::Text(e.second->GetTag().c_str());
@@ -334,7 +334,7 @@ namespace Editor {
 	{
 		if (ImGui::BeginDragDropTarget()) {
 			const ImGuiPayload* p = ImGui::GetDragDropPayload();
-			if (p && strcmp(p->DataType, "EntityGameObjectID") == 0) {
+			if (p && strcmp(p->DataType, EntityPayload::GetName()) == 0) {
 				float availWidth = ImGui::GetContentRegionAvailWidth();
 				float fontSize = ImGui::GetFontSize();
 				ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
@@ -342,7 +342,7 @@ namespace Editor {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
 			}
 
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("EntityGameObjectID");
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(EntityPayload::GetName());
 			if (payload) {
 				
 				EntityPayload payloadObj = *(EntityPayload*)payload->Data;
@@ -400,7 +400,7 @@ namespace Editor {
 								GEngine::Component* sc = comp->GetComponent();
 								if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 									ComponentPayload payload = { sc};
-									ImGui::SetDragDropPayload("ComponentGameObjectID", (void*)&payload, sizeof(EntityPayload));
+									ImGui::SetDragDropPayload(ComponentPayload::GetName(), (void*)&payload, sizeof(EntityPayload));
 									ImGui::Text((c.second->GetTag() + " (" + c.first.ToString() + ")").c_str());
 									ImGui::EndDragDropSource();
 								}
@@ -409,7 +409,7 @@ namespace Editor {
 					}
 					else if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
 						ComponentPayload payload = { c.second };
-						ImGui::SetDragDropPayload("ComponentGameObjectID", (void*)&payload, sizeof(EntityPayload));
+						ImGui::SetDragDropPayload(ComponentPayload::GetName(), (void*)&payload, sizeof(EntityPayload));
 						ImGui::Text((c.second->GetTag() + " (" + c.first.ToString() + ")").c_str());
 						ImGui::EndDragDropSource();
 					}

@@ -4,12 +4,28 @@
 
 namespace Editor {
 
-	struct EntityPayload {
-		GEngine::Entity* entity = nullptr;
+	class GameObjectPayload {
+	public:
+		GEngine::GameObject* go;
+		static const char* GetName() {
+			return "GameObjectPayload";
+		};
 	};
 
-	struct ComponentPayload {
+	class EntityPayload {
+	public:
+		GEngine::Entity* entity = nullptr;
+		static const char* GetName() {
+			return "EntityPayload";
+		};
+	};
+
+	class ComponentPayload {
+	public:
 		GEngine::Component* component = nullptr;
+		static const char* GetName() {
+			return "ComponentPayload";
+		};
 	};
 
 	struct DirectoryPath {
@@ -51,7 +67,9 @@ namespace Editor {
 		char ext[64] = { '\0' };
 		bool is_directory;
 		bool is_empty;
-
+		static const char* GetName() {
+			return "DirectoryPayload";
+		};
 	};
 
 

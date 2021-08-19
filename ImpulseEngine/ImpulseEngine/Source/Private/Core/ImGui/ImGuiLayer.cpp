@@ -97,8 +97,8 @@ namespace GEngine {
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		//bool show = true;
-		//ImGui::ShowDemoWindow(&show);
+		bool show = true;
+		ImGui::ShowDemoWindow(&show);
 		//ImPlot::ShowDemoWindow();
 	}
 

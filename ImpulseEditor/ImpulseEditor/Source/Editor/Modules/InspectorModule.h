@@ -15,17 +15,18 @@ namespace Editor {
 
 		void Inspect_TransformComponent(GEngine::Component* c);
 		void Inspect_NativeComponent(GEngine::Component* c);
+		void Inspect_SpriteComponent(GEngine::Component* c);
 
 	private:
 		void AddComponentModal();
 		void ResizePanel(uint64_t id , bool& isDragging, float& leftWidth, float leftWidthMax, float leftWidthMin);
-
+		bool FindParent(const std::string& clazz, const std::string& parent, const std::unordered_map<std::string, refl::store::uobject_struct>& map);
 		
 
 	private:
 		std::set<GEngine::ObjectHash>* m_selectedGameObject = nullptr;
 		std::unordered_map < std::string, std::function<void(GEngine::Component*)>> s_ComponentMap;
-
+		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
 		float lastX = 0;
 		float windowWidth = 1;
 
@@ -40,6 +41,8 @@ namespace Editor {
 		ReloadModule* reloadModule;
 
 		std::string nativeScriptComponentClass = "";
+
+		char m_textBuffer[4096];
 
 
 	};

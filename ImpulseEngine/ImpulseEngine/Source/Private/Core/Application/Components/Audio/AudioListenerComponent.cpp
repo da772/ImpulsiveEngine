@@ -7,7 +7,7 @@
 namespace GEngine {
 
 
-	AudioListenerComponent::AudioListenerComponent(Entity* e) : NativeScript(e)
+	AudioListenerComponent::AudioListenerComponent(Entity* e) : Component(e)
 	{
 		go_tag = "Audio Listener Component";
 	}

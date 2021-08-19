@@ -4,7 +4,7 @@
 
 namespace GEngine {
 
-    Transform::Transform(Entity* e) : NativeScript(e) {
+    Transform::Transform(Entity* e) : Component(e) {
         go_tag = "Transform Component";
     }
 

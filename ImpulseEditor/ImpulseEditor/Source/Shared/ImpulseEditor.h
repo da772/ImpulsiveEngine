@@ -46,6 +46,7 @@ public:
 
 #ifdef GE_EDITOR
 	ImFont* smallFont;
+	ImFont* smallerFont;
 	ImFont* largeFont;
 	ImFont* mainFont;
 	GEngine::Ref<GEngine::FileData> fd = nullptr;

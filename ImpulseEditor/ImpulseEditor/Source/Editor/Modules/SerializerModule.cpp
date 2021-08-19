@@ -178,102 +178,106 @@ namespace Editor {
 				while (node.type.size() > 1) {
 					SerializedNativeField d = { node.type, node.tags["name"], node.info };
 					NativeTypes type = NativeTypeMap.at(node.type);
+					try {
+						switch (type) {
 
-					switch (type) {
-					
-					case NativeTypes::CLASS: {
-						ObjectHash objHash = ObjectHash(node.tags["id"].c_str());
+						case NativeTypes::CLASS: {
+							ObjectHash objHash = ObjectHash(node.tags["id"].c_str());
 
 
-						if (objHash.isValid()) {
-							sc->SetAutoNative(false);
-							sc->LoadClass(d.data, objHash);
-						}
-						else {
+							if (objHash.isValid()) {
+								sc->SetAutoNative(false);
+								sc->LoadClass(d.data, objHash);
+							}
+							else {
+								objects[c.parentEntity].components[objHash].wasCreated = true;
+								return;
+							}
+							objects[c.parentEntity].components[objHash].ptr = sc->GetComponent();
 							objects[c.parentEntity].components[objHash].wasCreated = true;
-							return;
+							break;
 						}
-						objects[c.parentEntity].components[objHash].ptr = sc->GetComponent();
-						objects[c.parentEntity].components[objHash].wasCreated = true;
-						break;
-					}
-					case NativeTypes::INT:
-						sc->GetNativeObject()->SetMember<int>(d.name, std::stoi(d.data));
-						break;
-					case NativeTypes::INT8:
-						sc->GetNativeObject()->SetMember<int8_t>(d.name, (int8_t)std::stoi(d.data));
-						break;
-					case NativeTypes::INT16:
-						sc->GetNativeObject()->SetMember<int16_t>(d.name, (int16_t)std::stoi(d.data));
-						break;
-					case NativeTypes::INT32:
-						sc->GetNativeObject()->SetMember<int32_t>(d.name, (int32_t)std::stoi(d.data));
-						break;
-					case NativeTypes::INT64:
-						sc->GetNativeObject()->SetMember<int64_t>(d.name, (int64_t)std::stoi(d.data));
-						break;
-					case NativeTypes::UINT:
-						sc->GetNativeObject()->SetMember<uint32_t>(d.name, (uint32_t)std::stoi(d.data));
-						break;
-					case NativeTypes::UINT8:
-						sc->GetNativeObject()->SetMember<uint8_t>(d.name, (uint8_t)std::stoi(d.data));
-						break;
-					case NativeTypes::UINT16:
-						sc->GetNativeObject()->SetMember<uint16_t>(d.name, (uint16_t)std::stoi(d.data));
-						break;
-					case NativeTypes::UINT32:
-						sc->GetNativeObject()->SetMember<uint32_t>(d.name, (uint32_t)std::stoi(d.data));
-						break;
-					case NativeTypes::UINT64:
-						sc->GetNativeObject()->SetMember<uint64_t>(d.name, (uint64_t)std::stoi(d.data));
-						break;
-					case NativeTypes::DOUBLE:
-						sc->GetNativeObject()->SetMember<double>(d.name, std::stod(d.data));
-						break;
-					case NativeTypes::FLOAT:
-						sc->GetNativeObject()->SetMember<float>(d.name, std::stof(d.data));
-						break;
-					case NativeTypes::GAMEOBJECT:
-					{
-						ObjectHash gohash = ObjectHash(d.data.c_str());
-						const int t = std::stoi(node.tags["component"]);
-						// component
-						if (t == 1) {
+						case NativeTypes::INT:
+							sc->GetNativeObject()->SetMember<int>(d.name, std::stoi(d.data));
+							break;
+						case NativeTypes::INT8:
+							sc->GetNativeObject()->SetMember<int8_t>(d.name, (int8_t)std::stoi(d.data));
+							break;
+						case NativeTypes::INT16:
+							sc->GetNativeObject()->SetMember<int16_t>(d.name, (int16_t)std::stoi(d.data));
+							break;
+						case NativeTypes::INT32:
+							sc->GetNativeObject()->SetMember<int32_t>(d.name, (int32_t)std::stoi(d.data));
+							break;
+						case NativeTypes::INT64:
+							sc->GetNativeObject()->SetMember<int64_t>(d.name, (int64_t)std::stoi(d.data));
+							break;
+						case NativeTypes::UINT:
+							sc->GetNativeObject()->SetMember<uint32_t>(d.name, (uint32_t)std::stoi(d.data));
+							break;
+						case NativeTypes::UINT8:
+							sc->GetNativeObject()->SetMember<uint8_t>(d.name, (uint8_t)std::stoi(d.data));
+							break;
+						case NativeTypes::UINT16:
+							sc->GetNativeObject()->SetMember<uint16_t>(d.name, (uint16_t)std::stoi(d.data));
+							break;
+						case NativeTypes::UINT32:
+							sc->GetNativeObject()->SetMember<uint32_t>(d.name, (uint32_t)std::stoi(d.data));
+							break;
+						case NativeTypes::UINT64:
+							sc->GetNativeObject()->SetMember<uint64_t>(d.name, (uint64_t)std::stoi(d.data));
+							break;
+						case NativeTypes::DOUBLE:
+							sc->GetNativeObject()->SetMember<double>(d.name, std::stod(d.data));
+							break;
+						case NativeTypes::FLOAT:
+							sc->GetNativeObject()->SetMember<float>(d.name, std::stof(d.data));
+							break;
+						case NativeTypes::GAMEOBJECT:
+						{
+							ObjectHash gohash = ObjectHash(d.data.c_str());
+							const int t = std::stoi(node.tags["component"]);
+							// component
+							if (t == 1) {
 
-							const auto it = compMap.find(gohash);
-							if (it != compMap.end()) {
-								SerializedEntity& _ent = objects[it->second];
-								const auto it2 = _ent.components.find(gohash);
-								if (it2 != _ent.components.end()) {
+								const auto it = compMap.find(gohash);
+								if (it != compMap.end()) {
+									SerializedEntity& _ent = objects[it->second];
+									const auto it2 = _ent.components.find(gohash);
+									if (it2 != _ent.components.end()) {
 
-									SerializedComponent& comp = _ent.components[gohash];
+										SerializedComponent& comp = _ent.components[gohash];
 
-									if (!comp.wasCreated) {
-										DeserializeComponent(objects, compMap, comp);
-									}
+										if (!comp.wasCreated) {
+											DeserializeComponent(objects, compMap, comp);
+										}
 
-									if (comp.ptr) {
-										void* ptr = comp.ptr;
-										sc->GetNativeObject()->SetMember<void*>(d.name, ptr);
+										if (comp.ptr) {
+											void* ptr = comp.ptr;
+											sc->GetNativeObject()->SetMember<void*>(d.name, ptr);
+										}
 									}
 								}
 							}
+							// entity
+							else if (t == 0) {
+								sc->GetNativeObject()->SetMember<void*>(d.name, objects[gohash].ptr);
+							}
+							break;
 						}
-						// entity
-						else if (t == 0) {
-							sc->GetNativeObject()->SetMember<void*>(d.name, objects[gohash].ptr);
-						}
-						break;
-					}
-					case NativeTypes::STRING:
-						sc->GetNativeObject()->SetMember<std::string>(d.name, d.data);
-						break;
-					case NativeTypes::TEXTURE2D:
-						break;
-					default:
-					case NativeTypes::NONE:
-						break;
+						case NativeTypes::STRING:
+							sc->GetNativeObject()->SetMember<std::string>(d.name, d.data);
+							break;
+						case NativeTypes::TEXTURE2D:
+							break;
+						default:
+						case NativeTypes::NONE:
+							break;
 
+						}
+					}
+					catch (const std::exception& e) {
+						GE_LOG_ERROR("SerializeException: {0}:{1} \n{2}", d.name, d.type, d.data);
 					}
 					if (sc) {
 						sc->SetNativePointerData();

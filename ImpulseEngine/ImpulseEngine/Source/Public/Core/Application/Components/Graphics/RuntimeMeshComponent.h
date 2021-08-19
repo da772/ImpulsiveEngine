@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Public/Core/Application/Components/Scripts/NativeScript.h"
+#include "Public/Core/Application/Component.h"
 #include "Public/Core/Renderer/Graphics/Renderable.h"
 
 namespace GEngine {
@@ -12,7 +12,7 @@ namespace GEngine {
 	class VertexBuffer;
 	class VertexArray;
 
-	class GE_API RuntimeMeshComponent : public NativeScript {
+	class GE_API RuntimeMeshComponent : public Component {
 
 	public:
 		RuntimeMeshComponent(Entity* e);

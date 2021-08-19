@@ -34,7 +34,7 @@ namespace GEngine {
 
 		inline void SetPosition(const Vector3f& position) { m_Position = position; }
 		inline void SetRotation(const Vector3f& rotation) { m_Rotation = rotation; }
-
+		virtual void SetAspectRatio(const float aspectRatio) {  };
 
 
 		inline const Vector3f& GetPosition() { return m_Position; }
@@ -42,8 +42,6 @@ namespace GEngine {
 
 
 	protected:
-		
-
         OnUpdateEventFn m_OnUpdateEventFn;;
         OnEventFn m_OnEventFn;
 
@@ -74,13 +72,14 @@ namespace GEngine {
 		virtual bool OnCameraZoom(const float x, const float y, const float amt) override;
 		virtual bool OnWindowResized(WindowResizeEvent& e) override;
 		virtual void SetCameraZoom(const float zoomLevel) override;
+		virtual void SetAspectRatio(const float aspectRatio) override;
 
 
 	protected:
 		
 		
 	private:
-		float m_AspectRatio = 16.f/9.f;
+		float m_AspectRatio = 16.f / 9.f;
 		float m_ZoomLevel = 1.f;
 		
 
@@ -99,13 +98,13 @@ namespace GEngine {
 		virtual bool OnCameraZoom(float x, float y, float amt) override;
 		virtual const float GetFOV() const override { return m_ZoomLevel; };
 
-
+		virtual void SetAspectRatio(const float aspectRatio) override;
 	protected:
 
 
 	private:
-		float m_AspectRatio = 16.f / 9.f;
 		float m_ZoomLevel = 1.f;
+		float m_AspectRatio = 16.f / 9.f;
 
 
 	};

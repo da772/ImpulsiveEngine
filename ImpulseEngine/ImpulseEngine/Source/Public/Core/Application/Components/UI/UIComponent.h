@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Public/Core/Application/Components/Scripts/NativeScript.h"
+#include "Public/Core/Application/Component.h"
 
 
 namespace GEngine {
@@ -22,7 +22,7 @@ namespace GEngine {
 		Ref<Font> font;
 	};
 
-	class GE_API UIComponent : public NativeScript {
+	class GE_API UIComponent : public Component {
 
 	public:
 		UIComponent(Entity* e);

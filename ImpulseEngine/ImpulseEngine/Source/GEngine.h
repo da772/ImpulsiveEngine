@@ -41,7 +41,7 @@
 #include "Public/Core/Application/Components/TransformComponent.h"
 #include "Public/Core/Application/Components/Audio/AudioListenerComponent.h"
 
-#include "Public/Core/Application/Components/Scripts/NativeScript.h"
+#include "Public/Core/Application/Component.h"
 
 #include "Public/Core/Renderer/Graphics/Circle.h"
 #include "Public/Core/Renderer/Graphics/Quad.h"

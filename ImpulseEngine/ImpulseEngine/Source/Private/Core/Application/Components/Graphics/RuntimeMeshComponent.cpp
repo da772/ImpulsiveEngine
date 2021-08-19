@@ -27,7 +27,7 @@
 
 namespace GEngine {
 
-	RuntimeMeshComponent::RuntimeMeshComponent(Entity* e) : NativeScript(e)
+	RuntimeMeshComponent::RuntimeMeshComponent(Entity* e) : Component(e)
 	{
 		go_tag = "Runtime Mesh Component";
 	}

@@ -55,6 +55,11 @@ namespace GEngine {
 		m_Camera->SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 	}
 
+	void Orthographic_CameraController::SetAspectRatio(const float aspectRatio)
+	{
+		m_AspectRatio = aspectRatio;
+	}
+
 	Perspective_CameraController::Perspective_CameraController(const float aspectRatio)
 		: m_ZoomLevel(1.f), m_AspectRatio(aspectRatio)
 	{
@@ -85,6 +90,11 @@ namespace GEngine {
 	bool Perspective_CameraController::OnCameraZoom(const float x, const float y, const float amt)
 	{
 		return false;
+	}
+
+	void Perspective_CameraController::SetAspectRatio(const float aspectRatio)
+	{
+		m_AspectRatio = aspectRatio;
 	}
 
 }
