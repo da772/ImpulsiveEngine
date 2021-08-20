@@ -45,6 +45,7 @@ namespace Editor {
 		if (!s_singleton)
 			s_singleton = this;
 
+
 		m_cameraController = new GEngine::Orthographic_CameraController(
 			(float)GEngine::Application::GetApp()->GetWidth() / (float)GEngine::Application::GetApp()->GetHeight());
 

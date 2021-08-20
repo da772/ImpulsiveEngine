@@ -45,6 +45,15 @@ uniform sampler2D u_Textures[32];
 
 void main() {
     vec4 texColor = vec4(1.0,1.0,1.0, 1.0);
+    switch(int(v_AlphaChannel))
+    {
+        default:
+        case 4: texColor.a = texColor.a; break;
+        case 3: texColor = vec4(1.0,1.0,1.0, texColor.b); break;
+        case 2: texColor = vec4(1.0,1.0,1.0, texColor.g); break;
+        case 1: texColor = vec4(1.0,1.0,1.0, texColor.r); break;
+
+    }
     switch(int(v_TexSlot))
         {
             default:
@@ -82,15 +91,6 @@ void main() {
             case 31: texColor *= texture(u_Textures[31], v_TexCoord * v_TexScale); break;
         }
         
-    switch(int(v_AlphaChannel))
-    {
-        default:
-        case 4: texColor.a = texColor.a; break;
-        case 3: texColor.rgba = vec4(1.0,1.0,1.0, texColor.b); break;
-        case 2: texColor.rgba = vec4(1.0,1.0,1.0, texColor.g); break;
-        case 1: texColor.rgba = vec4(1.0,1.0,1.0, texColor.r); break;
-
-    }
     texColor = v_Color * (texColor);
     color = texColor;
     //color = vec4(v_TexSlot, v_TexSlot, v_TexSlot, 1.f);

@@ -640,7 +640,8 @@ namespace Editor {
 		if (ImGui::BeginDragDropTarget()) {
 
 			const ImGuiPayload* _p = ImGui::GetDragDropPayload();
-			if (_p && strcmp(_p->DataType, DirectoryPayload::GetName()) == 0) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DirectoryPayload::GetName());
+			if (_p && payload) {
 				float availWidth = ImGui::GetContentRegionAvailWidth();
 				float fontSize = ImGui::GetFontSize();
 				ImVec4 col = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
@@ -648,16 +649,22 @@ namespace Editor {
 				ImGui::GetWindowDrawList()->AddRectFilled({ pos.x - ImGui::GetTreeNodeToLabelSpacing(), pos.y }, { pos.x + availWidth, pos.y + fontSize }, ImGui::GetColorU32(col));
 			}
 
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DirectoryPayload::GetName());
+			
 			if (payload) {
-				GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);
 				DirectoryPayload payloadPath = *(DirectoryPayload*)payload->Data;
 				if (payloadPath.name != p.name) {
-					GEngine::ThreadPool::AddMainThreadFunction([payloadPath, p, this]() {
-						GEngine::FileSystem::MoveFile(payloadPath.path, p.path + "/" + payloadPath.name);
-						forceFolderViewRefresh = true;
-						});
+					const std::string s(payloadPath.path);
+					const std::string d(p.path);
+
+					size_t pos = d.find(s);
+					if (pos == std::string::npos) {
+						GEngine::ThreadPool::AddMainThreadFunction([payloadPath, p, this]() {
+							GEngine::FileSystem::MoveFile(payloadPath.path, p.path + "/" + payloadPath.name);
+							forceFolderViewRefresh = true;
+							});
+					}
 				}
+
 			}
 			ImGui::EndDragDropTarget();
 		}

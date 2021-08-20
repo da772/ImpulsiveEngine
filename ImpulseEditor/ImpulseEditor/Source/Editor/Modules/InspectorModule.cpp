@@ -17,7 +17,8 @@ namespace Editor {
 		{
 			{ "Transform Component", BIND_EVENT_FN(InspectorModule, Inspect_TransformComponent)},
 			{"Native Script Component", BIND_EVENT_FN(InspectorModule, Inspect_NativeComponent)},
-			{"Sprite Component",BIND_EVENT_FN(InspectorModule, Inspect_SpriteComponent)}
+			{"Sprite Component",BIND_EVENT_FN(InspectorModule, Inspect_SpriteComponent)},
+			{"UI Component",BIND_EVENT_FN(InspectorModule, Inspect_UIComponent)}
 		};
 		m_textures["remove"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/delete192x129.png");
 	}
@@ -84,10 +85,12 @@ namespace Editor {
 					if (p.second->GetTag() == "Transform Component") continue;
 					ImGui::Separator();
 					std::string pName = (p.second->GetTag() + " : (" + p.second->GetHash().ToString() + ")");
+					uint64_t flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow;
 					if (!p.second->DoesSerialize()) {
+						flags = ImGuiTreeNodeFlags_OpenOnArrow;
 						ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
 					}
-					bool b = ImGui::TreeNodeEx(pName.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow);
+					bool b = ImGui::TreeNodeEx(pName.c_str(), flags);
 					if (!p.second->DoesSerialize()) {
 						ImGui::PopStyleColor();
 					}
@@ -175,34 +178,7 @@ namespace Editor {
 			ImGui::BeginChild("TransformInput", { 0.f,0.f }, false, ImGuiWindowFlags_HorizontalScrollbar);
 
 			for (const auto& d : transData) {
-				
-				//ImGui::Text((d.first + ":").c_str());
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 1,0,0,1 });
-				ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 1,0,0,1 });
-				ImGui::PushStyleColor(ImGuiCol_Button, { 1,0,0,1 });
-				ImGui::Button("X");
-				ImGui::PopStyleColor(3);
-				ImGui::SameLine(0,0);
-				ImGui::SetNextItemWidth(65);
-				ImGui::InputFloat(("##X"+d.first).c_str(), &(d.second->x), 0, 0, "%.2f");
-				ImGui::SameLine(0,0);
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0,1,0,1 });
-				ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0,1,0,1 });
-				ImGui::PushStyleColor(ImGuiCol_Button, { 0,1,0,1 });
-				ImGui::Button("Y");
-				ImGui::PopStyleColor(3);
-				ImGui::SameLine(0,0);
-				ImGui::SetNextItemWidth(65);
-				ImGui::InputFloat(("##Y" + d.first).c_str(), &(d.second->y), 0, 0, "%.2f");
-				ImGui::SameLine(0,0);
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0,0,1,1 });
-				ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0,0,1,1 });
-				ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,1,1 });
-				ImGui::Button("Z");
-				ImGui::PopStyleColor(3);
-				ImGui::SameLine(0,0);
-				ImGui::SetNextItemWidth(65);
-				ImGui::InputFloat(("##Z" + d.first).c_str(), &(d.second->z), 0, 0, "%.2f");
+				TransformWidget(d.first, d.second);
 			}
 
 			ImGui::EndChild();
@@ -478,6 +454,7 @@ namespace Editor {
 											EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(script->GetHash(), GameObjectModifications::EDIT_MEMBER);
 										}
 									}
+
 								}
 							}
 							else {
@@ -514,21 +491,141 @@ namespace Editor {
 				
 				
 			}
-			
-
 		}
 
 	}
 
 	void InspectorModule::Inspect_SpriteComponent(GEngine::Component* c)
 	{
+		if (reloadModule->IsReloading()) return;
 		GEngine::SpriteComponent* sprite = dynamic_cast<GEngine::SpriteComponent*>(c);
 		if (sprite) {
-			GEngine::Ref<GEngine::BatchRenderer> batch = sprite->GetBatchRenderer();
-			for (const auto& id : sprite->GetQuads()) {
-				ImGui::Button(std::to_string(id).c_str());
+			for (const auto& id : sprite->GetObjects()) {
+				ImGui::Button(std::to_string(id.first).c_str());
 			}
 		}
+	}
+
+	void InspectorModule::Inspect_UIComponent(GEngine::Component* c)
+	{
+		if (reloadModule->IsReloading()) return;
+		GEngine::UIComponent* sprite = dynamic_cast<GEngine::UIComponent*>(c);
+		if (sprite) {
+			
+			for (const auto& id : sprite->GetObjects()) {
+				if (id.second.text) continue;
+				if (ImGui::TreeNodeEx(("Quad (" + std::to_string(id.first) + ")").c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
+					ImGui::Columns(2);
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0,0,0,0 });
+					ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0,0,0,0 });
+					ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+					ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0);
+					ImGui::Button("Position");
+					ImGui::Button("Rotation");
+					ImGui::Button("Scale");
+					ImGui::Button("Color");
+					ImGui::Button("Texture");
+					ImGui::PopStyleColor(3);
+					ImGui::PopStyleVar();
+					ImGui::NextColumn();
+					GEngine::Vector3f pos = id.second.pos;
+					TransformWidget(std::string("##Position-" + std::to_string(id.first)), &pos);
+					float rot = id.second.rot;
+					ImGui::DragFloat(std::string("##Rot-" + std::to_string(id.first)).c_str(), &rot);
+					GEngine::Vector3f scale = id.second.scale;
+					TransformWidget(std::string("##Scale-" + std::to_string(id.first)), &scale);
+					GEngine::Vector4f color = id.second.color;
+					ImGui::ColorEdit4(std::string("##Color-" + std::to_string(id.first)).c_str(), (float*)color.data());
+					if (id.second.texture)
+						ImGui::Button(id.second.texture->GetName().c_str());
+					else if (id.second.subtexture)
+						ImGui::Button(id.second.subtexture->GetTexture()->GetName().c_str());
+					else ImGui::Button("Null Texture");
+					if (pos != id.second.pos) {
+						sprite->SetPosition(id.first, pos);
+					}
+					if (pos.z != id.second.pos.z) {
+						sprite->SetZOrder(id.first, pos.z);
+					}
+					if (rot != id.second.rot) {
+						sprite->SetRotation(id.first, rot);
+					}
+					if (scale != id.second.scale) {
+						sprite->SetScale(id.first, scale);
+					}
+					if (color != id.second.color) {
+						sprite->SetColor(id.first, color);
+					}
+					ImGui::EndColumns();
+					ImGui::TreePop();
+				}
+			}
+			for (const auto& id : sprite->GetTexts()) {
+				if (ImGui::TreeNodeEx(("Text ("+id.first+") (" + id.first + ")").c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
+					ImGui::Columns(2);
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0,0,0,0 });
+					ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0,0,0,0 });
+					ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+					ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0);
+					ImGui::Button("Text");
+					ImGui::Button("Position");
+					ImGui::Button("Scale");
+					ImGui::Button("Font");
+					ImGui::PopStyleColor(3);
+					ImGui::PopStyleVar();
+					ImGui::NextColumn();
+					char ch[2048];
+					ch[2047] = 0;
+					for (int i = 0; i < id.second.str.size(); i++) {
+						char _c = (char)id.second.str[i];
+						ch[i] = _c;
+					}
+
+					ch[id.second.str.size()] = 0;
+					bool didChange = false;
+					if (ImGui::InputText(("##inputText-" + id.first).c_str(), ch, sizeof(ch), ImGuiInputTextFlags_EnterReturnsTrue)) {
+						sprite->SetText(id.first, ch, { 1.f,1.f,1.f,1.f });
+						didChange = true;
+					}
+					GEngine::Vector3f pos = id.second.pos;
+					TransformWidget(std::string("##Position-" + id.first), &pos);
+					GEngine::Vector3f scale = id.second.scale;
+					TransformWidget(std::string("##Scale-" + id.first), &scale);
+					if (id.second.font)
+						ImGui::Button(id.second.font->GetTexture()->GetName().c_str());
+					else ImGui::Button("Null Texture");
+
+					if (pos != id.second.pos) {
+						sprite->SetPosition(id.first, pos);
+					}
+
+					if (pos.z != id.second.pos.z) {
+						sprite->SetZOrder(id.first, pos.z);
+					}
+					if (scale != id.second.scale) {
+						sprite->SetScale(id.first, scale);
+					}
+					if (!didChange) {
+						for (int i = 0; i < id.second.shapes.size(); i++) {
+							if (ImGui::TreeNodeEx(("Character (" + std::to_string((char)id.second.str[i]) + ") (" + std::to_string(id.second.shapes[i]) + ")").c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
+								GEngine::Vector4f col = sprite->GetObjects().at(id.second.shapes[i]).color;
+								GEngine::Vector4f stCol = sprite->GetObjects().at(id.second.shapes[i]).color;
+								ImGui::ColorEdit4(("##color" + std::to_string(id.second.shapes[i])).c_str(), (float*)col.data());
+								if (col != stCol) {
+									sprite->SetColor(id.second.shapes[i], col);
+								}
+								ImGui::TreePop();
+							}
+						}
+					}
+
+
+					ImGui::EndColumns();
+					ImGui::TreePop();
+				}
+			}
+		}
+
 	}
 
 	void InspectorModule::ResizePanel(uint64_t id, bool& selfDrag, float& leftWidth, float leftWidthMax, float leftWidthMin) {
@@ -572,6 +669,37 @@ namespace Editor {
 			}
 		}
 		ImGui::EndChild();
+	}
+
+	void InspectorModule::TransformWidget(const std::string& id, const GEngine::Vector3f* data)
+	{
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 1,0,0,1 });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 1,0,0,1 });
+		ImGui::PushStyleColor(ImGuiCol_Button, { 1,0,0,1 });
+		ImGui::Button("X");
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine(0, 0);
+		ImGui::SetNextItemWidth(65);
+		ImGui::InputFloat(("##X" + id).c_str(), (float*)&(data->x), 0, 0, "%.2f");
+		ImGui::SameLine(0, 0);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0,1,0,1 });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0,1,0,1 });
+		ImGui::PushStyleColor(ImGuiCol_Button, { 0,1,0,1 });
+		ImGui::Button("Y");
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine(0, 0);
+		ImGui::SetNextItemWidth(65);
+		ImGui::InputFloat(("##Y" + id).c_str(), (float*)&(data->y), 0, 0, "%.2f");
+		ImGui::SameLine(0, 0);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0,0,1,1 });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0,0,1,1 });
+		ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,1,1 });
+		ImGui::Button("Z");
+		ImGui::PopStyleColor(3);
+		ImGui::SameLine(0, 0);
+		ImGui::SetNextItemWidth(65);
+		ImGui::InputFloat(("##Z" + id).c_str(), (float*)&(data->z), 0, 0, "%.2f");
+
 	}
 
 	bool InspectorModule::FindParent(const std::string& clazz, const std::string& parent, const std::unordered_map<std::string, refl::store::uobject_struct>& map)

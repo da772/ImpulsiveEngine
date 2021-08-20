@@ -208,17 +208,20 @@ namespace GEngine {
 
 	GEngine::Ref<GEngine::StringInfo> OpenGL_Font::AppendString(Ref<StringInfo> info, const std::string& s, float maxWidth, int viewWidth, int viewHeight)
 	{
+		int lastSplit = 0;
 		for (int i = 0; i < s.size(); i++) {
 			Ref<SubTexture2D> texture = SubTexture2D::CreateFromCoords(m_Texture, { 0, 0 }, { 0, 0 });
 			char character = s[i];
 
 			if (character == ' ') {
 				info->data.pen.x += (float)m_size / 2.f / viewWidth;
+				info->data.maxWidth = info->data.pen.x;
 				info->data.lastSpace = i;
 				continue;
 			}
 			else if (character == '\n') {
 				info->data.pen.y -= info->data.maxHeight > 0 ? info->data.maxHeight : (float)m_size / viewHeight;
+				info->data.minHeight = info->data.pen.y;
 				info->data.maxHeight = 0;
 				info->data.pen.x = 0;
 				continue;
@@ -266,17 +269,21 @@ namespace GEngine {
 				Vector2f pos = { (x1 + x0) / 2.f , y0 - (y1 - y0) / 2.f };
 				Vector2f scale = { x1 - x0, y1 - y0 };
 
-				if (pos.x > maxWidth) {
+				if (pos.x > maxWidth && lastSplit != i) {
 					info->data.pen.x = 0;
 					info->data.pen.y -= info->data.maxHeight;
+					info->data.minHeight = info->data.pen.y;
 					info->data.maxHeight = h;
 					for (int j = 0; j < i - info->data.lastSpace - 1; j++)
 						info->charData.erase(info->charData.end() - 1);
 					i = info->data.lastSpace;
+					lastSplit = i;
 					continue;
+
 				}
 
 				info->data.pen.x += (float)glyph->advance_x / viewWidth;//(float)glyph->advance_x / viewWidth;
+				info->data.maxWidth = info->data.pen.x;
 
 				info->data.lastAdvance = (float)glyph->advance_x / viewWidth;
 

@@ -16,10 +16,12 @@ namespace Editor {
 		void Inspect_TransformComponent(GEngine::Component* c);
 		void Inspect_NativeComponent(GEngine::Component* c);
 		void Inspect_SpriteComponent(GEngine::Component* c);
+		void Inspect_UIComponent(GEngine::Component* c);
 
 	private:
 		void AddComponentModal();
 		void ResizePanel(uint64_t id , bool& isDragging, float& leftWidth, float leftWidthMax, float leftWidthMin);
+		void TransformWidget(const std::string& id, const GEngine::Vector3f* data);
 		bool FindParent(const std::string& clazz, const std::string& parent, const std::unordered_map<std::string, refl::store::uobject_struct>& map);
 		
 

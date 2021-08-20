@@ -18,6 +18,8 @@ namespace GEngine {
 		float maxHeight = 0.f;
 		float lastAdvance = 0.f;
 		int lastSpace = 0;
+		float minHeight = 0.f;
+		float maxWidth = 0.f;
 	};
 
 	struct StringInfo {

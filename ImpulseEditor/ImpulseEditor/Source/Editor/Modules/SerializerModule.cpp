@@ -73,7 +73,6 @@ namespace Editor {
 						components[__childHash] = { __childHash, hash, _hash, nullptr, n.type, component.info, true };
 						compMap[__childHash] = hash;
 					}
-
 				}
 				components[_hash] = { _hash, hash, _phash, nullptr, _ctag, component.info };
 				compMap[_hash] = hash;
@@ -129,6 +128,7 @@ namespace Editor {
 	void SerializerModule::DeserializeComponent(std::unordered_map<GEngine::ObjectHash, SerializedEntity>& objects, std::unordered_map<GEngine::ObjectHash, GEngine::ObjectHash>& compMap, SerializedComponent& c)
 	{
 		using namespace GEngine;
+
 
 		if (!c.wasCreated) {
 			if (c.parentComponent.isValid()) {
@@ -245,7 +245,6 @@ namespace Editor {
 									SerializedEntity& _ent = objects[it->second];
 									const auto it2 = _ent.components.find(gohash);
 									if (it2 != _ent.components.end()) {
-
 										SerializedComponent& comp = _ent.components[gohash];
 
 										if (!comp.wasCreated) {
@@ -277,11 +276,12 @@ namespace Editor {
 						}
 					}
 					catch (const std::exception& e) {
-						GE_LOG_ERROR("SerializeException: {0}:{1} \n{2}", d.name, d.type, d.data);
+						GE_LOG_ERROR("SerializeException: {0} {1}:{2} \n{3}", e.what() ,d.name, d.type, d.data);
 					}
 					if (sc) {
 						sc->SetNativePointerData();
 					}
+
 					node = cxml.GetNext(c.data.c_str(), node.endPos);
 				}
 
