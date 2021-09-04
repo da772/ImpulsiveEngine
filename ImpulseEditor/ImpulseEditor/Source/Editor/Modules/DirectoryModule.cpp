@@ -21,7 +21,10 @@ namespace Editor {
 
 	void DirectoryModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
-		ImGui::Begin(name.c_str(), is_open, flags);
+		if (!ImGui::Begin(name.c_str(), is_open, flags)) {
+			ImGui::End();
+			return;
+		}
         // TODO: optimize direcroties
 		
 		DropDownViewPanel();

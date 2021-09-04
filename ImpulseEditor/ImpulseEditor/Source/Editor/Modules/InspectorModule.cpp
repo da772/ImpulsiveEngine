@@ -30,7 +30,10 @@ namespace Editor {
 
 	void InspectorModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
-		ImGui::Begin(name.c_str(), is_open, flags | ImGuiWindowFlags_HorizontalScrollbar);
+		if (!ImGui::Begin(name.c_str(), is_open, flags | ImGuiWindowFlags_HorizontalScrollbar)) {
+			ImGui::End();
+			return;
+		}
 		if (m_selectedGameObject->size() == 0) {
 			ImGui::End();
 			return;
@@ -536,26 +539,57 @@ namespace Editor {
 					TransformWidget(std::string("##Scale-" + std::to_string(id.first)), &scale);
 					GEngine::Vector4f color = id.second.color;
 					ImGui::ColorEdit4(std::string("##Color-" + std::to_string(id.first)).c_str(), (float*)color.data());
-					if (id.second.texture)
-						ImGui::Button(id.second.texture->GetName().c_str());
-					else if (id.second.subtexture)
-						ImGui::Button(id.second.subtexture->GetTexture()->GetName().c_str());
-					else ImGui::Button("Null Texture");
+					std::string textureName = "None";
+					if (id.second.texture) {
+						textureName = id.second.texture->GetName();
+					}
+					else if (id.second.subtexture) {
+						textureName = id.second.subtexture->GetTexture()->GetName();
+					}
+					ImGui::Button((char*)textureName.c_str());
+					if (ImGui::BeginDragDropTarget()) {
+						const ImGuiPayload* _p = ImGui::GetDragDropPayload();
+						if (_p) {
+							const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(DirectoryPayload::GetName());
+							if (payload) {
+								GE_CORE_DEBUG("ACCEPTED PAYLOAD: {0}", payload->Data);
+								DirectoryPayload payloadPath = *(DirectoryPayload*)payload->Data;
+								textureName = payloadPath.path;
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+
+					bool updated = false;
 					if (pos != id.second.pos) {
 						sprite->SetPosition(id.first, pos);
-					}
+						updated = true;
+					} else
 					if (pos.z != id.second.pos.z) {
 						sprite->SetZOrder(id.first, pos.z);
-					}
+						updated = true;
+					} else
 					if (rot != id.second.rot) {
 						sprite->SetRotation(id.first, rot);
-					}
+						updated = true;
+					} else
 					if (scale != id.second.scale) {
 						sprite->SetScale(id.first, scale);
+						updated = true;
 					}
-					if (color != id.second.color) {
+					else if (color != id.second.color) {
 						sprite->SetColor(id.first, color);
+						updated = true;
 					}
+					else if (!id.second.texture && textureName != "None" || id.second.texture && textureName != id.second.texture->GetName()) {
+						sprite->SetTexture(id.first, GEngine::Texture2D::Create(textureName));
+						updated = true;
+					}
+
+					if (updated) {
+						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(sprite->GetHash(), GameObjectModifications::EDIT_MEMBER);
+					}
+
 					ImGui::EndColumns();
 					ImGui::TreePop();
 				}

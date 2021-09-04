@@ -36,9 +36,13 @@ namespace Editor {
 	void ProfilerModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
 
-		ImGui::Begin(name.c_str(), is_open, flags);
-		/*
+		if (!ImGui::Begin(name.c_str(), is_open, flags)) {
+			ImGui::End();
+			return;
+		};
+		
 		ImGui::Text("FPS: %d", (int)GEngine::Application::GetApp()->profile["FPS"]);
+		/*
 		ImGui::Text("Run: %.3f MS", GEngine::Application::GetApp()->profile["Run"]);
 		ImGui::Text("Draw: %.3f MS", GEngine::Application::GetApp()->profile["Draw"]);
 		ImGui::Text("Render: %.3f MS", GEngine::Application::GetApp()->profile["Render"]);
@@ -46,6 +50,11 @@ namespace Editor {
 		*/
 		if (ImGui::GetWindowDockNode())
 			ImGui::GetWindowDockNode()->LocalFlags |= ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoWindowMenuButton;
+
+		if (!ImGui::TreeNodeEx("profilerChild")) {
+			ImGui::End();
+			return;
+		}
 
 		uint64_t time = GEngine::Time::GetEpochTimeMS();
 		if (time - lastUpdate > updateTime) {
@@ -97,6 +106,9 @@ namespace Editor {
 			}
 			ImPlot::EndPlot();
 		}
+
+
+		ImGui::TreePop();
 
 		ImGui::End();
 	}

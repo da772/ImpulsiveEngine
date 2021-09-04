@@ -32,7 +32,11 @@ namespace Editor {
 		}
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		ImGui::Begin(name.c_str(), 0, flags);
+		if (!ImGui::Begin(name.c_str(), 0, flags)) {
+			ImGui::PopStyleVar();
+			ImGui::End();
+			return;
+		}
 		
 		ImGui::BeginChild("ViewPortControls", { 0, imageButtonSize });
 		ImGui::BeginChild("dropdown", {250, 0});

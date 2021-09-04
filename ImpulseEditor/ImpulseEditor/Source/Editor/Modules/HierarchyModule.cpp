@@ -42,7 +42,10 @@ namespace Editor {
 	{
 
 		std::unordered_map<GEngine::ObjectHash, GEngine::Entity*> entities;
-		ImGui::Begin(name.c_str(), is_open, flags | ImGuiWindowFlags_HorizontalScrollbar);
+		if (!ImGui::Begin(name.c_str(), is_open, flags | ImGuiWindowFlags_HorizontalScrollbar)) {
+			ImGui::End();
+			return;
+		}
 
 		GEngine::Scene* scene = GEngine::SceneManager::GetCurrentScene();
 		bool hovering = false;

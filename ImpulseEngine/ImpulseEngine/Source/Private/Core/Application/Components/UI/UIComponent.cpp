@@ -328,6 +328,33 @@ namespace GEngine {
 		}
 	}
 
+	std::string UIComponent::Serialize(int indent /* = 0 */)
+	{
+		std::string res = "";
+		for (const std::pair<std::string, UI_TextInfo>& p : m_text) {
+			res += SerializeIndent(indent) + "<Text id=\"" + p.first + "\">\n";
+
+			res += SerializeIndent(indent) + "<String>" + p.second.font->GetTexture()->GetName() + "</String>\n";
+			res += SerializeIndent(indent) + "<String>string" + "</String>\n";
+			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.pos.x)+ "<float>\n";
+			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.pos.y)+ "<float>\n";
+			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.pos.z)+ "<float>\n";
+			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.scale.x)+ "<float>\n";
+			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.scale.y)+ "<float>\n";
+			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.scale.z)+ "<float>\n";
+
+			for (const ShapeID& id : p.second.shapes) {
+				//m_objects[id]
+			}
+
+
+			res += SerializeIndent(indent) + "</Text>";
+		}
+		
+		return res;
+
+	}
+
 	void UIComponent::SetPosition(const ShapeID id, const Vector2f& position)
 	{
 		m_objects[id].pos = { position, m_objects[id].pos.z};
@@ -416,6 +443,13 @@ namespace GEngine {
 	{
 		m_objects[id].color = color;
 		s_ShapeFactory->SetColor(id, color);
+	}
+
+	void UIComponent::SetTexture(const ShapeID id, const Ref<Texture2D> texture)
+	{
+		m_objects[id].texture = texture;
+		m_objects[id].subtexture = nullptr;
+		s_ShapeFactory->SetTexture(id, texture);
 	}
 
 	GEngine::Vector2f UIComponent::GetLocalScale(const ShapeID& id)
