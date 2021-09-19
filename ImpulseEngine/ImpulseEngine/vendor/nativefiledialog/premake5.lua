@@ -55,7 +55,8 @@ project "NativeFileDialog"
 
     filter "system:linux"
         systemversion "latest"
-        linkoptions { "-export-dynamic `pkg-config gtk+-3.0 --cflags --libs libglade-3.0 `" }
+        buildoptions {"`pkg-config --cflags glib-3.0`"}
+        linkoptions { "`pkg-config --libs glib-3.0`" }
         files
         {
             "src/nfd_gtk.cpp"
