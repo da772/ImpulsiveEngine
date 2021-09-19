@@ -55,7 +55,7 @@ project "NativeFileDialog"
 
     filter "system:linux"
         systemversion "latest"
-        buildoptions {"`pkg-config --cflags glib-3.0`"}
+        buildoptions {"`pkg-config --cflags glib+-3.0`"}
         linkoptions { "`pkg-config --libs glib-3.0`" }
         files
         {
