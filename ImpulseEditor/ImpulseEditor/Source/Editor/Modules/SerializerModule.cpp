@@ -287,6 +287,54 @@ namespace Editor {
 
 				break;
 			}
+			case ComponentTypes::UIComponent: {
+				CXML::CXML_Node node = cxml.GetNext(c.data.c_str());
+				std::vector<std::pair<std::string, SerializedNativeField>> data = {};
+				UIComponent* sc = ent->AddComponentHash<UIComponent>(c.hash);
+				sc->SetSerialize(true);
+				obj = sc;
+				while (node.type.size() > 1) {
+					if (node.type == "Text") {
+						
+					}
+					else if (node.type == "Object") {
+						CXML::CXML_Node textNode = cxml.GetNext(node.info.c_str());
+						int counter = 0;
+						std::vector<float> data;
+						bool aspectRatio = false;
+						std::string texture = "";
+						while (textNode.type.size() > 1) {
+							NativeTypes type = NativeTypeMap.at(textNode.type);
+							switch (type) {
+							case NativeTypes::FLOAT:
+								data.push_back(std::stof(textNode.info));
+								break;
+							case NativeTypes::STRING:
+								texture = textNode.info;
+								break;
+							case NativeTypes::INT:
+								aspectRatio = std::stoi(textNode.info);
+								break;
+							default:
+								break;
+							}
+
+							textNode = cxml.GetNext(node.info.c_str(), textNode.endPos);
+						}
+						Vector3f pos = &data[0];
+						float rot = data[3];
+						Vector3f scale = &data[4];
+						Vector4f color = &data[7];
+						float alpha = data[10];
+						Vector2f texScale = &data[11];
+						sc->CreateQuad(pos, rot, scale, color, texture.size() > 0 ? GEngine::Texture2D::Create(texture) : nullptr, aspectRatio, texScale);
+					}
+					
+
+					node = cxml.GetNext(c.data.c_str(), node.endPos);
+				}
+				break;
+			}
 
 			}
 		}

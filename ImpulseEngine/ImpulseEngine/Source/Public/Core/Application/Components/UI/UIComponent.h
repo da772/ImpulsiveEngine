@@ -27,6 +27,7 @@ namespace GEngine {
 	};
 
 	struct UIObject {
+		ShapeID id;
 		Vector3f pos;
 		float rot;
 		Vector3f scale;
@@ -69,6 +70,7 @@ namespace GEngine {
 		void SetScale(const ShapeID id, const Vector3f& scale);
 		void SetColor(const ShapeID id, const Vector4f& color);
 		void SetTexture(const ShapeID id, const Ref<Texture2D> texture);
+		void SetAutoScale(const ShapeID id, const bool b);
         
 		Vector2f GetLocalScale(const ShapeID& id);
 		Vector3f GetLocalPosition(const ShapeID& id);

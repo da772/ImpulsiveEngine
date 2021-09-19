@@ -159,7 +159,7 @@ namespace GEngine {
 		_scale = GetTextureAspectScale(_scale, tWidth, tHeight, aspectRatio);
 
 		const ShapeID id = s_ShapeFactory->AddShape(_pos+m_entity->GetTransform()->GetWorldPosition(), rot+ m_entity->GetTransform()->GetWorldRotation().z, _scale.xy()*m_entity->GetTransform()->GetWorldScale().xy(), _color, texture, textureScale, alphaChannel);
-		m_objects[id] = { _pos, rot, scale, _color, texture, nullptr, textureScale, alphaChannel, aspectRatio};
+		m_objects[id] = { id, _pos, rot, scale, _color, texture, nullptr, textureScale, alphaChannel, aspectRatio};
 		return id;
 	}
 
@@ -167,7 +167,7 @@ namespace GEngine {
 	const ShapeID UIComponent::CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale /*= 1.f*/, const float alphaChannel, bool text)
 	{
 		const ShapeID id = s_ShapeFactory->AddShape(_pos + m_entity->GetTransform()->GetWorldPosition(), rot + m_entity->GetTransform()->GetWorldRotation().z, scale.xy() * m_entity->GetTransform()->GetWorldScale().xy(), _color, texture, textureScale, alphaChannel);
-		m_objects[id] = { _pos, rot, scale, _color, nullptr, texture, textureScale, alphaChannel, text};
+		m_objects[id] = { id, _pos, rot, scale, _color, nullptr, texture, textureScale, alphaChannel, text};
 		return id;
 	}
 
@@ -196,7 +196,7 @@ namespace GEngine {
 		//_scale *= scale.xy();
 		for (CharacterData& d : data->charData) {
 			ShapeID id = s_ShapeFactory->AddShape(Vector3f(d.position.x * _scale.x + pos.x, d.position.y * _scale.y + pos.y, pos.z), 0, { d.scale.x * _scale.x , d.scale.y * _scale.y}, color, d.texture, { 1,1 }, 1);
-			m_objects[id] = { Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
+			m_objects[id] = {id,  Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
 			ids.push_back(id);
 		}
 		m_text[hash] = { data,std::move(ids), font, pos, scale, std::wstring(string.begin(), string.end()) };
@@ -227,10 +227,10 @@ namespace GEngine {
 
 		for (CharacterData& d : data->charData) {
 			ShapeID id = s_ShapeFactory->AddShape(Vector3f(d.position.x * _scale.x + pos.x, d.position.y * _scale.y + pos.y, pos.z), 0, { d.scale.x * _scale.x , d.scale.y * _scale.y }, color, d.texture, { 1,1 }, 1);
-			m_objects[id] = { Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
+			m_objects[id] = { id, Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
 			ids.push_back(id);
 		}
-		m_text[hash] = { data,std::move(ids), font, pos, scale, std::wstring(string, string+len) };
+		m_text[hash] = { data,std::move(ids), font, pos, scale, std::wstring(string, string+len), color };
 		return hash;
 	}
 
@@ -240,6 +240,7 @@ namespace GEngine {
 		width = GEngine::Application::GetApp()->GetUIResolutionWidth();
 		height = GEngine::Application::GetApp()->GetUIResolutionHeight();
 		UI_TextInfo& ids = m_text[id];
+		ids.color = color;
 		Vector3f scale = ids.scale;
 		Vector3f pos = ids.pos;
 		int lastSize = ids.info->charData.size();
@@ -256,7 +257,7 @@ namespace GEngine {
 		for (int i = lastSize; i < newSize; i++) {
 			const CharacterData& d = ids.info->charData[i];
 			ShapeID id = s_ShapeFactory->AddShape(Vector3f(d.position.x * _scale.x + pos.x, d.position.y * _scale.y + pos.y, pos.z), 0, { d.scale.x * _scale.x , d.scale.y * _scale.y }, color, d.texture, { 1,1 }, 1);
-			m_objects[id] = { Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
+			m_objects[id] = { id, Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
 			ids.shapes.push_back(id);
 		}
 
@@ -268,6 +269,7 @@ namespace GEngine {
 		for (ShapeID l : ids.shapes) {
 			Remove(l);
 		}
+		ids.color = color;
 		ids.shapes.clear();
 		int width, height;
 		width = GEngine::Application::GetApp()->GetUIResolutionWidth();
@@ -285,7 +287,7 @@ namespace GEngine {
 		//_scale *= scale.xy();
 		for (CharacterData& d : data->charData) {
 			ShapeID id = s_ShapeFactory->AddShape(Vector3f(d.position.x * _scale.x + pos.x, d.position.y * _scale.y + pos.y, pos.z), 0, { d.scale.x * _scale.x , d.scale.y * _scale.y }, color, d.texture, { 1,1 }, 1);
-			m_objects[id] = { Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
+			m_objects[id] = { id, Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
 			ids.shapes.push_back(id);
 		}
 		ids.info = data;
@@ -306,6 +308,7 @@ namespace GEngine {
 	void UIComponent::SetTextColor(const std::string& id, const Vector4f& color, int index, int count /*= 1*/)
 	{
 		UI_TextInfo& info = m_text[id];
+		info.color = color;
 		for (int i = index; i < index + count; i++) {
 			SetColor(info.shapes[i], color);
 		}
@@ -333,23 +336,60 @@ namespace GEngine {
 		std::string res = "";
 		for (const std::pair<std::string, UI_TextInfo>& p : m_text) {
 			res += SerializeIndent(indent) + "<Text id=\"" + p.first + "\">\n";
-
-			res += SerializeIndent(indent) + "<String>" + p.second.font->GetTexture()->GetName() + "</String>\n";
-			res += SerializeIndent(indent) + "<String>string" + "</String>\n";
-			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.pos.x)+ "<float>\n";
-			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.pos.y)+ "<float>\n";
-			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.pos.z)+ "<float>\n";
-			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.scale.x)+ "<float>\n";
-			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.scale.y)+ "<float>\n";
-			res += SerializeIndent(indent) + "<float>" + std::to_string(p.second.scale.z)+ "<float>\n";
-
-			for (const ShapeID& id : p.second.shapes) {
-				//m_objects[id]
+			std::string str = "";
+			for (const wchar_t& c : p.second.str)
+			{
+				str += (char)c;
 			}
+
+			res += SerializeIndent(indent+1) + "<String>" + p.second.font->GetTexture()->GetName() + "</String>\n";
+			res += SerializeIndent(indent+1) + "<String>" +str+ "</String>\n";
+			res += SerializeIndent(indent+1) + "<float>" + std::to_string(p.second.pos.x)+ "</float>\n";
+			res += SerializeIndent(indent+1) + "<float>" + std::to_string(p.second.pos.y)+ "</float>\n";
+			res += SerializeIndent(indent+1) + "<float>" + std::to_string(p.second.pos.z)+ "</float>\n";
+			res += SerializeIndent(indent+1) + "<float>" + std::to_string(p.second.scale.x)+ "</float>\n";
+			res += SerializeIndent(indent+1) + "<float>" + std::to_string(p.second.scale.y)+ "</float>\n";
+			res += SerializeIndent(indent+1) + "<float>" + std::to_string(p.second.scale.z)+ "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.x) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.y) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.z) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.w) + "</float>\n";
 
 
 			res += SerializeIndent(indent) + "</Text>";
 		}
+
+		for (const auto& p : m_objects) {
+			if (p.second.text) continue;
+
+			res += SerializeIndent(indent) + "<Object id=\"" + std::to_string(p.first) + "\">\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.pos.x) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.pos.y) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.pos.z) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.rot) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.scale.x) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.scale.y) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.scale.z) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.x) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.y) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.z) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.color.w) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.alphaChannel) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.textureScale.x) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<float>" + std::to_string(p.second.textureScale.y) + "</float>\n";
+			res += SerializeIndent(indent + 1) + "<int>" + std::to_string((int)p.second.aspectRatio) + "</int>\n";
+			if (p.second.texture != nullptr) {
+				res += SerializeIndent(indent + 1) + "<String>" + p.second.texture->GetName() + "</String>\n";
+			}
+			else if (p.second.subtexture != nullptr) {
+				res += SerializeIndent(indent + 1) + "<String>" + p.second.subtexture->GetTexture()->GetName() + "</String>\n";
+			}
+			
+			res += SerializeIndent(indent) + "</Object>\n";
+
+
+		}
+
 		
 		return res;
 
@@ -450,6 +490,12 @@ namespace GEngine {
 		m_objects[id].texture = texture;
 		m_objects[id].subtexture = nullptr;
 		s_ShapeFactory->SetTexture(id, texture);
+	}
+
+	void UIComponent::SetAutoScale(const ShapeID id, const bool b)
+	{
+		m_objects[id].aspectRatio = b;
+		SetScale(id, m_objects[id].scale);
 	}
 
 	GEngine::Vector2f UIComponent::GetLocalScale(const ShapeID& id)

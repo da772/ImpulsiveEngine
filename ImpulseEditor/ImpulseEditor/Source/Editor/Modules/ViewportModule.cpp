@@ -70,7 +70,7 @@ namespace Editor {
 		ImGui::EndChild();
 		ImGui::EndChild();
 
-		ImGui::BeginChild("ViewPortImpl");
+		ImGui::BeginChild("ViewPortImpl", {0,0}, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		isFocused = ImGui::IsWindowFocused();
 		if ((gameView && GEngine::SceneManager::HasBegun())) {
 			GEngine::Application::SetInputEnabled(isFocused);
@@ -103,7 +103,7 @@ namespace Editor {
 
 		ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - finalSize.x) * .5f , ImGui::GetCursorPosY() });
 		GEngine::Application::SetViewPortOffset({ ImGui::GetCursorPosX() + ImGui::GetWindowPos().x, ImGui::GetCursorPosY() + ImGui::GetWindowPos().y });
-		ImGui::Image((void*)(intptr_t)pipeline->GetFrameBuffer()->GetTexture()->GetRendererID(), { (float)finalSize.x,(float)finalSize.y }, { 0,1 }, { 1,0 });
+		ImGui::Image((void*)(intptr_t)pipeline->GetFrameBuffer()->GetTexture()->GetRendererID(), { (float)finalSize.x,(float)finalSize.y }, { 0,1 }, { 1,0 }, { 1,1,1,1 }, {0,0,0,1.f});
 		ImGui::EndChild();
 
 		if (ImGui::GetWindowDockNode())

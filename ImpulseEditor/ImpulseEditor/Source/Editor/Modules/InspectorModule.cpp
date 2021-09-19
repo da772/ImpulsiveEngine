@@ -511,7 +511,6 @@ namespace Editor {
 
 	void InspectorModule::Inspect_UIComponent(GEngine::Component* c)
 	{
-		if (reloadModule->IsReloading()) return;
 		GEngine::UIComponent* sprite = dynamic_cast<GEngine::UIComponent*>(c);
 		if (sprite) {
 			
@@ -528,6 +527,7 @@ namespace Editor {
 					ImGui::Button("Scale");
 					ImGui::Button("Color");
 					ImGui::Button("Texture");
+					ImGui::Button("Aspect Ratio");
 					ImGui::PopStyleColor(3);
 					ImGui::PopStyleVar();
 					ImGui::NextColumn();
@@ -559,17 +559,19 @@ namespace Editor {
 						}
 						ImGui::EndDragDropTarget();
 					}
+					bool scaled = id.second.aspectRatio;
+					ImGui::Checkbox("##autoScale", &scaled);
+
 
 					bool updated = false;
-					if (pos != id.second.pos) {
-						sprite->SetPosition(id.first, pos);
-						updated = true;
-					} else
 					if (pos.z != id.second.pos.z) {
 						sprite->SetZOrder(id.first, pos.z);
 						updated = true;
-					} else
-					if (rot != id.second.rot) {
+					}
+					else if (pos != id.second.pos) {
+						sprite->SetPosition(id.first, pos);
+						updated = true;
+					} else if (rot != id.second.rot) {
 						sprite->SetRotation(id.first, rot);
 						updated = true;
 					} else
@@ -583,6 +585,10 @@ namespace Editor {
 					}
 					else if (!id.second.texture && textureName != "None" || id.second.texture && textureName != id.second.texture->GetName()) {
 						sprite->SetTexture(id.first, GEngine::Texture2D::Create(textureName));
+						updated = true;
+					}
+					else if (id.second.aspectRatio != scaled) {
+						sprite->SetAutoScale(id.first, scaled);
 						updated = true;
 					}
 
@@ -657,6 +663,9 @@ namespace Editor {
 					ImGui::EndColumns();
 					ImGui::TreePop();
 				}
+			}
+			if (ImGui::Button("Add Object")) {
+				sprite->CreateQuad({ 0,0,0 }, 0.f, GEngine::Vector3f(1.f), GEngine::Vector4f(1.f), nullptr, true);
 			}
 		}
 
@@ -772,6 +781,18 @@ namespace Editor {
 			GEngine::Entity* entity = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(*m_selectedGameObject->begin()));
 			if (entity) {
 
+				if (ImGui::Button("UI Component", { ImGui::GetContentRegionAvailWidth() ,0 })) {
+					for (const auto& hash : *m_selectedGameObject) {
+						GEngine::Entity* ent = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(hash));
+						if (ent) {
+							GEngine::UIComponent* s = ent->AddComponent<GEngine::UIComponent>();
+							s->SetSerialize(true);
+						}
+					}
+					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::ADD_COMPONENT);
+					ImGui::CloseCurrentPopup();
+				}
+
 				if (ImGui::Button("Native Script Component", { ImGui::GetContentRegionAvailWidth() ,0 })) {
 					for (const auto& hash : *m_selectedGameObject) {
 						GEngine::Entity* ent = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(hash));
@@ -782,9 +803,9 @@ namespace Editor {
 						}
 					}
 					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::ADD_COMPONENT);
-					
 					ImGui::CloseCurrentPopup();
 				}
+
 			}
 
 			ImGui::PopStyleColor();
