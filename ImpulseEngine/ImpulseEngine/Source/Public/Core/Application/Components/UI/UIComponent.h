@@ -23,6 +23,7 @@ namespace GEngine {
 		Vector3f pos;
 		Vector3f scale;
 		std::wstring str;
+		Vector4f color;
 	};
 
 	struct UIObject {
