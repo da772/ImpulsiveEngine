@@ -59,6 +59,11 @@ project "NativeFileDialog"
         {
             "src/nfd_gtk.cpp"
         }
+        includedirs
+        {
+            "-I/usr/include/gtk-2.0",
+            "-I/usr/lib/x86_64-linux-gnu/gtk-2.0/include"
+        }
         filter "configurations:Debug"
             runtime "Debug"
             symbols "On"
