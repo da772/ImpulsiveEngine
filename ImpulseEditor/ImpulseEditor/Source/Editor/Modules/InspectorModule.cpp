@@ -527,6 +527,8 @@ namespace Editor {
 					ImGui::Button("Scale");
 					ImGui::Button("Color");
 					ImGui::Button("Texture");
+					if (id.second.texture)
+						ImGui::Button("Texture Scale");
 					ImGui::Button("Aspect Ratio");
 					ImGui::PopStyleColor(3);
 					ImGui::PopStyleVar();
@@ -559,9 +561,15 @@ namespace Editor {
 						}
 						ImGui::EndDragDropTarget();
 					}
+
+					GEngine::Vector2f textureScale = id.second.textureScale;
+					if (textureName != "None") {
+						
+						ImGui::InputFloat2(("##textureAspect-" + std::to_string(id.first)).c_str(), (float*)textureScale.data());
+					}
+
 					bool scaled = id.second.aspectRatio;
 					ImGui::Checkbox("##autoScale", &scaled);
-
 
 					bool updated = false;
 					if (pos.z != id.second.pos.z) {
@@ -591,9 +599,23 @@ namespace Editor {
 						sprite->SetAutoScale(id.first, scaled);
 						updated = true;
 					}
+					else if (id.second.textureScale != textureScale)
+					{
+						sprite->SetTextureScale(id.first, textureScale);
+						updated = true;
+					}
 
 					if (updated) {
 						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(sprite->GetHash(), GameObjectModifications::EDIT_MEMBER);
+					}
+
+					if (ImGui::Button("Remove"))
+					{
+						sprite->Remove(id.first);
+						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(sprite->GetHash(), GameObjectModifications::EDIT_MEMBER);
+						ImGui::EndColumns();
+						ImGui::TreePop();
+						break;
 					}
 
 					ImGui::EndColumns();
@@ -659,6 +681,14 @@ namespace Editor {
 						}
 					}
 
+					if (ImGui::Button("Remove"))
+					{
+						sprite->RemoveText(id.first);
+						EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(sprite->GetHash(), GameObjectModifications::EDIT_MEMBER);
+						ImGui::EndColumns();
+						ImGui::TreePop();
+						break;
+					}
 
 					ImGui::EndColumns();
 					ImGui::TreePop();
@@ -666,6 +696,14 @@ namespace Editor {
 			}
 			if (ImGui::Button("Add Object")) {
 				sprite->CreateQuad({ 0,0,0 }, 0.f, GEngine::Vector3f(1.f), GEngine::Vector4f(1.f), nullptr, true);
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(sprite->GetHash(), GameObjectModifications::EDIT_MEMBER);
+			}
+
+			if (ImGui::Button("Add Text")) {
+				GEngine::Ref<GEngine::Font> font = GEngine::Font::Create("EngineContent/Fonts/roboto.ttf", 300.f);
+				font->LoadCharactersEN();
+				sprite->CreateText("Text",font, GEngine::Vector3f(0.f), GEngine::Vector3f(1.f), GEngine::Vector4f(1.f));
+				EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyComponent>(sprite->GetHash(), GameObjectModifications::EDIT_MEMBER);
 			}
 		}
 

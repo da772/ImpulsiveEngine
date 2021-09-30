@@ -23,7 +23,6 @@ namespace Editor {
 				Load(scene_name, scene_location);
 				});
 		} }));
-
 	}
 
 	SerializerModule::~SerializerModule()
@@ -171,7 +170,6 @@ namespace Editor {
 			}
 			case ComponentTypes::NativeScriptComponent: {
 				CXML::CXML_Node node = cxml.GetNext(c.data.c_str());
-				std::vector<std::pair<std::string, SerializedNativeField>> data = {};
 				NativeScriptComponent* sc = ent->AddComponentHash<NativeScriptComponent>(c.hash, "");
 				sc->SetSerialize(true);
 				obj = sc;
@@ -268,6 +266,7 @@ namespace Editor {
 							sc->GetNativeObject()->SetMember<std::string>(d.name, d.data);
 							break;
 						case NativeTypes::TEXTURE2D:
+							sc->GetNativeObject()->SetMember<GEngine::Ref<GEngine::Texture2D>>(d.name, GEngine::Texture2D::Create(d.data));
 							break;
 						default:
 						case NativeTypes::NONE:
@@ -295,11 +294,34 @@ namespace Editor {
 				obj = sc;
 				while (node.type.size() > 1) {
 					if (node.type == "Text") {
-						
-					}
-					else if (node.type == "Object") {
+						std::string id = node.tags["id"];
 						CXML::CXML_Node textNode = cxml.GetNext(node.info.c_str());
 						int counter = 0;
+						std::vector<float> data;
+						std::vector<std::string> strData;
+
+						while (textNode.type.size() > 1) {
+							NativeTypes type = NativeTypeMap.at(textNode.type);
+							switch (type) {
+							case NativeTypes::FLOAT:
+								data.push_back(std::stof(textNode.info));
+								break;
+							case NativeTypes::STRING:
+								strData.push_back(textNode.info);
+								break;
+							default:
+								break;
+							}
+							textNode = cxml.GetNext(node.info.c_str(), textNode.endPos);
+						}
+
+						GEngine::Ref<GEngine::Font> font = GEngine::Font::Create(strData[0], data[0]);
+						font->LoadCharactersEN();
+						sc->CreateText(strData[1], font, Vector3f(&data[1]), Vector3f(&data[4]), Vector4f(&data[7]));	
+					}
+					else if (node.type == "Object") {
+						uint64_t id = std::stoull(node.tags["id"]);
+						CXML::CXML_Node textNode = cxml.GetNext(node.info.c_str());
 						std::vector<float> data;
 						bool aspectRatio = false;
 						std::string texture = "";
@@ -315,6 +337,9 @@ namespace Editor {
 							case NativeTypes::INT:
 								aspectRatio = std::stoi(textNode.info);
 								break;
+							case NativeTypes::TEXTURE2D:
+								texture = textNode.info;
+								break;
 							default:
 								break;
 							}
@@ -325,9 +350,9 @@ namespace Editor {
 						float rot = data[3];
 						Vector3f scale = &data[4];
 						Vector4f color = &data[7];
-						float alpha = data[10];
-						Vector2f texScale = &data[11];
-						sc->CreateQuad(pos, rot, scale, color, texture.size() > 0 ? GEngine::Texture2D::Create(texture) : nullptr, aspectRatio, texScale);
+						float alpha = data[11];
+						Vector2f texScale = &data[12];
+						sc->AddQuad(id, pos, rot, scale, color, texture.size() > 0 ? GEngine::Texture2D::Create(texture) : nullptr, aspectRatio, texScale, alpha);
 					}
 					
 

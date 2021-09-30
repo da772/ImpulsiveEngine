@@ -12,7 +12,7 @@ namespace GEngine {
 
 	class GE_API OpenGL_Font : public Font {
 	public:
-		OpenGL_Font(std::string path, int size);
+		OpenGL_Font(std::string path, float size);
 		virtual ~OpenGL_Font();
 		virtual void LoadCharacters(const char*) override;
 		virtual Ref<SubTexture2D> GetCharacterCoords(const char c) override;
@@ -29,7 +29,6 @@ namespace GEngine {
 
 
 	private:
-		int m_size = 0;
 #if defined(GE_GRAPHICS_API_OPENGL_3_3) || defined(GE_GRAPHICS_API_OPENGL_ES)
 		texture_atlas_t* m_textureAtlas;
 		texture_font_t* m_textureFont;

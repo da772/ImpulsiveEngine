@@ -48,6 +48,7 @@ namespace GEngine {
 		virtual ~UIComponent();
 		const ShapeID CreateQuad(const  Vector3f& _pos, const float rot = 0, const Vector3f& scale = { 1,1,1 }, const Vector4f& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, bool aspectRatio = false, const Vector2f& textureScale = Vector2f(1, 1), const float alphaChannel = 4);
 
+		const void AddQuad(ShapeID id, const  Vector3f& _pos, const float rot = 0, const Vector3f& scale = { 1,1,1 }, const Vector4f& _color = { 1,1,1,1.f }, Ref<Texture2D> texture = nullptr, bool aspectRatio = false, const Vector2f& textureScale = Vector2f(1, 1), const float alphaChannel = 4);
 		
 
 		const ShapeID CreateSubTexturedQuad(const Vector3f& _pos, const float rot, const Vector3f& scale, const Vector4f& _color, Ref<SubTexture2D> texture, const Vector2f& textureScale = Vector2f(1,1), const float alphaChannel = 4, bool text = false);
@@ -62,6 +63,7 @@ namespace GEngine {
 
 		void SetPosition(const std::string& id, const Vector2f position);
 		void SetScale(const std::string& id, const Vector2f scale);
+		
 		void SetZOrder(const std::string& id, float order);
 
 		void SetPosition(const ShapeID id, const Vector2f& position);
@@ -70,6 +72,7 @@ namespace GEngine {
 		void SetScale(const ShapeID id, const Vector3f& scale);
 		void SetColor(const ShapeID id, const Vector4f& color);
 		void SetTexture(const ShapeID id, const Ref<Texture2D> texture);
+		void SetTextureScale(ShapeID id, const Vector2f scale);
 		void SetAutoScale(const ShapeID id, const bool b);
         
 		Vector2f GetLocalScale(const ShapeID& id);

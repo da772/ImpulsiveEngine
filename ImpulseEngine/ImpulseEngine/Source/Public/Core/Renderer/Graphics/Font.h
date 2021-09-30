@@ -46,6 +46,8 @@ namespace GEngine {
 		static void ReloadGraphics();
         static void RemoveFont(const std::string& name);
 
+		virtual float GetSize() const { return m_size; }
+
 		virtual void Unload() = 0;
 		virtual void Reload() = 0;
 
@@ -56,6 +58,7 @@ namespace GEngine {
 		Weak<Font> self;
 		Font() {};
 		virtual ~Font() {};
+		float m_size;
 		uint32_t m_width = 2048, m_height = 2048;
 		Ref<Texture2D> m_Texture;
 		

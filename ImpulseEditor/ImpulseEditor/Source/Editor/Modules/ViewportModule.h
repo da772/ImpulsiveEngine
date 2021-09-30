@@ -10,7 +10,7 @@ namespace Editor {
 	class ViewportModule : public EditorModule {
 
 	public:
-		ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView = false, GEngine::CameraController* cam = nullptr, EditorEventType* tool = nullptr);
+		ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView = false, GEngine::CameraController* cam = nullptr, EditorEventType* tool = nullptr, SerializerModule* serializer = nullptr);
 		~ViewportModule();
 
 		virtual void Create(const std::string& name, bool* is_open, uint32_t flags) override;
@@ -19,9 +19,7 @@ namespace Editor {
 
 	private:
 		GEngine::Vector2<uint32_t> scaleRatio(int, int, int, int);
-		std::unordered_map<std::string, GEngine::Ref<GEngine::Texture2D>> m_textures;
 		bool isFocused = false;
-		bool ControlButtons(const std::string& s);
 		void CameraControls(GEngine::Timestep t);
 
 	private:
@@ -31,6 +29,7 @@ namespace Editor {
 		EditorEventType* editorTools;
 		GEngine::CameraController* m_cameraController;
 		ReloadModule* m_reloadModule;
+		SerializerModule* m_serializer;
 		std::string m_pipeline;
 		GEngine::Vector2<int> originalSize = { 0,0 };
 		GEngine::Vector2f lastFrameSize;

@@ -222,6 +222,7 @@ namespace Editor {
 		EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneHistoryValidationEvent>(m_history.size() > 1 && m_historyIndex > 0, m_historyIndex != m_history.size() - 1 && m_history.size() > 1);
 	}
 
+
 	bool ToolbarModule::ControlButtons(const std::string& s, EditorEventType tool, bool enabled, bool setTool)
 	{
 		ImVec2 pos = ImGui::GetCursorScreenPos();

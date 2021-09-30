@@ -35,16 +35,12 @@ namespace Editor {
 			delete s_singleton;
 			s_singleton = nullptr;
 		}
-
-
-
 	}
 
 	EditorLayer::EditorLayer(const std::string& name, Project::LocalProject* data) : Layer(name), m_projectData(*data)
 	{
 		if (!s_singleton)
 			s_singleton = this;
-
 
 		m_cameraController = new GEngine::Orthographic_CameraController(
 			(float)GEngine::Application::GetApp()->GetWidth() / (float)GEngine::Application::GetApp()->GetHeight());
@@ -59,6 +55,8 @@ namespace Editor {
 		reloadModule->Reload();
 		serializerModule = new SerializerModule();
 
+
+
 		AddModule<MainMenuModule>("MainMenu", true, ImGuiWindowFlags_AlwaysAutoResize, false, &modules, &m_projectData, reloadModule, serializerModule);
 		AddModule<ToolbarModule>("Toolbar", true, ImGuiWindowFlags_AlwaysAutoResize, false, reloadModule, serializerModule, &editorTool);
 		AddModule<DockModule>("Dock", true, ImGuiWindowFlags_AlwaysAutoResize, false, std::vector < std::pair < std::string, std::string>>());
@@ -66,8 +64,8 @@ namespace Editor {
 		AddModule<DirectoryModule>("Content Browser", true, ImGuiWindowFlags_AlwaysAutoResize, true, m_projectData.data.path + "/" + m_projectData.data.name + "/" + m_projectData.data.name + "/" + m_projectData.data.name, &m_projectData.data, serializerModule);
 		AddModule<ProfilerModule>("Profiler", true, 0, true);
 		AddModule<InspectorModule>("Inspector", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, reloadModule);
-		AddModule<ViewportModule>("Game", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule, true);
-		AddModule<ViewportModule>("Scene", true, ImGuiWindowFlags_AlwaysAutoResize, false, "2d_Copy", reloadModule, false, m_cameraController, &editorTool);
+		AddModule<ViewportModule>("Game", true, ImGuiWindowFlags_AlwaysAutoResize, false, "viewport", reloadModule, true, nullptr, nullptr, serializerModule);
+		AddModule<ViewportModule>("Scene", true, ImGuiWindowFlags_AlwaysAutoResize, false, "2d_Copy", reloadModule, false, m_cameraController, &editorTool, serializerModule);
         AddModule<HierarchyModule>("Hierarchy", true, ImGuiWindowFlags_AlwaysAutoResize, true, &selectedGameObject, (std::string*)serializerModule->GetName());
 		AddModule<InfoPanelModule>("InfoPanel", true, ImGuiWindowFlags_AlwaysAutoResize, false);
 

@@ -10,7 +10,7 @@
 namespace GEngine {
 
 
-	OpenGL_Font::OpenGL_Font(std::string path, int size) : m_path(path)
+	OpenGL_Font::OpenGL_Font(std::string path, float size) : m_path(path)
 	{
 		m_atlasData = FileSystem::FileDataFromPath(path);
 		m_textureAtlas = ftgl::texture_atlas_new(m_width, m_height, 1);

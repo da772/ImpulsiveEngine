@@ -2,21 +2,16 @@
 #include "Editor/EditorLayer.h"
 #include "Editor/Events/EditorApplicationEvents.h"
 #include "imgui/imgui_internal.h"
-#include "Editor/Modules/ReloadModule.h"
+#include "Editor/Modules/SerializerModule.h"
+
 
 using namespace GEngine;
 
 namespace Editor {
-	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView, GEngine::CameraController* cam, EditorEventType* tools) : m_pipeline(pipeline), m_reloadModule(reloadModule), gameView(gameView),
-		m_cameraController(cam), editorTools(tools)
+	ViewportModule::ViewportModule(const std::string& pipeline, ReloadModule* reloadModule, bool gameView, GEngine::CameraController* cam, EditorEventType* tools, SerializerModule* serliazer) : m_pipeline(pipeline), m_reloadModule(reloadModule), gameView(gameView),
+		m_cameraController(cam), editorTools(tools), m_serializer(serliazer)
 	{
 		updates = !gameView;
-		m_textures["playButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/play172x172.png");
-		m_textures["pauseButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/pause172x172.png");
-		m_textures["stopButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/stop172x172.png");
-		m_textures["resumeButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/resume172x172.png");
-		m_textures["fastForwardButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/fastForward172x172.png");
-		m_textures["loadingButton"] = GEngine::Texture2D::Create("Content/EditorContent/Textures/Icons/loadingIcon172x172.png");
 	}
 
 	ViewportModule::~ViewportModule()
@@ -48,7 +43,6 @@ namespace Editor {
 				originalSize = { GEngine::Application::GetApp()->m_viewPortWidth,GEngine::Application::GetApp()->m_viewPortHeight };
 				aspectRatio = "1920x1080";
 				handleResize = true;
-
 			}
 			if (ImGui::Selectable("(9:16) 1080x1920")) {
 				GEngine::Application::GetApp()->m_viewPortWidth = 1080;
@@ -62,6 +56,11 @@ namespace Editor {
 				originalSize = { GEngine::Application::GetApp()->m_viewPortWidth,GEngine::Application::GetApp()->m_viewPortHeight };
 				aspectRatio = "Custom";
 				handleResize = true;
+			}
+
+			if (handleResize && m_serializer)
+			{
+				m_serializer->Load(m_serializer->SerializeCurrentScene());
 			}
 
 			ImGui::EndCombo();
@@ -95,7 +94,7 @@ namespace Editor {
 				if (m_cameraController)
 					m_cameraController->SetAspectRatio(aspectRatio);
 			}
-			
+		
 
 			lastFrameSize = sz;
 			handleResize = false;
@@ -137,15 +136,6 @@ namespace Editor {
 		return { (uint32_t)newWidth, (uint32_t)newHeight };
 	}
 
-	bool ViewportModule::ControlButtons(const std::string& s)
-	{
-		ImGui::Image((ImTextureID)(uintptr_t)m_textures[s]->GetRendererID(), { imageButtonSize, imageButtonSize }, { 0,1 }, { 1,0 });
-		if (ImGui::IsItemHovered()) {
-			return ImGui::IsMouseClicked(0);
-		}
-		return false;
-
-	}
 
 	void ViewportModule::CameraControls(GEngine::Timestep timestep)
 	{
