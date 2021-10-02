@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "HierarchyModule.h"
 #include "imgui/imgui_internal.h"
 
@@ -478,3 +479,4 @@ namespace Editor {
 
 
 }
+#endif

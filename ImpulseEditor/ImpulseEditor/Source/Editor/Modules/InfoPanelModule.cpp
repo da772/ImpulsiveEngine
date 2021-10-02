@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "InfoPanelModule.h"
 
 namespace Editor {
@@ -75,3 +76,4 @@ namespace Editor {
 	}
 
 }
+#endif

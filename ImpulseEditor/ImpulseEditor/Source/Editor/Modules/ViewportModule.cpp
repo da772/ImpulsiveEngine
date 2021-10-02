@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "ViewportModule.h"
 #include "Editor/EditorLayer.h"
 #include "Editor/Events/EditorApplicationEvents.h"
@@ -94,7 +95,6 @@ namespace Editor {
 				if (m_cameraController)
 					m_cameraController->SetAspectRatio(aspectRatio);
 			}
-		
 
 			lastFrameSize = sz;
 			handleResize = false;
@@ -191,3 +191,4 @@ namespace Editor {
 	}
 
 }
+#endif

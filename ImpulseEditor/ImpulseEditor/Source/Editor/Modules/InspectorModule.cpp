@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "InspectorModule.h"
 #include "Shared/ImpulseEditor.h"
 #include "Editor/Modules/ReloadModule.h"
@@ -854,3 +855,4 @@ namespace Editor {
 	}
 
 }
+#endif

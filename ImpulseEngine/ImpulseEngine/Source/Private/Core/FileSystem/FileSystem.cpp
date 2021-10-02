@@ -19,7 +19,9 @@
 #endif
 
 #ifdef GE_CONSOLE_APP
+#if !defined(GE_DISABLE_NFD)
 #include <nfd.h>
+#endif
 #include <zip.h>
 #endif
 
@@ -625,6 +627,7 @@ namespace GEngine {
 		if (er.value() != 0) return false;
 		return true;
 #endif
+		return true;
 	}
 
 	bool FileSystem::MoveFile(const std::string& file, const std::string& dst)
@@ -640,11 +643,12 @@ namespace GEngine {
 #ifdef GE_CONSOLE_APP
 		return std::filesystem::remove(file);
 #endif
+		return true;
 	}
 
 	void FileSystem::OpenFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& _startPath, bool isFolder)
 	{
-#ifdef GE_CONSOLE_APP
+#if defined(GE_CONSOLE_APP) && !defined(GE_DISABLE_NFD)
 		NFD_Init();
 		nfdchar_t* outPath;
 		nfdresult_t result;
@@ -687,7 +691,7 @@ namespace GEngine {
 
 	void FileSystem::SaveFileDialog(const std::vector<std::pair<std::string, std::string>>& filters, std::string& ret, const std::string& _startPath /*= ""*/, bool isFolder /*= false*/)
 	{
-#ifdef GE_CONSOLE_APP
+#if defined(GE_CONSOLE_APP) && !defined(GE_DISABLE_NFD)
 		NFD_Init();
 		nfdchar_t* outPath;
 		nfdresult_t result;

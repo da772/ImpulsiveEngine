@@ -9,12 +9,16 @@ newoption {
 	description = "build as standalone server"
 }
 
+newoption {
+	trigger = "disable-nfd",
+	description = "disable native file dialog"
+}
+
 
 if _OPTIONS['build-engine'] then
 
 group "Dependencies"
-	if _OPTIONS['server'] then
-	else
+	if not _OPTIONS['server'] then
 	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/GLFW")
 	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/Glad")
 	include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/imgui")
@@ -36,7 +40,9 @@ group "Dependencies"
 	end
 
 	if (_OPTIONS['os'] == "macosx" or _OPTIONS['os'] == "windows" or _OPTIONS['os'] == "linux") then
-		include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/nativefiledialog")
+		if (not _OPTIONS['disable-nfd'] and not _OPTIONS['server']) then
+			include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/nativefiledialog")
+		end
 		include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/zip")
 	end
 	
@@ -74,6 +80,12 @@ project "ImpulseEngine"
 	}
 	end
 
+	if _OPTIONS['disable-nfd'] then
+		defines
+		{
+			"GE_DISABLE_NFD"
+		}
+	end	
 
 	files 
 	{
@@ -97,26 +109,32 @@ project "ImpulseEngine"
 		"%{prj.name}/Source/Public",
 		"%{prj.name}/Source",
 		"%{prj.name}/vendor",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.Vulkan}/include",
-		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.ENET}",
-		"%{IncludeDir.gltext}",
 		"%{IncludeDir.httplib}",
 		"%{IncludeDir.miniupnpc}",
-		"%{IncludeDir.freetypegl}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.firebase}/include",
 		"%{IncludeDir.box2d}",
-		"%{IncludeDir.OpenAL}",
-		"%{IncludeDir.Vorbis}",
 		"%{IncludeDir.zlib}",
 		"%{IncludeDir.vector}",
 		"%{IncludeDir.reflection}",
 	}
+
+	if not _OPTIONS['server'] then
+		includedirs
+		{
+			"%{IncludeDir.ImGui}",
+			"%{IncludeDir.freetypegl}",
+			"%{IncludeDir.OpenAL}",
+			"%{IncludeDir.Vorbis}",
+			"%{IncludeDir.gltext}",
+			"%{IncludeDir.GLFW}",
+			"%{IncludeDir.Glad}",
+			"%{IncludeDir.Vulkan}/include",
+		}
+	end
 
 	libdirs 
 	{
@@ -195,10 +213,16 @@ project "ImpulseEngine"
 			"OpenAL.framework",
 			"Glad",
 			"GLFW",
-			"NativeFileDialog",
 			"ObjCWrapper",
 			"zip"
 		}
+
+		if (not _OPTIONS['disable-nfd'] and not _OPTIONS['server']) then
+		links
+		{
+			"NativeFileDialog"
+		}
+		end
 
 		filter "configurations:Debug"
 			defines "GE_DEBUG"
@@ -425,11 +449,18 @@ project "ImpulseEngine"
 			"Glad",
 			"GLFW",
 			"Ws2_32.lib",
-			"NativeFileDialog",
 			"shlwapi.lib",
 			"zip"
 		}
+		if (not _OPTIONS['disable-nfd']) then
+			links
+			{
+				"NativeFileDialog"
+			}
 		end
+		end
+
+	
 
 		
 
@@ -474,18 +505,25 @@ project "ImpulseEngine"
 			"GL_WITH_GLAD"
 		}
 		
-		if _OPTIONS['server'] then
-		else
+		if not _OPTIONS['server'] then
 		links 
 		{
 			"GL",
 			"Glad",
 			"GLFW",
 			"X11",
-			"NativeFileDialog",
 			"zip"
 		}
+		if (not _OPTIONS['disable-nfd']) then
+			links
+			{
+				"NativeFileDialog"
+			}
 		end
+
+		end
+
+	
 
 		filter "configurations:Debug"
 			defines "GE_DEBUG"

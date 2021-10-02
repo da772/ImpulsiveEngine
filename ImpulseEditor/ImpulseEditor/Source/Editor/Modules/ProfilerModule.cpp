@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "ProfilerModule.h"
 #include "imgui/imgui_internal.h"
 #include "implot.h"
@@ -114,3 +115,4 @@ namespace Editor {
 	}
 
 }
+#endif

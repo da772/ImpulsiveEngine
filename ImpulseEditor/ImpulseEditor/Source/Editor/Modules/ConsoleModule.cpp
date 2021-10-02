@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "ConsoleModule.h"
 
 namespace Editor {
@@ -19,3 +20,4 @@ namespace Editor {
 	}
 
 }
+#endif

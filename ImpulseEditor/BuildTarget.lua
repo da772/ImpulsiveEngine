@@ -155,12 +155,17 @@ project (targetName)
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.vector}",
 		"%{IncludeDir.reflection}",
-		"%{IncludeDir.ImGui}",
 		"%{prj.location}/"..targetName.."/Source/",
 		"%{prj.location}/"..targetName.."/include/",
 		"%{prj.location}/"..targetName.."/NativeScripts/Generated"
-
 	}
+
+	if not _OPTIONS['server'] then
+		includedirs
+		{
+			"%{IncludeDir.ImGui}",
+		}
+	end
 
 	libdirs
 	{

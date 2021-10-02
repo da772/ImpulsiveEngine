@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "EditorLayer.h"
 #include "Modules/DockModule.h"
 #include "Modules/DirectoryModule.h"
@@ -132,6 +133,7 @@ namespace Editor {
 				m_cameraController->SetCameraZoom(v);
 			}
 		}
+
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -169,3 +171,4 @@ namespace Editor {
 	}
 
 }
+#endif

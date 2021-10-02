@@ -1,4 +1,5 @@
-﻿#include "DirectoryModule.h"
+﻿#ifdef GE_EDITOR
+#include "DirectoryModule.h"
 
 #include "SerializerModule.h"
 
@@ -701,3 +702,4 @@ namespace Editor {
 	}
 
 	}
+#endif

@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #pragma once
 #include "EditorModule.h"
 #include "Editor/Project/GenerateProject.h"
@@ -55,3 +56,4 @@ namespace Editor {
 
 
 }
+#endif

@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "ToolbarModule.h"
 #include "ReloadModule.h"
 
@@ -250,3 +251,4 @@ namespace Editor {
 	}
 
 }
+#endif

@@ -100,9 +100,9 @@ ImpulseEditor::ImpulseEditor()
 #ifdef GE_CONSOLE_APP
 	this->m_width = 540;
 	this->m_height = 960;
-	this->title = GE_APP_NAME;
 
 #endif
+	this->title = GE_APP_NAME;
 	
 #if defined(GE_EDITOR)
 	s_debugTools = true;

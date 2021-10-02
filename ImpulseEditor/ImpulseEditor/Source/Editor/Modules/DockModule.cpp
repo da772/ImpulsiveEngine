@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "DockModule.h"
 #include "imgui_internal.h"
 
@@ -101,3 +102,4 @@ namespace Editor {
 	}
 
 }
+#endif

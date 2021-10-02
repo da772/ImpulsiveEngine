@@ -1,7 +1,9 @@
 #include "gepch.h"
 #include "Public/Core/ImGui/ImGuiLayer.h"
+#ifdef GE_CONSOLE_APP
 #include "imgui.h"
 #include "implot.h"
+#endif
 #include "Public/Core/Application/Application.h"
 
 #ifdef GE_WINDOW_API_GLFW

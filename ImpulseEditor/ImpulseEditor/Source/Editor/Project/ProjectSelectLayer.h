@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #pragma once
 #include <GEngine.h>
 #include "ProjectData.h"
@@ -66,3 +67,4 @@ namespace Project {
 	};
 
 }
+#endif

@@ -519,6 +519,7 @@ namespace GEngine {
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {
         m_Running = false;
+        GEngine::Utility::sys::SetForceKillChild(true);
         if (Application::GetApp()->m_pause) ResumeGame();
         UnloadGraphics();
         return true;

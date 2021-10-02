@@ -2,7 +2,6 @@
 here="`dirname \"$0\"`"
 cd "$here"
 cd ..
-python ReloadProject.py
-
+cp -f "BuildTarget.lua" "../premake5.lua"
 cd ..
-./vendor/premake/premake5_linux gmake2 --os=linux --hot-reload --build-engine --build-editor
+./vendor/premake/premake5_linux gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd

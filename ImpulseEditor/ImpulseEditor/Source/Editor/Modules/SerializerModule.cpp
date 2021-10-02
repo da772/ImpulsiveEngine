@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "SerializerModule.h"
 
 #include "Editor/EditorLayer.h"
@@ -484,3 +485,4 @@ namespace Editor {
 	}
 
 	}
+#endif

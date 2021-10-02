@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "ProjectSelectLayer.h"
 #include "GenerateProject.h"
 #include "Editor/EditorLayer.h"
@@ -778,4 +779,5 @@ namespace Project {
 	}
 
 }
+#endif
 

@@ -1,3 +1,4 @@
+#ifdef GE_EDITOR
 #include "MainMenuModule.h"
 #include "Editor/EditorLayer.h"
 #include "Editor/Events/EditorUIEvents.h"
@@ -443,3 +444,4 @@ namespace Editor {
 	}
 
 }
+#endif
