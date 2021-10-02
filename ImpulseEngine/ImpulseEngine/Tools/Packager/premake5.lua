@@ -26,8 +26,11 @@ project "Packager"
 		"%{IncludeDir.cr}",
 		"%{IncludeDir.vector}",
 		"%{IncludeDir.reflection}",
-        "%{IncludeDir.ImGui}"
     }
+
+    if not _OPTIONS['server'] then
+        "%{IncludeDir.ImGui}"
+    end
 
     links
     {
