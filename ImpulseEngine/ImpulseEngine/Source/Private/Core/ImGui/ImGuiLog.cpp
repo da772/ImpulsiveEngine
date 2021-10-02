@@ -27,8 +27,9 @@ namespace GEngine {
 		LevelOffsets.push_back(0);
 	}
 
-	void ImGuiAppLog::AddLog(const char* fmt, ...) IM_FMTARGS(2)
+	void ImGuiAppLog::AddLog(const char* fmt, ...) //IM_FMTARGS(2)
 	{
+		/*
 		int old_size = Buf.size();
 		va_list args;
 		va_start(args, fmt);
@@ -38,6 +39,7 @@ namespace GEngine {
 			if (Buf[old_size] == '\n')
 				LineOffsets.push_back(old_size + 1);
 		ScrollToBottom = true;
+		*/
 	}
 
 	void ImGuiAppLog::AddLog(std::string fmt, int level)

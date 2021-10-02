@@ -23,7 +23,7 @@ namespace GEngine{
 
 		void Clear();
 
-		void AddLog(const char* fmt, ...) IM_FMTARGS(2);
+		void AddLog(const char* fmt, ...);
 
 		void AddLog(std::string fmt, int level);
 
