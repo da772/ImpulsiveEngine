@@ -8,8 +8,8 @@ project "Packager"
 		staticruntime "on"
 	end
     
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("Bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("Bin-int/" .. outputdir .. "/%{prj.name}")
 
     files 
     {
@@ -25,12 +25,9 @@ project "Packager"
 		"%{IncludeDir.entt}",	
 		"%{IncludeDir.cr}",
 		"%{IncludeDir.vector}",
-		"%{IncludeDir.reflection}",
-    }
-
-    if not _OPTIONS['server'] then
+        "%{IncludeDir.reflection}",
         "%{IncludeDir.ImGui}"
-    end
+    }
 
     links
     {
@@ -112,6 +109,16 @@ project "Packager"
         end
 
         targetname "Packager_Linux"
+
+        links
+        {
+            "dl",
+            "pthread",
+            "stdc++fs",
+            "zip",
+            "ImGui",
+            "zlib",
+        }
 
         postbuildcommands
         {

@@ -94,6 +94,7 @@ namespace Editor {
 					ImPlot::PlotLine<double>(n.c_str(), (double*)&timingHistoryGraph.data()[0], &g.data.data()[0], g.data.size(), 0, sizeof(double));
 				}
 			}
+
 			//ImPlot::PlotLine("Mouse Y", &sdata2.Data[0].x, &sdata2.Data[0].y, sdata2.Data.size(), sdata2.Offset, 2 * sizeof(float));
 			ImPlot::EndPlot();
 		}
@@ -101,9 +102,9 @@ namespace Editor {
 		if (ImPlot::BeginPlot("FPS", NULL, NULL, ImVec2(-1, 250), 0, 0, ImPlotAxisFlags_AutoFit)) {
 			ImPlot::SetNextFillStyle(IMPLOT_AUTO_COL, 0.5f);
 			if (fpsHistory.size() > 0) {
-				ImPlot::PlotShaded<uint64_t>((std::to_string(fpsHistory[fpsHistory.size() - 1]) + " FPS").c_str(), (const uint64_t*)&historyGraph.data()[0], (const uint64_t*)&fpsHistory.data()[0], (int)fpsHistory.size(), (int)-INFINITY, (int)0, (int)sizeof(uint64_t));
+				//ImPlot::PlotShaded<uint64_t>((std::to_string(fpsHistory[fpsHistory.size() - 1]) + " FPS").c_str(), (const uint64_t*)&historyGraph.data()[0], (const uint64_t*)&fpsHistory.data()[0], (int)fpsHistory.size(), (int)-INFINITY, (int)0, (int)sizeof(uint64_t));
 				ImPlot::SetNextLineStyle({ 0.f,255.f,0.f, 255.f }, 1.5f);
-				ImPlot::PlotLine<uint64_t>((std::to_string(fpsHistory[fpsHistory.size() - 1]) + " FPS").c_str(), (const uint64_t*)&historyGraph.data()[0], (const uint64_t*)&fpsHistory.data()[0], (int)fpsHistory.size(), (int)0, (int)sizeof(uint64_t));
+				//ImPlot::PlotLine<uint64_t>((std::to_string(fpsHistory[fpsHistory.size() - 1]) + " FPS").c_str(), (const uint64_t*)&historyGraph.data()[0], (const uint64_t*)&fpsHistory.data()[0], (int)fpsHistory.size(), (int)0, (int)sizeof(uint64_t));
 			}
 			ImPlot::EndPlot();
 		}

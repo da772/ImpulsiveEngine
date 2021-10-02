@@ -300,10 +300,7 @@ project (targetName)
 			else
 				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 			end
-			postbuildcommands
-			{
-			--	"cp -rf \"$(ProjectDir)"..targetName.."/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."/Data\\"""
-			}
+			
 
 
 			links 
@@ -314,7 +311,8 @@ project (targetName)
 				"dl",
 				"pthread",
 				"stdc++fs",
-				"zlib"
+				"zlib",
+				"zip"
 			}
 			if _OPTIONS['server'] then
 			else
@@ -344,13 +342,13 @@ project (targetName)
 			if _OPTIONS["build-editor"] then
 				postbuildcommands
 				{
-					"\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}AndroidStudio\" \"%{prj.location}"..targetName.."/Content/Archives/AndroidStudio.zip\"",
-					"\"%{wks.location}Tools/Packager_Linux\" -zip \"%{wks.location}vendor\" \"%{prj.location}"..targetName.."/Content/Archives/vendor.zip\"",
-					"\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
-					"\"%{wks.location}Tools/Packager_Linux\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
-					"\"%{wks.location}Tools/Packager_Linux\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
-					"\"%{wks.location}Tools/Packager_Linux\" -pak \"%{prj.location}"..targetName.."/Engine/EngineContent\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\"",
-					"\"%{wks.location}Tools/Packager_Linux\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EditorContent.pak\""
+					"\"%{wks.location}/Tools/Packager_Linux\" -zip \"%{prj.location}/AndroidStudio\" \"%{prj.location}/"..targetName.."/Content/Archives/AndroidStudio.zip\"",
+					"\"%{wks.location}/Tools/Packager_Linux\" -zip \"%{wks.location}/vendor\" \"%{prj.location}/"..targetName.."/Content/Archives/vendor.zip\"",
+					"\"%{wks.location}/Tools/Packager_Linux\" -zip \"%{prj.location}/Generate\" \"%{prj.location}/"..targetName.."/Content/Archives/Generate.zip\"",
+					"\"%{wks.location}/Tools/Packager_Linux\" -zip \"%{prj.location}/BuildTarget.lua\" \"%{prj.location}/"..targetName.."/Content/Archives/BuildTarget.zip\"",
+					"\"%{wks.location}/Tools/Packager_Linux\" -zip \"%{wks.location}/Tools\" \"%{prj.location}/"..targetName.."/Content/Archives/Tools.zip\"",
+					"\"%{wks.location}/Tools/Packager_Linux\" -pak \"%{prj.location}/"..targetName.."/Engine/EngineContent\" \"%{prj.location}/"..targetName.."/Data/EngineContent.pak\"",
+					"\"%{wks.location}/Tools/Packager_Linux\" -pak \"%{prj.location}/"..targetName.."/Content\" \"%{prj.location}/"..targetName.."/Data/EditorContent.pak\""
 					
 				}
 			else 
@@ -359,6 +357,11 @@ project (targetName)
 					"./\"%{wks.location}Tools\\Packager_Linux\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\""
 				}
 			end
+
+			postbuildcommands
+			{
+				"cp -rf \"%{prj.location}/"..targetName.."/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."/Data\""
+			}
 			
 			
 			filter "configurations:Debug"

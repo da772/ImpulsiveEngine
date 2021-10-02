@@ -1,6 +1,7 @@
 # Directories
 .vs/
 Bin/
+bin/
 Bin-Obj/
 bin-int/
 enc_temp_folder/
