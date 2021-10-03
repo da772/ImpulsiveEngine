@@ -54,6 +54,10 @@ project "Packager"
 			"IOKit.framework",
 			"CoreVideo.framework",
 			"OpenAL.framework",
+            "zip",
+            "ImGui",
+            "zlib",
+            "NativeFileDialog"
         }
 
         targetname "Packager_MacOSX"
