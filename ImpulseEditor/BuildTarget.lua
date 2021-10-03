@@ -354,7 +354,8 @@ project (targetName)
 			else 
 				postbuildcommands
 				{
-					"\"%{wks.location}/Tools/Packager_Linux\" -pak \"%{prj.location}/"..targetName.."/Content\" \"%{prj.location}/"..targetName.."/Data/"..targetName.."Content.pak\""
+					"\"%{wks.location}/Tools/Packager_Linux\" -pak \"%{prj.location}/"..targetName.."/Engine/EngineContent\" \"%{prj.location}/"..targetName.."/Data/EngineContent.pak\"",
+					"\"%{wks.location}/Tools/Packager_Linux\" -pak \"%{prj.location}/"..targetName.."/Content\" \"%{prj.location}/"..targetName.."/Data/EditorContent.pak\""
 				}
 			end
 
