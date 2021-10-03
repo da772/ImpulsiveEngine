@@ -1,0 +1,23 @@
+name: Linux Release Build
+
+on:
+  push:
+    branches: [ Editor ]
+  pull_request:
+    branches: [ Editor ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      run: sudo apt-get update && sudo apt-get install xorg-dev && sudo apt install libgl1-mesa-dev && sudo apt-get install -y gcc-8 g++-8 && sudo apt-get install libglib2.0-dev && sudo apt-get install libalut-dev && chmod +x ./vendor/premake/premake5_linux && chmod +x ./ImpulseEditor/Generate/GenerateProject.sh 
+    - name: Generate and Make Static
+      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --build-engine --build-editor --disable-nfd && make config=release
+    - name : Generate and Make Dynamic
+      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make config=release
+    - name : Generate and Make Server
+      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --server --build-engine --disable-nfd && make config=release
