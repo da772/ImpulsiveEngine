@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Configure
+      run: chmod +x ./ImpulseEditor/Generate/GenerateProject.sh 
     - name: Generate and Make Static
       run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=macosx --build-engine --build-editor && make config=debug
     - name : Generate and Make Server
