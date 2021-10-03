@@ -17,12 +17,12 @@ jobs:
       run: sudo apt-get update && sudo apt-get install xorg-dev && sudo apt install libgl1-mesa-dev && sudo apt-get install -y gcc-8 g++-8 && sudo apt-get install libglib2.0-dev && sudo apt-get install libalut-dev && chmod +x ./vendor/premake/premake5_linux && chmod +x ./ImpulseEditor/Generate/GenerateProject.sh 
     - name: Generate and Make Static
       run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --build-engine --build-editor --disable-nfd && make config=debug
-    - name : Generate and Make Dynamic
-      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make clean && make config=debug
     - name : Generate and Make Server
       run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --server --build-engine --disable-nfd && make clean && make config=debug
+    - name : Generate and Make Dynamic
+      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make clean && make config=debug
     - name : Upload Artifacts
       uses: actions/upload-artifact@v2.2.4
       with : 
         name: ImpulseEditor
-        path: ImpulseEditor/Bin/Release-linux-x86_64/
+        path: ImpulseEditor/Bin/Debug-linux-x86_64/

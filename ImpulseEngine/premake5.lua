@@ -46,7 +46,7 @@ group "Dependencies"
 		include(vendorSrc.."ImpulseEngine/ImpulseEngine/vendor/zip")
 	end
 	
-if not _OPTIONS['hot-reload'] then
+if not _OPTIONS['hot-reload'] and not _OPTIONS['server'] then
 group "Tools"
 	include(vendorSrc.."ImpulseEngine/ImpulseEngine/Tools/Packager")
 end
