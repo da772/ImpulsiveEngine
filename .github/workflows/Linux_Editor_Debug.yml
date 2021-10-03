@@ -18,6 +18,9 @@ jobs:
     - name: Generate and Make Static
       run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --build-engine --build-editor --disable-nfd && make config=debug
     - name : Generate and Make Dynamic
-      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make config=debug
+      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make clean && make config=debug
     - name : Generate and Make Server
-      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --server --build-engine --disable-nfd && make config=debug
+      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --server --build-engine --disable-nfd && make clean && make config=debug
+    with:
+      name: ImpulseEditor
+      path: ImpulseEditor/Bin/Debug-linux-x86_64/
