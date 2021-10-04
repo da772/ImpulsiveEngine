@@ -57,7 +57,8 @@ project "Packager"
             "zip",
             "ImGui",
             "zlib",
-            "NativeFileDialog"
+            "NativeFileDialog",
+            "ObjCWrapper"
         }
 
         targetname "Packager_MacOSX"
