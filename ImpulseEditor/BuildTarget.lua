@@ -275,7 +275,7 @@ project (targetName)
 
 		postbuildcommands
 		{
-			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
+			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."\\Data\" \"$(TargetDir)Data\\\""
 		}
 
 
