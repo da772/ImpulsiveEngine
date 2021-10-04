@@ -240,6 +240,11 @@ project (targetName)
 			"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 		}
 		
+		postbuildcommands
+		{
+			"mkdir \"$(TARGETDIR)Data"
+		}
+
 		if _OPTIONS["build-editor"] then
 			postbuildcommands
 			{
