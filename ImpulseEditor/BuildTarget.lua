@@ -363,6 +363,13 @@ project (targetName)
 			{
 				"cp -rf \"%{prj.location}/"..targetName.."/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."/Data\""
 			}
+
+			if _OPTIONS["hot-reload"] then
+				postbuildcommands
+				{
+					"cp -rf  \""..engineSrc.."ImpulseEngine/ImpulseEngine/Bin/".. outputdir.."/ImpulseEngine/shared/libImpulseEngine.a\" \"%{prj.location}/Bin/"..outputdir.."/"..targetName.."/libImpulseEngine.dylib\"",
+				}
+			end
 			
 			
 			filter "configurations:Debug"
