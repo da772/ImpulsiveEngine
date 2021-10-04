@@ -367,7 +367,7 @@ project (targetName)
 			if _OPTIONS["hot-reload"] then
 				postbuildcommands
 				{
-					"cp -rf  \""..engineSrc.."ImpulseEngine/ImpulseEngine/Bin/".. outputdir.."/ImpulseEngine/shared/libImpulseEngine.a\" \"%{prj.location}/Bin/"..outputdir.."/"..targetName.."/libImpulseEngine.dylib\"",
+					"cp -rf  \""..engineSrc.."ImpulseEngine/ImpulseEngine/Bin/".. outputdir.."/ImpulseEngine/libImpulseEngine.a\" \"%{prj.location}/Bin/"..outputdir.."/"..targetName.."/libImpulseEngine.a\"",
 				}
 			end
 			
