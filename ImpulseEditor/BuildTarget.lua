@@ -269,6 +269,7 @@ project (targetName)
 		postbuildcommands
 		{
 			"copy /Y  \""..engineSrc.."ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.dll\" \"$(TARGETDIR)ImpulseEngine.dll\"",
+			"copy /Y  \""..engineSrc.."ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.lib\" \"$(TARGETDIR)ImpulseEngine.lib\"",
 			"copy /Y  \""..engineSrc.."ImpulseEngine\\ImpulseEngine\\Bin\\".. outputdir.."\\ImpulseEngine\\shared\\ImpulseEngine.pdb\" \"$(TARGETDIR)ImpulseEngine.pdb\""
 		}
 		end
@@ -277,8 +278,6 @@ project (targetName)
 		{
 			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."\\Data\" \"$(TargetDir)Data\\\""
 		}
-
-
 
 		filter "configurations:Debug"
 			defines "GE_DEBUG"
