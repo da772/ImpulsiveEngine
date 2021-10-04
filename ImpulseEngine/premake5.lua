@@ -483,6 +483,8 @@ project "ImpulseEngine"
 		pchheader "gepch.h"
 		pchsource "ImpulseEngine/Source/gepch.cpp"
 		cppdialect "gnu++17"
+		linkoptions { "-install_name @rpath/libImpulseEngine.so" }
+		buildoptions {"-install_name @rpath/libImpulseEngine.so"}
 		if _OPTIONS['hot-reload'] then
 			pic "On"
 		end

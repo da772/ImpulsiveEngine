@@ -296,9 +296,9 @@ project (targetName)
 			systemversion "latest"
 			kind "ConsoleApp"
 			if _OPTIONS["hot-reload"] then
-				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared", "-rpath @executable_path/"}
 			else
-				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
+				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static", "-rpath @executable_path/"}
 			end
 			
 
