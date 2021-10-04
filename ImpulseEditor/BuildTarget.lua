@@ -240,23 +240,29 @@ project (targetName)
 			"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 		}
 		
+		prebuildcommands
+		{
+			"if not exist \"$(TARGETDIR)Data\\\" mkdir \"$(TARGETDIR)Data\\\"",
+			"if not exist \"%{prj.location}"..targetName.."\\Data\\\" mkdir \"%{prj.location}"..targetName.."\\Data\\\"",
+		}
+
 		if _OPTIONS["build-editor"] then
 			postbuildcommands
 			{
-				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}AndroidStudio\" \"%{prj.location}"..targetName.."/Content/Archives/AndroidStudio.zip\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}vendor\" \"%{prj.location}"..targetName.."/Content/Archives/vendor.zip\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}"..targetName.."/Source/Shared\" \"%{prj.location}"..targetName.."/Content/Archives/Shared.zip\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Engine/EngineContent\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\"",
-				"call \"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EditorContent.pak\""
+				"\"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}AndroidStudio\" \"%{prj.location}"..targetName.."/Content/Archives/AndroidStudio.zip\"",
+				"\"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}vendor\" \"%{prj.location}"..targetName.."/Content/Archives/vendor.zip\"",
+				"\"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}Generate\" \"%{prj.location}"..targetName.."/Content/Archives/Generate.zip\"",
+				"\"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}BuildTarget.lua\" \"%{prj.location}"..targetName.."/Content/Archives/BuildTarget.zip\"",
+				"\"%{wks.location}Tools/Packager.exe\" -zip \"%{wks.location}Tools\" \"%{prj.location}"..targetName.."/Content/Archives/Tools.zip\"",
+				"\"%{wks.location}Tools/Packager.exe\" -zip \"%{prj.location}"..targetName.."/Source/Shared\" \"%{prj.location}"..targetName.."/Content/Archives/Shared.zip\"",
+				"\"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Engine/EngineContent\" \"%{prj.location}"..targetName.."/Data/EngineContent.pak\"",
+				"\"%{wks.location}Tools/Packager.exe\" -pak \"%{prj.location}"..targetName.."/Content\" \"%{prj.location}"..targetName.."/Data/EditorContent.pak\""
 				
 			}
 		else 
 			postbuildcommands
 			{
-				"call \"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\""
+				"\"%{wks.location}Tools\\Packager.exe\" -pak \"$(ProjectDir)"..targetName.."/Content\" \"$(ProjectDir)"..targetName.."/Data/"..targetName.."Content.pak\""
 			}
 		end
 		if _OPTIONS["hot-reload"] then
@@ -269,7 +275,7 @@ project (targetName)
 
 		postbuildcommands
 		{
-			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."/Data\" \"$(TargetDir)Data/\""
+			"xcopy /i /e /s /y \"$(ProjectDir)"..targetName.."\\Data\" \"$(TargetDir)Data\\\""
 		}
 
 
@@ -300,8 +306,6 @@ project (targetName)
 			else
 				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static", "-rpath @executable_path/"}
 			end
-			
-
 
 			links 
 			{
@@ -370,7 +374,6 @@ project (targetName)
 					"cp -rf  \""..engineSrc.."ImpulseEngine/ImpulseEngine/Bin/".. outputdir.."/ImpulseEngine/shared/libImpulseEngine.so\" \"%{prj.location}/Bin/"..outputdir.."/"..targetName.."/libImpulseEngine.so\"",
 				}
 			end
-			
 			
 			filter "configurations:Debug"
 				defines "GE_DEBUG"
@@ -619,7 +622,7 @@ project (targetName)
 		kind "WindowedApp"
 		buildoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
 		if _OPTIONS["hot-reload"] then
-			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared", "-rpath @executable_path/"}
 		else
 			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 		end
@@ -676,9 +679,15 @@ project (targetName)
 
 		postbuildcommands
 		{
-			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
-			--"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Res\" ${TARGET_BUILD_DIR}",
+			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS"
 		}
+
+		if _OPTIONS["hot-reload"] then
+			postbuildcommands
+			{
+				"cp -rf  \""..engineSrc.."ImpulseEngine/ImpulseEngine/Bin/".. outputdir.."/ImpulseEngine/shared/libImpulseEngine.dylib\" \"${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS/libImpulseEngine.dylib\"",
+			}
+		end
 
 		
 		filter "configurations:Debug"

@@ -1,0 +1,26 @@
+name: MacOS Release Build
+
+on:
+  push:
+    branches: [ Editor ]
+  pull_request:
+    branches: [ Editor  ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure
+      run: chmod +x ./ImpulseEditor/Generate/GenerateProject.command
+    - name: Generate and Make Static
+      run: ./ImpulseEditor/Generate/GenerateProject.command xcode4 --os=macosx --build-engine --build-editor && xcodebuild -workspace  ImpulseEditor.xcworkspace -scheme ImpulseEditor -configuration Release build
+    - name : Generate and Make Dynamic
+      run: git clean -d -f -x && ./ImpulseEditor/Generate/GenerateProject.command xcode4 --os=macosx --hot-reload --build-engine --build-editor && xcodebuild -workspace  ImpulseEditor.xcworkspace -scheme ImpulseEditor -configuration Release build
+    - name : Upload Artifacts
+      uses: actions/upload-artifact@v2.2.4
+      with : 
+        name: ImpulseEditor
+        path: ImpulseEditor/Bin/Release-macosx-x86_64/

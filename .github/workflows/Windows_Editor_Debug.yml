@@ -1,0 +1,26 @@
+name: Windows Debug Build
+
+on:
+  push:
+    branches: [ Editor ]
+  pull_request:
+    branches: [ Editor  ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Generate and Make Static
+      run: ./ImpulseEditor/Generate/GenerateProject.bat vs2019 --os=windows --build-engine --build-editor --build-openal && msbuild /nologo /p:Configuration=Debug /p:Platform=x64
+    - name: Generate and Make Static Server
+      run: git clean -d -f -x && ./ImpulseEditor/Generate/GenerateProject.bat vs2019 --os=windows --build-engine --server && msbuild /nologo /p:Configuration=Debug /p:Platform=x64
+    - name : Generate and Make Dynamic
+      run: git clean -d -f -x && ./ImpulseEditor/Generate/GenerateProject.bat vs2019 --os=windows --hot-reload --build-engine --build-editor --build-openal && msbuild /nologo /p:Configuration=Debug /p:Platform=x64
+    - name : Upload Artifacts
+      uses: actions/upload-artifact@v2.2.4
+      with : 
+        name: ImpulseEditor
+        path: ImpulseEditor/Bin/Debug-windows-x86_64/
