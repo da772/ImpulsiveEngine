@@ -2,9 +2,9 @@ name: Windows Debug Build
 
 on:
   push:
-    branches: [ Editor-Artifacts-Windows ]
+    branches: [ Editor ]
   pull_request:
-    branches: [ Editor-Artifacts-Windows  ]
+    branches: [ Editor  ]
 
 jobs:
   build:
