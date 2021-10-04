@@ -300,8 +300,6 @@ project (targetName)
 			else
 				linkoptions {"-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 			end
-			
-
 
 			links 
 			{
@@ -362,7 +360,13 @@ project (targetName)
 			{
 				"cp -rf \"%{prj.location}/"..targetName.."/Data\" \"%{prj.location}/Bin/" .. outputdir .. "/"..targetName.."/Data\""
 			}
-			
+
+			if _OPTIONS["hot-reload"] then
+				postbuildcommands
+				{
+					"cp -rf  \""..engineSrc.."ImpulseEngine/ImpulseEngine/Bin/".. outputdir.."/ImpulseEngine/shared/libImpulseEngine.a\" \"${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS/libImpulseEngine.a\"",
+				}
+			end
 			
 			filter "configurations:Debug"
 				defines "GE_DEBUG"
@@ -668,8 +672,7 @@ project (targetName)
 
 		postbuildcommands
 		{
-			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
-			--"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Res\" ${TARGET_BUILD_DIR}",
+			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS"
 		}
 
 		if _OPTIONS["hot-reload"] then
