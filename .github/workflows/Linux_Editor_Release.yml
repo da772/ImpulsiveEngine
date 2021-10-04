@@ -18,9 +18,9 @@ jobs:
     - name: Generate and Make Static
       run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --build-engine --build-editor --disable-nfd && make config=release
     - name : Generate and Make Server
-      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --server --build-engine --disable-nfd && make clean && make config=release
+      run: make clean && ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --server --build-engine --disable-nfd && make config=release
     - name : Generate and Make Dynamic
-      run: ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make clean && git clean -f -x -d && make config=release
+      run: make clean && git clean -f -x -d && ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make config=release
     - name : Upload Artifacts
       uses: actions/upload-artifact@v2.2.4
       with : 
