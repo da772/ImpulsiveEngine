@@ -9,9 +9,10 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v2
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
     - name: Generate and Make Static
       run: ./ImpulseEditor/Generate/GenerateProject.bat vs2019 --os=windows --build-engine --build-editor --build-openal && msbuild /nologo /p:Configuration=Debug /p:Platform=x64
     - name: Generate and Make Static Server
