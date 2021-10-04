@@ -611,7 +611,7 @@ project (targetName)
 		kind "WindowedApp"
 		buildoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
 		if _OPTIONS["hot-reload"] then
-			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared"}
+			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/shared", "-rpath @executable_path/"}
 		else
 			linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-F "..engineSrc.."ImpulseEngine/ImpulseEngine/bin/".. outputdir .. "/ImpulseEngine/static"}
 		end
@@ -671,6 +671,13 @@ project (targetName)
 			"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Data\" ${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS",
 			--"cp -rf ${PROJECT_DIR}/"..targetName.."/\"Res\" ${TARGET_BUILD_DIR}",
 		}
+
+		if _OPTIONS["hot-reload"] then
+			postbuildcommands
+			{
+				"cp -rf  \""..engineSrc.."ImpulseEngine/ImpulseEngine/Bin/".. outputdir.."/ImpulseEngine/shared/libImpulseEngine.dylib\" \"${TARGET_BUILD_DIR}/%{prj.name}.app/Contents/MacOS/libImpulseEngine.dylib\"",
+			}
+		end
 
 		
 		filter "configurations:Debug"

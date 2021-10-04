@@ -173,8 +173,8 @@ project "ImpulseEngine"
 	filter "system:macosx"
 		systemversion "latest"
 		
-		buildoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
-		linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib"}
+		buildoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib",  "-install_name @rpath/libImpulseEngine.dylib"}
+		linkoptions {"-F /System/Library/Frameworks", "-F %{IncludeDir.Vulkan}/lib", "-install_name @rpath/libImpulseEngine.dylib"}
 
 		files
 		{
