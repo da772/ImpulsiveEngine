@@ -240,10 +240,10 @@ project (targetName)
 			"MS_BUILD_BIN=\"$(MSBuildBinPath)\""
 		}
 		
-		postbuildcommands
+		prebuildcommands
 		{
-			"mkdir \"$(TARGETDIR)Data\"",
-			"mkdir \"%{prj.location}"..targetName.."/Data\"",
+			"mkdir \"$(TARGETDIR)Data\\\"",
+			"mkdir \"%{prj.location}"..targetName.."\\Data\\\"",
 		}
 
 		if _OPTIONS["build-editor"] then
