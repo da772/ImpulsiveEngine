@@ -2,9 +2,9 @@ name: MacOS Debug Build
 
 on:
   push:
-    branches: [ Editor-Artifacts-Macos ]
+    branches: [ Editor ]
   pull_request:
-    branches: [ Editor-Artifacts-Macos  ]
+    branches: [ Editor  ]
 
 jobs:
   build:
