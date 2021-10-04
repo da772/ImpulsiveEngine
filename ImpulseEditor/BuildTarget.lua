@@ -242,7 +242,8 @@ project (targetName)
 		
 		postbuildcommands
 		{
-			"mkdir \"$(TARGETDIR)Data\""
+			"mkdir \"$(TARGETDIR)Data\"",
+			"mkdir \"%{prj.location}"..targetName.."/Data\"",
 		}
 
 		if _OPTIONS["build-editor"] then
