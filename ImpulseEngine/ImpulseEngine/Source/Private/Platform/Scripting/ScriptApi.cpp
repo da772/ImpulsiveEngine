@@ -61,6 +61,8 @@ namespace GEngine {
 	{
 		refl::uClass* cl = (refl::uClass*)data;
 		GameObject* m_go = (GameObject*)hash;
+		if (!cl)
+			return;
 		std::unordered_map<std::string, std::vector<std::string>>::iterator it = nativeScriptPtrs.find(cl->GetName());
 
 		if (it != nativeScriptPtrs.end()) {

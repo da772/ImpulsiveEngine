@@ -55,6 +55,7 @@ namespace GEngine {
 		const std::string CreateText(const std::string& string, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
 		const std::string CreateText_u32(uint32_t* string, int len, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
 		const void AddText(const std::string& id, const std::string& text, const Vector4f& color);
+		const std::string CreateText(const std::string& id, const std::string& string, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color);
 		void SetText(const std::string& s, const std::string& text, const Vector4f& color);
 		void RemoveText(const std::string& id);
 		void SetTextColor(const std::string& id, const Vector4f& color, int index, int count = 1);

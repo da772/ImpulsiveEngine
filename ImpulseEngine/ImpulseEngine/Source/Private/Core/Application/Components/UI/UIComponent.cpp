@@ -215,6 +215,32 @@ namespace GEngine {
 		return hash;
 	}
 
+	const std::string UIComponent::CreateText(const std::string& text_id, const std::string& string, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color)
+	{
+		/* Should use Framebuffer size of pipeline */
+		int width, height;
+		width = GEngine::Application::GetApp()->GetUIResolutionWidth();
+		height = GEngine::Application::GetApp()->GetUIResolutionHeight();
+
+		const char* hash = text_id.c_str();
+	
+		Ref<StringInfo> data = font->DrawString(string, scale.z, width, height);
+		std::vector<ShapeID> ids;
+
+		Vector3f _scale = scale;
+		float tWidth = scale.x;
+		float tHeight = scale.y;
+		_scale = GetTextureAspectScale({ scale.x, scale.y, 1.f }, tWidth, tHeight, 1);
+		//_scale *= scale.xy();
+		for (CharacterData& d : data->charData) {
+			ShapeID id = s_ShapeFactory->AddShape(Vector3f(d.position.x * _scale.x + pos.x, d.position.y * _scale.y + pos.y, pos.z), 0, { d.scale.x * _scale.x , d.scale.y * _scale.y }, color, d.texture, { 1,1 }, 1);
+			m_objects[id] = { id,  Vector3f(d.position.x * scale.x + pos.x, d.position.y * scale.y + pos.y, pos.z), 0, { d.scale.x * scale.x , d.scale.y * scale.y , 1 }, color, nullptr, d.texture, { 1,1 }, 1, false, true };
+			ids.push_back(id);
+		}
+		m_text[hash] = { data,std::move(ids), font, pos, scale, std::wstring(string.begin(), string.end()), color };
+		return hash;
+	}
+
 	const std::string UIComponent::CreateText_u32(uint32_t* string, int len, Ref<Font> font, const Vector3f& pos, const Vector3f& scale, const Vector4f& color)
 	{
 		/* Should use Framebuffer size of pipeline */

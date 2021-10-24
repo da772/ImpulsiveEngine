@@ -2,9 +2,9 @@ name: Linux Release Build
 
 on:
   push:
-    branches: [ Editor ]
+    branches: [ main ]
   pull_request:
-    branches: [ Editor ]
+    branches: [ main ]
 
 jobs:
   build:

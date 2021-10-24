@@ -820,6 +820,18 @@ namespace Editor {
 			GEngine::Entity* entity = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(*m_selectedGameObject->begin()));
 			if (entity) {
 
+				if (ImGui::Button("Sprite Component", { ImGui::GetContentRegionAvailWidth() ,0 })) {
+					for (const auto& hash : *m_selectedGameObject) {
+						GEngine::Entity* ent = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(hash));
+						if (ent) {
+							GEngine::SpriteComponent* s = ent->AddComponent<GEngine::SpriteComponent>();
+							s->SetSerialize(true);
+						}
+					}
+					EditorLayer::GetDispatcher()->BroadcastEvent<EditorSceneModifyEntity>(entity->GetHash(), GameObjectModifications::ADD_COMPONENT);
+					ImGui::CloseCurrentPopup();
+				}
+
 				if (ImGui::Button("UI Component", { ImGui::GetContentRegionAvailWidth() ,0 })) {
 					for (const auto& hash : *m_selectedGameObject) {
 						GEngine::Entity* ent = dynamic_cast<GEngine::Entity*>(GEngine::GameObject::GetObjectFromHash(hash));

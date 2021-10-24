@@ -180,9 +180,9 @@ namespace Editor {
 					try {
 						switch (type) {
 
+						case NativeTypes::COMPONENT:
 						case NativeTypes::CLASS: {
 							ObjectHash objHash = ObjectHash(node.tags["id"].c_str());
-
 
 							if (objHash.isValid()) {
 								sc->SetAutoNative(false);
@@ -284,7 +284,7 @@ namespace Editor {
 
 					node = cxml.GetNext(c.data.c_str(), node.endPos);
 				}
-
+				c.ptr = sc;
 				break;
 			}
 			case ComponentTypes::UIComponent: {
@@ -318,7 +318,7 @@ namespace Editor {
 
 						GEngine::Ref<GEngine::Font> font = GEngine::Font::Create(strData[0], data[0]);
 						font->LoadCharactersEN();
-						sc->CreateText(strData[1], font, Vector3f(&data[1]), Vector3f(&data[4]), Vector4f(&data[7]));	
+						sc->CreateText(id, strData[1], font, Vector3f(&data[1]), Vector3f(&data[4]), Vector4f(&data[7]));
 					}
 					else if (node.type == "Object") {
 						uint64_t id = std::stoull(node.tags["id"]);
@@ -359,6 +359,7 @@ namespace Editor {
 
 					node = cxml.GetNext(c.data.c_str(), node.endPos);
 				}
+				c.ptr = sc;
 				break;
 			}
 

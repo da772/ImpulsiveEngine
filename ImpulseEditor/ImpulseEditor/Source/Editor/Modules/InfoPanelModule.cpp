@@ -18,6 +18,7 @@ namespace Editor {
 
 	void InfoPanelModule::Create(const std::string& name, bool* is_open, uint32_t flags)
 	{
+
 		// because it would be confusing to have two docking targets within each others.
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (true)
