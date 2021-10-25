@@ -6,6 +6,7 @@
 #include "Public/Core/Controller/CameraController.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Public/Core/Util/Time.h"
 
 #if defined(GE_MINGW_) || defined (GE_PLATFORM_LINUX)
 #include <arpa/inet.h>
@@ -106,6 +107,7 @@ namespace GEngine {
 
 	void Utility::GenerateHash(char* str, const int len)
 	{
+		std::srand(Time::GetEpochTimeNS());
 		for (int i = 0; i < len; ++i) {
 			str[i] = alphanum[std::rand() % (sizeof(alphanum) - 1)];
 		}
