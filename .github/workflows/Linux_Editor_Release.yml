@@ -2,9 +2,9 @@ name: Linux Release Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -21,8 +21,3 @@ jobs:
       run: make clean && ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --server --build-engine --disable-nfd && make config=release
     - name : Generate and Make Dynamic
       run: make clean && git clean -f -x -d && ./ImpulseEditor/Generate/GenerateProject.sh gmake2 --os=linux --hot-reload --build-engine --build-editor --disable-nfd && make config=release
-    - name : Upload Artifacts
-      uses: actions/upload-artifact@v2.2.4
-      with : 
-        name: ImpulseEditor
-        path: ImpulseEditor/Bin/Release-linux-x86_64/
