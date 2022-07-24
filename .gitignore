@@ -40,3 +40,4 @@ local.properties
 /premake5.lua
 /Podfile
 
+*.bak
