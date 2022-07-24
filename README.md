@@ -8,6 +8,34 @@ C++ Game Engine
 
 > ImpulsiveEngine is a game engine created to learn about cross platform game engine development. ImpulsiveEngine currently supports iOS, Android, MacOS, Linux, and Windows.
 
+## Building
+### Windows
+```
+Prerequisites:
+- Visual Studios 19
+Steps:
+- Run ImpulsiveEditor/Generate/GenerateProject_Windows.bat
+- Open ImpusliveEditor.sln in Visual Studios 2019
+- Build
+```
+### MacOS
+```
+Prerequisites:
+- XCode4 or g++ or Clang
+Steps:
+- Run ImpulsiveEditor/Generate/GenerateProject_Scripting_Mac.command (change xcode4 to gmake2 to build with make)
+- Open ImpusliveEditor.xcworkspace in XCode (or run make in main directory)
+- Build
+```
+### Linux
+```
+Prerequisites:
+- g++ or Clang and Make
+Steps:
+- Run GenerateProject_Scripting_Linux.sh
+- Build with make
+```
+
 ## Features (Currently working on all platforms)
 - 3D/2D rendering
   - Sprite batching
