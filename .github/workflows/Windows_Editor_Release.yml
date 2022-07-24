@@ -1,8 +1,9 @@
 name: Windows Release Build
 
 on:
-  pull_request:
+  [pull_request, workflow_dispatch]:
     branches: [ master  ]
+
 
 jobs:
   build:
